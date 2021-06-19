@@ -4,7 +4,7 @@ import com.luoys.upgrade.toolservice.controller.vo.PageInfo;
 import com.luoys.upgrade.toolservice.controller.vo.ParamVO;
 import com.luoys.upgrade.toolservice.controller.vo.ToolDetailVO;
 import com.luoys.upgrade.toolservice.dao.ToolMapper;
-import com.luoys.upgrade.toolservice.util.Result;
+import com.luoys.upgrade.toolservice.common.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

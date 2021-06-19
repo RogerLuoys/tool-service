@@ -1,4 +1,4 @@
-package com.luoys.upgrade.toolservice.util;
+package com.luoys.upgrade.toolservice.common;
 
 import lombok.Data;
 

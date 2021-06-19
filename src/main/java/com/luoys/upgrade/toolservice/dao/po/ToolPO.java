@@ -33,7 +33,5 @@ public class ToolPO implements Serializable {
 
     private String ownerId;
 
-    private Byte isDelete;
-
     private static final long serialVersionUID = 1L;
 }

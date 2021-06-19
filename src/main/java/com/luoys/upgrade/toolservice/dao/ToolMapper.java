@@ -1,19 +1,22 @@
 package com.luoys.upgrade.toolservice.dao;
 
 import com.luoys.upgrade.toolservice.dao.po.ToolPO;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Repository
 public interface ToolMapper {
-    int deleteByPrimaryKey(Integer id);
 
-    int insert(ToolPO record);
+    int insert(ToolPO toolPO);
 
-    int insertSelective(ToolPO record);
+    int deleteByUID(Integer toolId);
 
-    ToolPO selectByPrimaryKey(Integer id);
+    int updateByUID(ToolPO toolPO);
 
-    int updateByPrimaryKeySelective(ToolPO record);
+    ToolPO selectByUID(@Param("toolId") Integer toolId);
 
-    int updateByPrimaryKey(ToolPO record);
+    List<ToolPO> list(@Param("type") Integer type, @Param("title") String title);
+
 }
