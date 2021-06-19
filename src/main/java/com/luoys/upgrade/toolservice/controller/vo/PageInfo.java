@@ -1,4 +1,9 @@
 package com.luoys.upgrade.toolservice.controller.vo;
 
-public class PageInfo {
+import lombok.Data;
+
+@Data
+public class PageInfo <T> {
+    T data;
+    Integer total;
 }

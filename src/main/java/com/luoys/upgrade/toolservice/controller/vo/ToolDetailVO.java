@@ -5,8 +5,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class ToolVO {
-
+public class ToolDetailVO {
     Integer toolId;
     String title;
     String description;
@@ -18,5 +17,4 @@ public class ToolVO {
     List<ParamVO> httpHeaderList;
     String httpBody;
     List<ParamVO> paramList;
-
 }
