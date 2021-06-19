@@ -24,12 +24,12 @@ public class ToolPO implements Serializable {
     /**
      * 1 SQL, 2 HTTP, 3 DUBBO
      */
-    private Byte type;
+    private Integer type;
 
     /**
      * 1 仅自己可见, 2 公开
      */
-    private Byte permission;
+    private Integer permission;
 
     private String ownerId;
 
