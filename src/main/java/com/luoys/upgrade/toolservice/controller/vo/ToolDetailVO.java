@@ -11,6 +11,7 @@ public class ToolDetailVO {
     private String description;
     private Integer type;
     private Integer status;
+    private String ownerId;
     private Integer permission;
     private List<String> sqlList;
     private HttpRequest httpRequest;

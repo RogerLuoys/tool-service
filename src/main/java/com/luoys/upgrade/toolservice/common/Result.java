@@ -42,7 +42,7 @@ public class Result<T> implements Serializable {
     }
 
     public static <T> Result error(String message) {
-        Result<T> result = new Result(0, false, message, (Object)null);
+        Result<T> result = new Result(0, false, message, null);
         return result;
     }
 
