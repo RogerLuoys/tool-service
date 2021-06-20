@@ -13,10 +13,7 @@ public class ToolDetailVO {
     private Integer status;
     private Integer permission;
     private List<String> sqlList;
+    private HttpRequest httpRequest;
     private String rpcProvider;
-    private String httpType;
-    private String httpURL;
-    private List<ParamVO> httpHeaderList;
-    private String httpBody;
     private List<ParamVO> paramList;
 }
