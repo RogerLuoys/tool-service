@@ -5,13 +5,13 @@ import lombok.Data;
 
 /**
  * tool
- * @author 
+ * @author
  */
 @Data
 public class ToolPO implements Serializable {
     private Integer id;
 
-    private Integer toolId;
+    private Long toolId;
 
     private String title;
 

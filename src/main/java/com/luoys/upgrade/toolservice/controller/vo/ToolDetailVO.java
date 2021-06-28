@@ -6,7 +6,7 @@ import java.util.List;
 
 @Data
 public class ToolDetailVO {
-    private Integer toolId;
+    private Long toolId;
     private String title;
     private String description;
     private Integer type;

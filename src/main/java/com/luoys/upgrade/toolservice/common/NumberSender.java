@@ -3,8 +3,8 @@ package com.luoys.upgrade.toolservice.common;
 import java.util.Random;
 
 public class NumberSender {
-    private static final String TOOL_PREFIX = "9";
-    private static final Integer RANDOM_BOUND = 9;
+    private static final long TOOL_PREFIX = 90000000000000l;
+    private static final int RANDOM_BOUND = 9;
     private static Random rd = new Random();
     private static Thread nThread = new Thread();
 
@@ -21,11 +21,10 @@ public class NumberSender {
 
         long currentTime = System.currentTimeMillis();
         int num = rd.nextInt(RANDOM_BOUND);
-        //todo thread
         return currentTime * 10 + num;
     }
 
-    public static String createToolId() {
+    public static long createToolId() {
         return TOOL_PREFIX + createIdByCurrentTime();
     }
 }
