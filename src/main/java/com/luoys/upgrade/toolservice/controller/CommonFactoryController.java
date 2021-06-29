@@ -20,8 +20,8 @@ public class CommonFactoryController {
     @Autowired
     ToolMapper toolMapper;
 
-    @RequestMapping(value = "/new", method = RequestMethod.POST)
-    public Result<Boolean> newCommonFactory(@RequestBody ToolDetailVO toolDetailVO) {
+    @RequestMapping(value = "/create", method = RequestMethod.POST)
+    public Result<Boolean> create(@RequestBody ToolDetailVO toolDetailVO) {
         LOG.info("---》开始新增通用工具：{}", toolDetailVO);
         if (toolDetailVO.getToolId() == null) {
             //todo
@@ -34,24 +34,37 @@ public class CommonFactoryController {
         return result == 1 ? Result.success(true) : Result.error("新增失败");
     }
 
-    @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
-    public Result<Boolean> deleteCommonFactory(@RequestParam("toolId") Integer toolId) {
+    @RequestMapping(value = "/remove", method = RequestMethod.DELETE)
+    public Result<Boolean> remove(@RequestParam("toolId") Integer toolId) {
         return null;
     }
 
-    @RequestMapping(value = "/modify", method = RequestMethod.PUT)
-    public Result<Boolean> modifyCommonFactory(@RequestBody ToolDetailVO toolDetailVO) {
+    @RequestMapping(value = "/update", method = RequestMethod.PUT)
+    public Result<Boolean> update(@RequestBody ToolDetailVO toolDetailVO) {
         return null;
     }
 
     @RequestMapping(value = "/query", method = RequestMethod.GET)
-    public Result<PageInfo<ToolDetailVO>> queryCommonFactory(
+    public Result<PageInfo<ToolDetailVO>> query(
             @RequestParam(value = "type", required = false) Integer type, @RequestParam(value = "title", required = false) String title) {
         return Result.error("---");
     }
 
     @RequestMapping(value = "/use", method = RequestMethod.POST)
-    public Result<ParamVO> userCommonFactory(@RequestBody ToolDetailVO toolDetailVO) {
+    public Result<ParamVO> use(@RequestBody ToolDetailVO toolDetailVO) {
+        switch (toolDetailVO.getType()) {
+            case 1:
+                //todo sql
+                break;
+            case 2:
+                //todo http
+                break;
+            case 3:
+                //todo rpc
+                break;
+            default:
+                break;
+        }
         return null;
     }
 }

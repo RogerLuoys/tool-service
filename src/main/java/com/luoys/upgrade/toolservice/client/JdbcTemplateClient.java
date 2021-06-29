@@ -134,13 +134,11 @@ public class JdbcTemplateClient {
     }
 
     @Deprecated
-    @Override
     public void init(DriverManagerDataSource dataSource) {
         this.dataSource = dataSource;
         this.jdbcTemplate.setDataSource(this.dataSource);
     }
 
-    @Override
     public Integer update(String sql) {
         String executeSql = sql.replace(";", "") + ";";
         if (!checkSqlType(executeSql, UPDATE)) {
@@ -233,7 +231,6 @@ public class JdbcTemplateClient {
         }
     }
 
-    @Override
     public Integer delete(String sql) {
         String executeSql = sql.replace(";", "") + ";";
         if (!checkSqlType(executeSql, DELETE)) {
