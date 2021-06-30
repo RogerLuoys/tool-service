@@ -1,6 +1,5 @@
 package com.luoys.upgrade.toolservice.common;
 
-import com.luoys.upgrade.toolservice.client.JdbcTemplateClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -14,7 +13,7 @@ import java.util.Map;
 
 public class JdbcUtil {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(JdbcTemplateClient.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(JdbcUtil.class);
     private final static String SELECT = "select";
     private final static String UPDATE = "update";
     private final static String COUNT = "count(1)";
@@ -22,7 +21,7 @@ public class JdbcUtil {
     private final static String DEFAULT_ORDER = " order by id desc";
     private final static String DEFAULT_LIMIT = " limit 10";
 
-    private static DriverManagerDataSource dataSource = new DriverManagerDataSource();;
+    private static final DriverManagerDataSource dataSource = new DriverManagerDataSource();;
     private static final JdbcTemplate jdbcTemplate = new JdbcTemplate();
 
     public static void init(String driver, String url, String userName, String password) {
@@ -67,7 +66,7 @@ public class JdbcUtil {
      * @param type -
      * @return -
      */
-    private boolean checkSqlType(String sql, String type) {
+    private static boolean checkSqlType(String sql, String type) {
         String[] sqlArray = sql.toLowerCase().split(" ");
         switch (type) {
             case SELECT:

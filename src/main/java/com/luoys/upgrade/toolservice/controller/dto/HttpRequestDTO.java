@@ -1,11 +1,12 @@
-package com.luoys.upgrade.toolservice.controller.vo;
+package com.luoys.upgrade.toolservice.controller.dto;
 
+import com.luoys.upgrade.toolservice.controller.vo.ParamVO;
 import lombok.Data;
 
 import java.util.List;
 
 @Data
-public class HttpRequest {
+public class HttpRequestDTO {
 
     private String httpType;
     private String httpURL;

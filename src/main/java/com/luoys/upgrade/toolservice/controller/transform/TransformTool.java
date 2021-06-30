@@ -1,11 +1,10 @@
 package com.luoys.upgrade.toolservice.controller.transform;
 
 import com.alibaba.fastjson.JSON;
-import com.luoys.upgrade.toolservice.controller.vo.HttpRequest;
+import com.luoys.upgrade.toolservice.controller.dto.HttpRequestDTO;
 import com.luoys.upgrade.toolservice.controller.vo.ParamVO;
 import com.luoys.upgrade.toolservice.controller.vo.ToolDetailVO;
 import com.luoys.upgrade.toolservice.dao.po.ToolPO;
-import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,13 +30,13 @@ public class TransformTool {
         // 模板转换
         switch (po.getType()) {
             case 1:
-                vo.setSqlList(toSql(po.getTemplate()));
+                vo.setSqlDTO(toSql(po.getTemplate()));
                 break;
             case 2:
-                vo.setHttpRequest(toHttpRequest(po.getTemplate()));
+                vo.setHttpRequestDTO(toHttpRequest(po.getTemplate()));
                 break;
             case 3:
-                vo.setRpcProvider(po.getTemplate());
+                vo.setRpcDTO(po.getTemplate());
                 break;
         }
         return vo;
@@ -61,7 +60,7 @@ public class TransformTool {
                 po.setTemplate(toSql(vo.getSqlList()));
                 break;
             case 2:
-                po.setTemplate(toHttpRequest(vo.getHttpRequest()));
+                po.setTemplate(toHttpRequest(vo.getHttpRequestDTO()));
                 break;
             case 3:
                 po.setTemplate(vo.getRpcProvider());
@@ -93,14 +92,14 @@ public class TransformTool {
     }
 
     // {"name":"header","value":"http://"}
-    private static HttpRequest toHttpRequest(String template) {
+    private static HttpRequestDTO toHttpRequest(String template) {
         if (template == null) {
             return null;
         }
-        return (HttpRequest) JSON.parse(template);
+        return (HttpRequestDTO) JSON.parse(template);
     }
 
-    private static String toHttpRequest(HttpRequest httpRequest) {
+    private static String toHttpRequest(HttpRequestDTO httpRequest) {
         if (httpRequest == null) {
             return null;
         }
