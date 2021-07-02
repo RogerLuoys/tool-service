@@ -1,9 +1,14 @@
 package com.luoys.upgrade.toolservice.controller.transform;
 
 import com.alibaba.fastjson.JSON;
+import com.luoys.upgrade.toolservice.common.StringUtil;
+import com.luoys.upgrade.toolservice.controller.dto.DataBaseDTO;
 import com.luoys.upgrade.toolservice.controller.dto.HttpRequestDTO;
+import com.luoys.upgrade.toolservice.controller.dto.ParamDTO;
+import com.luoys.upgrade.toolservice.controller.dto.SqlDTO;
 import com.luoys.upgrade.toolservice.controller.vo.ParamVO;
 import com.luoys.upgrade.toolservice.controller.vo.ToolDetailVO;
+import com.luoys.upgrade.toolservice.controller.vo.ToolVO;
 import com.luoys.upgrade.toolservice.dao.po.ToolPO;
 
 import java.util.ArrayList;
@@ -13,6 +18,26 @@ import java.util.List;
 public class TransformTool {
 
     private static final String SEPARATOR=" &&& ";
+
+    public static ToolVO transformPO2ToolVO(ToolPO po) {
+        if (po == null)
+            return null;
+        ToolVO vo = new ToolVO();
+        vo.setDescription(po.getDescription());
+        vo.setToolId(po.getToolId());
+        vo.setOwner(po.getOwnerId());
+        vo.setTitle(po.getTitle());
+        vo.setPermission(po.getPermission());
+        return vo;
+    }
+
+    public static List<ToolVO> transformPO2VO(List<ToolPO> poList) {
+        List<ToolVO> voList = new ArrayList<>();
+        for (ToolPO po : poList) {
+            voList.add(transformPO2ToolVO(po));
+        }
+        return voList;
+    }
 
     public static ToolDetailVO transformPO2VO(ToolPO po) {
         if (po == null) {
@@ -26,7 +51,7 @@ public class TransformTool {
         vo.setType(po.getType());
         vo.setPermission(po.getPermission());
         // {"name":"name1", "value":""};{"name":"name2", "value":"value1"}
-        vo.setParamList(toParamVO(po.getParams()));
+        vo.setParamList(toParam(po.getParams()));
         // 模板转换
         switch (po.getType()) {
             case 1:
@@ -36,7 +61,8 @@ public class TransformTool {
                 vo.setHttpRequestDTO(toHttpRequest(po.getTemplate()));
                 break;
             case 3:
-                vo.setRpcDTO(po.getTemplate());
+                //todo
+                vo.setRpcDTO(null);
                 break;
         }
         return vo;
@@ -53,41 +79,52 @@ public class TransformTool {
         po.setPermission(vo.getPermission());
         po.setTitle(vo.getTitle());
         po.setOwnerId(vo.getOwnerId());
-        po.setParams(toParamPO(vo.getParamList()));
+        po.setParams(toParam(vo.getParamList()));
         // 模板转换
         switch (vo.getType()) {
             case 1:
-                po.setTemplate(toSql(vo.getSqlList()));
+                po.setTemplate(toSql(vo.getSqlDTO()));
                 break;
             case 2:
                 po.setTemplate(toHttpRequest(vo.getHttpRequestDTO()));
                 break;
             case 3:
-                po.setTemplate(vo.getRpcProvider());
+                //todo
+                po.setTemplate(null);
                 break;
         }
         return po;
     }
 
-    private static List<ParamVO> toParamVO(String params){
+    /**
+     * 参数值转换成参数对象列表
+     * @param params 数据库中的param值
+     * @return 参数对象列表
+     */
+    private static List<ParamDTO> toParam(String params){
         String[] paramArray = params.split(SEPARATOR);
-        List<ParamVO> paramVOList = new ArrayList<>();
+        List<ParamDTO> paramList = new ArrayList<>();
         for (String param : paramArray) {
-            paramVOList.add((ParamVO) JSON.parse(param));
+            paramList.add((ParamDTO) JSON.parse(param));
         }
-        return paramVOList;
+        return paramList;
     }
 
-    private static String toParamPO(List<ParamVO> paramVOList){
-        if (paramVOList == null) {
+    /**
+     * 参数对象列表转换成参数值
+     * @param paramList 参数对象列表
+     * @return 数据库中的参数值
+     */
+    private static String toParam(List<ParamDTO> paramList){
+        if (paramList == null) {
             return null;
         }
         StringBuilder params = new StringBuilder();
-        for (ParamVO paramVO : paramVOList) {
-            params.append(JSON.toJSONString(paramVO));
+        for (ParamDTO paramDTO : paramList) {
+            params.append(JSON.toJSONString(paramDTO));
             params.append(SEPARATOR);
         }
-        params.delete(params.length()-5, params.length());
+        params.delete(params.length()-SEPARATOR.length(), params.length());
         return params.toString();
     }
 
@@ -106,23 +143,43 @@ public class TransformTool {
         return JSON.toJSONString(httpRequest);
     }
 
-    // {"name":"sql", "value":"select"} &&
-    private static List<String> toSql(String template) {
+    /**
+     * 模板转sql对象
+     * @param template 数据库的模块值
+     * @return sql对象
+     */
+    // {DataBaseDTO} &&& sql1 &&& sql2
+    private static SqlDTO toSql(String template) {
         if (template == null) {
             return null;
         }
-        return Arrays.asList(template.split(SEPARATOR));
+        List<String> sqlList = Arrays.asList(template.split(SEPARATOR));
+        //第一段需要是数据库
+        if (!sqlList.get(0).startsWith("{")) {
+            return null;
+        }
+        SqlDTO sqlDTO = new SqlDTO();
+        sqlDTO.setDataBaseDTO((DataBaseDTO) JSON.parse(sqlList.get(0)));
+        sqlList.remove(0);
+        sqlDTO.setSqlList(sqlList);
+        return sqlDTO;
     }
-    private static String toSql(List<String> sqlList) {
-        if (sqlList == null && sqlList.size() == 0) {
+
+    /**
+     * sql对象转模板
+     * @param sqlDTO sql对象
+     * @return 模板值
+     */
+    private static String toSql(SqlDTO sqlDTO) {
+        if (sqlDTO == null || sqlDTO.getDataBaseDTO() == null || sqlDTO.getSqlList() == null) {
             return null;
         }
         StringBuilder template = new StringBuilder();
-        for (String sql : sqlList) {
-            template.append(sql);
+        template.append(sqlDTO.getDataBaseDTO().toString());
+        for (String sql : sqlDTO.getSqlList()) {
             template.append(SEPARATOR);
+            template.append(sql);
         }
-        template.delete(template.length()-5, template.length());
         return template.toString();
     }
 }

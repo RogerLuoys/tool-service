@@ -5,7 +5,7 @@ import lombok.Data;
 
 /**
  * device
- * @author 
+ * @author
  */
 @Data
 public class DevicePO implements Serializable {
@@ -15,17 +15,18 @@ public class DevicePO implements Serializable {
 
     private String title;
 
-    private String descrition;
+    private String description;
 
     private String items;
 
-    private Byte type;
+    /**
+     * 1 数据源, 2 测试环境, 3 移动设备
+     */
+    private Integer type;
 
     private String ownerId;
 
-    private Byte permission;
-
-    private Byte isDelete;
+    private Integer permission;
 
     private static final long serialVersionUID = 1L;
 }

@@ -5,7 +5,7 @@
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="tool_config_id" jdbcType="INTEGER" property="toolConfigId" />
     <result column="title" jdbcType="VARCHAR" property="title" />
-    <result column="descrition" jdbcType="VARCHAR" property="descrition" />
+    <result column="description" jdbcType="VARCHAR" property="description" />
     <result column="items" jdbcType="VARCHAR" property="items" />
     <result column="type" jdbcType="TINYINT" property="type" />
     <result column="owner_id" jdbcType="VARCHAR" property="ownerId" />
@@ -13,10 +13,10 @@
     <result column="is_delete" jdbcType="TINYINT" property="isDelete" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, tool_config_id, title, descrition, items, `type`, owner_id, permission, is_delete
+    id, tool_config_id, title, description, items, `type`, owner_id, permission, is_delete
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select 
+    select
     <include refid="Base_Column_List" />
     from device
     where id = #{id,jdbcType=INTEGER}
@@ -26,11 +26,11 @@
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.luoys.upgrade.toolservice.dao.po.DevicePO" useGeneratedKeys="true">
-    insert into device (tool_config_id, title, descrition, 
-      items, `type`, owner_id, 
+    insert into device (tool_config_id, title, description,
+      items, `type`, owner_id,
       permission, is_delete)
-    values (#{toolConfigId,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, #{descrition,jdbcType=VARCHAR}, 
-      #{items,jdbcType=VARCHAR}, #{type,jdbcType=TINYINT}, #{ownerId,jdbcType=VARCHAR}, 
+    values (#{toolConfigId,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR},
+      #{items,jdbcType=VARCHAR}, #{type,jdbcType=TINYINT}, #{ownerId,jdbcType=VARCHAR},
       #{permission,jdbcType=TINYINT}, #{isDelete,jdbcType=TINYINT})
   </insert>
   <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.luoys.upgrade.toolservice.dao.po.DevicePO" useGeneratedKeys="true">
@@ -42,8 +42,8 @@
       <if test="title != null">
         title,
       </if>
-      <if test="descrition != null">
-        descrition,
+      <if test="description != null">
+        description,
       </if>
       <if test="items != null">
         items,
@@ -68,8 +68,8 @@
       <if test="title != null">
         #{title,jdbcType=VARCHAR},
       </if>
-      <if test="descrition != null">
-        #{descrition,jdbcType=VARCHAR},
+      <if test="description != null">
+        #{description,jdbcType=VARCHAR},
       </if>
       <if test="items != null">
         #{items,jdbcType=VARCHAR},
@@ -97,8 +97,8 @@
       <if test="title != null">
         title = #{title,jdbcType=VARCHAR},
       </if>
-      <if test="descrition != null">
-        descrition = #{descrition,jdbcType=VARCHAR},
+      <if test="description != null">
+        description = #{description,jdbcType=VARCHAR},
       </if>
       <if test="items != null">
         items = #{items,jdbcType=VARCHAR},
@@ -122,7 +122,7 @@
     update device
     set tool_config_id = #{toolConfigId,jdbcType=INTEGER},
       title = #{title,jdbcType=VARCHAR},
-      descrition = #{descrition,jdbcType=VARCHAR},
+      description = #{description,jdbcType=VARCHAR},
       items = #{items,jdbcType=VARCHAR},
       `type` = #{type,jdbcType=TINYINT},
       owner_id = #{ownerId,jdbcType=VARCHAR},

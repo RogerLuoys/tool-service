@@ -1,5 +1,6 @@
 package com.luoys.upgrade.toolservice.controller;
 
+import com.luoys.upgrade.toolservice.common.NumberSender;
 import com.luoys.upgrade.toolservice.controller.transform.TransformTool;
 import com.luoys.upgrade.toolservice.controller.vo.PageInfo;
 import com.luoys.upgrade.toolservice.controller.vo.ParamVO;
@@ -21,17 +22,15 @@ public class CommonFactoryController {
     ToolMapper toolMapper;
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public Result<Boolean> create(@RequestBody ToolDetailVO toolDetailVO) {
+    public Result<String> create(@RequestBody ToolDetailVO toolDetailVO) {
         LOG.info("---》开始新增通用工具：{}", toolDetailVO);
-        if (toolDetailVO.getToolId() == null) {
-            //todo
-        }
+        toolDetailVO.setToolId(NumberSender.createToolId());
         if (toolDetailVO.getTitle() == null) {
             LOG.error("---》标题不能为空");
             return Result.error("标题不能为空");
         }
         int result = toolMapper.insert(TransformTool.transformVO2PO(toolDetailVO));
-        return result == 1 ? Result.success(true) : Result.error("新增失败");
+        return result == 1 ? Result.success("新增成功") : Result.error("新增失败");
     }
 
     @RequestMapping(value = "/remove", method = RequestMethod.DELETE)

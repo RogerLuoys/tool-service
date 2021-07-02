@@ -1,6 +1,8 @@
 package com.luoys.upgrade.toolservice.common;
 
 
+import com.alibaba.fastjson.JSON;
+
 public class StringUtil {
 
     /**
@@ -58,6 +60,5 @@ public class StringUtil {
     public static boolean isNotEmpty(String str) {
         return !isEmpty(str);
     }
-
 
 }
