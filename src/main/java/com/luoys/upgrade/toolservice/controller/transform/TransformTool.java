@@ -55,14 +55,14 @@ public class TransformTool {
         // 模板转换
         switch (po.getType()) {
             case 1:
-                vo.setSqlDTO(toSql(po.getTemplate()));
+                vo.setSql(toSql(po.getTemplate()));
                 break;
             case 2:
-                vo.setHttpRequestDTO(toHttpRequest(po.getTemplate()));
+                vo.setHttpRequest(toHttpRequest(po.getTemplate()));
                 break;
             case 3:
                 //todo
-                vo.setRpcDTO(null);
+                vo.setRpc(null);
                 break;
         }
         return vo;
@@ -83,10 +83,10 @@ public class TransformTool {
         // 模板转换
         switch (vo.getType()) {
             case 1:
-                po.setTemplate(toSql(vo.getSqlDTO()));
+                po.setTemplate(toSql(vo.getSql()));
                 break;
             case 2:
-                po.setTemplate(toHttpRequest(vo.getHttpRequestDTO()));
+                po.setTemplate(toHttpRequest(vo.getHttpRequest()));
                 break;
             case 3:
                 //todo

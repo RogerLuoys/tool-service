@@ -26,7 +26,6 @@ public class CommonFactoryController {
         LOG.info("---》开始新增通用工具：{}", toolDetailVO);
         toolDetailVO.setToolId(NumberSender.createToolId());
         if (toolDetailVO.getTitle() == null) {
-            LOG.error("---》标题不能为空");
             return Result.error("标题不能为空");
         }
         int result = toolMapper.insert(TransformTool.transformVO2PO(toolDetailVO));

@@ -11,8 +11,6 @@ import lombok.Data;
 public class DevicePO implements Serializable {
     private Integer id;
 
-    private Integer toolConfigId;
-
     private String title;
 
     private String description;

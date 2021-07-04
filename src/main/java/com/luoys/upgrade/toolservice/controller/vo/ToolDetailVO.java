@@ -18,7 +18,7 @@ public class ToolDetailVO {
     private String ownerId;
     private Integer permission;
     private List<ParamDTO> paramList;
-    private SqlDTO sqlDTO;
-    private HttpRequestDTO httpRequestDTO;
-    private RpcDTO rpcDTO;
+    private SqlDTO sql;
+    private HttpRequestDTO httpRequest;
+    private RpcDTO rpc;
 }
