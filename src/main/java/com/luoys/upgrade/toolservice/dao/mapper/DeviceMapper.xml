@@ -23,14 +23,14 @@
     delete from device
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.luoys.upgrade.toolservice.dao.po.DevicePO" useGeneratedKeys="true">
-    insert into device (title, description,
-      items, `type`, owner_id,
-      permission, is_delete)
-    values (#{title,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR},
-      #{items,jdbcType=VARCHAR}, #{type,jdbcType=TINYINT}, #{ownerId,jdbcType=VARCHAR},
-      #{permission,jdbcType=TINYINT}, #{isDelete,jdbcType=TINYINT})
-  </insert>
+<!--  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.luoys.upgrade.toolservice.dao.po.DevicePO" useGeneratedKeys="true">-->
+<!--    insert into device (title, description,-->
+<!--      items, `type`, owner_id,-->
+<!--      permission, is_delete)-->
+<!--    values (#{title,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR},-->
+<!--      #{items,jdbcType=VARCHAR}, #{type,jdbcType=TINYINT}, #{ownerId,jdbcType=VARCHAR},-->
+<!--      #{permission,jdbcType=TINYINT}, 0)-->
+<!--  </insert>-->
   <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.luoys.upgrade.toolservice.dao.po.DevicePO" useGeneratedKeys="true">
     insert into device
     <trim prefix="(" suffix=")" suffixOverrides=",">

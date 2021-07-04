@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/commonFactory")
 public class CommonFactoryController {
@@ -19,7 +20,7 @@ public class CommonFactoryController {
     private static final Logger LOG = LoggerFactory.getLogger(CommonFactoryController.class);
 
     @Autowired
-    ToolMapper toolMapper;
+    private ToolMapper toolMapper;
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     public Result<String> create(@RequestBody ToolDetailVO toolDetailVO) {
