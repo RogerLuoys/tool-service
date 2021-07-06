@@ -11,12 +11,15 @@ public interface ToolMapper {
 
     int insert(ToolPO toolPO);
 
-    int deleteByUID(Integer toolId);
+    int deleteByUID(String toolId);
 
     int updateByUID(ToolPO toolPO);
 
-    ToolPO selectByUID(@Param("toolId") Integer toolId);
+    ToolPO selectByUID(@Param("toolId") String toolId);
 
-    List<ToolPO> list(@Param("type") Integer type, @Param("title") String title);
+    List<ToolPO> list(@Param("type") Integer type,
+                      @Param("title") String title,
+                      @Param("owner") String owner,
+                      @Param("startIndex") Integer startIndex);
 
 }

@@ -3,7 +3,7 @@ package com.luoys.upgrade.toolservice.controller.dto;
 import lombok.Data;
 
 @Data
-public class DataBaseDTO {
+public class DataSourceDTO {
 
     private String driver;
 

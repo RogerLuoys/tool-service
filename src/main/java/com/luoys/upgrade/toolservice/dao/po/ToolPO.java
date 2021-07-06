@@ -11,7 +11,7 @@ import lombok.Data;
 public class ToolPO implements Serializable {
     private Integer id;
 
-    private Long toolId;
+    private String toolId;
 
     private String title;
 

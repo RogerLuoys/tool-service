@@ -1,13 +1,11 @@
 package com.luoys.upgrade.toolservice.controller.transform;
 
 import com.alibaba.fastjson.JSON;
-import com.luoys.upgrade.toolservice.common.StringUtil;
-import com.luoys.upgrade.toolservice.controller.dto.DataBaseDTO;
+import com.luoys.upgrade.toolservice.controller.dto.DataSourceDTO;
 import com.luoys.upgrade.toolservice.controller.dto.HttpRequestDTO;
 import com.luoys.upgrade.toolservice.controller.dto.ParamDTO;
 import com.luoys.upgrade.toolservice.controller.dto.SqlDTO;
-import com.luoys.upgrade.toolservice.controller.vo.ParamVO;
-import com.luoys.upgrade.toolservice.controller.vo.ToolDetailVO;
+import com.luoys.upgrade.toolservice.controller.vo.ToolSimpleVO;
 import com.luoys.upgrade.toolservice.controller.vo.ToolVO;
 import com.luoys.upgrade.toolservice.dao.po.ToolPO;
 
@@ -18,11 +16,12 @@ import java.util.List;
 public class TransformTool {
 
     private static final String SEPARATOR=" &&& ";
+    private static final String PARAM_SYMBOL="$$${";
 
-    public static ToolVO transformPO2ToolVO(ToolPO po) {
+    public static ToolSimpleVO transformPO2SimpleVO(ToolPO po) {
         if (po == null)
             return null;
-        ToolVO vo = new ToolVO();
+        ToolSimpleVO vo = new ToolSimpleVO();
         vo.setDescription(po.getDescription());
         vo.setToolId(po.getToolId());
         vo.setOwner(po.getOwnerId());
@@ -31,19 +30,40 @@ public class TransformTool {
         return vo;
     }
 
-    public static List<ToolVO> transformPO2VO(List<ToolPO> poList) {
-        List<ToolVO> voList = new ArrayList<>();
+    public static List<ToolSimpleVO> transformPO2VO(List<ToolPO> poList) {
+        List<ToolSimpleVO> voList = new ArrayList<>();
         for (ToolPO po : poList) {
-            voList.add(transformPO2ToolVO(po));
+            voList.add(transformPO2SimpleVO(po));
         }
         return voList;
     }
 
-    public static ToolDetailVO transformPO2VO(ToolPO po) {
+    public static List<String> mergeSql(ToolVO toolVO) {
+        List<String> sqlTemplateList = toolVO.getSql().getSqlList();
+        List<ParamDTO> paramDTOList = toolVO.getParamList();
+        // 无变量
+        if (paramDTOList.size() == 0) {
+            return sqlTemplateList;
+        }
+        int startIndex = 0;
+        List<String> actualSqlList = new ArrayList<>();
+        for (String sqlTemplate : sqlTemplateList) {
+            if (sqlTemplate.contains(PARAM_SYMBOL)) {
+                for (ParamDTO paramDTO : paramDTOList) {
+                    if (sqlTemplate.contains(PARAM_SYMBOL+paramDTO.getName()+"}")) {
+                        actualSqlList.add(sqlTemplate.replace(PARAM_SYMBOL+paramDTO.getName()+"}", paramDTO.getValue()));
+                    }
+                }
+            }
+        }
+        return actualSqlList;
+    }
+
+    public static ToolVO transformPO2VO(ToolPO po) {
         if (po == null) {
             return null;
         }
-        ToolDetailVO vo = new ToolDetailVO();
+        ToolVO vo = new ToolVO();
         vo.setDescription(po.getDescription());
         vo.setToolId(po.getToolId());
         vo.setStatus(1);
@@ -68,7 +88,7 @@ public class TransformTool {
         return vo;
     }
 
-    public static ToolPO transformVO2PO(ToolDetailVO vo) {
+    public static ToolPO transformVO2PO(ToolVO vo) {
         if (vo == null) {
             return null;
         }
@@ -159,7 +179,7 @@ public class TransformTool {
             return null;
         }
         SqlDTO sqlDTO = new SqlDTO();
-        sqlDTO.setDataBaseDTO((DataBaseDTO) JSON.parse(sqlList.get(0)));
+        sqlDTO.setDataSource((DataSourceDTO) JSON.parse(sqlList.get(0)));
         sqlList.remove(0);
         sqlDTO.setSqlList(sqlList);
         return sqlDTO;
@@ -171,11 +191,11 @@ public class TransformTool {
      * @return 模板值
      */
     private static String toSql(SqlDTO sqlDTO) {
-        if (sqlDTO == null || sqlDTO.getDataBaseDTO() == null || sqlDTO.getSqlList() == null) {
+        if (sqlDTO == null || sqlDTO.getDataSource() == null || sqlDTO.getSqlList() == null) {
             return null;
         }
         StringBuilder template = new StringBuilder();
-        template.append(sqlDTO.getDataBaseDTO().toString());
+        template.append(sqlDTO.getDataSource().toString());
         for (String sql : sqlDTO.getSqlList()) {
             template.append(SEPARATOR);
             template.append(sql);

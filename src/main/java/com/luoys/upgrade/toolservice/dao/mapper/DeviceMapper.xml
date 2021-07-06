@@ -13,24 +13,38 @@
   <sql id="Base_Column_List">
     id, title, description, items, `type`, owner_id, permission, is_delete
   </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+  <select id="selectById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from device
     where id = #{id,jdbcType=INTEGER}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from device
+  <select id="list" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from device
+    where is_delete = 0
+    and (owner_id = #{ownerId,jdbcType=VARCHAR} or permission = 2)
+    <if test="type != null">
+      and type = #{type,jdbcType=TINYINT}
+    </if>
+    <if test="title != null">
+      and title like concat('%', #{title,jdbcType=VARCHAR}, '%')
+    </if>
+    order by id desc limit ${startIndex}, 10
+  </select>
+  <delete id="delete" parameterType="java.lang.Integer">
+    update device set is_delete = 1
     where id = #{id,jdbcType=INTEGER}
   </delete>
-<!--  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.luoys.upgrade.toolservice.dao.po.DevicePO" useGeneratedKeys="true">-->
-<!--    insert into device (title, description,-->
-<!--      items, `type`, owner_id,-->
-<!--      permission, is_delete)-->
-<!--    values (#{title,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR},-->
-<!--      #{items,jdbcType=VARCHAR}, #{type,jdbcType=TINYINT}, #{ownerId,jdbcType=VARCHAR},-->
-<!--      #{permission,jdbcType=TINYINT}, 0)-->
-<!--  </insert>-->
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.luoys.upgrade.toolservice.dao.po.DevicePO" useGeneratedKeys="true">
+    insert into device (title, description,
+      items, `type`, owner_id,
+      permission, is_delete)
+    values (#{title,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR},
+      #{items,jdbcType=VARCHAR}, #{type,jdbcType=TINYINT}, #{ownerId,jdbcType=VARCHAR},
+      #{permission,jdbcType=TINYINT}, 0)
+  </insert>
   <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.luoys.upgrade.toolservice.dao.po.DevicePO" useGeneratedKeys="true">
     insert into device
     <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -80,7 +94,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.luoys.upgrade.toolservice.dao.po.DevicePO">
+  <update id="update" parameterType="com.luoys.upgrade.toolservice.dao.po.DevicePO">
     update device
     <set>
       <if test="title != null">
@@ -92,17 +106,11 @@
       <if test="items != null">
         items = #{items,jdbcType=VARCHAR},
       </if>
-      <if test="type != null">
-        `type` = #{type,jdbcType=TINYINT},
-      </if>
       <if test="ownerId != null">
         owner_id = #{ownerId,jdbcType=VARCHAR},
       </if>
       <if test="permission != null">
         permission = #{permission,jdbcType=TINYINT},
-      </if>
-      <if test="isDelete != null">
-        is_delete = #{isDelete,jdbcType=TINYINT},
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}

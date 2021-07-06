@@ -6,7 +6,7 @@ import java.util.List;
 
 @Data
 public class SqlDTO {
-    DataBaseDTO dataBaseDTO;
+    DataSourceDTO dataSource;
 
     List<String> sqlList;
 }

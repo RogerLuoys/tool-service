@@ -1,5 +1,6 @@
 package com.luoys.upgrade.toolservice.common;
 
+import com.luoys.upgrade.toolservice.controller.dto.DataSourceDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -32,6 +33,13 @@ public class JdbcUtil {
         jdbcTemplate.setDataSource(dataSource);
     }
 
+    public static void init(DataSourceDTO dataSourceDTO) {
+        dataSource.setDriverClassName(dataSourceDTO.getDriver());
+        dataSource.setUrl(dataSourceDTO.getUrl());
+        dataSource.setUsername(dataSourceDTO.getUserName());
+        dataSource.setPassword(dataSourceDTO.getPassword());
+        jdbcTemplate.setDataSource(dataSource);
+    }
 
     /**
      * 把更新sql转换为查询总行数的sql，查询sql以更新sql的条件为条件
@@ -39,7 +47,7 @@ public class JdbcUtil {
      * @param updateSql 更新sql，注意字段间空格只能有一个
      * @return select count(1) from 更新的表名 + 更新的条件
      */
-    private String transformUpdate2Select(String updateSql) {
+    private static String transformUpdate2Select(String updateSql) {
         int endIndex = updateSql.toLowerCase().indexOf(" set ");
         String tableName = updateSql.substring(7, endIndex);
         int startIndex = updateSql.toLowerCase().indexOf(" where ");
@@ -53,7 +61,7 @@ public class JdbcUtil {
      * @param deleteSql 删除sql，注意字段间空格只能有一个
      * @return select count(1) from 删除的表名 + 删除的条件
      */
-    private String transformDelete2Select(String deleteSql) {
+    private static String transformDelete2Select(String deleteSql) {
         int startIndex = deleteSql.toLowerCase().indexOf(" from ");
         String condition = deleteSql.substring(startIndex);
         return "select count(1) " + condition;
@@ -108,7 +116,7 @@ public class JdbcUtil {
      * @param sql 完整的sql
      * @return 拼接默认查询规则后的sql
      */
-    private String addSelectDefault(String sql) {
+    private static String addSelectDefault(String sql) {
         String defaultSql = sql.replace(";", "");
         // 截取sql后缀，避免字符串中有同样的值
         int startIndex = Math.max(defaultSql.lastIndexOf("\""), defaultSql.lastIndexOf("'"));
@@ -124,7 +132,7 @@ public class JdbcUtil {
         return defaultSql + ";";
     }
 
-    public Integer update(String sql) {
+    public static Integer update(String sql) {
         String executeSql = sql.replace(";", "") + ";";
         if (!checkSqlType(executeSql, UPDATE)) {
             LOGGER.warn("\n---->更新语句的sql格式错误：{}", sql);
@@ -142,7 +150,7 @@ public class JdbcUtil {
         return jdbcTemplate.update(executeSql);
     }
 
-    public Integer updateNoLimit(String sql) {
+    public static Integer updateNoLimit(String sql) {
         String executeSql = sql.replace(";", "") + ";";
         if (!checkSqlType(executeSql, UPDATE)) {
             LOGGER.warn("\n---->更新语句的sql格式错误：{}", sql);
@@ -160,7 +168,7 @@ public class JdbcUtil {
         return jdbcTemplate.update(executeSql);
     }
 
-    public Integer count(String sql) {
+    public static Integer count(String sql) {
         String executeSql = sql.replace(";", "") + ";";
         if (!checkSqlType(sql, COUNT)) {
             LOGGER.warn("\n---->查总数语句的sql格式错误：{}", sql);
@@ -171,7 +179,7 @@ public class JdbcUtil {
         return Integer.valueOf(result.get(COUNT).toString());
     }
 
-    public Map<String, Object> select(String sql) {
+    public static Map<String, Object> select(String sql) {
         if (!checkSqlType(sql, SELECT)) {
             LOGGER.warn("\n---->查询语句的sql格式错误：{}", sql);
             return null;
@@ -182,7 +190,7 @@ public class JdbcUtil {
         return result.size() == 0 ? null : result.get(0);
     }
 
-    public List<Map<String, Object>> selectMultiRow(String sql) {
+    public static List<Map<String, Object>> selectMultiRow(String sql) {
         if (!checkSqlType(sql, SELECT)) {
             LOGGER.warn("\n---->查询语句的sql格式错误：{}", sql);
             return null;
@@ -192,7 +200,7 @@ public class JdbcUtil {
         return jdbcTemplate.queryForList(executeSql);
     }
 
-    public String selectOneCell(String sql) {
+    public static String selectOneCell(String sql) {
         String[] sqlList = sql.split(" ");
         //查询语句只能查询一列数据
         if (!sqlList[2].equalsIgnoreCase("from") || sqlList[1].equalsIgnoreCase("*") || sqlList[1].contains(",")) {
@@ -211,7 +219,7 @@ public class JdbcUtil {
         }
     }
 
-    public Integer delete(String sql) {
+    public static Integer delete(String sql) {
         String executeSql = sql.replace(";", "") + ";";
         if (!checkSqlType(executeSql, DELETE)) {
             LOGGER.warn("\n---->删除语句的sql格式错误：{}", sql);

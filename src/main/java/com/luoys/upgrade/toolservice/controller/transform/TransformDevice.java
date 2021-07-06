@@ -2,20 +2,22 @@ package com.luoys.upgrade.toolservice.controller.transform;
 
 import com.alibaba.fastjson.JSON;
 import com.luoys.upgrade.toolservice.controller.dto.ContainerDTO;
-import com.luoys.upgrade.toolservice.controller.dto.DataBaseDTO;
 import com.luoys.upgrade.toolservice.controller.dto.MobilePhoneDTO;
-import com.luoys.upgrade.toolservice.controller.vo.DeviceDetailVO;
+import com.luoys.upgrade.toolservice.controller.vo.DeviceSimpleVO;
 import com.luoys.upgrade.toolservice.controller.vo.DeviceVO;
 import com.luoys.upgrade.toolservice.dao.po.DevicePO;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class TransformDevice {
     private static final String SEPARATOR=" &&& ";
 
-    public static DeviceVO transformPO2DeviceVO(DevicePO po) {
+    public static DeviceSimpleVO transformPO2SimpleVO(DevicePO po) {
         if (po == null) {
             return null;
         }
-        DeviceVO vo = new DeviceVO();
+        DeviceSimpleVO vo = new DeviceSimpleVO();
         vo.setDescription(po.getDescription());
         vo.setOwnerId(po.getOwnerId());
         vo.setPermission(po.getPermission());
@@ -24,11 +26,19 @@ public class TransformDevice {
         return vo;
     }
 
-    public static DeviceDetailVO transformPO2VO(DevicePO po) {
+    public static List<DeviceSimpleVO> transformPO2SimpleVO(List<DevicePO> poList) {
+        List<DeviceSimpleVO> voList = new ArrayList<>();
+        for (DevicePO po : poList) {
+            voList.add(transformPO2SimpleVO(po));
+        }
+        return voList;
+    }
+
+    public static DeviceVO transformPO2VO(DevicePO po) {
         if (po == null) {
             return null;
         }
-        DeviceDetailVO vo = new DeviceDetailVO();
+        DeviceVO vo = new DeviceVO();
         vo.setId(po.getId());
         vo.setDescription(po.getDescription());
         vo.setPermission(po.getPermission());
@@ -50,7 +60,7 @@ public class TransformDevice {
         return vo;
     }
 
-    public static DevicePO transformVO2PO(DeviceDetailVO vo) {
+    public static DevicePO transformVO2PO(DeviceVO vo) {
         if (vo == null) {
             return null;
         }

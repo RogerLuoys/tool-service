@@ -1,16 +1,29 @@
 package com.luoys.upgrade.toolservice.controller.vo;
 
+import com.luoys.upgrade.toolservice.controller.dto.HttpRequestDTO;
+import com.luoys.upgrade.toolservice.controller.dto.ParamDTO;
+import com.luoys.upgrade.toolservice.controller.dto.RpcDTO;
+import com.luoys.upgrade.toolservice.controller.dto.SqlDTO;
 import lombok.Data;
 
 import java.util.List;
 
+/**
+ * 转换后的完整工具详情
+ * @author luoys
+ */
 @Data
 public class ToolVO {
 
-    private Long toolId;
+    private String toolId;
     private String title;
     private String description;
     private Integer type;
+    private Integer status;
+    private String ownerId;
     private Integer permission;
-    private String owner;
+    private List<ParamDTO> paramList;
+    private SqlDTO sql;
+    private HttpRequestDTO httpRequest;
+    private RpcDTO rpc;
 }

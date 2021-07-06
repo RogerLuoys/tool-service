@@ -1,18 +1,27 @@
 package com.luoys.upgrade.toolservice.controller.vo;
 
+import com.luoys.upgrade.toolservice.controller.dto.ContainerDTO;
+import com.luoys.upgrade.toolservice.controller.dto.MobilePhoneDTO;
 import lombok.Data;
 
+/**
+ * 转换后的完整设备详情
+ * @author luoys
+ */
 @Data
 public class DeviceVO {
 
-    private Integer toolConfigId;
+    private Integer id;
 
     private String title;
 
     private String description;
 
-//    private String items;
+    private DataBaseDTO dataBase;
 
+    private MobilePhoneDTO mobilePhone;
+
+    private ContainerDTO container;
     /**
      * 1 数据源, 2 测试环境, 3 移动设备
      */
@@ -21,5 +30,6 @@ public class DeviceVO {
     private String ownerId;
 
     private Integer permission;
+
 
 }

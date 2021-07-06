@@ -1,22 +1,26 @@
 package com.luoys.upgrade.toolservice.dao;
 
 import com.luoys.upgrade.toolservice.dao.po.DevicePO;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface DeviceMapper {
-    int deleteByPrimaryKey(Integer id);
 
-    //todo 映射xml文件失败
-    @Select("SELECT count(1) FROM device")
     int insert(DevicePO devicePO);
 
-    int insertSelective(DevicePO record);
+    int delete(Integer id);
 
-    DevicePO selectByPrimaryKey(Integer id);
+    int update(DevicePO record);
 
-    int updateByPrimaryKeySelective(DevicePO record);
+    List<DevicePO> list(@Param("type") Integer type,
+                        @Param("title") String title,
+                        @Param("owner") String owner,
+                        @Param("startIndex") Integer startIndex);
 
-    int updateByPrimaryKey(DevicePO record);
+    DevicePO selectById(Integer id);
+
 }
