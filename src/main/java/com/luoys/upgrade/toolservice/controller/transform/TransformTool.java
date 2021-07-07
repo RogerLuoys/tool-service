@@ -38,25 +38,29 @@ public class TransformTool {
         return voList;
     }
 
-    public static List<String> mergeSql(ToolVO toolVO) {
+    /**
+     * 将参数合并入sql列表中
+     * @param toolVO -
+     */
+    public static void mergeSql(ToolVO toolVO) {
         List<String> sqlTemplateList = toolVO.getSql().getSqlList();
         List<ParamDTO> paramDTOList = toolVO.getParamList();
         // 无变量
         if (paramDTOList.size() == 0) {
-            return sqlTemplateList;
+            return;
         }
-        int startIndex = 0;
         List<String> actualSqlList = new ArrayList<>();
         for (String sqlTemplate : sqlTemplateList) {
             if (sqlTemplate.contains(PARAM_SYMBOL)) {
                 for (ParamDTO paramDTO : paramDTOList) {
+                    //替换sql模板内的变量占位符
                     if (sqlTemplate.contains(PARAM_SYMBOL+paramDTO.getName()+"}")) {
                         actualSqlList.add(sqlTemplate.replace(PARAM_SYMBOL+paramDTO.getName()+"}", paramDTO.getValue()));
                     }
                 }
             }
         }
-        return actualSqlList;
+        toolVO.getSql().setSqlList(actualSqlList);
     }
 
     public static ToolVO transformPO2VO(ToolPO po) {

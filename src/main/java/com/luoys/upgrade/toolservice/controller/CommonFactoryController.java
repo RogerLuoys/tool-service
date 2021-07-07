@@ -66,7 +66,8 @@ public class CommonFactoryController {
         switch (toolVO.getType()) {
             case 1:
                 //todo sql
-                JdbcUtil.init(toolVO.getSql().getDataSource());
+                JdbcUtil.execute(toolVO.getSql());
+//                JdbcUtil.init(toolVO.getSql().getDataSource());
 //                JdbcUtil.updateNoLimit(toolVO.getSql().getSqlList());
                 break;
             case 2:

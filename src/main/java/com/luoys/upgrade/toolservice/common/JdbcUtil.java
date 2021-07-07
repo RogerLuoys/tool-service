@@ -1,6 +1,7 @@
 package com.luoys.upgrade.toolservice.common;
 
 import com.luoys.upgrade.toolservice.controller.dto.DataSourceDTO;
+import com.luoys.upgrade.toolservice.controller.dto.SqlDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -25,13 +26,13 @@ public class JdbcUtil {
     private static final DriverManagerDataSource dataSource = new DriverManagerDataSource();;
     private static final JdbcTemplate jdbcTemplate = new JdbcTemplate();
 
-    public static void init(String driver, String url, String userName, String password) {
-        dataSource.setDriverClassName(driver);
-        dataSource.setUrl(url);
-        dataSource.setUsername(userName);
-        dataSource.setPassword(password);
-        jdbcTemplate.setDataSource(dataSource);
-    }
+//    public static void init(String driver, String url, String userName, String password) {
+//        dataSource.setDriverClassName(driver);
+//        dataSource.setUrl(url);
+//        dataSource.setUsername(userName);
+//        dataSource.setPassword(password);
+//        jdbcTemplate.setDataSource(dataSource);
+//    }
 
     public static void init(DataSourceDTO dataSourceDTO) {
         dataSource.setDriverClassName(dataSourceDTO.getDriver());
@@ -39,6 +40,28 @@ public class JdbcUtil {
         dataSource.setUsername(dataSourceDTO.getUserName());
         dataSource.setPassword(dataSourceDTO.getPassword());
         jdbcTemplate.setDataSource(dataSource);
+    }
+
+    /**
+     * 执行sql
+     * @param sqlDTO -
+     * @return 全部执行成功则为true
+     */
+    public static boolean execute(SqlDTO sqlDTO) {
+        init(sqlDTO.getDataSource());
+        List<String> sqlList = sqlDTO.getSqlList();
+        for (String actualSql : sqlList) {
+            switch (1) {
+                // 查询
+                case 1:
+                    updateNoLimit(actualSql);
+                case 2:
+                    delete(actualSql);
+                default:
+                    return false;
+            }
+        }
+        return true;
     }
 
     /**
