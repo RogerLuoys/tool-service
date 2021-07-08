@@ -1,9 +1,6 @@
 package com.luoys.upgrade.toolservice.controller.vo;
 
-import com.luoys.upgrade.toolservice.controller.dto.HttpRequestDTO;
-import com.luoys.upgrade.toolservice.controller.dto.ParamDTO;
-import com.luoys.upgrade.toolservice.controller.dto.RpcDTO;
-import com.luoys.upgrade.toolservice.controller.dto.SqlDTO;
+import com.luoys.upgrade.toolservice.controller.dto.*;
 import lombok.Data;
 
 import java.util.List;
@@ -23,7 +20,7 @@ public class ToolVO {
     private String ownerId;
     private Integer permission;
     private List<ParamDTO> paramList;
-    private SqlDTO sql;
+    private JdbcDTO jdbc;
     private HttpRequestDTO httpRequest;
     private RpcDTO rpc;
 }

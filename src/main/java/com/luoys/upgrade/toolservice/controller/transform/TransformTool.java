@@ -1,22 +1,26 @@
 package com.luoys.upgrade.toolservice.controller.transform;
 
 import com.alibaba.fastjson.JSON;
-import com.luoys.upgrade.toolservice.controller.dto.DataSourceDTO;
-import com.luoys.upgrade.toolservice.controller.dto.HttpRequestDTO;
-import com.luoys.upgrade.toolservice.controller.dto.ParamDTO;
-import com.luoys.upgrade.toolservice.controller.dto.SqlDTO;
+import com.luoys.upgrade.toolservice.controller.dto.*;
+import com.luoys.upgrade.toolservice.controller.enums.SqlTypeEnum;
 import com.luoys.upgrade.toolservice.controller.vo.ToolSimpleVO;
 import com.luoys.upgrade.toolservice.controller.vo.ToolVO;
 import com.luoys.upgrade.toolservice.dao.po.ToolPO;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+@Slf4j
 public class TransformTool {
 
     private static final String SEPARATOR=" &&& ";
     private static final String PARAM_SYMBOL="$$${";
+    private static final String INSERT="insert";
+    private static final String DELETE="delete";
+    private static final String UPDATE="update";
+    private static final String SELECT="select";
 
     public static ToolSimpleVO transformPO2SimpleVO(ToolPO po) {
         if (po == null)
@@ -43,24 +47,28 @@ public class TransformTool {
      * @param toolVO -
      */
     public static void mergeSql(ToolVO toolVO) {
-        List<String> sqlTemplateList = toolVO.getSql().getSqlList();
+        List<SqlDTO> sqlDTOList = toolVO.getJdbc().getSqlList();
         List<ParamDTO> paramDTOList = toolVO.getParamList();
         // 无变量
         if (paramDTOList.size() == 0) {
             return;
         }
-        List<String> actualSqlList = new ArrayList<>();
-        for (String sqlTemplate : sqlTemplateList) {
-            if (sqlTemplate.contains(PARAM_SYMBOL)) {
+        for (SqlDTO sqlDTO : sqlDTOList) {
+            //先判断指定sql模板中是否有参数占位符
+            if (sqlDTO.getSql().contains(PARAM_SYMBOL)) {
+                //将实际参数替换占位符
                 for (ParamDTO paramDTO : paramDTOList) {
-                    //替换sql模板内的变量占位符
-                    if (sqlTemplate.contains(PARAM_SYMBOL+paramDTO.getName()+"}")) {
-                        actualSqlList.add(sqlTemplate.replace(PARAM_SYMBOL+paramDTO.getName()+"}", paramDTO.getValue()));
+                    if (sqlDTO.getSql().contains(PARAM_SYMBOL+paramDTO.getName()+"}")) {
+                        //将sql对象中模板的占位符，用参数替换
+                        sqlDTO.getSql().replace(PARAM_SYMBOL+paramDTO.getName()+"}", paramDTO.getValue());
                     }
                 }
             }
         }
-        toolVO.getSql().setSqlList(actualSqlList);
+    }
+
+    public static ToolVO mergeHttp(ToolVO toolVO) {
+
     }
 
     public static ToolVO transformPO2VO(ToolPO po) {
@@ -79,7 +87,7 @@ public class TransformTool {
         // 模板转换
         switch (po.getType()) {
             case 1:
-                vo.setSql(toSql(po.getTemplate()));
+                vo.setJdbc(toSql(po.getTemplate()));
                 break;
             case 2:
                 vo.setHttpRequest(toHttpRequest(po.getTemplate()));
@@ -107,7 +115,7 @@ public class TransformTool {
         // 模板转换
         switch (vo.getType()) {
             case 1:
-                po.setTemplate(toSql(vo.getSql()));
+                po.setTemplate(toSql(vo.getJdbc()));
                 break;
             case 2:
                 po.setTemplate(toHttpRequest(vo.getHttpRequest()));
@@ -168,12 +176,13 @@ public class TransformTool {
     }
 
     /**
-     * 模板转sql对象
+     * 模板转jdbc对象
      * @param template 数据库的模块值
-     * @return sql对象
+     * @return jdbc对象
      */
-    // {DataBaseDTO} &&& sql1 &&& sql2
-    private static SqlDTO toSql(String template) {
+    // {DataBaseDTO} &&& {type="",sql1=""} &&& ...
+    private static JdbcDTO toSql(String template) {
+        log.info("---->开始将模板转换成jdbc对象：{}", template);
         if (template == null) {
             return null;
         }
@@ -182,27 +191,60 @@ public class TransformTool {
         if (!sqlList.get(0).startsWith("{")) {
             return null;
         }
-        SqlDTO sqlDTO = new SqlDTO();
-        sqlDTO.setDataSource((DataSourceDTO) JSON.parse(sqlList.get(0)));
-        sqlList.remove(0);
-        sqlDTO.setSqlList(sqlList);
-        return sqlDTO;
+        JdbcDTO jdbcDTO = new JdbcDTO();
+        jdbcDTO.setDataSource((DataSourceDTO) JSON.parse(sqlList.get(0)));
+        List<SqlDTO> sqlDTOList = new ArrayList<>();
+        //第一个数据是datasource，从第二个开始取sql
+        String currentSql;
+        for (int i = 1; i < sqlList.size(); i++) {
+            currentSql = sqlList.get(i);
+            SqlDTO sqlDTO = (SqlDTO) JSON.parse(currentSql);
+            //新增的sql模板，默认类型为-1
+            if (!sqlDTO.getType().equals(SqlTypeEnum.UNKNOWN.getCode())) {
+                continue;
+            }
+            //当模板内无sql类型，取(0-空格)判断并设置sql类型
+            switch (currentSql.substring(0, currentSql.indexOf(" ")).toLowerCase()) {
+                case INSERT:
+                    sqlDTO.setType(SqlTypeEnum.INSERT.getCode());
+                    sqlDTOList.add(sqlDTO);
+                    break;
+                case DELETE:
+                    sqlDTO.setType(SqlTypeEnum.DELETE.getCode());
+                    sqlDTOList.add(sqlDTO);
+                    break;
+                case UPDATE:
+                    sqlDTO.setType(SqlTypeEnum.UPDATE.getCode());
+                    sqlDTOList.add(sqlDTO);
+                    break;
+                case SELECT:
+                    sqlDTO.setType(SqlTypeEnum.SELECT.getCode());
+                    sqlDTOList.add(sqlDTO);
+                    break;
+                default:
+                    sqlDTOList.add(new SqlDTO(SqlTypeEnum.UNKNOWN.getCode(), currentSql));
+            }
+        }
+        jdbcDTO.setSqlList(sqlDTOList);
+        return jdbcDTO;
     }
 
     /**
-     * sql对象转模板
-     * @param sqlDTO sql对象
+     * jdbc对象转模板
+     * @param jdbcDTO jdbc对象
      * @return 模板值
      */
-    private static String toSql(SqlDTO sqlDTO) {
-        if (sqlDTO == null || sqlDTO.getDataSource() == null || sqlDTO.getSqlList() == null) {
+    private static String toSql(JdbcDTO jdbcDTO) {
+        if (jdbcDTO == null || jdbcDTO.getDataSource() == null || jdbcDTO.getSqlList() == null) {
             return null;
         }
         StringBuilder template = new StringBuilder();
-        template.append(sqlDTO.getDataSource().toString());
-        for (String sql : sqlDTO.getSqlList()) {
+        //先把datasource对象序列化
+        template.append(jdbcDTO.getDataSource().toString());
+        //再把sql对象列表序列化
+        for (SqlDTO sqlDTO : jdbcDTO.getSqlList()) {
             template.append(SEPARATOR);
-            template.append(sql);
+            template.append(JSON.toJSONString(sqlDTO));
         }
         return template.toString();
     }

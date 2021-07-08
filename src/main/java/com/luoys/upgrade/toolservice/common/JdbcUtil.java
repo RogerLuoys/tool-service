@@ -1,7 +1,10 @@
 package com.luoys.upgrade.toolservice.common;
 
 import com.luoys.upgrade.toolservice.controller.dto.DataSourceDTO;
+import com.luoys.upgrade.toolservice.controller.dto.JdbcDTO;
 import com.luoys.upgrade.toolservice.controller.dto.SqlDTO;
+import com.luoys.upgrade.toolservice.controller.enums.SqlTypeEnum;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -13,6 +16,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 public class JdbcUtil {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JdbcUtil.class);
@@ -44,19 +48,30 @@ public class JdbcUtil {
 
     /**
      * 执行sql
-     * @param sqlDTO -
+     * @param jdbcDTO -
      * @return 全部执行成功则为true
      */
-    public static boolean execute(SqlDTO sqlDTO) {
-        init(sqlDTO.getDataSource());
-        List<String> sqlList = sqlDTO.getSqlList();
-        for (String actualSql : sqlList) {
-            switch (1) {
+    public static boolean execute(JdbcDTO jdbcDTO) {
+        if (jdbcDTO == null || jdbcDTO.getDataSource() == null || jdbcDTO.getSqlList() == null) {
+            return false;
+        }
+        init(jdbcDTO.getDataSource());
+        List<SqlDTO> sqlDTOList = jdbcDTO.getSqlList();
+        for (SqlDTO sqlDTO : sqlDTOList) {
+            switch (SqlTypeEnum.fromCode(sqlDTO.getType())) {
                 // 查询
-                case 1:
-                    updateNoLimit(actualSql);
-                case 2:
-                    delete(actualSql);
+                case INSERT:
+                    updateNoLimit(sqlDTO.getSql());
+                    break;
+                case DELETE:
+                    delete(sqlDTO.getSql());
+                    break;
+                case UPDATE:
+                    update(sqlDTO.getSql());
+                    break;
+//                case SELECT:
+//                    select(sqlDTO.getSql());
+//                    break;
                 default:
                     return false;
             }
@@ -102,29 +117,29 @@ public class JdbcUtil {
         switch (type) {
             case SELECT:
                 if (!sqlArray[0].equals(SELECT)) {
-                    LOGGER.warn("\n---->查询sql类型不匹配");
+                    log.warn("---->查询sql类型不匹配");
                     return false;
                 }
                 return true;
             case UPDATE:
                 if (!sqlArray[0].equals(UPDATE)) {
-                    LOGGER.warn("\n---->更新sql类型不匹配");
+                    log.warn("---->更新sql类型不匹配");
                     return false;
                 }
                 return true;
             case COUNT:
                 if (!sqlArray[0].equals(SELECT)) {
-                    LOGGER.warn("\n---->查行数sql类型不匹配");
+                    log.warn("---->查行数sql类型不匹配");
                     return false;
                 }
                 if (!sqlArray[1].equals(COUNT)) {
-                    LOGGER.warn("\n---->查行数sql类型未包含count(1)");
+                    log.warn("---->查行数sql类型未包含count(1)");
                     return false;
                 }
                 return true;
             case DELETE:
                 if (!sqlArray[0].equals(DELETE)) {
-                    LOGGER.warn("\n---->更新sql类型不匹配");
+                    log.warn("---->更新sql类型不匹配");
                     return false;
                 }
                 return true;
@@ -158,68 +173,68 @@ public class JdbcUtil {
     public static Integer update(String sql) {
         String executeSql = sql.replace(";", "") + ";";
         if (!checkSqlType(executeSql, UPDATE)) {
-            LOGGER.warn("\n---->更新语句的sql格式错误：{}", sql);
+            log.warn("---->更新语句的sql格式错误：{}", sql);
             return null;
         }
         int effectRow = count(transformUpdate2Select(executeSql));
         if (effectRow > 10) {
-            LOGGER.warn("\n---->一次更新超过10行，请确认sql条件是否正确");
+            log.warn("---->一次更新超过10行，请确认sql条件是否正确");
             return null;
         } else if (effectRow == 0) {
-            LOGGER.warn("\n---->查无此类数据，不需要更新");
+            log.warn("---->查无此类数据，不需要更新");
             return null;
         }
-        LOGGER.info("\n====>最终执行sql：" + executeSql);
+        log.info("---->最终执行sql：" + executeSql);
         return jdbcTemplate.update(executeSql);
     }
 
     public static Integer updateNoLimit(String sql) {
         String executeSql = sql.replace(";", "") + ";";
         if (!checkSqlType(executeSql, UPDATE)) {
-            LOGGER.warn("\n---->更新语句的sql格式错误：{}", sql);
+            log.warn("---->更新语句的sql格式错误：{}", sql);
             return null;
         }
         int effectRow = count(transformUpdate2Select(executeSql));
         if (effectRow > 100) {
-            LOGGER.warn("\n---->一次更新超过100行，请确认sql条件是否正确");
+            log.warn("---->一次更新超过100行，请确认sql条件是否正确");
             return null;
         } else if (effectRow == 0) {
-            LOGGER.warn("\n---->查无此类数据，不需要更新");
+            log.warn("---->查无此类数据，不需要更新");
             return null;
         }
-        LOGGER.info("\n====>最终执行sql：" + executeSql);
+        log.info("---->最终执行sql：" + executeSql);
         return jdbcTemplate.update(executeSql);
     }
 
     public static Integer count(String sql) {
         String executeSql = sql.replace(";", "") + ";";
         if (!checkSqlType(sql, COUNT)) {
-            LOGGER.warn("\n---->查总数语句的sql格式错误：{}", sql);
+            log.warn("---->查总数语句的sql格式错误：{}", sql);
             return null;
         }
-        LOGGER.info("\n====>最终执行sql：" + executeSql);
+        log.info("---->最终执行sql：" + executeSql);
         Map<String, Object> result = jdbcTemplate.queryForMap(executeSql);
         return Integer.valueOf(result.get(COUNT).toString());
     }
 
     public static Map<String, Object> select(String sql) {
         if (!checkSqlType(sql, SELECT)) {
-            LOGGER.warn("\n---->查询语句的sql格式错误：{}", sql);
+            log.warn("---->查询语句的sql格式错误：{}", sql);
             return null;
         }
         String executeSql = addSelectDefault(sql);
-        LOGGER.info("\n====>最终执行sql：" + executeSql);
+        log.info("---->最终执行sql：" + executeSql);
         List<Map<String, Object>> result = jdbcTemplate.queryForList(executeSql);
         return result.size() == 0 ? null : result.get(0);
     }
 
     public static List<Map<String, Object>> selectMultiRow(String sql) {
         if (!checkSqlType(sql, SELECT)) {
-            LOGGER.warn("\n---->查询语句的sql格式错误：{}", sql);
+            log.warn("---->查询语句的sql格式错误：{}", sql);
             return null;
         }
         String executeSql = addSelectDefault(sql);
-        LOGGER.info("\n====>最终执行sql：" + executeSql);
+        log.info("---->最终执行sql：" + executeSql);
         return jdbcTemplate.queryForList(executeSql);
     }
 
@@ -227,7 +242,7 @@ public class JdbcUtil {
         String[] sqlList = sql.split(" ");
         //查询语句只能查询一列数据
         if (!sqlList[2].equalsIgnoreCase("from") || sqlList[1].equalsIgnoreCase("*") || sqlList[1].contains(",")) {
-            LOGGER.warn("\n---->查询单格数据的sql格式不合规：{}", sql);
+            log.warn("---->查询单格数据的sql格式不合规：{}", sql);
             return null;
         }
         Map<String, Object> result = select(sql);
@@ -245,18 +260,18 @@ public class JdbcUtil {
     public static Integer delete(String sql) {
         String executeSql = sql.replace(";", "") + ";";
         if (!checkSqlType(executeSql, DELETE)) {
-            LOGGER.warn("\n---->删除语句的sql格式错误：{}", sql);
+            log.warn("---->删除语句的sql格式错误：{}", sql);
             return null;
         }
         int effectRow = count(transformDelete2Select(executeSql));
         if (effectRow > 5) {
-            LOGGER.warn("\n---->一次删除超过5行，请确认sql条件是否正确");
+            log.warn("---->一次删除超过5行，请确认sql条件是否正确");
             return null;
         } else if (effectRow == 0) {
-            LOGGER.warn("\n---->查无此类数据，不需要更新");
+            log.warn("---->查无此类数据，不需要更新");
             return null;
         }
-        LOGGER.info("\n====>最终执行sql：" + executeSql);
+        log.info("---->最终执行sql：" + executeSql);
         return jdbcTemplate.update(executeSql);
     }
 }

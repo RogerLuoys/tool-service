@@ -10,6 +10,6 @@ public class HttpRequestDTO {
 
     private String httpType;
     private String httpURL;
-    private List<ParamVO> httpHeaderList;
+    private List<ParamDTO> httpHeaderList;
     private String httpBody;
 }

@@ -2,6 +2,7 @@ package com.luoys.upgrade.toolservice.controller;
 
 import com.luoys.upgrade.toolservice.common.JdbcUtil;
 import com.luoys.upgrade.toolservice.common.NumberSender;
+import com.luoys.upgrade.toolservice.controller.enums.ToolTypeEnum;
 import com.luoys.upgrade.toolservice.controller.transform.TransformTool;
 import com.luoys.upgrade.toolservice.controller.vo.PageInfo;
 import com.luoys.upgrade.toolservice.controller.vo.ParamVO;
@@ -62,18 +63,18 @@ public class CommonFactoryController {
     }
 
     @RequestMapping(value = "/use", method = RequestMethod.POST)
-    public Result<ParamVO> use(@RequestBody ToolVO toolVO) {
-        switch (toolVO.getType()) {
-            case 1:
-                //todo sql
-                JdbcUtil.execute(toolVO.getSql());
-//                JdbcUtil.init(toolVO.getSql().getDataSource());
-//                JdbcUtil.updateNoLimit(toolVO.getSql().getSqlList());
-                break;
-            case 2:
+    public Result<String> use(@RequestBody ToolVO toolVO) {
+        boolean result;
+        switch (ToolTypeEnum.fromCode(toolVO.getType())) {
+            case SQL:
+                //先将参数与sql模板合并
+                TransformTool.mergeSql(toolVO);
+                result = JdbcUtil.execute(toolVO.getJdbc());
+                return result ? Result.success("成功") : Result.error("执行sql失败");
+            case HTTP:
                 //todo http
                 break;
-            case 3:
+            case RPC:
                 //todo rpc
                 break;
             default:
