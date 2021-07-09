@@ -1,5 +1,6 @@
 package com.luoys.upgrade.toolservice.controller;
 
+import com.luoys.upgrade.toolservice.common.HttpUtil;
 import com.luoys.upgrade.toolservice.common.JdbcUtil;
 import com.luoys.upgrade.toolservice.common.NumberSender;
 import com.luoys.upgrade.toolservice.controller.enums.ToolTypeEnum;
@@ -64,16 +65,14 @@ public class CommonFactoryController {
 
     @RequestMapping(value = "/use", method = RequestMethod.POST)
     public Result<String> use(@RequestBody ToolVO toolVO) {
-        boolean result;
         switch (ToolTypeEnum.fromCode(toolVO.getType())) {
             case SQL:
                 //先将参数与sql模板合并
                 TransformTool.mergeSql(toolVO);
-                result = JdbcUtil.execute(toolVO.getJdbc());
-                return result ? Result.success("成功") : Result.error("执行sql失败");
+                return Result.success(JdbcUtil.execute(toolVO.getJdbc()));
             case HTTP:
-                //todo http
-                break;
+                TransformTool.mergeHttp(toolVO);
+                return Result.success(HttpUtil.execute(toolVO.getHttpRequest()));
             case RPC:
                 //todo rpc
                 break;

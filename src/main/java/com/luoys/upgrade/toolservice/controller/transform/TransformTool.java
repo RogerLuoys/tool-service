@@ -47,28 +47,53 @@ public class TransformTool {
      * @param toolVO -
      */
     public static void mergeSql(ToolVO toolVO) {
-        List<SqlDTO> sqlDTOList = toolVO.getJdbc().getSqlList();
-        List<ParamDTO> paramDTOList = toolVO.getParamList();
         // 无变量
-        if (paramDTOList.size() == 0) {
+        if (toolVO.getParamList().size() == 0) {
             return;
         }
-        for (SqlDTO sqlDTO : sqlDTOList) {
-            //先判断指定sql模板中是否有参数占位符
-            if (sqlDTO.getSql().contains(PARAM_SYMBOL)) {
-                //将实际参数替换占位符
-                for (ParamDTO paramDTO : paramDTOList) {
-                    if (sqlDTO.getSql().contains(PARAM_SYMBOL+paramDTO.getName()+"}")) {
-                        //将sql对象中模板的占位符，用参数替换
-                        sqlDTO.getSql().replace(PARAM_SYMBOL+paramDTO.getName()+"}", paramDTO.getValue());
+        log.info("---->合并前sql列表：{}", toolVO.getJdbc().getSqlList());
+        List<SqlDTO> actualSqlList = new ArrayList<>();
+        String oneSql, fullParamSymbol;
+        for (SqlDTO sqlDTO : toolVO.getJdbc().getSqlList()) {
+            oneSql = sqlDTO.getSql();
+            //先判断指定sql模板中是否有参数占位符，有则进入替换逻辑
+            if (oneSql.contains(PARAM_SYMBOL)) {
+                //将所有实际参数与其中一条sql模板的占位符替换
+                for (ParamDTO paramDTO : toolVO.getParamList()) {
+                    fullParamSymbol = PARAM_SYMBOL+paramDTO.getName()+"}";
+                    if (oneSql.contains(fullParamSymbol)) {
+                        sqlDTO.setSql(oneSql.replace(fullParamSymbol, paramDTO.getValue()));
                     }
                 }
             }
+            actualSqlList.add(sqlDTO);
         }
+        toolVO.getJdbc().setSqlList(actualSqlList);
+        log.info("---->合并后sql列表：{}", toolVO.getJdbc().getSqlList());
     }
 
-    public static ToolVO mergeHttp(ToolVO toolVO) {
-
+    public static void mergeHttp(ToolVO toolVO) {
+        // 无变量
+        if (toolVO.getParamList().size() == 0) {
+            return;
+        }
+        log.info("---->合并前http请求：{}", toolVO.getHttpRequest());
+        String fullParamSymbol;
+        String url = toolVO.getHttpRequest().getHttpURL();
+        String body = toolVO.getHttpRequest().getHttpBody();
+        //将参数一个个替换入url和body中
+        for (ParamDTO paramDTO : toolVO.getParamList()) {
+            fullParamSymbol = PARAM_SYMBOL+paramDTO.getName()+"}";
+            if (url.contains(fullParamSymbol)) {
+                url = url.replace(fullParamSymbol, paramDTO.getValue());
+            }
+            if (body.contains(fullParamSymbol)) {
+                body = body.replace(fullParamSymbol, paramDTO.getValue());
+            }
+        }
+        toolVO.getHttpRequest().setHttpURL(url);
+        toolVO.getHttpRequest().setHttpBody(body);
+        log.info("---->合并后http请求：{}", toolVO.getHttpRequest());
     }
 
     public static ToolVO transformPO2VO(ToolPO po) {

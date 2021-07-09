@@ -8,7 +8,7 @@ import java.util.List;
 @Data
 public class HttpRequestDTO {
 
-    private String httpType;
+    private Integer httpType;
     private String httpURL;
     private List<ParamDTO> httpHeaderList;
     private String httpBody;
