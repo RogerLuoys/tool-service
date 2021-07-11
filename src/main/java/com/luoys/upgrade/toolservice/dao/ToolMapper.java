@@ -19,7 +19,7 @@ public interface ToolMapper {
 
     List<ToolPO> list(@Param("type") Integer type,
                       @Param("title") String title,
-                      @Param("owner") String owner,
+                      @Param("ownerId") String ownerId,
                       @Param("startIndex") Integer startIndex);
 
 }

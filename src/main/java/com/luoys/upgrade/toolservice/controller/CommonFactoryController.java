@@ -24,9 +24,10 @@ public class CommonFactoryController {
     private ToolMapper toolMapper;
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public Result<String> create(@RequestBody ToolVO toolVO) {
+    public Result<String> create(@RequestHeader("userId") String userId, @RequestBody ToolVO toolVO) {
         log.info("---》开始新增通用工具：{}", toolVO);
         toolVO.setToolId(NumberSender.createToolId());
+        toolVO.setOwnerId(userId);
         if (toolVO.getTitle() == null) {
             return Result.error("标题不能为空");
         }
@@ -50,14 +51,20 @@ public class CommonFactoryController {
 
     @RequestMapping(value = "/query", method = RequestMethod.GET)
     public Result<PageInfo<ToolSimpleVO>> query(@RequestParam(value = "type", required = false) Integer type,
-                                                      @RequestParam(value = "title", required = false) String title,
-                                                      @RequestParam("owner") String owner,
-                                                      @RequestParam("startIndex") Integer startIndex) {
-        log.info("---》开始查询通用工具列表：");
+                                                @RequestParam(value = "title", required = false) String title,
+                                                @RequestHeader("userId") String userId,
+                                                @RequestParam("startIndex") Integer startIndex) {
+        log.info("---》开始查询通用工具列表：type={}, title={}, userId={}, startIndex={}", type, title, userId, startIndex);
         PageInfo<ToolSimpleVO> pageInfo = new PageInfo<>();
-        pageInfo.setData(TransformTool.transformPO2VO(toolMapper.list(type, title, owner, startIndex)));
-        pageInfo.setTotal(pageInfo.getData().size());
+        pageInfo.setList(TransformTool.transformPO2VO(toolMapper.list(type, title, userId, startIndex)));
+        pageInfo.setTotal(pageInfo.getList().size());
         return Result.success(pageInfo);
+    }
+
+    @RequestMapping(value = "/queryDetail/{id}", method = RequestMethod.GET)
+    public Result<ToolVO> queryDetail(@PathVariable("id") String toolId) {
+        log.info("---》开始查询通用工具列表：toolId={}", toolId);
+        return Result.success(TransformTool.transformPO2VO(toolMapper.selectByUID(toolId)));
     }
 
     @RequestMapping(value = "/use", method = RequestMethod.POST)

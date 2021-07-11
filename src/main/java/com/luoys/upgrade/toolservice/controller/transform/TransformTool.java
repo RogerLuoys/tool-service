@@ -173,7 +173,7 @@ public class TransformTool {
      * @return 数据库中的参数值
      */
     private static String toParam(List<ParamDTO> paramList){
-        if (paramList == null) {
+        if (paramList == null || paramList.size() == 0) {
             return null;
         }
         StringBuilder params = new StringBuilder();
@@ -220,35 +220,36 @@ public class TransformTool {
         jdbcDTO.setDataSource((DataSourceDTO) JSON.parse(sqlList.get(0)));
         List<SqlDTO> sqlDTOList = new ArrayList<>();
         //第一个数据是datasource，从第二个开始取sql
-        String currentSql;
+//        String currentSql;
         for (int i = 1; i < sqlList.size(); i++) {
-            currentSql = sqlList.get(i);
-            SqlDTO sqlDTO = (SqlDTO) JSON.parse(currentSql);
-            //新增的sql模板，默认类型为-1
-            if (!sqlDTO.getType().equals(SqlTypeEnum.UNKNOWN.getCode())) {
-                continue;
-            }
-            //当模板内无sql类型，取(0-空格)判断并设置sql类型
-            switch (currentSql.substring(0, currentSql.indexOf(" ")).toLowerCase()) {
-                case INSERT:
-                    sqlDTO.setType(SqlTypeEnum.INSERT.getCode());
-                    sqlDTOList.add(sqlDTO);
-                    break;
-                case DELETE:
-                    sqlDTO.setType(SqlTypeEnum.DELETE.getCode());
-                    sqlDTOList.add(sqlDTO);
-                    break;
-                case UPDATE:
-                    sqlDTO.setType(SqlTypeEnum.UPDATE.getCode());
-                    sqlDTOList.add(sqlDTO);
-                    break;
-                case SELECT:
-                    sqlDTO.setType(SqlTypeEnum.SELECT.getCode());
-                    sqlDTOList.add(sqlDTO);
-                    break;
-                default:
-                    sqlDTOList.add(new SqlDTO(SqlTypeEnum.UNKNOWN.getCode(), currentSql));
-            }
+            sqlDTOList.add((SqlDTO) JSON.parse(sqlList.get(i)));
+//            currentSql = sqlList.get(i);
+//            SqlDTO sqlDTO = (SqlDTO) JSON.parse(currentSql);
+//            //新增的sql模板，默认类型为-1
+//            if (!sqlDTO.getType().equals(SqlTypeEnum.UNKNOWN.getCode())) {
+//                continue;
+//            }
+//            //当模板内无sql类型，取(0-空格)判断并设置sql类型
+//            switch (currentSql.substring(0, currentSql.indexOf(" ")).toLowerCase()) {
+//                case INSERT:
+//                    sqlDTO.setType(SqlTypeEnum.INSERT.getCode());
+//                    sqlDTOList.add(sqlDTO);
+//                    break;
+//                case DELETE:
+//                    sqlDTO.setType(SqlTypeEnum.DELETE.getCode());
+//                    sqlDTOList.add(sqlDTO);
+//                    break;
+//                case UPDATE:
+//                    sqlDTO.setType(SqlTypeEnum.UPDATE.getCode());
+//                    sqlDTOList.add(sqlDTO);
+//                    break;
+//                case SELECT:
+//                    sqlDTO.setType(SqlTypeEnum.SELECT.getCode());
+//                    sqlDTOList.add(sqlDTO);
+//                    break;
+//                default:
+//                    sqlDTOList.add(new SqlDTO(SqlTypeEnum.UNKNOWN.getCode(), currentSql));
+//            }
         }
         jdbcDTO.setSqlList(sqlDTOList);
         return jdbcDTO;
@@ -265,10 +266,31 @@ public class TransformTool {
         }
         StringBuilder template = new StringBuilder();
         //先把datasource对象序列化
-        template.append(jdbcDTO.getDataSource().toString());
+        template.append(JSON.toJSONString(jdbcDTO.getDataSource()));
         //再把sql对象列表序列化
+        String currentSql;
         for (SqlDTO sqlDTO : jdbcDTO.getSqlList()) {
             template.append(SEPARATOR);
+            if (sqlDTO.getType() == null || sqlDTO.getType() < 1) {
+                //当模板内无sql类型，取(0-空格)判断并设置sql类型
+                currentSql = sqlDTO.getSql();
+                switch (currentSql.substring(0, currentSql.indexOf(" ")).toLowerCase()) {
+                    case INSERT:
+                        sqlDTO.setType(SqlTypeEnum.INSERT.getCode());
+                        break;
+                    case DELETE:
+                        sqlDTO.setType(SqlTypeEnum.DELETE.getCode());
+                        break;
+                    case UPDATE:
+                        sqlDTO.setType(SqlTypeEnum.UPDATE.getCode());
+                        break;
+                    case SELECT:
+                        sqlDTO.setType(SqlTypeEnum.SELECT.getCode());
+                        break;
+                    default:
+                        sqlDTO.setType(SqlTypeEnum.UNKNOWN.getCode());
+                }
+            }
             template.append(JSON.toJSONString(sqlDTO));
         }
         return template.toString();

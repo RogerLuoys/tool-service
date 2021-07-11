@@ -2,6 +2,7 @@ package com.luoys.upgrade.toolservice.controller.transform;
 
 import com.alibaba.fastjson.JSON;
 import com.luoys.upgrade.toolservice.controller.dto.ContainerDTO;
+import com.luoys.upgrade.toolservice.controller.dto.DataSourceDTO;
 import com.luoys.upgrade.toolservice.controller.dto.MobilePhoneDTO;
 import com.luoys.upgrade.toolservice.controller.vo.DeviceSimpleVO;
 import com.luoys.upgrade.toolservice.controller.vo.DeviceVO;
@@ -46,7 +47,7 @@ public class TransformDevice {
         vo.setType(po.getType());
         switch (po.getType()) {
             case 1:
-                vo.setDataBase(toDataBase(po.getItems()));
+                vo.setDataSource(toDataSource(po.getItems()));
                 break;
             case 2:
                 vo.setMobilePhone(toMobilePhone(po.getItems()));
@@ -71,7 +72,7 @@ public class TransformDevice {
         po.setTitle(vo.getTitle());
         switch (vo.getType()) {
             case 1:
-                po.setItems(toDataBase(vo.getDataBase()));
+                po.setItems(toDataSource(vo.getDataSource()));
                 break;
             case 2:
                 po.setItems(toMobilePhone(vo.getMobilePhone()));
@@ -85,12 +86,12 @@ public class TransformDevice {
         return po;
     }
 
-    private static DataBaseDTO toDataBase(String template) {
-        return (DataBaseDTO) JSON.parse(template);
+    private static DataSourceDTO toDataSource(String template) {
+        return (DataSourceDTO) JSON.parse(template);
     }
 
-    private static String toDataBase(DataBaseDTO dataBaseDTO) {
-        return JSON.toJSONString(dataBaseDTO);
+    private static String toDataSource(DataSourceDTO dataSourceDTO) {
+        return JSON.toJSONString(dataSourceDTO);
     }
 
     private static MobilePhoneDTO toMobilePhone(String template) {

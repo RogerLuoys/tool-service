@@ -6,6 +6,6 @@ import java.util.List;
 
 @Data
 public class PageInfo <T> {
-    private List<T> data;
+    private List<T> list;
     private Integer total;
 }

@@ -50,8 +50,8 @@ public class DeviceController {
                                                   @RequestParam("startIndex") Integer startIndex) {
         log.info("---》开始查询设备列表：");
         PageInfo<DeviceSimpleVO> pageInfo = new PageInfo<>();
-        pageInfo.setData(TransformDevice.transformPO2SimpleVO(deviceMapper.list(type, title, owner, startIndex)));
-        pageInfo.setTotal(pageInfo.getData().size());
+        pageInfo.setList(TransformDevice.transformPO2SimpleVO(deviceMapper.list(type, title, owner, startIndex)));
+        pageInfo.setTotal(pageInfo.getList().size());
         return Result.success(pageInfo);
     }
 }

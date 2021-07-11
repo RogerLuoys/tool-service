@@ -1,6 +1,7 @@
 package com.luoys.upgrade.toolservice.controller.vo;
 
 import com.luoys.upgrade.toolservice.controller.dto.ContainerDTO;
+import com.luoys.upgrade.toolservice.controller.dto.DataSourceDTO;
 import com.luoys.upgrade.toolservice.controller.dto.MobilePhoneDTO;
 import lombok.Data;
 
@@ -17,7 +18,7 @@ public class DeviceVO {
 
     private String description;
 
-    private DataBaseDTO dataBase;
+    private DataSourceDTO dataSource;
 
     private MobilePhoneDTO mobilePhone;
 
