@@ -6,7 +6,6 @@ import com.luoys.upgrade.toolservice.common.NumberSender;
 import com.luoys.upgrade.toolservice.controller.enums.ToolTypeEnum;
 import com.luoys.upgrade.toolservice.controller.transform.TransformTool;
 import com.luoys.upgrade.toolservice.controller.vo.PageInfo;
-import com.luoys.upgrade.toolservice.controller.vo.ParamVO;
 import com.luoys.upgrade.toolservice.controller.vo.ToolSimpleVO;
 import com.luoys.upgrade.toolservice.controller.vo.ToolVO;
 import com.luoys.upgrade.toolservice.dao.ToolMapper;
@@ -14,8 +13,6 @@ import com.luoys.upgrade.toolservice.common.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @CrossOrigin
 @Slf4j
