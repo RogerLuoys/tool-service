@@ -87,7 +87,7 @@ public class TransformDevice {
     }
 
     private static DataSourceDTO toDataSource(String template) {
-        return (DataSourceDTO) JSON.parse(template);
+        return JSON.parseObject(template, DataSourceDTO.class);
     }
 
     private static String toDataSource(DataSourceDTO dataSourceDTO) {
@@ -95,7 +95,7 @@ public class TransformDevice {
     }
 
     private static MobilePhoneDTO toMobilePhone(String template) {
-        return (MobilePhoneDTO) JSON.parse(template);
+        return JSON.parseObject(template, MobilePhoneDTO.class);
     }
 
     private static String toMobilePhone(MobilePhoneDTO mobilePhoneDTO) {
@@ -103,7 +103,7 @@ public class TransformDevice {
     }
 
     private static ContainerDTO toContainer(String template) {
-        return (ContainerDTO) JSON.parse(template);
+        return JSON.parseObject(template, ContainerDTO.class);
     }
 
     private static String toContainer(ContainerDTO containerDTO) {

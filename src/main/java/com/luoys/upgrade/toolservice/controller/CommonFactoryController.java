@@ -56,7 +56,8 @@ public class CommonFactoryController {
                                                 @RequestParam("startIndex") Integer startIndex) {
         log.info("---》开始查询通用工具列表：type={}, title={}, userId={}, startIndex={}", type, title, userId, startIndex);
         PageInfo<ToolSimpleVO> pageInfo = new PageInfo<>();
-        pageInfo.setList(TransformTool.transformPO2VO(toolMapper.list(type, title, userId, startIndex)));
+        //数据库startIndex从0开始
+        pageInfo.setList(TransformTool.transformPO2VO(toolMapper.list(type, title, userId, startIndex-1)));
         pageInfo.setTotal(pageInfo.getList().size());
         return Result.success(pageInfo);
     }

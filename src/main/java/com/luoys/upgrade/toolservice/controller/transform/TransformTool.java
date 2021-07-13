@@ -1,6 +1,7 @@
 package com.luoys.upgrade.toolservice.controller.transform;
 
 import com.alibaba.fastjson.JSON;
+import com.luoys.upgrade.toolservice.common.StringUtil;
 import com.luoys.upgrade.toolservice.controller.dto.*;
 import com.luoys.upgrade.toolservice.controller.enums.SqlTypeEnum;
 import com.luoys.upgrade.toolservice.controller.vo.ToolSimpleVO;
@@ -159,10 +160,13 @@ public class TransformTool {
      * @return 参数对象列表
      */
     private static List<ParamDTO> toParam(String params){
+        if (StringUtil.isBlank(params)) {
+            return null;
+        }
         String[] paramArray = params.split(SEPARATOR);
         List<ParamDTO> paramList = new ArrayList<>();
         for (String param : paramArray) {
-            paramList.add((ParamDTO) JSON.parse(param));
+            paramList.add(JSON.parseObject(param, ParamDTO.class));
         }
         return paramList;
     }
@@ -190,7 +194,7 @@ public class TransformTool {
         if (template == null) {
             return null;
         }
-        return (HttpRequestDTO) JSON.parse(template);
+        return JSON.parseObject(template, HttpRequestDTO.class);
     }
 
     private static String toHttpRequest(HttpRequestDTO httpRequest) {
@@ -208,7 +212,7 @@ public class TransformTool {
     // {DataBaseDTO} &&& {type="",sql1=""} &&& ...
     private static JdbcDTO toSql(String template) {
         log.info("---->开始将模板转换成jdbc对象：{}", template);
-        if (template == null) {
+        if (StringUtil.isBlank(template)) {
             return null;
         }
         List<String> sqlList = Arrays.asList(template.split(SEPARATOR));
@@ -217,12 +221,12 @@ public class TransformTool {
             return null;
         }
         JdbcDTO jdbcDTO = new JdbcDTO();
-        jdbcDTO.setDataSource((DataSourceDTO) JSON.parse(sqlList.get(0)));
+        jdbcDTO.setDataSource(JSON.parseObject(sqlList.get(0), DataSourceDTO.class));
         List<SqlDTO> sqlDTOList = new ArrayList<>();
         //第一个数据是datasource，从第二个开始取sql
 //        String currentSql;
         for (int i = 1; i < sqlList.size(); i++) {
-            sqlDTOList.add((SqlDTO) JSON.parse(sqlList.get(i)));
+            sqlDTOList.add(JSON.parseObject(sqlList.get(i), SqlDTO.class));
 //            currentSql = sqlList.get(i);
 //            SqlDTO sqlDTO = (SqlDTO) JSON.parse(currentSql);
 //            //新增的sql模板，默认类型为-1
