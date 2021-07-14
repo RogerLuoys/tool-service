@@ -17,7 +17,7 @@ public interface DeviceMapper {
 
     List<DevicePO> list(@Param("type") Integer type,
                         @Param("title") String title,
-                        @Param("owner") String owner,
+                        @Param("ownerId") String ownerId,
                         @Param("startIndex") Integer startIndex);
 
     DevicePO selectById(Integer id);

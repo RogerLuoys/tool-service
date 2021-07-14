@@ -12,7 +12,7 @@ import lombok.Data;
 @Data
 public class DeviceVO {
 
-    private Integer id;
+    private Integer deviceId;
 
     private String title;
 

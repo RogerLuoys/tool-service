@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.luoys.upgrade.toolservice.controller.dto.ContainerDTO;
 import com.luoys.upgrade.toolservice.controller.dto.DataSourceDTO;
 import com.luoys.upgrade.toolservice.controller.dto.MobilePhoneDTO;
+import com.luoys.upgrade.toolservice.controller.enums.DeviceTypeEnum;
 import com.luoys.upgrade.toolservice.controller.vo.DeviceSimpleVO;
 import com.luoys.upgrade.toolservice.controller.vo.DeviceVO;
 import com.luoys.upgrade.toolservice.dao.po.DevicePO;
@@ -24,6 +25,7 @@ public class TransformDevice {
         vo.setPermission(po.getPermission());
         vo.setTitle(po.getTitle());
         vo.setType(po.getType());
+        vo.setDeviceId(po.getId());
         return vo;
     }
 
@@ -40,7 +42,7 @@ public class TransformDevice {
             return null;
         }
         DeviceVO vo = new DeviceVO();
-        vo.setId(po.getId());
+        vo.setDeviceId(po.getId());
         vo.setDescription(po.getDescription());
         vo.setPermission(po.getPermission());
         vo.setTitle(po.getTitle());
@@ -70,14 +72,15 @@ public class TransformDevice {
         po.setOwnerId(vo.getOwnerId());
         po.setPermission(vo.getPermission());
         po.setTitle(vo.getTitle());
-        switch (vo.getType()) {
-            case 1:
+        po.setType(vo.getType());
+        switch (DeviceTypeEnum.fromCode(vo.getType())) {
+            case DATA_SOURCE:
                 po.setItems(toDataSource(vo.getDataSource()));
                 break;
-            case 2:
+            case MOBILE_PHONE:
                 po.setItems(toMobilePhone(vo.getMobilePhone()));
                 break;
-            case 3:
+            case CONTAINER:
                 po.setItems(toContainer(vo.getContainer()));
                 break;
             default:

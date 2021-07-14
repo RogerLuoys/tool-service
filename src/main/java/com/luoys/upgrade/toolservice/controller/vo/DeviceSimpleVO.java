@@ -9,7 +9,7 @@ import lombok.Data;
 @Data
 public class DeviceSimpleVO {
 
-    private Integer toolConfigId;
+    private Integer deviceId;
 
     private String title;
 

@@ -26,7 +26,7 @@
     <include refid="Base_Column_List" />
     from tool
     where is_delete = 0
-    and (owner_id = #{ownerId,jdbcType=VARCHAR} or permission = 2)
+    and (owner_id = #{ownerId,jdbcType=VARCHAR} or permission = 1)
     <if test="type != null">
       and type = #{type,jdbcType=TINYINT}
     </if>

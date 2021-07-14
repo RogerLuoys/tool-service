@@ -31,6 +31,7 @@ public class TransformTool {
         vo.setToolId(po.getToolId());
         vo.setOwner(po.getOwnerId());
         vo.setTitle(po.getTitle());
+        vo.setType(po.getType());
         vo.setPermission(po.getPermission());
         return vo;
     }

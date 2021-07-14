@@ -24,7 +24,7 @@
     <include refid="Base_Column_List" />
     from device
     where is_delete = 0
-    and (owner_id = #{ownerId,jdbcType=VARCHAR} or permission = 2)
+    and (owner_id = #{ownerId,jdbcType=VARCHAR} or permission = 1)
     <if test="type != null">
       and type = #{type,jdbcType=TINYINT}
     </if>
@@ -45,55 +45,6 @@
       #{items,jdbcType=VARCHAR}, #{type,jdbcType=TINYINT}, #{ownerId,jdbcType=VARCHAR},
       #{permission,jdbcType=TINYINT}, 0)
   </insert>
-  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.luoys.upgrade.toolservice.dao.po.DevicePO" useGeneratedKeys="true">
-    insert into device
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="title != null">
-        title,
-      </if>
-      <if test="description != null">
-        description,
-      </if>
-      <if test="items != null">
-        items,
-      </if>
-      <if test="type != null">
-        `type`,
-      </if>
-      <if test="ownerId != null">
-        owner_id,
-      </if>
-      <if test="permission != null">
-        permission,
-      </if>
-      <if test="isDelete != null">
-        is_delete,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="title != null">
-        #{title,jdbcType=VARCHAR},
-      </if>
-      <if test="description != null">
-        #{description,jdbcType=VARCHAR},
-      </if>
-      <if test="items != null">
-        #{items,jdbcType=VARCHAR},
-      </if>
-      <if test="type != null">
-        #{type,jdbcType=TINYINT},
-      </if>
-      <if test="ownerId != null">
-        #{ownerId,jdbcType=VARCHAR},
-      </if>
-      <if test="permission != null">
-        #{permission,jdbcType=TINYINT},
-      </if>
-      <if test="isDelete != null">
-        #{isDelete,jdbcType=TINYINT},
-      </if>
-    </trim>
-  </insert>
   <update id="update" parameterType="com.luoys.upgrade.toolservice.dao.po.DevicePO">
     update device
     <set>
@@ -113,17 +64,6 @@
         permission = #{permission,jdbcType=TINYINT},
       </if>
     </set>
-    where id = #{id,jdbcType=INTEGER}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.luoys.upgrade.toolservice.dao.po.DevicePO">
-    update device
-    set title = #{title,jdbcType=VARCHAR},
-      description = #{description,jdbcType=VARCHAR},
-      items = #{items,jdbcType=VARCHAR},
-      `type` = #{type,jdbcType=TINYINT},
-      owner_id = #{ownerId,jdbcType=VARCHAR},
-      permission = #{permission,jdbcType=TINYINT},
-      is_delete = #{isDelete,jdbcType=TINYINT}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

@@ -2,9 +2,11 @@ package com.luoys.upgrade.toolservice.controller;
 
 import com.luoys.upgrade.toolservice.common.Result;
 import com.luoys.upgrade.toolservice.controller.transform.TransformDevice;
+import com.luoys.upgrade.toolservice.controller.transform.TransformTool;
 import com.luoys.upgrade.toolservice.controller.vo.DeviceSimpleVO;
 import com.luoys.upgrade.toolservice.controller.vo.DeviceVO;
 import com.luoys.upgrade.toolservice.controller.vo.PageInfo;
+import com.luoys.upgrade.toolservice.controller.vo.ToolVO;
 import com.luoys.upgrade.toolservice.dao.DeviceMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.annotations.Param;
@@ -23,7 +25,8 @@ public class DeviceController {
     private DeviceMapper deviceMapper;
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public Result<String> create(@RequestBody DeviceVO deviceVO) {
+    public Result<String> create(@RequestHeader("userId") String userId, @RequestBody DeviceVO deviceVO) {
+        deviceVO.setOwnerId(userId);
         log.info("---》开始新增设备：{}", deviceVO);
         int result = deviceMapper.insert(TransformDevice.transformVO2PO(deviceVO));
         return result == 1 ? Result.success("创建成功") : Result.error("创建失败");
@@ -45,13 +48,20 @@ public class DeviceController {
 
     @RequestMapping(value = "/query", method = RequestMethod.GET)
     public Result<PageInfo<DeviceSimpleVO>> query(@RequestParam(value = "type", required = false) Integer type,
-                                                  @RequestParam(value = "title", required = false) String title,
-                                                  @RequestParam("owner") String owner,
-                                                  @RequestParam("startIndex") Integer startIndex) {
+                                                  @RequestParam(value = "name", required = false) String name,
+                                                  @RequestHeader("userId") String userId,
+                                                  @RequestParam("pageIndex") Integer pageIndex) {
         log.info("---》开始查询设备列表：");
         PageInfo<DeviceSimpleVO> pageInfo = new PageInfo<>();
-        pageInfo.setList(TransformDevice.transformPO2SimpleVO(deviceMapper.list(type, title, owner, startIndex)));
+        pageInfo.setList(TransformDevice.transformPO2SimpleVO(deviceMapper.list(type, name, userId, pageIndex-1)));
         pageInfo.setTotal(pageInfo.getList().size());
         return Result.success(pageInfo);
     }
+
+    @RequestMapping(value = "/queryDetail", method = RequestMethod.GET)
+    public Result<DeviceVO> queryDetail(@RequestParam("deviceId") Integer deviceId) {
+        log.info("---》开始查询设备详情：deviceId={}", deviceId);
+        return Result.success(TransformDevice.transformPO2VO(deviceMapper.selectById(deviceId)));
+    }
+
 }
