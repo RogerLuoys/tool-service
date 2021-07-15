@@ -62,14 +62,15 @@ public class CommonFactoryController {
         return Result.success(pageInfo);
     }
 
-    @RequestMapping(value = "/queryDetail/{id}", method = RequestMethod.GET)
-    public Result<ToolVO> queryDetail(@PathVariable("id") String toolId) {
-        log.info("---》开始查询通用工具列表：toolId={}", toolId);
+    @RequestMapping(value = "/queryDetail", method = RequestMethod.GET)
+    public Result<ToolVO> queryDetail(@RequestParam("toolId") String toolId) {
+        log.info("---》开始查询通用工具详情：toolId={}", toolId);
         return Result.success(TransformTool.transformPO2VO(toolMapper.selectByUID(toolId)));
     }
 
     @RequestMapping(value = "/use", method = RequestMethod.POST)
     public Result<String> use(@RequestBody ToolVO toolVO) {
+        log.info("---》开始使用通用工具：{}", toolVO);
         switch (ToolTypeEnum.fromCode(toolVO.getType())) {
             case SQL:
                 //先将参数与sql模板合并

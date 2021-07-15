@@ -98,7 +98,7 @@ public class HttpUtil {
         restTemplate.exchange(url, HttpMethod.POST, entity, String.class, uriVariables);
         restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
 
-        switch (HttpTypeEnum.fromCode(httpRequestDTO.getHttpType())) {
+        switch (HttpTypeEnum.fromValue(httpRequestDTO.getHttpType())) {
             case GET:
                 return restTemplate.exchange(url, HttpMethod.GET, entity, String.class, uriVariables).getBody();
             case POST:
