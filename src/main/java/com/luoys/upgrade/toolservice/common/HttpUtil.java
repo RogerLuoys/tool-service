@@ -85,18 +85,23 @@ public class HttpUtil {
         String url = httpRequestDTO.getHttpURL();
         String body = httpRequestDTO.getHttpBody();
         Map<String, String> uriVariables = new HashMap<>();
-        if (httpRequestDTO.getHttpHeaderList() != null || httpRequestDTO.getHttpHeaderList().size() > 0) {
-            for (ParamDTO paramDTO : httpRequestDTO.getHttpHeaderList()) {
-                uriVariables.put(paramDTO.getName(), paramDTO.getValue());
-            }
-        }
+//        if (httpRequestDTO.getHttpHeaderList() != null && httpRequestDTO.getHttpHeaderList().size() > 0) {
+//            for (ParamDTO paramDTO : httpRequestDTO.getHttpHeaderList()) {
+//                uriVariables.put(paramDTO.getName(), paramDTO.getValue());
+//            }
+//        }
         restTemplateBuilder = new RestTemplateBuilder();
         restTemplate = restTemplateBuilder.build();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
+        if (httpRequestDTO.getHttpHeaderList() != null && httpRequestDTO.getHttpHeaderList().size() > 0) {
+            for (ParamDTO paramDTO : httpRequestDTO.getHttpHeaderList()) {
+                headers.add(paramDTO.getName(), paramDTO.getValue());
+            }
+        }
         HttpEntity<String> entity = new HttpEntity<>(body, headers);
-        restTemplate.exchange(url, HttpMethod.POST, entity, String.class, uriVariables);
-        restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
+//        restTemplate.exchange(url, HttpMethod.POST, entity, String.class, uriVariables);
+//        restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
 
         switch (HttpTypeEnum.fromValue(httpRequestDTO.getHttpType())) {
             case GET:

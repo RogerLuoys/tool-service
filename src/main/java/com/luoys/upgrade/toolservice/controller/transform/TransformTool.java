@@ -74,7 +74,7 @@ public class TransformTool {
 
     public static void mergeHttp(ToolVO toolVO) {
         // 无变量
-        if (toolVO.getParamList().size() == 0) {
+        if (toolVO.getParamList() == null || toolVO.getParamList().size() == 0) {
             return;
         }
         log.info("---->合并前http请求：{}", toolVO.getHttpRequest());
@@ -87,7 +87,7 @@ public class TransformTool {
             if (url.contains(fullParamSymbol)) {
                 url = url.replace(fullParamSymbol, paramDTO.getValue());
             }
-            if (body.contains(fullParamSymbol)) {
+            if (body != null && body.contains(fullParamSymbol)) {
                 body = body.replace(fullParamSymbol, paramDTO.getValue());
             }
         }
@@ -138,14 +138,14 @@ public class TransformTool {
         po.setOwnerId(vo.getOwnerId());
         po.setParams(toParam(vo.getParamList()));
         // 模板转换
-        switch (vo.getType()) {
-            case 1:
+        switch (ToolTypeEnum.fromCode(vo.getType())) {
+            case SQL:
                 po.setTemplate(toSql(vo.getJdbc()));
                 break;
-            case 2:
+            case HTTP:
                 po.setTemplate(toHttpRequest(vo.getHttpRequest()));
                 break;
-            case 3:
+            case RPC:
                 //todo
                 po.setTemplate(null);
                 break;
