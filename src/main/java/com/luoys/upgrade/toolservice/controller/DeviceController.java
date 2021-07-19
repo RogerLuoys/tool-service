@@ -28,18 +28,20 @@ public class DeviceController {
     private DeviceMapper deviceMapper;
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public Result<String> create(@RequestHeader("userId") String userId, @RequestBody DeviceVO deviceVO) {
+    public Result<String> create(@RequestHeader("userId") String userId, @RequestHeader("userName") String userName, @RequestBody DeviceVO deviceVO) {
         deviceVO.setOwnerId(userId);
+        deviceVO.setOwnerName(userName);
         log.info("---》开始新增设备：{}", deviceVO);
         int result = deviceMapper.insert(TransformDevice.transformVO2PO(deviceVO));
         return result == 1 ? Result.success("创建成功") : Result.error("创建失败");
     }
 
     @RequestMapping(value = "/quickCreate", method = RequestMethod.POST)
-    public Result<String> quickCreate(@RequestHeader("userId") String userId, @RequestBody DataSourceDTO dataSourceDTO) {
+    public Result<String> quickCreate(@RequestHeader("userId") String userId, @RequestHeader("userName") String userName, @RequestBody DataSourceDTO dataSourceDTO) {
         dataSourceDTO.setDriver("com.mysql.cj.jdbc.Driver");
         DeviceVO deviceVO = new DeviceVO();
         deviceVO.setOwnerId(userId);
+        deviceVO.setOwnerName(userName);
         deviceVO.setDataSource(dataSourceDTO);
         deviceVO.setTitle(dataSourceDTO.getUserName());
         deviceVO.setType(DeviceTypeEnum.DATA_SOURCE.getCode());

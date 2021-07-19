@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TransformDevice {
-    private static final String SEPARATOR=" &&& ";
+//    private static final String SEPARATOR=" &&& ";
 
     public static DeviceSimpleVO transformPO2SimpleVO(DevicePO po) {
         if (po == null) {
@@ -26,6 +26,7 @@ public class TransformDevice {
         vo.setTitle(po.getTitle());
         vo.setType(po.getType());
         vo.setDeviceId(po.getId());
+        vo.setDetail(po.getDetail());
         return vo;
     }
 
@@ -49,13 +50,13 @@ public class TransformDevice {
         vo.setType(po.getType());
         switch (po.getType()) {
             case 1:
-                vo.setDataSource(toDataSource(po.getItems()));
+                vo.setDataSource(toDataSource(po.getDetail()));
                 break;
             case 2:
-                vo.setMobilePhone(toMobilePhone(po.getItems()));
+                vo.setMobilePhone(toMobilePhone(po.getDetail()));
                 break;
             case 3:
-                vo.setContainer(toContainer(po.getItems()));
+                vo.setContainer(toContainer(po.getDetail()));
                 break;
             default:
                 break;
@@ -75,13 +76,13 @@ public class TransformDevice {
         po.setType(vo.getType());
         switch (DeviceTypeEnum.fromCode(vo.getType())) {
             case DATA_SOURCE:
-                po.setItems(toDataSource(vo.getDataSource()));
+                po.setDetail(toDataSource(vo.getDataSource()));
                 break;
             case MOBILE_PHONE:
-                po.setItems(toMobilePhone(vo.getMobilePhone()));
+                po.setDetail(toMobilePhone(vo.getMobilePhone()));
                 break;
             case CONTAINER:
-                po.setItems(toContainer(vo.getContainer()));
+                po.setDetail(toContainer(vo.getContainer()));
                 break;
             default:
                 break;

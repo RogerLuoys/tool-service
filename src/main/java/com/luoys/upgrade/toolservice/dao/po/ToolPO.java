@@ -19,7 +19,7 @@ public class ToolPO implements Serializable {
 
     private String params;
 
-    private String template;
+    private String detail;
 
     /**
      * 1 SQL, 2 HTTP, 3 DUBBO
@@ -32,6 +32,8 @@ public class ToolPO implements Serializable {
     private Integer permission;
 
     private String ownerId;
+
+    private String ownerName;
 
     private static final long serialVersionUID = 1L;
 }

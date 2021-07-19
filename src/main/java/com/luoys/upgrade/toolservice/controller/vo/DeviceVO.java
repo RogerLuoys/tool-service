@@ -23,12 +23,15 @@ public class DeviceVO {
     private MobilePhoneDTO mobilePhone;
 
     private ContainerDTO container;
+
     /**
      * 1 数据源, 2 测试环境, 3 移动设备
      */
     private Integer type;
 
     private String ownerId;
+
+    private String ownerName;
 
     private Integer permission;
 

@@ -26,7 +26,8 @@ public class TransformTool {
         ToolSimpleVO vo = new ToolSimpleVO();
         vo.setDescription(po.getDescription());
         vo.setToolId(po.getToolId());
-        vo.setOwner(po.getOwnerId());
+        vo.setOwnerId(po.getOwnerId());
+        vo.setOwnerName(po.getOwnerName());
         vo.setTitle(po.getTitle());
         vo.setType(po.getType());
         vo.setPermission(po.getPermission());
@@ -107,15 +108,17 @@ public class TransformTool {
         vo.setTitle(po.getTitle());
         vo.setType(po.getType());
         vo.setPermission(po.getPermission());
+        vo.setOwnerId(po.getOwnerId());
+        vo.setOwnerName(po.getOwnerName());
         // {"name":"name1", "value":""};{"name":"name2", "value":"value1"}
         vo.setParamList(toParam(po.getParams()));
         // 模板转换
         switch (ToolTypeEnum.fromCode(po.getType())) {
             case SQL:
-                vo.setJdbc(toSql(po.getTemplate()));
+                vo.setJdbc(toSql(po.getDetail()));
                 break;
             case HTTP:
-                vo.setHttpRequest(toHttpRequest(po.getTemplate()));
+                vo.setHttpRequest(toHttpRequest(po.getDetail()));
                 break;
             case RPC:
                 //todo
@@ -136,18 +139,19 @@ public class TransformTool {
         po.setPermission(vo.getPermission());
         po.setTitle(vo.getTitle());
         po.setOwnerId(vo.getOwnerId());
+        po.setOwnerName(vo.getOwnerName());
         po.setParams(toParam(vo.getParamList()));
         // 模板转换
         switch (ToolTypeEnum.fromCode(vo.getType())) {
             case SQL:
-                po.setTemplate(toSql(vo.getJdbc()));
+                po.setDetail(toSql(vo.getJdbc()));
                 break;
             case HTTP:
-                po.setTemplate(toHttpRequest(vo.getHttpRequest()));
+                po.setDetail(toHttpRequest(vo.getHttpRequest()));
                 break;
             case RPC:
                 //todo
-                po.setTemplate(null);
+                po.setDetail(null);
                 break;
         }
         return po;

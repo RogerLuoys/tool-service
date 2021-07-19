@@ -24,10 +24,11 @@ public class CommonFactoryController {
     private ToolMapper toolMapper;
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public Result<String> create(@RequestHeader("userId") String userId, @RequestBody ToolVO toolVO) {
-        log.info("---》开始新增通用工具：{}", toolVO);
+    public Result<String> create(@RequestHeader("userId") String userId, @RequestHeader("userName") String userName, @RequestBody ToolVO toolVO) {
         toolVO.setToolId(NumberSender.createToolId());
         toolVO.setOwnerId(userId);
+        toolVO.setOwnerName(userName);
+        log.info("---》开始新增通用工具：{}", toolVO);
         if (toolVO.getTitle() == null) {
             return Result.error("标题不能为空");
         }

@@ -7,13 +7,14 @@
     <result column="title" jdbcType="VARCHAR" property="title" />
     <result column="description" jdbcType="VARCHAR" property="description" />
     <result column="params" jdbcType="VARCHAR" property="params" />
-    <result column="template" jdbcType="VARCHAR" property="template" />
+    <result column="detail" jdbcType="VARCHAR" property="detail" />
     <result column="type" jdbcType="TINYINT" property="type" />
     <result column="permission" jdbcType="TINYINT" property="permission" />
     <result column="owner_id" jdbcType="VARCHAR" property="ownerId" />
+    <result column="owner_name" jdbcType="VARCHAR" property="ownerName" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, tool_id, title, description, params, `template`, `type`, permission, owner_id
+    id, tool_id, title, description, params, `detail`, `type`, permission, owner_id, owner_name
   </sql>
   <select id="selectByUID" parameterType="java.lang.String" resultMap="BaseResultMap">
     select
@@ -41,12 +42,12 @@
   </delete>
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.luoys.upgrade.toolservice.dao.po.ToolPO" useGeneratedKeys="true">
     insert into tool (tool_id, title, description,
-      params, `template`, `type`,
-      permission, owner_id, is_delete
+      params, `detail`, `type`,
+      permission, owner_id, owner_name, is_delete
       )
     values (#{toolId,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR},
-      #{params,jdbcType=VARCHAR}, #{template,jdbcType=VARCHAR}, #{type,jdbcType=TINYINT},
-      #{permission,jdbcType=TINYINT}, #{ownerId,jdbcType=VARCHAR}, 0
+      #{params,jdbcType=VARCHAR}, #{detail,jdbcType=VARCHAR}, #{type,jdbcType=TINYINT},
+      #{permission,jdbcType=TINYINT}, #{ownerId,jdbcType=VARCHAR}, #{ownerName,jdbcType=VARCHAR}, 0
       )
   </insert>
   <update id="updateByUID" parameterType="com.luoys.upgrade.toolservice.dao.po.ToolPO">
@@ -61,14 +62,17 @@
       <if test="params != null">
         params = #{params,jdbcType=VARCHAR},
       </if>
-      <if test="template != null">
-        `template` = #{template,jdbcType=VARCHAR},
+      <if test="detail != null">
+        `detail` = #{detail,jdbcType=VARCHAR},
       </if>
       <if test="permission != null">
         permission = #{permission,jdbcType=TINYINT},
       </if>
       <if test="ownerId != null">
         owner_id = #{ownerId,jdbcType=VARCHAR},
+      </if>
+      <if test="ownerName != null">
+        owner_name = #{ownerName,jdbcType=VARCHAR},
       </if>
     </set>
     where tool_id = #{toolId,jdbcType=VARCHAR}

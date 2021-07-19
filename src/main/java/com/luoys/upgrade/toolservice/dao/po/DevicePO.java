@@ -15,7 +15,7 @@ public class DevicePO implements Serializable {
 
     private String description;
 
-    private String items;
+    private String detail;
 
     /**
      * 1 数据源, 2 测试环境, 3 移动设备
@@ -23,6 +23,8 @@ public class DevicePO implements Serializable {
     private Integer type;
 
     private String ownerId;
+
+    private String ownerName;
 
     private Integer permission;
 

@@ -18,6 +18,7 @@ public class ToolVO {
     private Integer type;
     private Integer status;
     private String ownerId;
+    private String ownerName;
     private Integer permission;
     private List<ParamDTO> paramList;
     private JdbcDTO jdbc;

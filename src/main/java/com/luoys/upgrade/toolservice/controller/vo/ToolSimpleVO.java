@@ -13,5 +13,6 @@ public class ToolSimpleVO {
     private String description;
     private Integer type;
     private Integer permission;
-    private String owner;
+    private String ownerId;
+    private String ownerName;
 }
