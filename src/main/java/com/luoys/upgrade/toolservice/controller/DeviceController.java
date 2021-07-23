@@ -5,18 +5,13 @@ import com.luoys.upgrade.toolservice.controller.dto.DataSourceDTO;
 import com.luoys.upgrade.toolservice.controller.enums.DeviceTypeEnum;
 import com.luoys.upgrade.toolservice.controller.enums.PermissionEnum;
 import com.luoys.upgrade.toolservice.controller.transform.TransformDevice;
-import com.luoys.upgrade.toolservice.controller.transform.TransformTool;
 import com.luoys.upgrade.toolservice.controller.vo.DeviceSimpleVO;
 import com.luoys.upgrade.toolservice.controller.vo.DeviceVO;
 import com.luoys.upgrade.toolservice.controller.vo.PageInfo;
-import com.luoys.upgrade.toolservice.controller.vo.ToolVO;
 import com.luoys.upgrade.toolservice.dao.DeviceMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.awt.*;
 
 @CrossOrigin
 @Slf4j

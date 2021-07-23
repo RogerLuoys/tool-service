@@ -35,5 +35,7 @@ public class ToolPO implements Serializable {
 
     private String ownerName;
 
+    private Boolean isTestStep;
+
     private static final long serialVersionUID = 1L;
 }

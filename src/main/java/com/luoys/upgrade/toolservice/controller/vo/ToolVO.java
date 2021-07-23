@@ -20,6 +20,7 @@ public class ToolVO {
     private String ownerId;
     private String ownerName;
     private Integer permission;
+    private Boolean isTestStep;
     private List<ParamDTO> paramList;
     private JdbcDTO jdbc;
     private HttpRequestDTO httpRequest;

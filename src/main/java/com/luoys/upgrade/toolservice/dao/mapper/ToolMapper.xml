@@ -12,9 +12,10 @@
     <result column="permission" jdbcType="TINYINT" property="permission" />
     <result column="owner_id" jdbcType="VARCHAR" property="ownerId" />
     <result column="owner_name" jdbcType="VARCHAR" property="ownerName" />
+    <result column="is_test_step" jdbcType="TINYINT" property="isTestStep" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, tool_id, title, description, params, `detail`, `type`, permission, owner_id, owner_name
+    id, tool_id, title, description, params, `detail`, `type`, permission, owner_id, owner_name, is_test_step
   </sql>
   <select id="selectByUID" parameterType="java.lang.String" resultMap="BaseResultMap">
     select
@@ -27,6 +28,7 @@
     <include refid="Base_Column_List" />
     from tool
     where is_delete = 0
+    and is_test_step = #{isTestStep,jdbcType=TINYINT}
     and (owner_id = #{ownerId,jdbcType=VARCHAR} or permission = 1)
     <if test="type != null">
       and type = #{type,jdbcType=TINYINT}
@@ -43,11 +45,12 @@
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.luoys.upgrade.toolservice.dao.po.ToolPO" useGeneratedKeys="true">
     insert into tool (tool_id, title, description,
       params, `detail`, `type`,
-      permission, owner_id, owner_name, is_delete
+      permission, owner_id, owner_name, is_test_step, is_delete
       )
     values (#{toolId,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR},
       #{params,jdbcType=VARCHAR}, #{detail,jdbcType=VARCHAR}, #{type,jdbcType=TINYINT},
-      #{permission,jdbcType=TINYINT}, #{ownerId,jdbcType=VARCHAR}, #{ownerName,jdbcType=VARCHAR}, 0
+      #{permission,jdbcType=TINYINT}, #{ownerId,jdbcType=VARCHAR}, #{ownerName,jdbcType=VARCHAR},
+      #{isTestStep,jdbcType=TINYINT}, 0
       )
   </insert>
   <update id="updateByUID" parameterType="com.luoys.upgrade.toolservice.dao.po.ToolPO">

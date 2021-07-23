@@ -19,6 +19,7 @@ public interface ToolMapper {
 
     List<ToolPO> list(@Param("type") Integer type,
                       @Param("title") String title,
+                      @Param("isTestStep") Boolean isTestStep,
                       @Param("ownerId") String ownerId,
                       @Param("startIndex") Integer startIndex);
 

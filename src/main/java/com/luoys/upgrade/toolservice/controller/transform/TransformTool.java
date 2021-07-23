@@ -3,6 +3,7 @@ package com.luoys.upgrade.toolservice.controller.transform;
 import com.alibaba.fastjson.JSON;
 import com.luoys.upgrade.toolservice.common.StringUtil;
 import com.luoys.upgrade.toolservice.controller.dto.*;
+import com.luoys.upgrade.toolservice.controller.enums.KeywordEnum;
 import com.luoys.upgrade.toolservice.controller.enums.SqlTypeEnum;
 import com.luoys.upgrade.toolservice.controller.enums.ToolTypeEnum;
 import com.luoys.upgrade.toolservice.controller.vo.ToolSimpleVO;
@@ -16,9 +17,6 @@ import java.util.List;
 
 @Slf4j
 public class TransformTool {
-
-    private static final String SEPARATOR=" &&& ";
-    private static final String PARAM_SYMBOL="$$${";
 
     public static ToolSimpleVO transformPO2SimpleVO(ToolPO po) {
         if (po == null)
@@ -58,10 +56,10 @@ public class TransformTool {
         for (SqlDTO sqlDTO : toolVO.getJdbc().getSqlList()) {
             oneSql = sqlDTO.getSql();
             //先判断指定sql模板中是否有参数占位符，有则进入替换逻辑
-            if (oneSql.contains(PARAM_SYMBOL)) {
+            if (oneSql.contains(KeywordEnum.PARAM_SYMBOL.getCode())) {
                 //将所有实际参数与其中一条sql模板的占位符替换
                 for (ParamDTO paramDTO : toolVO.getParamList()) {
-                    fullParamSymbol = PARAM_SYMBOL+paramDTO.getName()+"}";
+                    fullParamSymbol = KeywordEnum.PARAM_SYMBOL.getCode()+paramDTO.getName()+"}";
                     if (oneSql.contains(fullParamSymbol)) {
                         sqlDTO.setSql(oneSql.replace(fullParamSymbol, paramDTO.getValue()));
                     }
@@ -84,7 +82,7 @@ public class TransformTool {
         String body = toolVO.getHttpRequest().getHttpBody();
         //将参数一个个替换入url和body中
         for (ParamDTO paramDTO : toolVO.getParamList()) {
-            fullParamSymbol = PARAM_SYMBOL+paramDTO.getName()+"}";
+            fullParamSymbol = KeywordEnum.PARAM_SYMBOL.getCode()+paramDTO.getName()+"}";
             if (url.contains(fullParamSymbol)) {
                 url = url.replace(fullParamSymbol, paramDTO.getValue());
             }
@@ -110,8 +108,9 @@ public class TransformTool {
         vo.setPermission(po.getPermission());
         vo.setOwnerId(po.getOwnerId());
         vo.setOwnerName(po.getOwnerName());
+        vo.setIsTestStep(po.getIsTestStep());
         // {"name":"name1", "value":""};{"name":"name2", "value":"value1"}
-        vo.setParamList(toParam(po.getParams()));
+        vo.setParamList(Transform.toParam(po.getParams()));
         // 模板转换
         switch (ToolTypeEnum.fromCode(po.getType())) {
             case SQL:
@@ -140,7 +139,8 @@ public class TransformTool {
         po.setTitle(vo.getTitle());
         po.setOwnerId(vo.getOwnerId());
         po.setOwnerName(vo.getOwnerName());
-        po.setParams(toParam(vo.getParamList()));
+        po.setIsTestStep(vo.getIsTestStep());
+        po.setParams(Transform.toParam(vo.getParamList()));
         // 模板转换
         switch (ToolTypeEnum.fromCode(vo.getType())) {
             case SQL:
@@ -157,40 +157,40 @@ public class TransformTool {
         return po;
     }
 
-    /**
-     * 参数值转换成参数对象列表
-     * @param params 数据库中的param值
-     * @return 参数对象列表
-     */
-    private static List<ParamDTO> toParam(String params){
-        if (StringUtil.isBlank(params)) {
-            return null;
-        }
-        String[] paramArray = params.split(SEPARATOR);
-        List<ParamDTO> paramList = new ArrayList<>();
-        for (String param : paramArray) {
-            paramList.add(JSON.parseObject(param, ParamDTO.class));
-        }
-        return paramList;
-    }
-
-    /**
-     * 参数对象列表转换成参数值
-     * @param paramList 参数对象列表
-     * @return 数据库中的参数值
-     */
-    private static String toParam(List<ParamDTO> paramList){
-        if (paramList == null || paramList.size() == 0) {
-            return null;
-        }
-        StringBuilder params = new StringBuilder();
-        for (ParamDTO paramDTO : paramList) {
-            params.append(JSON.toJSONString(paramDTO));
-            params.append(SEPARATOR);
-        }
-        params.delete(params.length()-SEPARATOR.length(), params.length());
-        return params.toString();
-    }
+//    /**
+//     * 参数值转换成参数对象列表
+//     * @param params 数据库中的param值
+//     * @return 参数对象列表
+//     */
+//    private static List<ParamDTO> toParam(String params){
+//        if (StringUtil.isBlank(params)) {
+//            return null;
+//        }
+//        String[] paramArray = params.split(SEPARATOR);
+//        List<ParamDTO> paramList = new ArrayList<>();
+//        for (String param : paramArray) {
+//            paramList.add(JSON.parseObject(param, ParamDTO.class));
+//        }
+//        return paramList;
+//    }
+//
+//    /**
+//     * 参数对象列表转换成参数值
+//     * @param paramList 参数对象列表
+//     * @return 数据库中的参数值
+//     */
+//    private static String toParam(List<ParamDTO> paramList){
+//        if (paramList == null || paramList.size() == 0) {
+//            return null;
+//        }
+//        StringBuilder params = new StringBuilder();
+//        for (ParamDTO paramDTO : paramList) {
+//            params.append(JSON.toJSONString(paramDTO));
+//            params.append(SEPARATOR);
+//        }
+//        params.delete(params.length()-SEPARATOR.length(), params.length());
+//        return params.toString();
+//    }
 
     // {"name":"header","value":"http://"}
     private static HttpRequestDTO toHttpRequest(String template) {
@@ -218,7 +218,8 @@ public class TransformTool {
         if (StringUtil.isBlank(template)) {
             return null;
         }
-        List<String> sqlList = Arrays.asList(template.split(SEPARATOR));
+        //用分隔符截断字符串
+        List<String> sqlList = Arrays.asList(template.split(KeywordEnum.SEPARATOR.getCode()));
         //第一段需要是数据库
         if (!sqlList.get(0).startsWith("{")) {
             return null;
@@ -250,7 +251,8 @@ public class TransformTool {
         //再把sql对象列表序列化
         String currentType;
         for (SqlDTO sqlDTO : jdbcDTO.getSqlList()) {
-            template.append(SEPARATOR);
+            // 插入分隔符
+            template.append(KeywordEnum.SEPARATOR.getCode());
             if (sqlDTO.getType() == null || sqlDTO.getType().equals(SqlTypeEnum.UNKNOWN.getValue())) {
                 //当模板内无sql类型，取(0-空格)判断并设置sql类型
                 currentType = sqlDTO.getSql().substring(0, 6).toUpperCase();

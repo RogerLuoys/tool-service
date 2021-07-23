@@ -51,14 +51,15 @@ public class CommonFactoryController {
     }
 
     @RequestMapping(value = "/query", method = RequestMethod.GET)
-    public Result<PageInfo<ToolSimpleVO>> query(@RequestParam(value = "type", required = false) Integer type,
+    public Result<PageInfo<ToolSimpleVO>> query(@RequestHeader("userId") String userId,
+                                                @RequestParam(value = "type", required = false) Integer type,
                                                 @RequestParam(value = "name", required = false) String name,
-                                                @RequestHeader("userId") String userId,
+                                                @RequestParam("isTestStep") Boolean isTestStep,
                                                 @RequestParam("pageIndex") Integer pageIndex) {
         log.info("---》开始查询通用工具列表：type={}, title={}, userId={}, startIndex={}", type, name, userId, pageIndex);
         PageInfo<ToolSimpleVO> pageInfo = new PageInfo<>();
         //数据库startIndex从0开始
-        pageInfo.setList(TransformTool.transformPO2VO(toolMapper.list(type, name, userId, pageIndex-1)));
+        pageInfo.setList(TransformTool.transformPO2VO(toolMapper.list(type, name, isTestStep, userId, pageIndex-1)));
         pageInfo.setTotal(pageInfo.getList().size());
         return Result.success(pageInfo);
     }
