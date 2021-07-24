@@ -6,4 +6,5 @@ import lombok.Data;
 public class ParamDTO {
     private String name;
     private String value;
+    private String comment;
 }

@@ -4,11 +4,11 @@ import java.io.Serializable;
 import lombok.Data;
 
 /**
- * case
+ * testcase
  * @author
  */
 @Data
-public class CasePO implements Serializable {
+public class TestCasePO implements Serializable {
     private Integer id;
 
     private String title;
@@ -24,6 +24,8 @@ public class CasePO implements Serializable {
     private String ownerId;
 
     private String ownerName;
+
+    private Integer status;
 
     private static final long serialVersionUID = 1L;
 }

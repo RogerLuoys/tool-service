@@ -6,8 +6,8 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class CaseSimpleVO {
-    private Integer caseId;
+public class TestCaseSimpleVO {
+    private Integer testCaseId;
 
     private String title;
 
@@ -16,5 +16,7 @@ public class CaseSimpleVO {
     private String ownerId;
 
     private String ownerName;
+
+    private Integer status;
 
 }

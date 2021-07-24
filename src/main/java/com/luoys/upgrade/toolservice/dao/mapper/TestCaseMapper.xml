@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.luoys.upgrade.toolservice.dao.TestCaseMapper">
+    <resultMap id="BaseResultMap" type="com.luoys.upgrade.toolservice.dao.po.TestCasePO">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="title" jdbcType="VARCHAR" property="title" />
+        <result column="description" jdbcType="VARCHAR" property="description" />
+        <result column="pre_detail" jdbcType="VARCHAR" property="preDetail" />
+        <result column="main_detail" jdbcType="VARCHAR" property="mainDetail" />
+        <result column="after_detail" jdbcType="VARCHAR" property="afterDetail" />
+        <result column="owner_id" jdbcType="VARCHAR" property="ownerId" />
+        <result column="owner_name" jdbcType="VARCHAR" property="ownerName" />
+        <result column="status" jdbcType="INTEGER" property="status" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, `title`, description, pre_detail, main_detail, after_detail, owner_id, owner_name, status
+    </sql>
+    <select id="selectById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from test_case
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <select id="list" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from test_case
+        where is_delete = 0
+        <if test="status != null">
+            and status = #{status,jdbcType=INTEGER}
+        </if>
+        <if test="title != null">
+            and title like concat('%', #{title,jdbcType=VARCHAR}, '%')
+        </if>
+        order by id desc limit ${startIndex}, 10
+    </select>
+    <delete id="delete" parameterType="java.lang.Integer">
+        update test_case set is_delete=1
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.luoys.upgrade.toolservice.dao.po.TestCasePO" useGeneratedKeys="true">
+        insert into test_case (`title`, description, pre_detail,
+                               main_detail, after_detail, owner_id,
+                               owner_name, status, is_delete)
+        values (#{title,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{preDetail,jdbcType=VARCHAR},
+                #{mainDetail,jdbcType=VARCHAR}, #{afterDetail,jdbcType=VARCHAR}, #{ownerId,jdbcType=VARCHAR},
+                #{ownerName,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, 0)
+    </insert>
+    <update id="update" parameterType="com.luoys.upgrade.toolservice.dao.po.TestCasePO">
+        update test_case
+        <set>
+            <if test="title != null">
+                `title` = #{title,jdbcType=VARCHAR},
+            </if>
+            <if test="description != null">
+                description = #{description,jdbcType=VARCHAR},
+            </if>
+            <if test="preDetail != null">
+                pre_detail = #{preDetail,jdbcType=VARCHAR},
+            </if>
+            <if test="mainDetail != null">
+                main_detail = #{mainDetail,jdbcType=VARCHAR},
+            </if>
+            <if test="afterDetail != null">
+                after_detail = #{afterDetail,jdbcType=VARCHAR},
+            </if>
+            <if test="ownerId != null">
+                owner_id = #{ownerId,jdbcType=VARCHAR},
+            </if>
+            <if test="ownerName != null">
+                owner_name = #{ownerName,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=INTEGER},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+</mapper>

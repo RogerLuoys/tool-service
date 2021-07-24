@@ -52,6 +52,7 @@ public class CommonFactoryController {
 
     @RequestMapping(value = "/query", method = RequestMethod.GET)
     public Result<PageInfo<ToolSimpleVO>> query(@RequestHeader("userId") String userId,
+                                                @RequestParam(value = "isOnlyOwner", required = false) Boolean isOnlyOwner,
                                                 @RequestParam(value = "type", required = false) Integer type,
                                                 @RequestParam(value = "name", required = false) String name,
                                                 @RequestParam("isTestStep") Boolean isTestStep,
