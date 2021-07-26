@@ -1,9 +1,9 @@
 package com.luoys.upgrade.toolservice.common;
 
-import com.luoys.upgrade.toolservice.controller.dto.DataSourceDTO;
-import com.luoys.upgrade.toolservice.controller.dto.JdbcDTO;
-import com.luoys.upgrade.toolservice.controller.dto.SqlDTO;
-import com.luoys.upgrade.toolservice.controller.enums.SqlTypeEnum;
+import com.luoys.upgrade.toolservice.service.dto.DataSourceDTO;
+import com.luoys.upgrade.toolservice.service.dto.JdbcDTO;
+import com.luoys.upgrade.toolservice.service.dto.SqlDTO;
+import com.luoys.upgrade.toolservice.service.enums.SqlTypeEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;

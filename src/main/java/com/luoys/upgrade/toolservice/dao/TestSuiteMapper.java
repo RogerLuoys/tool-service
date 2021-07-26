@@ -1,17 +1,22 @@
 package com.luoys.upgrade.toolservice.dao;
 
 import com.luoys.upgrade.toolservice.dao.po.TestSuitePO;
+import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
+@Repository
 public interface TestSuiteMapper {
-    int deleteByPrimaryKey(Integer id);
+    int delete(Integer id);
 
-    int insert(TestSuitePO record);
+    int insert(TestSuitePO testSuitePO);
 
-    int insertSelective(TestSuitePO record);
+    TestSuitePO selectById(Integer id);
 
-    TestSuitePO selectByPrimaryKey(Integer id);
+    List<TestSuitePO> list(@Param("title") String title,
+                           @Param("startIndex") Integer startIndex);
 
-    int updateByPrimaryKeySelective(TestSuitePO record);
+    int update(TestSuitePO testSuitePO);
 
-    int updateByPrimaryKey(TestSuitePO record);
 }

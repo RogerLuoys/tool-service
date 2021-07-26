@@ -1,33 +1,14 @@
 package com.luoys.upgrade.toolservice.common;
 
-import com.luoys.upgrade.toolservice.controller.dto.HttpRequestDTO;
-import com.luoys.upgrade.toolservice.controller.dto.ParamDTO;
-import com.luoys.upgrade.toolservice.controller.enums.HttpTypeEnum;
+import com.luoys.upgrade.toolservice.service.dto.HttpRequestDTO;
+import com.luoys.upgrade.toolservice.service.dto.ParamDTO;
+import com.luoys.upgrade.toolservice.service.enums.HttpTypeEnum;
 import lombok.extern.slf4j.Slf4j;
 //import org.apache.http.HttpEntity;
-import org.apache.http.client.methods.*;
-import org.apache.http.client.utils.URIBuilder;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.*;
-import org.springframework.http.client.ClientHttpResponse;
-import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
-import org.springframework.http.converter.StringHttpMessageConverter;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.RequestCallback;
-import org.springframework.web.client.ResponseExtractor;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.DefaultUriBuilderFactory;
-import org.springframework.web.util.UriTemplateHandler;
 
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 

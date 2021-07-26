@@ -12,10 +12,10 @@ public interface TestCaseMapper {
 
     int insert(TestCasePO testCasePO);
 
-
     TestCasePO selectById(Integer id);
 
-    List<TestCasePO> list(@Param("status") Integer status,
+    List<TestCasePO> list(@Param("ownerId") String ownerId,
+                          @Param("status") Integer status,
                           @Param("title") String title,
                           @Param("startIndex") Integer startIndex);
 

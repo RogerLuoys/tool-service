@@ -26,6 +26,9 @@
         <include refid="Base_Column_List" />
         from test_case
         where is_delete = 0
+        <if test="ownerId != null">
+            and owner_id = #{ownerId,jdbcType=VARCHAR}
+        </if>
         <if test="status != null">
             and status = #{status,jdbcType=INTEGER}
         </if>
