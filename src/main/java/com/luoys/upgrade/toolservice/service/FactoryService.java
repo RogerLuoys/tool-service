@@ -3,6 +3,7 @@ package com.luoys.upgrade.toolservice.service;
 import com.luoys.upgrade.toolservice.common.HttpUtil;
 import com.luoys.upgrade.toolservice.common.JdbcUtil;
 import com.luoys.upgrade.toolservice.common.NumberSender;
+import com.luoys.upgrade.toolservice.common.RpcUtil;
 import com.luoys.upgrade.toolservice.service.enums.KeywordEnum;
 import com.luoys.upgrade.toolservice.service.enums.ToolTypeEnum;
 import com.luoys.upgrade.toolservice.service.transform.TransformTool;
@@ -25,6 +26,11 @@ public class FactoryService {
 //    @DubboReference
 //    private UserService userService;
 
+    /**
+     * 创建单个工具
+     * @param toolVO 工具对象
+     * @return 成功为true，失败为false
+     */
     public Boolean create(ToolVO toolVO) {
         toolVO.setToolId(NumberSender.createToolId());
         if (toolVO.getOwnerId().equals(KeywordEnum.DEFAULT_USER.getCode())) {
@@ -36,16 +42,36 @@ public class FactoryService {
         return result == 1;
     }
 
+    /**
+     * 逻辑删除单个工具
+     * @param toolId 工具uuid
+     * @return 成功为true，失败为false
+     */
     public Boolean remove(String toolId) {
         int result = toolMapper.deleteByUID(toolId);
         return result == 1;
     }
 
+    /**
+     * 更新单个工具
+     * @param toolVO 工具对象
+     * @return 成功为true，失败为false
+     */
     public Boolean update(ToolVO toolVO) {
         int result = toolMapper.updateByUID(TransformTool.transformVO2PO(toolVO));
         return result == 1;
     }
 
+    /**
+     * 查询工具列表
+     * @param userId 用户id
+     * @param isOnlyOwner 是否只查自己
+     * @param type 类型
+     * @param name 名字
+     * @param isTestStep 是否只查测试步骤
+     * @param pageIndex 页码
+     * @return 工具列表
+     */
     public List<ToolSimpleVO> query(String userId,
                                     Boolean isOnlyOwner,
                                     Integer type,
@@ -59,10 +85,20 @@ public class FactoryService {
         return TransformTool.transformPO2VO(toolMapper.list(type, name, isTestStep, userId, pageIndex-1));
     }
 
+    /**
+     * 查询工具详情
+     * @param toolId 工具uuid
+     * @return 工具对象
+     */
     public ToolVO queryDetail(String toolId) {
         return TransformTool.transformPO2VO(toolMapper.selectByUID(toolId));
     }
 
+    /**
+     * 使用单个工具
+     * @param toolVO 工具对象
+     * @return 使用结果，sql为查出的数据，http为调用后的response
+     */
     public String use(ToolVO toolVO) {
         switch (ToolTypeEnum.fromCode(toolVO.getType())) {
             case SQL:
@@ -73,11 +109,12 @@ public class FactoryService {
                 TransformTool.mergeHttp(toolVO);
                 return HttpUtil.execute(toolVO.getHttpRequest());
             case RPC:
-                //todo rpc
-                break;
+                TransformTool.mergeRpc(toolVO);
+                return RpcUtil.execute(toolVO.getRpc());
             default:
                 break;
         }
         return null;
     }
+
 }

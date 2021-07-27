@@ -95,6 +95,34 @@ public class TransformTool {
         log.info("---->合并后http请求：{}", toolVO.getHttpRequest());
     }
 
+
+    public static void mergeRpc(ToolVO toolVO) {
+        // 无变量
+        if (toolVO.getParamList() == null || toolVO.getParamList().size() == 0) {
+            return;
+        }
+        log.info("---->合并前rpc请求：{}", toolVO.getRpc());
+        String fullParamSymbol;
+        List<ParamDTO> rpcParamList = new ArrayList<>();
+        //先遍历目标，rpc入参
+        for (ParamDTO rpcParam : toolVO.getRpc().getParamList()) {
+            String oneValue = rpcParam.getValue();
+            //判断入参中是否有指定占位符，无则不用替换直接插入
+            if (oneValue.contains(KeywordEnum.PARAM_SYMBOL.getCode())) {
+                //将所有实际参数与其中一个rpc入参值中的占位符替换
+                for (ParamDTO paramDTO : toolVO.getParamList()) {
+                    fullParamSymbol = KeywordEnum.PARAM_SYMBOL.getCode()+paramDTO.getName()+"}";
+                    if (oneValue.contains(fullParamSymbol)) {
+                        rpcParam.setValue(oneValue.replace(fullParamSymbol, paramDTO.getValue()));
+                    }
+                }
+            }
+            rpcParamList.add(rpcParam);
+        }
+        toolVO.getRpc().setParamList(rpcParamList);
+        log.info("---->合并后rpc请求：{}", toolVO.getRpc());
+    }
+
     public static ToolVO transformPO2VO(ToolPO po) {
         if (po == null) {
             return null;
@@ -156,41 +184,6 @@ public class TransformTool {
         }
         return po;
     }
-
-//    /**
-//     * 参数值转换成参数对象列表
-//     * @param params 数据库中的param值
-//     * @return 参数对象列表
-//     */
-//    private static List<ParamDTO> toParam(String params){
-//        if (StringUtil.isBlank(params)) {
-//            return null;
-//        }
-//        String[] paramArray = params.split(SEPARATOR);
-//        List<ParamDTO> paramList = new ArrayList<>();
-//        for (String param : paramArray) {
-//            paramList.add(JSON.parseObject(param, ParamDTO.class));
-//        }
-//        return paramList;
-//    }
-//
-//    /**
-//     * 参数对象列表转换成参数值
-//     * @param paramList 参数对象列表
-//     * @return 数据库中的参数值
-//     */
-//    private static String toParam(List<ParamDTO> paramList){
-//        if (paramList == null || paramList.size() == 0) {
-//            return null;
-//        }
-//        StringBuilder params = new StringBuilder();
-//        for (ParamDTO paramDTO : paramList) {
-//            params.append(JSON.toJSONString(paramDTO));
-//            params.append(SEPARATOR);
-//        }
-//        params.delete(params.length()-SEPARATOR.length(), params.length());
-//        return params.toString();
-//    }
 
     // {"name":"header","value":"http://"}
     private static HttpRequestDTO toHttpRequest(String template) {

@@ -1,25 +1,16 @@
 package com.luoys.upgrade.toolservice.common;
 
 import com.alibaba.fastjson.JSON;
+import com.luoys.upgrade.toolservice.service.dto.ParamDTO;
+import com.luoys.upgrade.toolservice.service.dto.RpcDTO;
 import org.apache.dubbo.config.ReferenceConfig;
+import org.apache.dubbo.config.utils.ReferenceConfigCache;
+import org.apache.dubbo.rpc.RpcContext;
 import org.apache.dubbo.rpc.service.GenericService;
 
-public class RpcUtil {
+import java.util.Arrays;
 
-    /**
-     * 获取泛化调用接口
-     *
-     * @param url           完整的RPC应用地址-格式(协议类型://IP:端口/对象名)
-     * @param interfaceName 服务接口对应的名称(如：UserService.class.getName())
-     * @return 泛化接口
-     */
-    public static GenericService getGenericService(String url, String interfaceName) {
-        ReferenceConfig<GenericService> reference = new ReferenceConfig();
-        reference.setUrl(url);
-        reference.setInterface(interfaceName);
-        reference.setGeneric("true");
-        return reference.get();
-    }
+public class RpcUtil {
 
     /**
      * 通过泛化调用的形式直接调用目标方法
@@ -31,28 +22,49 @@ public class RpcUtil {
      * @param paramList     目标方法入参列表(如：new Object[]{"入参一"},...)
      * @return 调用结果的json字符串
      */
-    public static String invoke(String url, String interfaceName, String methodName, String[] paramTypeList, Object[] paramList) {
-        ReferenceConfig<GenericService> reference = new ReferenceConfig();
-        reference.setUrl(url);
-        reference.setInterface(interfaceName);
-        reference.setGeneric("true");
-        GenericService genericService = reference.get();
-        // 基本类型以及Date,List,Map等不需要转换，直接调用
-        Object result = genericService.$invoke(methodName, paramTypeList, paramList);
-        return JSON.toJSONString(result);
+    private static String invoke(String url, String interfaceName, String methodName, String[] paramTypeList, Object[] paramList) {
+        try {
+            // 引用远程服务
+            ReferenceConfig<GenericService> reference = new ReferenceConfig<>();
+            // 弱类型接口名
+            reference.setInterface(interfaceName);
+//            reference.setGroup("dev");
+//            reference.setVersion("1.0");
+            reference.setUrl(url);
+            reference.setRetries(0);
+            // RpcContext中设置generic=gson
+            RpcContext.getContext().setAttachment("generic","gson");
+            // 声明为泛化接口
+            reference.setGeneric("true");
+            reference.setCheck(false);
+            GenericService genericService = ReferenceConfigCache.getCache().get(reference);
+            // 传递参数对象的json字符串进行一次调用
+            Object result = genericService.$invoke(methodName, paramTypeList, paramList);
+            return JSON.toJSONString(result);
+        } catch (Throwable ex) {
+            ex.printStackTrace();
+        }
+        return null;
     }
 
     /**
-     * 进程睡眠，强制等待
-     *
-     * @param second 等待的时间-单位秒
+     * 执行rpc调用
+     * @param rpcDTO rpc对象
+     * @return 调用的response
      */
-    public static void forceWait(int second) {
-        try {
-            Thread.sleep((long) second * 1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+    public static String execute(RpcDTO rpcDTO) {
+        String[] paramTypeArray = new String[rpcDTO.getParamList().size()];
+        Object[] paramArray = new Object[rpcDTO.getParamList().size()];
+        //把对象中的参数列表转换成对应的数组
+        for (int i = 0; i < rpcDTO.getParamList().size(); i++) {
+            paramTypeArray[i] = rpcDTO.getParamList().get(i).getComment();
+            //如果参数类型是Integer，则把参数值从String转成Integer
+            if (rpcDTO.getParamList().get(i).getComment().equals(Integer.class.getName())) {
+                paramArray[i] = Integer.valueOf(rpcDTO.getParamList().get(i).getValue());
+            } else {
+                paramArray[i] = rpcDTO.getParamList().get(i).getValue();
+            }
         }
+        return invoke(rpcDTO.getUrl(), rpcDTO.getInterfaceName(), rpcDTO.getMethodName(), paramTypeArray, paramArray);
     }
-
 }
