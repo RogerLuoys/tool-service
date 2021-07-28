@@ -18,13 +18,12 @@ public class TestCaseController {
 
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public Result<Boolean> create(@RequestHeader("userId") String userId, @RequestHeader("userName") String userName, @RequestBody TestCaseVO testCaseVO) {
+    public Result<Boolean> create(@RequestHeader("userId") String userId, @RequestBody TestCaseVO testCaseVO) {
         testCaseVO.setOwnerId(userId);
-        testCaseVO.setOwnerName(userName);
         log.info("---》开始新增用例：{}", testCaseVO);
 //        int result = testCaseMapper.insert(TransformTestCase.transformVO2PO(testCaseVO));
 //        return result == 1 ? Result.success("创建成功") : Result.error("创建失败");
-        return Result.ifSuccess(caseService.create(testCaseVO));
+        return Result.message(caseService.create(testCaseVO));
     }
 
     @RequestMapping(value = "/remove", method = RequestMethod.DELETE)
@@ -32,7 +31,7 @@ public class TestCaseController {
         log.info("---》开始删除用例：{}", testCaseId);
 //        int result = testCaseMapper.delete(testCaseId);
 //        return result == 1 ? Result.success("删除成功") : Result.error("删除失败");
-        return Result.ifSuccess(caseService.remove(testCaseId));
+        return Result.message(caseService.remove(testCaseId));
     }
 
     @RequestMapping(value = "/update", method = RequestMethod.PUT)
@@ -40,7 +39,7 @@ public class TestCaseController {
         log.info("---》开始更新用例：{}", testCaseVO);
 //        int result = testCaseMapper.update(TransformTestCase.transformVO2PO(testCaseVO));
 //        return result == 1 ? Result.success("更新成功") : Result.error("更新失败");
-        return Result.ifSuccess(caseService.update(testCaseVO));
+        return Result.message(caseService.update(testCaseVO));
     }
 
     @RequestMapping(value = "/query", method = RequestMethod.GET)

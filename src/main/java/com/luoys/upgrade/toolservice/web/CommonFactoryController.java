@@ -22,16 +22,15 @@ public class CommonFactoryController {
     private FactoryService factoryService;
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public Result<String> create(@RequestHeader("userId") String userId, @RequestHeader("userName") String userName, @RequestBody ToolVO toolVO) {
+    public Result<String> create(@RequestHeader("userId") String userId, @RequestBody ToolVO toolVO) {
         toolVO.setOwnerId(userId);
-        toolVO.setOwnerName(userName);
         log.info("---》开始新增通用工具：{}", toolVO);
 //        if (toolVO.getTitle() == null) {
 //            return Result.error("标题不能为空");
 //        }
 //        int result = toolMapper.insert(TransformTool.transformVO2PO(toolVO));
 //        return result == 1 ? Result.success("新增成功") : Result.error("新增失败");
-        return Result.ifSuccess(factoryService.create(toolVO));
+        return Result.message(factoryService.create(toolVO));
     }
 
     @RequestMapping(value = "/remove", method = RequestMethod.DELETE)
@@ -39,7 +38,7 @@ public class CommonFactoryController {
         log.info("---》开始删除通用工具：{}", toolId);
 //        int result = toolMapper.deleteByUID(toolId);
 //        return result == 1 ? Result.success("删除成功") : Result.error("删除失败");
-        return Result.ifSuccess(factoryService.remove(toolId));
+        return Result.message(factoryService.remove(toolId));
 
     }
 
@@ -48,7 +47,7 @@ public class CommonFactoryController {
         log.info("---》开始更新通用工具：{}", toolVO);
 //        int result = toolMapper.updateByUID(TransformTool.transformVO2PO(toolVO));
 //        return result == 1 ? Result.success("成功") : Result.error("更新失败");
-        return Result.ifSuccess(factoryService.update(toolVO));
+        return Result.message(factoryService.update(toolVO));
     }
 
     @RequestMapping(value = "/query", method = RequestMethod.GET)
@@ -76,6 +75,6 @@ public class CommonFactoryController {
     @RequestMapping(value = "/use", method = RequestMethod.POST)
     public Result<String> use(@RequestBody ToolVO toolVO) {
         log.info("---》开始使用通用工具：{}", toolVO);
-        return Result.ifSuccess(factoryService.use(toolVO), "使用工具失败");
+        return Result.message(factoryService.use(toolVO), "使用工具失败");
     }
 }

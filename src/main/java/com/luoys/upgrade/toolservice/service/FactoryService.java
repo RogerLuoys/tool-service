@@ -102,14 +102,16 @@ public class FactoryService {
     public String use(ToolVO toolVO) {
         switch (ToolTypeEnum.fromCode(toolVO.getType())) {
             case SQL:
-                //先将参数与sql模板合并
                 TransformTool.mergeSql(toolVO);
+                //通过JdbcTemplate实现
                 return JdbcUtil.execute(toolVO.getJdbc()) ? "执行成功" : "执行失败";
             case HTTP:
                 TransformTool.mergeHttp(toolVO);
+                //通过restTemplate实现
                 return HttpUtil.execute(toolVO.getHttpRequest());
             case RPC:
                 TransformTool.mergeRpc(toolVO);
+                //通过json格式的泛化调用实现
                 return RpcUtil.execute(toolVO.getRpc());
             default:
                 break;

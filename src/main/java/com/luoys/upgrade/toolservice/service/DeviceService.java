@@ -1,5 +1,6 @@
 package com.luoys.upgrade.toolservice.service;
 
+import com.luoys.upgrade.toolservice.service.enums.KeywordEnum;
 import com.luoys.upgrade.toolservice.service.transform.TransformDevice;
 import com.luoys.upgrade.toolservice.web.vo.DeviceSimpleVO;
 import com.luoys.upgrade.toolservice.web.vo.DeviceVO;
@@ -21,6 +22,11 @@ public class DeviceService {
      * @return 成功为true，失败为false
      */
     public Boolean create(DeviceVO deviceVO) {
+        if (deviceVO.getOwnerId() == KeywordEnum.DEFAULT_USER.getCode()) {
+            deviceVO.setOwnerName(KeywordEnum.DEFAULT_USER.getDescription());
+        } else {
+            //todo 查用户名
+        }
         int result = deviceMapper.insert(TransformDevice.transformVO2PO(deviceVO));
         return result == 1;
     }

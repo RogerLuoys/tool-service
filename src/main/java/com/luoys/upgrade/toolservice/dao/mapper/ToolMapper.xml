@@ -38,9 +38,9 @@
     </if>
     order by id desc limit ${startIndex}, 10
   </select>
-  <delete id="deleteByUID" parameterType="java.lang.Integer">
-    delete from tool
-    where tool_id = #{tool_id,jdbcType=INTEGER}
+  <delete id="deleteByUID" parameterType="java.lang.String">
+    update tool set is_delete=1
+    where tool_id = #{tool_id,jdbcType=VARCHAR}
   </delete>
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.luoys.upgrade.toolservice.dao.po.ToolPO" useGeneratedKeys="true">
     insert into tool (tool_id, title, description,

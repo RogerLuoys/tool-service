@@ -26,7 +26,7 @@ public class TestSuiteController {
         log.info("---》开始新增：{}", testSuiteVO);
 //        int result = testCaseMapper.insert(TransformTestCase.transformVO2PO(testSuiteVO));
 //        return result == 1 ? Result.success("创建成功") : Result.error("创建失败");
-        return Result.ifSuccess(suiteService.create(testSuiteVO));
+        return Result.message(suiteService.create(testSuiteVO));
     }
 
     @RequestMapping(value = "/remove", method = RequestMethod.DELETE)
@@ -34,7 +34,7 @@ public class TestSuiteController {
         log.info("---》开始删除用例：{}", testSuiteId);
 //        int result = testCaseMapper.delete(testSuiteId);
 //        return result == 1 ? Result.success("删除成功") : Result.error("删除失败");
-        return Result.ifSuccess(suiteService.remove(testSuiteId));
+        return Result.message(suiteService.remove(testSuiteId));
     }
 
     @RequestMapping(value = "/update", method = RequestMethod.PUT)
@@ -42,7 +42,7 @@ public class TestSuiteController {
         log.info("---》开始更新用例：{}", testSuiteVO);
 //        int result = testCaseMapper.update(TransformTestCase.transformVO2PO(testSuiteVO));
 //        return result == 1 ? Result.success("更新成功") : Result.error("更新失败");
-        return Result.ifSuccess(suiteService.update(testSuiteVO));
+        return Result.message(suiteService.update(testSuiteVO));
     }
 
     @RequestMapping(value = "/query", method = RequestMethod.GET)

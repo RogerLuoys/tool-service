@@ -12,7 +12,6 @@ import com.luoys.upgrade.toolservice.dao.po.ToolPO;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
@@ -142,14 +141,13 @@ public class TransformTool {
         // 模板转换
         switch (ToolTypeEnum.fromCode(po.getType())) {
             case SQL:
-                vo.setJdbc(toSql(po.getDetail()));
+                vo.setJdbc(toJdbc(po.getDetail()));
                 break;
             case HTTP:
                 vo.setHttpRequest(toHttpRequest(po.getDetail()));
                 break;
             case RPC:
-                //todo
-                vo.setRpc(null);
+                vo.setRpc(toRpc(po.getDetail()));
                 break;
         }
         return vo;
@@ -172,25 +170,23 @@ public class TransformTool {
         // 模板转换
         switch (ToolTypeEnum.fromCode(vo.getType())) {
             case SQL:
-                po.setDetail(toSql(vo.getJdbc()));
+                po.setDetail(toJdbc(vo.getJdbc()));
                 break;
             case HTTP:
                 po.setDetail(toHttpRequest(vo.getHttpRequest()));
                 break;
             case RPC:
-                //todo
-                po.setDetail(null);
+                po.setDetail(toRpc(vo.getRpc()));
                 break;
         }
         return po;
     }
 
-    // {"name":"header","value":"http://"}
-    private static HttpRequestDTO toHttpRequest(String template) {
-        if (template == null) {
+    private static HttpRequestDTO toHttpRequest(String templateDetail) {
+        if (StringUtil.isBlank(templateDetail)) {
             return null;
         }
-        return JSON.parseObject(template, HttpRequestDTO.class);
+        return JSON.parseObject(templateDetail, HttpRequestDTO.class);
     }
 
     private static String toHttpRequest(HttpRequestDTO httpRequest) {
@@ -202,31 +198,29 @@ public class TransformTool {
 
     /**
      * 模板转jdbc对象
-     * @param template 数据库的模块值
+     * @param templateDetail 数据库的模块值
      * @return jdbc对象
      */
-    // {DataBaseDTO} &&& {type="",sql1=""} &&& ...
-    private static JdbcDTO toSql(String template) {
-        log.info("---->开始将模板转换成jdbc对象：{}", template);
-        if (StringUtil.isBlank(template)) {
+    private static JdbcDTO toJdbc(String templateDetail) {
+        if (StringUtil.isBlank(templateDetail)) {
             return null;
         }
-        //用分隔符截断字符串
-        List<String> sqlList = Arrays.asList(template.split(KeywordEnum.SEPARATOR.getCode()));
-        //第一段需要是数据库
-        if (!sqlList.get(0).startsWith("{")) {
-            return null;
-        }
-        JdbcDTO jdbcDTO = new JdbcDTO();
-        jdbcDTO.setDataSource(JSON.parseObject(sqlList.get(0), DataSourceDTO.class));
-        List<SqlDTO> sqlDTOList = new ArrayList<>();
-        //第一个数据是datasource，从第二个开始取sql
-//        String currentSql;
-        for (int i = 1; i < sqlList.size(); i++) {
-            sqlDTOList.add(JSON.parseObject(sqlList.get(i), SqlDTO.class));
-        }
-        jdbcDTO.setSqlList(sqlDTOList);
-        return jdbcDTO;
+        return JSON.parseObject(templateDetail, JdbcDTO.class);
+//        //用分隔符截断字符串
+//        List<String> sqlList = Arrays.asList(template.split(KeywordEnum.SEPARATOR.getCode()));
+//        //第一段需要是数据库
+//        if (!sqlList.get(0).startsWith("{")) {
+//            return null;
+//        }
+//        JdbcDTO jdbcDTO = new JdbcDTO();
+//        jdbcDTO.setDataSource(JSON.parseObject(sqlList.get(0), DataSourceDTO.class));
+//        List<SqlDTO> sqlDTOList = new ArrayList<>();
+//        //第一个数据是datasource，从第二个开始取sql
+//        for (int i = 1; i < sqlList.size(); i++) {
+//            sqlDTOList.add(JSON.parseObject(sqlList.get(i), SqlDTO.class));
+//        }
+//        jdbcDTO.setSqlList(sqlDTOList);
+//        return jdbcDTO;
     }
 
     /**
@@ -234,40 +228,83 @@ public class TransformTool {
      * @param jdbcDTO jdbc对象
      * @return 模板值
      */
-    private static String toSql(JdbcDTO jdbcDTO) {
-        if (jdbcDTO == null || jdbcDTO.getDataSource() == null || jdbcDTO.getSqlList() == null) {
+    private static String toJdbc(JdbcDTO jdbcDTO) {
+        if (jdbcDTO == null || jdbcDTO.getDataSource() == null || jdbcDTO.getSqlList() == null || jdbcDTO.getSqlList().size() == 0) {
             return null;
         }
-        StringBuilder template = new StringBuilder();
-        //先把datasource对象序列化
-        template.append(JSON.toJSONString(jdbcDTO.getDataSource()));
-        //再把sql对象列表序列化
+        //判断sql语句的类型
         String currentType;
-        for (SqlDTO sqlDTO : jdbcDTO.getSqlList()) {
-            // 插入分隔符
-            template.append(KeywordEnum.SEPARATOR.getCode());
-            if (sqlDTO.getType() == null || sqlDTO.getType().equals(SqlTypeEnum.UNKNOWN.getValue())) {
+        for (int i = 0; i < jdbcDTO.getSqlList().size(); i++) {
+            if (jdbcDTO.getSqlList().get(i).getType() == null || jdbcDTO.getSqlList().get(i).getType().equals(SqlTypeEnum.UNKNOWN.getValue())) {
                 //当模板内无sql类型，取(0-空格)判断并设置sql类型
-                currentType = sqlDTO.getSql().substring(0, 6).toUpperCase();
+                currentType = jdbcDTO.getSqlList().get(i).getSql().substring(0, 6).toUpperCase();
                 switch (SqlTypeEnum.fromValue(currentType)) {
                     case INSERT:
-                        sqlDTO.setType(SqlTypeEnum.INSERT.getValue());
+                        jdbcDTO.getSqlList().get(i).setType(SqlTypeEnum.INSERT.getValue());
                         break;
                     case DELETE:
-                        sqlDTO.setType(SqlTypeEnum.DELETE.getValue());
+                        jdbcDTO.getSqlList().get(i).setType(SqlTypeEnum.DELETE.getValue());
                         break;
                     case UPDATE:
-                        sqlDTO.setType(SqlTypeEnum.UPDATE.getValue());
+                        jdbcDTO.getSqlList().get(i).setType(SqlTypeEnum.UPDATE.getValue());
                         break;
                     case SELECT:
-                        sqlDTO.setType(SqlTypeEnum.SELECT.getValue());
+                        jdbcDTO.getSqlList().get(i).setType(SqlTypeEnum.SELECT.getValue());
+                        break;
+                    case COUNT:
+                        jdbcDTO.getSqlList().get(i).setType(SqlTypeEnum.COUNT.getValue());
                         break;
                     default:
-                        sqlDTO.setType(SqlTypeEnum.UNKNOWN.getValue());
+                        jdbcDTO.getSqlList().get(i).setType(SqlTypeEnum.UNKNOWN.getValue());
                 }
             }
-            template.append(JSON.toJSONString(sqlDTO));
         }
-        return template.toString();
+        return JSON.toJSONString(jdbcDTO);
+
+//        StringBuilder template = new StringBuilder();
+//        //先把datasource对象序列化
+//        template.append(JSON.toJSONString(jdbcDTO.getDataSource()));
+//        //再把sql对象列表序列化
+//        String currentType;
+//        for (SqlDTO sqlDTO : jdbcDTO.getSqlList()) {
+//            // 插入分隔符
+//            template.append(KeywordEnum.SEPARATOR.getCode());
+//            if (sqlDTO.getType() == null || sqlDTO.getType().equals(SqlTypeEnum.UNKNOWN.getValue())) {
+//                //当模板内无sql类型，取(0-空格)判断并设置sql类型
+//                currentType = sqlDTO.getSql().substring(0, 6).toUpperCase();
+//                switch (SqlTypeEnum.fromValue(currentType)) {
+//                    case INSERT:
+//                        sqlDTO.setType(SqlTypeEnum.INSERT.getValue());
+//                        break;
+//                    case DELETE:
+//                        sqlDTO.setType(SqlTypeEnum.DELETE.getValue());
+//                        break;
+//                    case UPDATE:
+//                        sqlDTO.setType(SqlTypeEnum.UPDATE.getValue());
+//                        break;
+//                    case SELECT:
+//                        sqlDTO.setType(SqlTypeEnum.SELECT.getValue());
+//                        break;
+//                    default:
+//                        sqlDTO.setType(SqlTypeEnum.UNKNOWN.getValue());
+//                }
+//            }
+//            template.append(JSON.toJSONString(sqlDTO));
+//        }
+//        return template.toString();
+    }
+
+    private static String toRpc(RpcDTO rpcDTO) {
+        if (rpcDTO == null) {
+            return null;
+        }
+        return JSON.toJSONString(rpcDTO);
+    }
+
+    private static RpcDTO toRpc(String templateDetail) {
+        if (StringUtil.isBlank(templateDetail)) {
+            return null;
+        }
+        return JSON.parseObject(templateDetail, RpcDTO.class);
     }
 }

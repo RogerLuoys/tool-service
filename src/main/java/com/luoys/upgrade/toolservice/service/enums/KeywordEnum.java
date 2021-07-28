@@ -5,10 +5,10 @@ import lombok.Getter;
 @Getter
 public enum KeywordEnum {
 
-    SEPARATOR(" &&& ", "通用分隔符"),
+//    SEPARATOR(" &&& ", "通用分隔符"),
     PARAM_SYMBOL("$$${", "参数占位符"),
     JSON_START("{\"", "Json开始字符"),
-    DEFAULT_USER("101", "default");
+    DEFAULT_USER("101", "默认用户");
 
     private final String code;
     private final String description;

@@ -19,13 +19,12 @@ public class DeviceController {
     private DeviceService deviceService;
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public Result<String> create(@RequestHeader("userId") String userId, @RequestHeader("userName") String userName, @RequestBody DeviceVO deviceVO) {
+    public Result<String> create(@RequestHeader("userId") String userId, @RequestBody DeviceVO deviceVO) {
         deviceVO.setOwnerId(userId);
-        deviceVO.setOwnerName(userName);
         log.info("---》开始新增设备：{}", deviceVO);
 //        int result = deviceMapper.insert(TransformDevice.transformVO2PO(deviceVO));
 //        return result == 1 ? Result.success("创建成功") : Result.error("创建失败");
-        return Result.ifSuccess(deviceService.create(deviceVO));
+        return Result.message(deviceService.create(deviceVO));
     }
 
 //    @RequestMapping(value = "/quickCreate", method = RequestMethod.POST)
@@ -47,7 +46,7 @@ public class DeviceController {
         log.info("---》开始删除设备：{}", deviceId);
 //        int result = deviceMapper.delete(deviceId);
 //        return result == 1 ? Result.success("删除成功") : Result.error("删除失败");
-        return Result.ifSuccess(deviceService.remove(deviceId));
+        return Result.message(deviceService.remove(deviceId));
     }
 
     @RequestMapping(value = "/update", method = RequestMethod.POST)
@@ -55,7 +54,7 @@ public class DeviceController {
         log.info("---》开始更新设备：{}", deviceVO);
 //        int result = deviceMapper.update(TransformDevice.transformVO2PO(deviceVO));
 //        return result == 1 ? Result.success("更新成功") : Result.error("更新失败");
-        return Result.ifSuccess(deviceService.update(deviceVO));
+        return Result.message(deviceService.update(deviceVO));
     }
 
     @RequestMapping(value = "/query", method = RequestMethod.GET)

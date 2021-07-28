@@ -1,5 +1,6 @@
 package com.luoys.upgrade.toolservice.service;
 
+import com.luoys.upgrade.toolservice.service.enums.KeywordEnum;
 import com.luoys.upgrade.toolservice.web.vo.TestCaseSimpleVO;
 import com.luoys.upgrade.toolservice.web.vo.TestCaseVO;
 import com.luoys.upgrade.toolservice.dao.TestCaseMapper;
@@ -22,6 +23,11 @@ public class CaseService {
      * @return 新增成功为true，失败为false
      */
     public Boolean create(TestCaseVO testCaseVO) {
+        if (testCaseVO.getOwnerId() == KeywordEnum.DEFAULT_USER.getCode()) {
+            testCaseVO.setOwnerName(KeywordEnum.DEFAULT_USER.getDescription());
+        } else {
+            //todo 查用户名
+        }
         int result = testCaseMapper.insert(TransformTestCase.transformVO2PO(testCaseVO));
         return result == 1;
     }

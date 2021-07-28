@@ -8,12 +8,14 @@ import java.util.Map;
 @Getter
 public enum SqlTypeEnum {
 
-    //全部都是6个字符
+    //匹配sql语句中第1-6个字符
+    UNKNOWN(0, "UNKNOWN", "unknown"),
     INSERT(1, "INSERT", "insert"),
     DELETE(2, "DELETE", "delete"),
     UPDATE(3, "UPDATE", "update"),
     SELECT(4, "SELECT", "select"),
-    UNKNOWN(-1, "UNKNOWN", "unknown");
+    COUNT(5, "COUNT ", "count"),
+    ERROR(-1, "ERROR", "error");
 
     private final Integer code;
     private final String value;
@@ -41,7 +43,11 @@ public enum SqlTypeEnum {
     }
 
     public static SqlTypeEnum fromValue(String value) {
-        return value == null ? null : VALUE_MAP.get(value);
+        if (value == null || VALUE_MAP.get(value) == null) {
+            return ERROR;
+        } else {
+            return VALUE_MAP.get(value);
+        }
     }
 
 }
