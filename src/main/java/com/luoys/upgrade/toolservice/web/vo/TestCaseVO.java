@@ -1,6 +1,7 @@
 package com.luoys.upgrade.toolservice.web.vo;
 
 import com.luoys.upgrade.toolservice.service.dto.ParamDTO;
+import com.luoys.upgrade.toolservice.service.dto.StepDTO;
 import lombok.Data;
 
 import java.util.List;
@@ -13,11 +14,11 @@ public class TestCaseVO {
 
     private String description;
 
-    private List<ParamDTO> preStepList;
+    private List<StepDTO> preStepList;
 
-    private List<ParamDTO> mainStepList;
+    private List<StepDTO> mainStepList;
 
-    private List<ParamDTO> afterStepList;
+    private List<StepDTO> afterStepList;
 
     private String ownerId;
 
