@@ -10,7 +10,8 @@ public enum ToolTypeEnum {
 
     SQL(1, "sql类型工具"),
     HTTP(2, "http请求类型工具"),
-    RPC(3, "rpc请求类型工具");
+    RPC(3, "rpc请求类型工具"),
+    MULTIPLE(4, "多个子工具聚合");
 
     private final Integer code;
     private final String description;

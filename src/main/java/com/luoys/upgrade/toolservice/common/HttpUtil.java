@@ -2,6 +2,7 @@ package com.luoys.upgrade.toolservice.common;
 
 import com.luoys.upgrade.toolservice.service.dto.HttpRequestDTO;
 import com.luoys.upgrade.toolservice.service.dto.ParamDTO;
+import com.luoys.upgrade.toolservice.service.dto.ParameterDTO;
 import com.luoys.upgrade.toolservice.service.enums.HttpTypeEnum;
 import lombok.extern.slf4j.Slf4j;
 //import org.apache.http.HttpEntity;
@@ -76,8 +77,8 @@ public class HttpUtil {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         if (httpRequestDTO.getHttpHeaderList() != null && httpRequestDTO.getHttpHeaderList().size() > 0) {
-            for (ParamDTO paramDTO : httpRequestDTO.getHttpHeaderList()) {
-                headers.add(paramDTO.getName(), paramDTO.getValue());
+            for (ParameterDTO parameterDTO : httpRequestDTO.getHttpHeaderList()) {
+                headers.add(parameterDTO.getName(), parameterDTO.getValue());
             }
         }
         HttpEntity<String> entity = new HttpEntity<>(body, headers);

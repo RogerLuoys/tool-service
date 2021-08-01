@@ -38,5 +38,5 @@ public class RpcDTO {
      * -value是参数的值，json格式，如："{'name':'Tom','age':24}"
      * -comment是参数类型，className，如：java.lang.String或com.luoys.upgrade.uc.share.dto.UserDTO
      */
-    private List<ParamDTO> paramList;
+    private List<ParameterDTO> parameterList;
 }

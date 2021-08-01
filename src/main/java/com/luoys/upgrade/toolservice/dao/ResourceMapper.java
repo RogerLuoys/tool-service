@@ -1,6 +1,5 @@
 package com.luoys.upgrade.toolservice.dao;
 
-import com.luoys.upgrade.toolservice.dao.po.DevicePO;
 import com.luoys.upgrade.toolservice.dao.po.ResourcePO;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;

@@ -4,14 +4,12 @@ import com.luoys.upgrade.toolservice.common.HttpUtil;
 import com.luoys.upgrade.toolservice.common.JdbcUtil;
 import com.luoys.upgrade.toolservice.common.NumberSender;
 import com.luoys.upgrade.toolservice.common.RpcUtil;
+import com.luoys.upgrade.toolservice.dao.ToolMapper;
 import com.luoys.upgrade.toolservice.service.enums.KeywordEnum;
 import com.luoys.upgrade.toolservice.service.enums.ToolTypeEnum;
 import com.luoys.upgrade.toolservice.service.transform.TransformTool;
 import com.luoys.upgrade.toolservice.web.vo.ToolSimpleVO;
 import com.luoys.upgrade.toolservice.web.vo.ToolVO;
-import com.luoys.upgrade.toolservice.dao.ToolMapper;
-import com.luoys.upgrade.uc.share.service.UserService;
-import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -48,7 +46,7 @@ public class FactoryService {
      * @return 成功为true，失败为false
      */
     public Boolean remove(String toolId) {
-        int result = toolMapper.deleteByUID(toolId);
+        int result = toolMapper.remove(toolId);
         return result == 1;
     }
 
@@ -58,7 +56,7 @@ public class FactoryService {
      * @return 成功为true，失败为false
      */
     public Boolean update(ToolVO toolVO) {
-        int result = toolMapper.updateByUID(TransformTool.transformVO2PO(toolVO));
+        int result = toolMapper.update(TransformTool.transformVO2PO(toolVO));
         return result == 1;
     }
 
@@ -68,7 +66,6 @@ public class FactoryService {
      * @param isOnlyOwner 是否只查自己
      * @param type 类型
      * @param name 名字
-     * @param isTestStep 是否只查测试步骤
      * @param pageIndex 页码
      * @return 工具列表
      */
@@ -76,13 +73,12 @@ public class FactoryService {
                                     Boolean isOnlyOwner,
                                     Integer type,
                                     String name,
-                                    Boolean isTestStep,
                                     Integer pageIndex) {
         if (isOnlyOwner != null && isOnlyOwner) {
             userId = null;
         }
         //数据库startIndex从0开始
-        return TransformTool.transformPO2VO(toolMapper.list(type, name, isTestStep, userId, pageIndex-1));
+        return TransformTool.transformPO2VO(toolMapper.list(type, name, userId, pageIndex-1));
     }
 
     /**

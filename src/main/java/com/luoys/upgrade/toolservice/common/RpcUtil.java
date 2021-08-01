@@ -53,16 +53,16 @@ public class RpcUtil {
      * @return 调用的response
      */
     public static String execute(RpcDTO rpcDTO) {
-        String[] paramTypeArray = new String[rpcDTO.getParamList().size()];
-        Object[] paramArray = new Object[rpcDTO.getParamList().size()];
+        String[] paramTypeArray = new String[rpcDTO.getParameterList().size()];
+        Object[] paramArray = new Object[rpcDTO.getParameterList().size()];
         //把对象中的参数列表转换成对应的数组
-        for (int i = 0; i < rpcDTO.getParamList().size(); i++) {
-            paramTypeArray[i] = rpcDTO.getParamList().get(i).getComment();
+        for (int i = 0; i < rpcDTO.getParameterList().size(); i++) {
+            paramTypeArray[i] = rpcDTO.getParameterList().get(i).getComment();
             //如果参数类型是Integer，则把参数值从String转成Integer
-            if (rpcDTO.getParamList().get(i).getComment().equals(Integer.class.getName())) {
-                paramArray[i] = Integer.valueOf(rpcDTO.getParamList().get(i).getValue());
+            if (rpcDTO.getParameterList().get(i).getComment().equals(Integer.class.getName())) {
+                paramArray[i] = Integer.valueOf(rpcDTO.getParameterList().get(i).getValue());
             } else {
-                paramArray[i] = rpcDTO.getParamList().get(i).getValue();
+                paramArray[i] = rpcDTO.getParameterList().get(i).getValue();
             }
         }
         return invoke(rpcDTO.getUrl(), rpcDTO.getInterfaceName(), rpcDTO.getMethodName(), paramTypeArray, paramArray);
