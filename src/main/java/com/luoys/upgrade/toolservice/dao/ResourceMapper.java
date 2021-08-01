@@ -1,25 +1,28 @@
 package com.luoys.upgrade.toolservice.dao;
 
 import com.luoys.upgrade.toolservice.dao.po.DevicePO;
+import com.luoys.upgrade.toolservice.dao.po.ResourcePO;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
-public interface DeviceMapper {
+public interface ResourceMapper {
 
-    int insert(DevicePO devicePO);
+    int insert(ResourcePO resourcePO);
 
     int delete(Integer id);
 
-    int update(DevicePO record);
+    int remove(Integer id);
 
-    List<DevicePO> list(@Param("type") Integer type,
-                        @Param("title") String title,
+    int update(ResourcePO resourcePO);
+
+    List<ResourcePO> list(@Param("type") Integer type,
+                        @Param("name") String name,
                         @Param("ownerId") String ownerId,
                         @Param("startIndex") Integer startIndex);
 
-    DevicePO selectById(Integer id);
+    ResourcePO selectById(Integer id);
 
 }

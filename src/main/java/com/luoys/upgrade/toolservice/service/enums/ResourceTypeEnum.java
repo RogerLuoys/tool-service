@@ -6,30 +6,31 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Getter
-public enum DeviceTypeEnum {
+public enum ResourceTypeEnum {
 
-//    DATA_SOURCE(1, "数据库"),
-    MOBILE_PHONE(2, "手机"),
-    CONTAINER(3, "容器");
+    DATA_SOURCE(1, "数据库"),
+    DEVICE(2, "手机"),
+    TEST_ENV(3, "测试环境"),
+    SLAVE_NODE(4, "从节点");
 
     private final Integer code;
     private final String description;
 
-    DeviceTypeEnum(Integer code, String description) {
+    ResourceTypeEnum(Integer code, String description) {
         this.code = code;
         this.description = description;
     }
 
 
-    private static final Map<Integer, DeviceTypeEnum> CODE_MAP = new HashMap<>();
+    private static final Map<Integer, ResourceTypeEnum> CODE_MAP = new HashMap<>();
 
     static {
-        for (DeviceTypeEnum e : DeviceTypeEnum.values()) {
+        for (ResourceTypeEnum e : ResourceTypeEnum.values()) {
             CODE_MAP.put(e.getCode(), e);
         }
     }
 
-    public static DeviceTypeEnum fromCode(Integer code) {
+    public static ResourceTypeEnum fromCode(Integer code) {
         return code == null ? null : CODE_MAP.get(code);
     }
 

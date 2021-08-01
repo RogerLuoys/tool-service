@@ -41,9 +41,9 @@ public class TransformTestCase {
         vo.setOwnerName(po.getOwnerName());
         vo.setTitle(po.getTitle());
         vo.setStatus(po.getStatus());
-        vo.setPreStepList(Transform.toParam(po.getPreDetail()));
-        vo.setMainStepList(Transform.toParam(po.getMainDetail()));
-        vo.setAfterStepList(Transform.toParam(po.getAfterDetail()));
+//        vo.setPreStepList(Transform.toParam(po.getPreDetail()));
+//        vo.setMainStepList(Transform.toParam(po.getMainDetail()));
+//        vo.setAfterStepList(Transform.toParam(po.getAfterDetail()));
         return vo;
     }
 
@@ -58,9 +58,9 @@ public class TransformTestCase {
         po.setOwnerName(vo.getOwnerName());
         po.setTitle(vo.getTitle());
         po.setStatus(vo.getStatus());
-        po.setPreDetail(Transform.toParam(vo.getPreStepList()));
-        po.setMainDetail(Transform.toParam(vo.getMainStepList()));
-        po.setAfterDetail(Transform.toParam(vo.getAfterStepList()));
+//        po.setPreDetail(Transform.toParam(vo.getPreStepList()));
+//        po.setMainDetail(Transform.toParam(vo.getMainStepList()));
+//        po.setAfterDetail(Transform.toParam(vo.getAfterStepList()));
         return po;
     }
 

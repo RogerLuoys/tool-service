@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.luoys.upgrade.toolservice.dao.ResourceMapper">
+  <resultMap id="BaseResultMap" type="com.luoys.upgrade.toolservice.dao.po.ResourcePO">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="description" jdbcType="VARCHAR" property="description" />
+    <result column="type" jdbcType="TINYINT" property="type" />
+    <result column="permission" jdbcType="TINYINT" property="permission" />
+    <result column="jdbc_url" jdbcType="VARCHAR" property="jdbcUrl" />
+    <result column="jdbc_driver" jdbcType="VARCHAR" property="jdbcDriver" />
+    <result column="jdbc_username" jdbcType="VARCHAR" property="jdbcUsername" />
+    <result column="jdbc_password" jdbcType="VARCHAR" property="jdbcPassword" />
+    <result column="device_model" jdbcType="VARCHAR" property="deviceModel" />
+    <result column="device_size" jdbcType="VARCHAR" property="deviceSize" />
+    <result column="device_dpi" jdbcType="VARCHAR" property="deviceDpi" />
+    <result column="device_os" jdbcType="VARCHAR" property="deviceOs" />
+    <result column="env_url" jdbcType="VARCHAR" property="envUrl" />
+    <result column="slave_url" jdbcType="VARCHAR" property="slaveUrl" />
+    <result column="owner_id" jdbcType="VARCHAR" property="ownerId" />
+    <result column="owner_name" jdbcType="VARCHAR" property="ownerName" />
+    <result column="user_id" jdbcType="VARCHAR" property="userId" />
+    <result column="user_name" jdbcType="VARCHAR" property="userName" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, `name`, description, `type`, permission, jdbc_url, jdbc_driver, jdbc_username, 
+    jdbc_password, device_model, device_size, device_dpi, device_os, env_url, slave_url, 
+    owner_id, owner_name, user_id, user_name
+  </sql>
+  <select id="selectById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from resource
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="list" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from resource
+    where is_delete = 0
+    and (owner_id = #{ownerId,jdbcType=VARCHAR} or permission = 1)
+    <if test="type != null">
+      and type = #{type,jdbcType=TINYINT}
+    </if>
+    <if test="title != null">
+      and `name` like concat('%', #{name,jdbcType=VARCHAR}, '%')
+    </if>
+    order by id desc limit ${startIndex}, 10
+  </select>
+  <delete id="delete" parameterType="java.lang.Integer">
+    delete from resource
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <update id="remove" parameterType="java.lang.Integer">
+    update resource set is_delete = 1
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.luoys.upgrade.toolservice.dao.po.ResourcePO" useGeneratedKeys="true">
+    insert into resource (`name`, description, `type`, 
+      permission, jdbc_url, jdbc_driver, 
+      jdbc_username, jdbc_password, device_model, 
+      device_size, device_dpi, device_os, 
+      env_url, slave_url, owner_id, 
+      owner_name, user_id, user_name, 
+      is_delete, gmt_create, gmt_modified
+      )
+    values (#{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{type,jdbcType=TINYINT}, 
+      #{permission,jdbcType=TINYINT}, #{jdbcUrl,jdbcType=VARCHAR}, #{jdbcDriver,jdbcType=VARCHAR}, 
+      #{jdbcUsername,jdbcType=VARCHAR}, #{jdbcPassword,jdbcType=VARCHAR}, #{deviceModel,jdbcType=VARCHAR}, 
+      #{deviceSize,jdbcType=VARCHAR}, #{deviceDpi,jdbcType=VARCHAR}, #{deviceOs,jdbcType=VARCHAR}, 
+      #{envUrl,jdbcType=VARCHAR}, #{slaveUrl,jdbcType=VARCHAR}, #{ownerId,jdbcType=VARCHAR}, 
+      #{ownerName,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR}, 
+      0, now(), now()
+      )
+  </insert>
+  <update id="update" parameterType="com.luoys.upgrade.toolservice.dao.po.ResourcePO">
+    update resource
+    <set>
+      <if test="name != null">
+        `name` = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null">
+        description = #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        `type` = #{type,jdbcType=TINYINT},
+      </if>
+      <if test="permission != null">
+        permission = #{permission,jdbcType=TINYINT},
+      </if>
+      <if test="jdbcUrl != null">
+        jdbc_url = #{jdbcUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="jdbcDriver != null">
+        jdbc_driver = #{jdbcDriver,jdbcType=VARCHAR},
+      </if>
+      <if test="jdbcUsername != null">
+        jdbc_username = #{jdbcUsername,jdbcType=VARCHAR},
+      </if>
+      <if test="jdbcPassword != null">
+        jdbc_password = #{jdbcPassword,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceModel != null">
+        device_model = #{deviceModel,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceSize != null">
+        device_size = #{deviceSize,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceDpi != null">
+        device_dpi = #{deviceDpi,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceOs != null">
+        device_os = #{deviceOs,jdbcType=VARCHAR},
+      </if>
+      <if test="envUrl != null">
+        env_url = #{envUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="slaveUrl != null">
+        slave_url = #{slaveUrl,jdbcType=VARCHAR},
+      </if>
+      gmt_modified = now(),
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

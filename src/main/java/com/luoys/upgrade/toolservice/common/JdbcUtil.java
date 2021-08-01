@@ -38,7 +38,7 @@ public class JdbcUtil {
     public static void init(DataSourceDTO dataSourceDTO) {
         dataSource.setDriverClassName(dataSourceDTO.getDriver());
         dataSource.setUrl(dataSourceDTO.getUrl());
-        dataSource.setUsername(dataSourceDTO.getUserName());
+        dataSource.setUsername(dataSourceDTO.getUsername());
         dataSource.setPassword(dataSourceDTO.getPassword());
         jdbcTemplate.setDataSource(dataSource);
     }

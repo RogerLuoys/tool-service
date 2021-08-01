@@ -5,12 +5,24 @@ import lombok.Data;
 @Data
 public class DataSourceDTO {
 
-    private String driver;
-
+    /**
+     * 数据源地址
+     */
     private String url;
 
-    private String userName;
+    /**
+     * 数据源驱动
+     */
+    private String driver;
 
+    /**
+     * 数据源用户名
+     */
+    private String username;
+
+    /**
+     * 数据源密码
+     */
     private String password;
 
 }
