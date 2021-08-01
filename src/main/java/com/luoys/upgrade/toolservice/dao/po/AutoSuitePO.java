@@ -1,0 +1,86 @@
+package com.luoys.upgrade.toolservice.dao.po;
+
+import java.io.Serializable;
+import java.util.Date;
+import lombok.Data;
+
+/**
+ * auto_suite
+ * @author 
+ */
+@Data
+public class AutoSuitePO implements Serializable {
+    private Integer id;
+
+    /**
+     * 名称
+     */
+    private String name;
+
+    /**
+     * 描述
+     */
+    private String description;
+
+    /**
+     * 用例执行的环境
+     */
+    private String environment;
+
+    /**
+     * 步骤间的等待时间
+     */
+    private Integer stepSleep;
+
+    /**
+     * 用例执行的最长时间
+     */
+    private Integer caseMaxTime;
+
+    /**
+     * 用例列表，List<ParamDTO>的json格式（最多放100-200个case）
+     */
+    private String testCase;
+
+    /**
+     * 用例总数
+     */
+    private Integer total;
+
+    /**
+     * 成功用例数
+     */
+    private Integer passed;
+
+    /**
+     * 失败用例数
+     */
+    private Integer failed;
+
+    /**
+     * 所属人id
+     */
+    private String ownerId;
+
+    /**
+     * 所属人
+     */
+    private String ownerName;
+
+    /**
+     * 逻辑删除
+     */
+    private Byte isDelete;
+
+    /**
+     * 创建时间
+     */
+    private Date gmtCreate;
+
+    /**
+     * 最近修改时间
+     */
+    private Date gmtModified;
+
+    private static final long serialVersionUID = 1L;
+}

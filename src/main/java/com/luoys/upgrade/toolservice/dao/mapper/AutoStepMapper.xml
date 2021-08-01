@@ -1,0 +1,370 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.luoys.upgrade.toolservice.dao.AutoStepMapper">
+  <resultMap id="BaseResultMap" type="com.luoys.upgrade.toolservice.dao.po.AutoStepPO">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="description" jdbcType="VARCHAR" property="description" />
+    <result column="type" jdbcType="TINYINT" property="type" />
+    <result column="jdbc_sql" jdbcType="VARCHAR" property="jdbcSql" />
+    <result column="jdbc_url" jdbcType="VARCHAR" property="jdbcUrl" />
+    <result column="jdbc_driver" jdbcType="VARCHAR" property="jdbcDriver" />
+    <result column="jdbc_username" jdbcType="VARCHAR" property="jdbcUsername" />
+    <result column="jdbc_password" jdbcType="VARCHAR" property="jdbcPassword" />
+    <result column="http_url" jdbcType="VARCHAR" property="httpUrl" />
+    <result column="http_header" jdbcType="VARCHAR" property="httpHeader" />
+    <result column="http_body" jdbcType="VARCHAR" property="httpBody" />
+    <result column="rpc_url" jdbcType="VARCHAR" property="rpcUrl" />
+    <result column="rpc_interface" jdbcType="VARCHAR" property="rpcInterface" />
+    <result column="rpc_method" jdbcType="VARCHAR" property="rpcMethod" />
+    <result column="rpc_param" jdbcType="VARCHAR" property="rpcParam" />
+    <result column="ui_type" jdbcType="TINYINT" property="uiType" />
+    <result column="ui_element" jdbcType="VARCHAR" property="uiElement" />
+    <result column="ui_element_id" jdbcType="INTEGER" property="uiElementId" />
+    <result column="after_sleep" jdbcType="INTEGER" property="afterSleep" />
+    <result column="assert_type" jdbcType="TINYINT" property="assertType" />
+    <result column="actual_result" jdbcType="VARCHAR" property="actualResult" />
+    <result column="expect_result" jdbcType="VARCHAR" property="expectResult" />
+    <result column="owner_id" jdbcType="VARCHAR" property="ownerId" />
+    <result column="owner_name" jdbcType="VARCHAR" property="ownerName" />
+    <result column="is_public" jdbcType="TINYINT" property="isPublic" />
+    <result column="is_delete" jdbcType="TINYINT" property="isDelete" />
+    <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
+    <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, `name`, description, `type`, jdbc_sql, jdbc_url, jdbc_driver, jdbc_username, 
+    jdbc_password, http_url, http_header, http_body, rpc_url, rpc_interface, rpc_method, 
+    rpc_param, ui_type, ui_element, ui_element_id, after_sleep, assert_type, actual_result, 
+    expect_result, owner_id, owner_name, is_public, is_delete, gmt_create, gmt_modified
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from auto_step
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from auto_step
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.luoys.upgrade.toolservice.dao.po.AutoStepPO" useGeneratedKeys="true">
+    insert into auto_step (`name`, description, `type`, 
+      jdbc_sql, jdbc_url, jdbc_driver, 
+      jdbc_username, jdbc_password, http_url, 
+      http_header, http_body, rpc_url, 
+      rpc_interface, rpc_method, rpc_param, 
+      ui_type, ui_element, ui_element_id, 
+      after_sleep, assert_type, actual_result, 
+      expect_result, owner_id, owner_name, 
+      is_public, is_delete, gmt_create, 
+      gmt_modified)
+    values (#{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{type,jdbcType=TINYINT}, 
+      #{jdbcSql,jdbcType=VARCHAR}, #{jdbcUrl,jdbcType=VARCHAR}, #{jdbcDriver,jdbcType=VARCHAR}, 
+      #{jdbcUsername,jdbcType=VARCHAR}, #{jdbcPassword,jdbcType=VARCHAR}, #{httpUrl,jdbcType=VARCHAR}, 
+      #{httpHeader,jdbcType=VARCHAR}, #{httpBody,jdbcType=VARCHAR}, #{rpcUrl,jdbcType=VARCHAR}, 
+      #{rpcInterface,jdbcType=VARCHAR}, #{rpcMethod,jdbcType=VARCHAR}, #{rpcParam,jdbcType=VARCHAR}, 
+      #{uiType,jdbcType=TINYINT}, #{uiElement,jdbcType=VARCHAR}, #{uiElementId,jdbcType=INTEGER}, 
+      #{afterSleep,jdbcType=INTEGER}, #{assertType,jdbcType=TINYINT}, #{actualResult,jdbcType=VARCHAR}, 
+      #{expectResult,jdbcType=VARCHAR}, #{ownerId,jdbcType=VARCHAR}, #{ownerName,jdbcType=VARCHAR}, 
+      #{isPublic,jdbcType=TINYINT}, #{isDelete,jdbcType=TINYINT}, #{gmtCreate,jdbcType=TIMESTAMP}, 
+      #{gmtModified,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.luoys.upgrade.toolservice.dao.po.AutoStepPO" useGeneratedKeys="true">
+    insert into auto_step
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="name != null">
+        `name`,
+      </if>
+      <if test="description != null">
+        description,
+      </if>
+      <if test="type != null">
+        `type`,
+      </if>
+      <if test="jdbcSql != null">
+        jdbc_sql,
+      </if>
+      <if test="jdbcUrl != null">
+        jdbc_url,
+      </if>
+      <if test="jdbcDriver != null">
+        jdbc_driver,
+      </if>
+      <if test="jdbcUsername != null">
+        jdbc_username,
+      </if>
+      <if test="jdbcPassword != null">
+        jdbc_password,
+      </if>
+      <if test="httpUrl != null">
+        http_url,
+      </if>
+      <if test="httpHeader != null">
+        http_header,
+      </if>
+      <if test="httpBody != null">
+        http_body,
+      </if>
+      <if test="rpcUrl != null">
+        rpc_url,
+      </if>
+      <if test="rpcInterface != null">
+        rpc_interface,
+      </if>
+      <if test="rpcMethod != null">
+        rpc_method,
+      </if>
+      <if test="rpcParam != null">
+        rpc_param,
+      </if>
+      <if test="uiType != null">
+        ui_type,
+      </if>
+      <if test="uiElement != null">
+        ui_element,
+      </if>
+      <if test="uiElementId != null">
+        ui_element_id,
+      </if>
+      <if test="afterSleep != null">
+        after_sleep,
+      </if>
+      <if test="assertType != null">
+        assert_type,
+      </if>
+      <if test="actualResult != null">
+        actual_result,
+      </if>
+      <if test="expectResult != null">
+        expect_result,
+      </if>
+      <if test="ownerId != null">
+        owner_id,
+      </if>
+      <if test="ownerName != null">
+        owner_name,
+      </if>
+      <if test="isPublic != null">
+        is_public,
+      </if>
+      <if test="isDelete != null">
+        is_delete,
+      </if>
+      <if test="gmtCreate != null">
+        gmt_create,
+      </if>
+      <if test="gmtModified != null">
+        gmt_modified,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null">
+        #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=TINYINT},
+      </if>
+      <if test="jdbcSql != null">
+        #{jdbcSql,jdbcType=VARCHAR},
+      </if>
+      <if test="jdbcUrl != null">
+        #{jdbcUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="jdbcDriver != null">
+        #{jdbcDriver,jdbcType=VARCHAR},
+      </if>
+      <if test="jdbcUsername != null">
+        #{jdbcUsername,jdbcType=VARCHAR},
+      </if>
+      <if test="jdbcPassword != null">
+        #{jdbcPassword,jdbcType=VARCHAR},
+      </if>
+      <if test="httpUrl != null">
+        #{httpUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="httpHeader != null">
+        #{httpHeader,jdbcType=VARCHAR},
+      </if>
+      <if test="httpBody != null">
+        #{httpBody,jdbcType=VARCHAR},
+      </if>
+      <if test="rpcUrl != null">
+        #{rpcUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="rpcInterface != null">
+        #{rpcInterface,jdbcType=VARCHAR},
+      </if>
+      <if test="rpcMethod != null">
+        #{rpcMethod,jdbcType=VARCHAR},
+      </if>
+      <if test="rpcParam != null">
+        #{rpcParam,jdbcType=VARCHAR},
+      </if>
+      <if test="uiType != null">
+        #{uiType,jdbcType=TINYINT},
+      </if>
+      <if test="uiElement != null">
+        #{uiElement,jdbcType=VARCHAR},
+      </if>
+      <if test="uiElementId != null">
+        #{uiElementId,jdbcType=INTEGER},
+      </if>
+      <if test="afterSleep != null">
+        #{afterSleep,jdbcType=INTEGER},
+      </if>
+      <if test="assertType != null">
+        #{assertType,jdbcType=TINYINT},
+      </if>
+      <if test="actualResult != null">
+        #{actualResult,jdbcType=VARCHAR},
+      </if>
+      <if test="expectResult != null">
+        #{expectResult,jdbcType=VARCHAR},
+      </if>
+      <if test="ownerId != null">
+        #{ownerId,jdbcType=VARCHAR},
+      </if>
+      <if test="ownerName != null">
+        #{ownerName,jdbcType=VARCHAR},
+      </if>
+      <if test="isPublic != null">
+        #{isPublic,jdbcType=TINYINT},
+      </if>
+      <if test="isDelete != null">
+        #{isDelete,jdbcType=TINYINT},
+      </if>
+      <if test="gmtCreate != null">
+        #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtModified != null">
+        #{gmtModified,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.luoys.upgrade.toolservice.dao.po.AutoStepPO">
+    update auto_step
+    <set>
+      <if test="name != null">
+        `name` = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null">
+        description = #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        `type` = #{type,jdbcType=TINYINT},
+      </if>
+      <if test="jdbcSql != null">
+        jdbc_sql = #{jdbcSql,jdbcType=VARCHAR},
+      </if>
+      <if test="jdbcUrl != null">
+        jdbc_url = #{jdbcUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="jdbcDriver != null">
+        jdbc_driver = #{jdbcDriver,jdbcType=VARCHAR},
+      </if>
+      <if test="jdbcUsername != null">
+        jdbc_username = #{jdbcUsername,jdbcType=VARCHAR},
+      </if>
+      <if test="jdbcPassword != null">
+        jdbc_password = #{jdbcPassword,jdbcType=VARCHAR},
+      </if>
+      <if test="httpUrl != null">
+        http_url = #{httpUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="httpHeader != null">
+        http_header = #{httpHeader,jdbcType=VARCHAR},
+      </if>
+      <if test="httpBody != null">
+        http_body = #{httpBody,jdbcType=VARCHAR},
+      </if>
+      <if test="rpcUrl != null">
+        rpc_url = #{rpcUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="rpcInterface != null">
+        rpc_interface = #{rpcInterface,jdbcType=VARCHAR},
+      </if>
+      <if test="rpcMethod != null">
+        rpc_method = #{rpcMethod,jdbcType=VARCHAR},
+      </if>
+      <if test="rpcParam != null">
+        rpc_param = #{rpcParam,jdbcType=VARCHAR},
+      </if>
+      <if test="uiType != null">
+        ui_type = #{uiType,jdbcType=TINYINT},
+      </if>
+      <if test="uiElement != null">
+        ui_element = #{uiElement,jdbcType=VARCHAR},
+      </if>
+      <if test="uiElementId != null">
+        ui_element_id = #{uiElementId,jdbcType=INTEGER},
+      </if>
+      <if test="afterSleep != null">
+        after_sleep = #{afterSleep,jdbcType=INTEGER},
+      </if>
+      <if test="assertType != null">
+        assert_type = #{assertType,jdbcType=TINYINT},
+      </if>
+      <if test="actualResult != null">
+        actual_result = #{actualResult,jdbcType=VARCHAR},
+      </if>
+      <if test="expectResult != null">
+        expect_result = #{expectResult,jdbcType=VARCHAR},
+      </if>
+      <if test="ownerId != null">
+        owner_id = #{ownerId,jdbcType=VARCHAR},
+      </if>
+      <if test="ownerName != null">
+        owner_name = #{ownerName,jdbcType=VARCHAR},
+      </if>
+      <if test="isPublic != null">
+        is_public = #{isPublic,jdbcType=TINYINT},
+      </if>
+      <if test="isDelete != null">
+        is_delete = #{isDelete,jdbcType=TINYINT},
+      </if>
+      <if test="gmtCreate != null">
+        gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtModified != null">
+        gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.luoys.upgrade.toolservice.dao.po.AutoStepPO">
+    update auto_step
+    set `name` = #{name,jdbcType=VARCHAR},
+      description = #{description,jdbcType=VARCHAR},
+      `type` = #{type,jdbcType=TINYINT},
+      jdbc_sql = #{jdbcSql,jdbcType=VARCHAR},
+      jdbc_url = #{jdbcUrl,jdbcType=VARCHAR},
+      jdbc_driver = #{jdbcDriver,jdbcType=VARCHAR},
+      jdbc_username = #{jdbcUsername,jdbcType=VARCHAR},
+      jdbc_password = #{jdbcPassword,jdbcType=VARCHAR},
+      http_url = #{httpUrl,jdbcType=VARCHAR},
+      http_header = #{httpHeader,jdbcType=VARCHAR},
+      http_body = #{httpBody,jdbcType=VARCHAR},
+      rpc_url = #{rpcUrl,jdbcType=VARCHAR},
+      rpc_interface = #{rpcInterface,jdbcType=VARCHAR},
+      rpc_method = #{rpcMethod,jdbcType=VARCHAR},
+      rpc_param = #{rpcParam,jdbcType=VARCHAR},
+      ui_type = #{uiType,jdbcType=TINYINT},
+      ui_element = #{uiElement,jdbcType=VARCHAR},
+      ui_element_id = #{uiElementId,jdbcType=INTEGER},
+      after_sleep = #{afterSleep,jdbcType=INTEGER},
+      assert_type = #{assertType,jdbcType=TINYINT},
+      actual_result = #{actualResult,jdbcType=VARCHAR},
+      expect_result = #{expectResult,jdbcType=VARCHAR},
+      owner_id = #{ownerId,jdbcType=VARCHAR},
+      owner_name = #{ownerName,jdbcType=VARCHAR},
+      is_public = #{isPublic,jdbcType=TINYINT},
+      is_delete = #{isDelete,jdbcType=TINYINT},
+      gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      gmt_modified = #{gmtModified,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

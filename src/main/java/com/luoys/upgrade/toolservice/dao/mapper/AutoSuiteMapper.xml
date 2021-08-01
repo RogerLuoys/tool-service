@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.luoys.upgrade.toolservice.dao.AutoSuiteMapper">
+  <resultMap id="BaseResultMap" type="com.luoys.upgrade.toolservice.dao.po.AutoSuitePO">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="description" jdbcType="VARCHAR" property="description" />
+    <result column="environment" jdbcType="VARCHAR" property="environment" />
+    <result column="step_sleep" jdbcType="INTEGER" property="stepSleep" />
+    <result column="case_max_time" jdbcType="INTEGER" property="caseMaxTime" />
+    <result column="test_case" jdbcType="VARCHAR" property="testCase" />
+    <result column="total" jdbcType="INTEGER" property="total" />
+    <result column="passed" jdbcType="INTEGER" property="passed" />
+    <result column="failed" jdbcType="INTEGER" property="failed" />
+    <result column="owner_id" jdbcType="VARCHAR" property="ownerId" />
+    <result column="owner_name" jdbcType="VARCHAR" property="ownerName" />
+    <result column="is_delete" jdbcType="TINYINT" property="isDelete" />
+    <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
+    <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, `name`, description, environment, step_sleep, case_max_time, test_case, total, 
+    passed, failed, owner_id, owner_name, is_delete, gmt_create, gmt_modified
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from auto_suite
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from auto_suite
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.luoys.upgrade.toolservice.dao.po.AutoSuitePO" useGeneratedKeys="true">
+    insert into auto_suite (`name`, description, environment, 
+      step_sleep, case_max_time, test_case, 
+      total, passed, failed, 
+      owner_id, owner_name, is_delete, 
+      gmt_create, gmt_modified)
+    values (#{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{environment,jdbcType=VARCHAR}, 
+      #{stepSleep,jdbcType=INTEGER}, #{caseMaxTime,jdbcType=INTEGER}, #{testCase,jdbcType=VARCHAR}, 
+      #{total,jdbcType=INTEGER}, #{passed,jdbcType=INTEGER}, #{failed,jdbcType=INTEGER}, 
+      #{ownerId,jdbcType=VARCHAR}, #{ownerName,jdbcType=VARCHAR}, #{isDelete,jdbcType=TINYINT}, 
+      #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.luoys.upgrade.toolservice.dao.po.AutoSuitePO" useGeneratedKeys="true">
+    insert into auto_suite
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="name != null">
+        `name`,
+      </if>
+      <if test="description != null">
+        description,
+      </if>
+      <if test="environment != null">
+        environment,
+      </if>
+      <if test="stepSleep != null">
+        step_sleep,
+      </if>
+      <if test="caseMaxTime != null">
+        case_max_time,
+      </if>
+      <if test="testCase != null">
+        test_case,
+      </if>
+      <if test="total != null">
+        total,
+      </if>
+      <if test="passed != null">
+        passed,
+      </if>
+      <if test="failed != null">
+        failed,
+      </if>
+      <if test="ownerId != null">
+        owner_id,
+      </if>
+      <if test="ownerName != null">
+        owner_name,
+      </if>
+      <if test="isDelete != null">
+        is_delete,
+      </if>
+      <if test="gmtCreate != null">
+        gmt_create,
+      </if>
+      <if test="gmtModified != null">
+        gmt_modified,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null">
+        #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="environment != null">
+        #{environment,jdbcType=VARCHAR},
+      </if>
+      <if test="stepSleep != null">
+        #{stepSleep,jdbcType=INTEGER},
+      </if>
+      <if test="caseMaxTime != null">
+        #{caseMaxTime,jdbcType=INTEGER},
+      </if>
+      <if test="testCase != null">
+        #{testCase,jdbcType=VARCHAR},
+      </if>
+      <if test="total != null">
+        #{total,jdbcType=INTEGER},
+      </if>
+      <if test="passed != null">
+        #{passed,jdbcType=INTEGER},
+      </if>
+      <if test="failed != null">
+        #{failed,jdbcType=INTEGER},
+      </if>
+      <if test="ownerId != null">
+        #{ownerId,jdbcType=VARCHAR},
+      </if>
+      <if test="ownerName != null">
+        #{ownerName,jdbcType=VARCHAR},
+      </if>
+      <if test="isDelete != null">
+        #{isDelete,jdbcType=TINYINT},
+      </if>
+      <if test="gmtCreate != null">
+        #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtModified != null">
+        #{gmtModified,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.luoys.upgrade.toolservice.dao.po.AutoSuitePO">
+    update auto_suite
+    <set>
+      <if test="name != null">
+        `name` = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null">
+        description = #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="environment != null">
+        environment = #{environment,jdbcType=VARCHAR},
+      </if>
+      <if test="stepSleep != null">
+        step_sleep = #{stepSleep,jdbcType=INTEGER},
+      </if>
+      <if test="caseMaxTime != null">
+        case_max_time = #{caseMaxTime,jdbcType=INTEGER},
+      </if>
+      <if test="testCase != null">
+        test_case = #{testCase,jdbcType=VARCHAR},
+      </if>
+      <if test="total != null">
+        total = #{total,jdbcType=INTEGER},
+      </if>
+      <if test="passed != null">
+        passed = #{passed,jdbcType=INTEGER},
+      </if>
+      <if test="failed != null">
+        failed = #{failed,jdbcType=INTEGER},
+      </if>
+      <if test="ownerId != null">
+        owner_id = #{ownerId,jdbcType=VARCHAR},
+      </if>
+      <if test="ownerName != null">
+        owner_name = #{ownerName,jdbcType=VARCHAR},
+      </if>
+      <if test="isDelete != null">
+        is_delete = #{isDelete,jdbcType=TINYINT},
+      </if>
+      <if test="gmtCreate != null">
+        gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtModified != null">
+        gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.luoys.upgrade.toolservice.dao.po.AutoSuitePO">
+    update auto_suite
+    set `name` = #{name,jdbcType=VARCHAR},
+      description = #{description,jdbcType=VARCHAR},
+      environment = #{environment,jdbcType=VARCHAR},
+      step_sleep = #{stepSleep,jdbcType=INTEGER},
+      case_max_time = #{caseMaxTime,jdbcType=INTEGER},
+      test_case = #{testCase,jdbcType=VARCHAR},
+      total = #{total,jdbcType=INTEGER},
+      passed = #{passed,jdbcType=INTEGER},
+      failed = #{failed,jdbcType=INTEGER},
+      owner_id = #{ownerId,jdbcType=VARCHAR},
+      owner_name = #{ownerName,jdbcType=VARCHAR},
+      is_delete = #{isDelete,jdbcType=TINYINT},
+      gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      gmt_modified = #{gmtModified,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
