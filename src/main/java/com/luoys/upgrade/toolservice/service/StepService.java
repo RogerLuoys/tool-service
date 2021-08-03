@@ -4,6 +4,7 @@ import com.luoys.upgrade.toolservice.common.HttpUtil;
 import com.luoys.upgrade.toolservice.common.JdbcUtil;
 import com.luoys.upgrade.toolservice.common.RpcUtil;
 import com.luoys.upgrade.toolservice.dao.AutoStepMapper;
+import com.luoys.upgrade.toolservice.service.client.HTTPClient;
 import com.luoys.upgrade.toolservice.service.enums.AssertTypeEnum;
 import com.luoys.upgrade.toolservice.service.enums.AutoStepTypeEnum;
 import com.luoys.upgrade.toolservice.service.enums.KeywordEnum;
@@ -23,7 +24,6 @@ public class StepService {
 
     @Autowired
     private AutoStepMapper autoStepMapper;
-
 
 //    @DubboReference
 //    private UserService userService;

@@ -6,7 +6,7 @@ import lombok.Data;
 public class UiDTO {
 
     /**
-     * 控件操作类型：1 click，2 sendkey，3 is exist
+     * 控件操作类型：1 click，2 sendkey，3 is exist，4 初始化
      */
     private Integer type;
 
