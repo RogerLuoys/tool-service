@@ -1,7 +1,6 @@
 package com.luoys.upgrade.toolservice.common;
 
 import com.luoys.upgrade.toolservice.service.dto.HttpRequestDTO;
-import com.luoys.upgrade.toolservice.service.dto.ParamDTO;
 import com.luoys.upgrade.toolservice.service.dto.ParameterDTO;
 import com.luoys.upgrade.toolservice.service.enums.HttpTypeEnum;
 import lombok.extern.slf4j.Slf4j;

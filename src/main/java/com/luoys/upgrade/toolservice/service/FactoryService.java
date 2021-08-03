@@ -10,13 +10,17 @@ import com.luoys.upgrade.toolservice.service.enums.ToolTypeEnum;
 import com.luoys.upgrade.toolservice.service.transform.TransformTool;
 import com.luoys.upgrade.toolservice.web.vo.ToolSimpleVO;
 import com.luoys.upgrade.toolservice.web.vo.ToolVO;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Slf4j
 @Service
 public class FactoryService {
+
+    private final static Integer MULTIPLE_LIMIT = 10;
 
     @Autowired
     private ToolMapper toolMapper;
@@ -26,6 +30,7 @@ public class FactoryService {
 
     /**
      * 创建单个工具
+     *
      * @param toolVO 工具对象
      * @return 成功为true，失败为false
      */
@@ -42,6 +47,7 @@ public class FactoryService {
 
     /**
      * 逻辑删除单个工具
+     *
      * @param toolId 工具uuid
      * @return 成功为true，失败为false
      */
@@ -52,6 +58,7 @@ public class FactoryService {
 
     /**
      * 更新单个工具
+     *
      * @param toolVO 工具对象
      * @return 成功为true，失败为false
      */
@@ -62,11 +69,12 @@ public class FactoryService {
 
     /**
      * 查询工具列表
-     * @param userId 用户id
+     *
+     * @param userId      用户id
      * @param isOnlyOwner 是否只查自己
-     * @param type 类型
-     * @param name 名字
-     * @param pageIndex 页码
+     * @param type        类型
+     * @param name        名字
+     * @param pageIndex   页码
      * @return 工具列表
      */
     public List<ToolSimpleVO> query(String userId,
@@ -78,11 +86,12 @@ public class FactoryService {
             userId = null;
         }
         //数据库startIndex从0开始
-        return TransformTool.transformPO2VO(toolMapper.list(type, name, userId, pageIndex-1));
+        return TransformTool.transformPO2VO(toolMapper.list(type, name, userId, pageIndex - 1));
     }
 
     /**
      * 查询工具详情
+     *
      * @param toolId 工具uuid
      * @return 工具对象
      */
@@ -91,12 +100,34 @@ public class FactoryService {
     }
 
     /**
-     * 使用单个工具
+     * 使用工具
+     *
      * @param toolVO 工具对象
      * @return 使用结果，sql为查出的数据，http为调用后的response
      */
     public String use(ToolVO toolVO) {
+        if (toolVO.getType() == ToolTypeEnum.MULTIPLE.getCode()) {
+            if (toolVO.getToolList().size() > MULTIPLE_LIMIT) {
+                log.warn("--->聚合工具个数超过上限");
+                return null;
+            }
+            StringBuilder result = new StringBuilder();
+            for (int i = 0; i < toolVO.getToolList().size(); i++) {
+                result.append("结果").append(i).append("：")
+                        .append(execute(queryDetail(toolVO.getToolList().get(i))))
+                        .append("\n");
+            }
+            return result.toString();
+        } else {
+            return execute(toolVO);
+        }
+    }
+
+    public String execute(ToolVO toolVO) {
         switch (ToolTypeEnum.fromCode(toolVO.getType())) {
+            case MULTIPLE:
+                log.warn("--->不执行聚合工具类型");
+                return null;
             case SQL:
                 TransformTool.mergeSql(toolVO);
                 //通过JdbcTemplate实现
@@ -109,8 +140,6 @@ public class FactoryService {
                 TransformTool.mergeRpc(toolVO);
                 //通过json格式的泛化调用实现
                 return RpcUtil.execute(toolVO.getRpc());
-            default:
-                break;
         }
         return null;
     }

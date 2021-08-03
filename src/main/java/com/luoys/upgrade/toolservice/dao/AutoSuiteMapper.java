@@ -1,17 +1,25 @@
 package com.luoys.upgrade.toolservice.dao;
 
 import com.luoys.upgrade.toolservice.dao.po.AutoSuitePO;
+import com.luoys.upgrade.toolservice.dao.po.AutoSuitePO;
+import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
+@Repository
 public interface AutoSuiteMapper {
-    int deleteByPrimaryKey(Integer id);
 
-    int insert(AutoSuitePO record);
+    int insert(AutoSuitePO autoSuitePO);
 
-    int insertSelective(AutoSuitePO record);
+    int remove(Integer suiteId);
 
-    AutoSuitePO selectByPrimaryKey(Integer id);
+    int update(AutoSuitePO autoSuitePO);
 
-    int updateByPrimaryKeySelective(AutoSuitePO record);
+    AutoSuitePO selectById(Integer suiteId);
 
-    int updateByPrimaryKey(AutoSuitePO record);
+    List<AutoSuitePO> list(@Param("name") String name,
+                          @Param("ownerId") String ownerId,
+                          @Param("startIndex") Integer startIndex);
+
 }

@@ -1,17 +1,27 @@
 package com.luoys.upgrade.toolservice.dao;
 
 import com.luoys.upgrade.toolservice.dao.po.AutoStepPO;
+import com.luoys.upgrade.toolservice.dao.po.ToolPO;
+import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
+@Repository
 public interface AutoStepMapper {
-    int deleteByPrimaryKey(Integer id);
 
-    int insert(AutoStepPO record);
+    int insert(AutoStepPO toolPO);
 
-    int insertSelective(AutoStepPO record);
+    int remove(Integer toolId);
 
-    AutoStepPO selectByPrimaryKey(Integer id);
+    int update(AutoStepPO toolPO);
 
-    int updateByPrimaryKeySelective(AutoStepPO record);
+    AutoStepPO selectById(Integer toolId);
 
-    int updateByPrimaryKey(AutoStepPO record);
+    List<AutoStepPO> list(@Param("type") Integer type,
+                      @Param("name") String name,
+                      @Param("ownerId") String ownerId,
+                      @Param("isPublic") Boolean isPublic,
+                      @Param("startIndex") Integer startIndex);
+
 }

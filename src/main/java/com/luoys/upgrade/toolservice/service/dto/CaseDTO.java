@@ -2,10 +2,12 @@ package com.luoys.upgrade.toolservice.service.dto;
 
 import lombok.Data;
 
-@Deprecated
 @Data
-public class ParamDTO {
+public class CaseDTO {
+
+    private Integer sequence;
+
+    private Integer caseId;
+
     private String name;
-    private String value;
-    private String comment;
 }

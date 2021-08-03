@@ -5,11 +5,10 @@ import lombok.Data;
 @Data
 public class StepDTO {
 
-    private Integer type;
+    private Integer sequence;
 
-    private SqlDTO sql;
+    private Integer stepId;
 
-    private HttpRequestDTO httpRequest;
+    private String name;
 
-    private RpcDTO rpc;
 }

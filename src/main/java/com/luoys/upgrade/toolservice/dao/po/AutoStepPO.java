@@ -6,7 +6,7 @@ import lombok.Data;
 
 /**
  * auto_step
- * @author 
+ * @author
  */
 @Data
 public class AutoStepPO implements Serializable {
@@ -25,7 +25,7 @@ public class AutoStepPO implements Serializable {
     /**
      * 步骤类型：1 SQL，2 HTTP，3 RPC，4 UI
      */
-    private Byte type;
+    private Integer type;
 
     /**
      * sql语句列表，List<CommonDTO>类型
@@ -58,6 +58,11 @@ public class AutoStepPO implements Serializable {
     private String httpUrl;
 
     /**
+     * http请求类型
+     */
+    private String httpType;
+
+    /**
      * http请求头
      */
     private String httpHeader;
@@ -85,12 +90,17 @@ public class AutoStepPO implements Serializable {
     /**
      * rpc入参，List<CommonDTO>类型
      */
-    private String rpcParam;
+    private String rpcParameter;
 
     /**
      * 控件操作类型：1 click，2 sendkey，3 is exist
      */
-    private Byte uiType;
+    private Integer uiType;
+
+    /**
+     * 被测网址
+     */
+    private String uiUrl;
 
     /**
      * 自动化元素，默认xpath
@@ -110,7 +120,7 @@ public class AutoStepPO implements Serializable {
     /**
      * 断言类型：1 完全匹配，2 模糊匹配，-1 不校验
      */
-    private Byte assertType;
+    private Integer assertType;
 
     /**
      * 实际结果
@@ -135,22 +145,7 @@ public class AutoStepPO implements Serializable {
     /**
      * 是否公用
      */
-    private Byte isPublic;
-
-    /**
-     * 逻辑删除
-     */
-    private Byte isDelete;
-
-    /**
-     * 创建时间
-     */
-    private Date gmtCreate;
-
-    /**
-     * 最近修改时间
-     */
-    private Date gmtModified;
+    private Integer isPublic;
 
     private static final long serialVersionUID = 1L;
 }

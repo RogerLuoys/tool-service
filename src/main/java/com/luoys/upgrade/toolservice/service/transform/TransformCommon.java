@@ -2,9 +2,7 @@ package com.luoys.upgrade.toolservice.service.transform;
 
 import com.alibaba.fastjson.JSON;
 import com.luoys.upgrade.toolservice.common.StringUtil;
-import com.luoys.upgrade.toolservice.service.dto.CommonDTO;
-import com.luoys.upgrade.toolservice.service.dto.ParameterDTO;
-import com.luoys.upgrade.toolservice.service.dto.SqlDTO;
+import com.luoys.upgrade.toolservice.service.dto.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -107,6 +105,69 @@ public class TransformCommon {
         for (String tool: toolList) {
             CommonDTO commonDTO = new CommonDTO();
             commonDTO.setValue(tool);
+            commonList.add(commonDTO);
+        }
+        return JSON.toJSONString(commonList);
+    }
+
+    public static List<StepDTO> toStep(String step) {
+        if (StringUtil.isBlank(step)) {
+            return null;
+        }
+        List<CommonDTO> commonList = JSON.parseArray(step, CommonDTO.class);
+        List<StepDTO> stepList = new ArrayList<>();
+        for (CommonDTO commonDTO: commonList) {
+            StepDTO stepDTO = new StepDTO();
+            stepDTO.setStepId(Integer.valueOf(commonDTO.getValue()));
+            stepDTO.setName(commonDTO.getTitle());
+            stepDTO.setSequence(commonDTO.getIdx());
+            stepList.add(stepDTO);
+        }
+        return stepList;
+    }
+
+    public static String toStep(List<StepDTO> stepList) {
+        if (stepList == null || stepList.size() == 0) {
+            return null;
+        }
+        List<CommonDTO> commonList = new ArrayList<>();
+        for (StepDTO stepDTO: stepList) {
+            CommonDTO commonDTO = new CommonDTO();
+            commonDTO.setValue(stepDTO.getStepId().toString());
+            commonDTO.setIdx(stepDTO.getSequence());
+            commonDTO.setTitle(stepDTO.getName());
+            commonList.add(commonDTO);
+        }
+        return JSON.toJSONString(commonList);
+    }
+
+
+    public static List<CaseDTO> toCase(String cases) {
+        if (StringUtil.isBlank(cases)) {
+            return null;
+        }
+        List<CommonDTO> commonList = JSON.parseArray(cases, CommonDTO.class);
+        List<CaseDTO> caseList = new ArrayList<>();
+        for (CommonDTO commonDTO: commonList) {
+            CaseDTO caseDTO = new CaseDTO();
+            caseDTO.setCaseId(Integer.valueOf(commonDTO.getValue()));
+            caseDTO.setName(commonDTO.getTitle());
+            caseDTO.setSequence(commonDTO.getIdx());
+            caseList.add(caseDTO);
+        }
+        return caseList;
+    }
+
+    public static String toCase(List<CaseDTO> caseList) {
+        if (caseList == null || caseList.size() == 0) {
+            return null;
+        }
+        List<CommonDTO> commonList = new ArrayList<>();
+        for (CaseDTO caseDTO: caseList) {
+            CommonDTO commonDTO = new CommonDTO();
+            commonDTO.setValue(caseDTO.getCaseId().toString());
+            commonDTO.setIdx(caseDTO.getSequence());
+            commonDTO.setTitle(caseDTO.getName());
             commonList.add(commonDTO);
         }
         return JSON.toJSONString(commonList);

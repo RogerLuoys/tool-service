@@ -1,17 +1,25 @@
 package com.luoys.upgrade.toolservice.dao;
 
 import com.luoys.upgrade.toolservice.dao.po.AutoCasePO;
+import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
+@Repository
 public interface AutoCaseMapper {
-    int deleteByPrimaryKey(Integer id);
 
-    int insert(AutoCasePO record);
+    int insert(AutoCasePO autoCasePO);
 
-    int insertSelective(AutoCasePO record);
+    int remove(Integer caseId);
 
-    AutoCasePO selectByPrimaryKey(Integer id);
+    int update(AutoCasePO autoCasePO);
 
-    int updateByPrimaryKeySelective(AutoCasePO record);
+    AutoCasePO selectById(Integer caseId);
 
-    int updateByPrimaryKey(AutoCasePO record);
+    List<AutoCasePO> list(@Param("status") Integer status,
+                          @Param("name") String name,
+                          @Param("ownerId") String ownerId,
+                          @Param("startIndex") Integer startIndex);
+
 }

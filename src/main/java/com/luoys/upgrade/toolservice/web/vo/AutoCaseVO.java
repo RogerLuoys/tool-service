@@ -1,17 +1,14 @@
-package com.luoys.upgrade.toolservice.dao.po;
+package com.luoys.upgrade.toolservice.web.vo;
 
-import java.io.Serializable;
-import java.util.Date;
+import com.luoys.upgrade.toolservice.service.dto.StepDTO;
 import lombok.Data;
 
-/**
- * auto_case
- * @author
- */
-@Data
-public class AutoCasePO implements Serializable {
+import java.util.List;
 
-    private Integer id;
+@Data
+public class AutoCaseVO {
+
+    private Integer caseId;
 
     /**
      * 名称
@@ -36,17 +33,17 @@ public class AutoCasePO implements Serializable {
     /**
      * 前置步骤，List<ParamDTO>的json格式
      */
-    private String preStep;
+    private List<StepDTO> preStepList;
 
     /**
      * 主要步骤，List<ParamDTO>的json格式
      */
-    private String mainStep;
+    private List<StepDTO> mainStepList;
 
     /**
      * 收尾步骤，List<ParamDTO>的json格式
      */
-    private String afterStep;
+    private List<StepDTO> afterStepList;
 
     /**
      * 所属人id
@@ -58,5 +55,4 @@ public class AutoCasePO implements Serializable {
      */
     private String ownerName;
 
-    private static final long serialVersionUID = 1L;
 }

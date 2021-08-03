@@ -12,116 +12,48 @@
     <result column="after_step" jdbcType="VARCHAR" property="afterStep" />
     <result column="owner_id" jdbcType="VARCHAR" property="ownerId" />
     <result column="owner_name" jdbcType="VARCHAR" property="ownerName" />
-    <result column="is_delete" jdbcType="TINYINT" property="isDelete" />
-    <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
-    <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, `name`, description, max_time, `status`, pre_step, main_step, after_step, owner_id, 
-    owner_name, is_delete, gmt_create, gmt_modified
+    id, `name`, description, max_time, `status`, pre_step, main_step, after_step, owner_id,
+    owner_name
   </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select 
+  <select id="selectById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
     <include refid="Base_Column_List" />
     from auto_case
     where id = #{id,jdbcType=INTEGER}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from auto_case
+  <select id="list" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from auto_case
+    where is_delete = 0
+    and owner_id = #{ownerId,jdbcType=VARCHAR}
+    <if test="status != null">
+      and `status` = #{status,jdbcType=TINYINT}
+    </if>
+    <if test="name != null">
+      and `name` like concat('%', #{name,jdbcType=VARCHAR}, '%')
+    </if>
+    order by id desc limit ${startIndex}, 10
+  </select>
+  <update id="remove" parameterType="java.lang.Integer">
+    update auto_case set is_delete = 1
     where id = #{id,jdbcType=INTEGER}
-  </delete>
+  </update>
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.luoys.upgrade.toolservice.dao.po.AutoCasePO" useGeneratedKeys="true">
-    insert into auto_case (`name`, description, max_time, 
-      `status`, pre_step, main_step, 
-      after_step, owner_id, owner_name, 
+    insert into auto_case (`name`, description, max_time,
+      `status`, pre_step, main_step,
+      after_step, owner_id, owner_name,
       is_delete, gmt_create, gmt_modified
       )
-    values (#{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{maxTime,jdbcType=INTEGER}, 
-      #{status,jdbcType=TINYINT}, #{preStep,jdbcType=VARCHAR}, #{mainStep,jdbcType=VARCHAR}, 
-      #{afterStep,jdbcType=VARCHAR}, #{ownerId,jdbcType=VARCHAR}, #{ownerName,jdbcType=VARCHAR}, 
-      #{isDelete,jdbcType=TINYINT}, #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP}
+    values (#{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{maxTime,jdbcType=INTEGER},
+      #{status,jdbcType=TINYINT}, #{preStep,jdbcType=VARCHAR}, #{mainStep,jdbcType=VARCHAR},
+      #{afterStep,jdbcType=VARCHAR}, #{ownerId,jdbcType=VARCHAR}, #{ownerName,jdbcType=VARCHAR},
+      0, now(), now()
       )
   </insert>
-  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.luoys.upgrade.toolservice.dao.po.AutoCasePO" useGeneratedKeys="true">
-    insert into auto_case
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="name != null">
-        `name`,
-      </if>
-      <if test="description != null">
-        description,
-      </if>
-      <if test="maxTime != null">
-        max_time,
-      </if>
-      <if test="status != null">
-        `status`,
-      </if>
-      <if test="preStep != null">
-        pre_step,
-      </if>
-      <if test="mainStep != null">
-        main_step,
-      </if>
-      <if test="afterStep != null">
-        after_step,
-      </if>
-      <if test="ownerId != null">
-        owner_id,
-      </if>
-      <if test="ownerName != null">
-        owner_name,
-      </if>
-      <if test="isDelete != null">
-        is_delete,
-      </if>
-      <if test="gmtCreate != null">
-        gmt_create,
-      </if>
-      <if test="gmtModified != null">
-        gmt_modified,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="name != null">
-        #{name,jdbcType=VARCHAR},
-      </if>
-      <if test="description != null">
-        #{description,jdbcType=VARCHAR},
-      </if>
-      <if test="maxTime != null">
-        #{maxTime,jdbcType=INTEGER},
-      </if>
-      <if test="status != null">
-        #{status,jdbcType=TINYINT},
-      </if>
-      <if test="preStep != null">
-        #{preStep,jdbcType=VARCHAR},
-      </if>
-      <if test="mainStep != null">
-        #{mainStep,jdbcType=VARCHAR},
-      </if>
-      <if test="afterStep != null">
-        #{afterStep,jdbcType=VARCHAR},
-      </if>
-      <if test="ownerId != null">
-        #{ownerId,jdbcType=VARCHAR},
-      </if>
-      <if test="ownerName != null">
-        #{ownerName,jdbcType=VARCHAR},
-      </if>
-      <if test="isDelete != null">
-        #{isDelete,jdbcType=TINYINT},
-      </if>
-      <if test="gmtCreate != null">
-        #{gmtCreate,jdbcType=TIMESTAMP},
-      </if>
-      <if test="gmtModified != null">
-        #{gmtModified,jdbcType=TIMESTAMP},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.luoys.upgrade.toolservice.dao.po.AutoCasePO">
+  <update id="update" parameterType="com.luoys.upgrade.toolservice.dao.po.AutoCasePO">
     update auto_case
     <set>
       <if test="name != null">
@@ -151,32 +83,8 @@
       <if test="ownerName != null">
         owner_name = #{ownerName,jdbcType=VARCHAR},
       </if>
-      <if test="isDelete != null">
-        is_delete = #{isDelete,jdbcType=TINYINT},
-      </if>
-      <if test="gmtCreate != null">
-        gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
-      </if>
-      <if test="gmtModified != null">
-        gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
-      </if>
+      gmt_modified = now(),
     </set>
-    where id = #{id,jdbcType=INTEGER}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.luoys.upgrade.toolservice.dao.po.AutoCasePO">
-    update auto_case
-    set `name` = #{name,jdbcType=VARCHAR},
-      description = #{description,jdbcType=VARCHAR},
-      max_time = #{maxTime,jdbcType=INTEGER},
-      `status` = #{status,jdbcType=TINYINT},
-      pre_step = #{preStep,jdbcType=VARCHAR},
-      main_step = #{mainStep,jdbcType=VARCHAR},
-      after_step = #{afterStep,jdbcType=VARCHAR},
-      owner_id = #{ownerId,jdbcType=VARCHAR},
-      owner_name = #{ownerName,jdbcType=VARCHAR},
-      is_delete = #{isDelete,jdbcType=TINYINT},
-      gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
-      gmt_modified = #{gmtModified,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

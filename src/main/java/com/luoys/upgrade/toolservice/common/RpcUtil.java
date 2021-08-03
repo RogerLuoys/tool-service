@@ -1,7 +1,6 @@
 package com.luoys.upgrade.toolservice.common;
 
 import com.alibaba.fastjson.JSON;
-import com.luoys.upgrade.toolservice.service.dto.ParamDTO;
 import com.luoys.upgrade.toolservice.service.dto.RpcDTO;
 import org.apache.dubbo.config.ReferenceConfig;
 import org.apache.dubbo.config.utils.ReferenceConfigCache;

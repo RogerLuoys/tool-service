@@ -1,17 +1,12 @@
-package com.luoys.upgrade.toolservice.dao.po;
+package com.luoys.upgrade.toolservice.web.vo;
 
-import java.io.Serializable;
-import java.util.Date;
 import lombok.Data;
 
-/**
- * auto_suite
- * @author
- */
-@Data
-public class AutoSuitePO implements Serializable {
 
-    private Integer id;
+@Data
+public class AutoSuiteSimpleVO {
+
+    private Integer suiteId;
 
     /**
      * 名称
@@ -39,11 +34,6 @@ public class AutoSuitePO implements Serializable {
     private Integer caseMaxTime;
 
     /**
-     * 用例列表，List<ParamDTO>的json格式（最多放100-200个case）
-     */
-    private String testCase;
-
-    /**
      * 用例总数
      */
     private Integer total;
@@ -68,5 +58,4 @@ public class AutoSuitePO implements Serializable {
      */
     private String ownerName;
 
-    private static final long serialVersionUID = 1L;
 }
