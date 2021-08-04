@@ -1,10 +1,10 @@
 package com.luoys.upgrade.toolservice.service;
 
-import com.luoys.upgrade.toolservice.common.HttpUtil;
-import com.luoys.upgrade.toolservice.common.JdbcUtil;
 import com.luoys.upgrade.toolservice.common.NumberSender;
-import com.luoys.upgrade.toolservice.common.RpcUtil;
 import com.luoys.upgrade.toolservice.dao.ToolMapper;
+import com.luoys.upgrade.toolservice.service.client.DBClient;
+import com.luoys.upgrade.toolservice.service.client.HTTPClient;
+import com.luoys.upgrade.toolservice.service.client.RPCClient;
 import com.luoys.upgrade.toolservice.service.enums.KeywordEnum;
 import com.luoys.upgrade.toolservice.service.enums.ToolTypeEnum;
 import com.luoys.upgrade.toolservice.service.transform.TransformTool;
@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -24,6 +25,15 @@ public class FactoryService {
 
     @Autowired
     private ToolMapper toolMapper;
+
+    @Autowired
+    private HTTPClient httpClient;
+
+    @Autowired
+    private RPCClient rpcClient;
+
+    @Autowired
+    private DBClient dbClient;
 
 //    @DubboReference
 //    private UserService userService;
@@ -106,21 +116,35 @@ public class FactoryService {
      * @return 使用结果，sql为查出的数据，http为调用后的response
      */
     public String use(ToolVO toolVO) {
+        List<ToolVO> toolList = new ArrayList<>();
+        StringBuilder result = new StringBuilder();
+        // 如果是聚合工具类型，则把子工具全取出
         if (toolVO.getType() == ToolTypeEnum.MULTIPLE.getCode()) {
             if (toolVO.getToolList().size() > MULTIPLE_LIMIT) {
                 log.warn("--->聚合工具个数超过上限");
                 return null;
             }
-            StringBuilder result = new StringBuilder();
             for (int i = 0; i < toolVO.getToolList().size(); i++) {
-                result.append("结果").append(i).append("：")
-                        .append(execute(queryDetail(toolVO.getToolList().get(i))))
-                        .append("\n");
+                toolList.add(queryDetail(toolVO.getToolList().get(i)));
             }
-            return result.toString();
         } else {
-            return execute(toolVO);
+            toolList.add(toolVO);
         }
+        // 执行工具
+        try {
+            for (ToolVO targetVO: toolList) {
+                if (targetVO.getType().equals(ToolTypeEnum.MULTIPLE.getCode())) {
+                    log.error("---->不支持套娃：toolId={}", targetVO.getToolId());
+                    return null;
+                }
+                result.append(execute(targetVO)).append("\n");
+            }
+        } catch (Exception e) {
+            log.error("---->工具执行异常：toolId={}", toolVO.getToolId(), e);
+            return null;
+        }
+        result.delete(result.length() - 2, result.length());
+        return result.toString();
     }
 
     public String execute(ToolVO toolVO) {
@@ -131,15 +155,15 @@ public class FactoryService {
             case SQL:
                 TransformTool.mergeSql(toolVO);
                 //通过JdbcTemplate实现
-                return JdbcUtil.execute(toolVO.getJdbc()) ? "执行成功" : "执行失败";
+                return dbClient.execute(toolVO.getJdbc());
             case HTTP:
                 TransformTool.mergeHttp(toolVO);
                 //通过restTemplate实现
-                return HttpUtil.execute(toolVO.getHttpRequest());
+                return httpClient.execute(toolVO.getHttpRequest());
             case RPC:
                 TransformTool.mergeRpc(toolVO);
                 //通过json格式的泛化调用实现
-                return RpcUtil.execute(toolVO.getRpc());
+                return rpcClient.execute(toolVO.getRpc());
         }
         return null;
     }

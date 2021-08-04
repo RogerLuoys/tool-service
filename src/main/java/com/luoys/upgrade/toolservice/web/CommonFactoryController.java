@@ -62,6 +62,6 @@ public class CommonFactoryController {
     @RequestMapping(value = "/use", method = RequestMethod.POST)
     public Result<String> use(@RequestBody ToolVO toolVO) {
         log.info("---》开始使用通用工具：{}", toolVO);
-        return Result.message(factoryService.use(toolVO), "使用工具失败");
+        return Result.message(factoryService.use(toolVO), "执行异常，请确认参数是否正常");
     }
 }

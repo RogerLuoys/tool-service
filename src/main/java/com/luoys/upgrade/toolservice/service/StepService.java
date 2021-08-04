@@ -1,10 +1,10 @@
 package com.luoys.upgrade.toolservice.service;
 
-import com.luoys.upgrade.toolservice.common.HttpUtil;
-import com.luoys.upgrade.toolservice.common.JdbcUtil;
-import com.luoys.upgrade.toolservice.common.RpcUtil;
 import com.luoys.upgrade.toolservice.dao.AutoStepMapper;
+import com.luoys.upgrade.toolservice.service.client.DBClient;
 import com.luoys.upgrade.toolservice.service.client.HTTPClient;
+import com.luoys.upgrade.toolservice.service.client.RPCClient;
+import com.luoys.upgrade.toolservice.service.client.UIClient;
 import com.luoys.upgrade.toolservice.service.enums.AssertTypeEnum;
 import com.luoys.upgrade.toolservice.service.enums.AutoStepTypeEnum;
 import com.luoys.upgrade.toolservice.service.enums.KeywordEnum;
@@ -24,6 +24,18 @@ public class StepService {
 
     @Autowired
     private AutoStepMapper autoStepMapper;
+
+    @Autowired
+    private HTTPClient httpClient;
+
+    @Autowired
+    private RPCClient rpcClient;
+
+    @Autowired
+    private DBClient dbClient;
+
+    @Autowired
+    private UIClient uiClient;
 
 //    @DubboReference
 //    private UserService userService;
@@ -113,16 +125,16 @@ public class StepService {
         switch (AutoStepTypeEnum.fromCode(autoStepVO.getType())) {
             case STEP_SQL:
                 //通过JdbcTemplate实现
-                return JdbcUtil.execute(autoStepVO.getJdbc()) ? "执行成功" : "执行失败";
+                return dbClient.execute(autoStepVO.getJdbc());
             case STEP_HTTP:
                 //通过restTemplate实现
-                return  HttpUtil.execute(autoStepVO.getHttpRequest());
+                return  httpClient.execute(autoStepVO.getHttpRequest());
             case STEP_RPC:
                 //通过json格式的泛化调用实现
-                return  RpcUtil.execute(autoStepVO.getRpc());
+                return  rpcClient.execute(autoStepVO.getRpc());
             case STEP_UI:
                 //todo
-                return null;
+                return uiClient.execute(autoStepVO.getUi());
             default:
                 return null;
         }

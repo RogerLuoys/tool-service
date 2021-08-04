@@ -14,8 +14,8 @@ public enum SqlTypeEnum {
     DELETE(2, "DELETE", "delete"),
     UPDATE(3, "UPDATE", "update"),
     SELECT(4, "SELECT", "select"),
-    COUNT(5, "COUNT ", "count"),
-    ERROR(-1, "ERROR", "error");
+    COUNT(5, "COUNT ", "count");
+//    ERROR(-1, "ERROR", "error");
 
     private final Integer code;
     private final String value;
@@ -44,7 +44,8 @@ public enum SqlTypeEnum {
 
     public static SqlTypeEnum fromValue(String value) {
         if (value == null || VALUE_MAP.get(value) == null) {
-            return ERROR;
+//            return ERROR;
+            return null;
         } else {
             return VALUE_MAP.get(value);
         }

@@ -19,10 +19,6 @@ import java.util.Map;
 @Component
 public class DBClient {
 
-    private final String COUNT = "count(1)";
-    private final String DEFAULT_ORDER = " order by id desc";
-    private final String DEFAULT_LIMIT = " limit 10";
-
     private final DriverManagerDataSource dataSource = new DriverManagerDataSource();
     private final JdbcTemplate jdbcTemplate = new JdbcTemplate();
 
@@ -39,30 +35,34 @@ public class DBClient {
      * @param jdbcDTO -
      * @return 全部执行成功则为true
      */
-    public boolean execute(JdbcDTO jdbcDTO) {
+    public String execute(JdbcDTO jdbcDTO) {
         if (jdbcDTO == null || jdbcDTO.getDataSource() == null || jdbcDTO.getSqlList() == null) {
-            return false;
+            return "执行参数异常";
         }
         init(jdbcDTO.getDataSource());
         List<SqlDTO> sqlDTOList = jdbcDTO.getSqlList();
+        StringBuilder result = new StringBuilder();
         for (SqlDTO sqlDTO : sqlDTOList) {
-            log.info("---->执行sql：" + sqlDTO.getSql());
             switch (SqlTypeEnum.fromValue(sqlDTO.getType())) {
-                // 查询
                 case INSERT:
-                    updateNoLimit(sqlDTO.getSql());
+                    log.info("---->执行插入sql：{}", sqlDTO.getSql());
+                    result.append(update(sqlDTO.getSql())).append(" ");
                     break;
                 case DELETE:
-                    delete(sqlDTO.getSql());
+                    log.info("---->执行删除sql：{}", sqlDTO.getSql());
+                    result.append(delete(sqlDTO.getSql())).append(" ");
                     break;
                 case UPDATE:
-                    update(sqlDTO.getSql());
+                    log.info("---->执行更新sql：{}", sqlDTO.getSql());
+                    result.append(update(sqlDTO.getSql())).append(" ");
                     break;
+                case SELECT:
+                    result.append(select(sqlDTO.getSql())).append(" ");
                 default:
-                    return false;
+                    result.append("不支持sql类型 ");
             }
         }
-        return true;
+        return result.toString();
     }
 
     /**
@@ -105,20 +105,17 @@ public class DBClient {
         String suffixSql = defaultSql.substring(startIndex != -1 ? startIndex : 0).toLowerCase();
 
         if (!suffixSql.contains(" order by ")) {
+            String DEFAULT_ORDER = " order by id desc";
             defaultSql = defaultSql + DEFAULT_ORDER;
         }
         if (!suffixSql.contains(" limit ")) {
+            String DEFAULT_LIMIT = " limit 10";
             defaultSql = defaultSql + DEFAULT_LIMIT;
         }
         return defaultSql + ";";
     }
 
-    public Integer update(String sql) {
-//        String executeSql = sql.replace(";", "") + ";";
-//        if (!checkSqlType(executeSql, UPDATE)) {
-//            log.warn("---->更新语句的sql格式错误：{}", sql);
-//            return null;
-//        }
+    public Integer updateWithLimit(String sql) {
         int effectRow = count(transformUpdate2Select(sql));
         if (effectRow > 10) {
             log.warn("---->一次更新超过10行，请确认sql条件是否正确");
@@ -131,61 +128,62 @@ public class DBClient {
         return jdbcTemplate.update(sql);
     }
 
-    public Integer updateNoLimit(String sql) {
+    public String update(String sql) {
         int effectRow = count(transformUpdate2Select(sql));
-        if (effectRow > 100) {
-            log.warn("---->一次更新超过100行，请确认sql条件是否正确");
-            return 0;
+        if (effectRow > 200) {
+            return "一次更新超过200行，请确认sql条件是否正确";
         } else if (effectRow == 0) {
-            log.warn("---->查无此类数据，不需要更新");
-            return 0;
+            return "查无此类数据，不需要更新";
         }
-        return jdbcTemplate.update(sql);
+        return String.valueOf(jdbcTemplate.update(sql));
+    }
+
+    public String insert(String sql) {
+        return String.valueOf(jdbcTemplate.update(sql));
     }
 
     public Integer count(String sql) {
         Map<String, Object> result = jdbcTemplate.queryForMap(sql);
+        String COUNT = "count(1)";
         return Integer.valueOf(result.get(COUNT).toString());
     }
 
-    public Map<String, Object> select(String sql) {
+    public Map<String, Object> selectOneRow(String sql) {
         List<Map<String, Object>> result = jdbcTemplate.queryForList(sql);
         return result.size() == 0 ? null : result.get(0);
     }
 
-    public List<Map<String, Object>> selectMultiRow(String sql) {
+    public String select(String sql) {
         String executeSql = addSelectDefault(sql);
-        return jdbcTemplate.queryForList(executeSql);
+        return jdbcTemplate.queryForList(executeSql).toString();
     }
 
-    public String selectOneCell(String sql) {
-        String[] sqlList = sql.split(" ");
-        //查询语句只能查询一列数据
-        if (!sqlList[2].equalsIgnoreCase("from") || sqlList[1].equalsIgnoreCase("*") || sqlList[1].contains(",")) {
-            log.warn("---->查询单格数据的sql格式不合规：{}", sql);
-            return null;
-        }
-        Map<String, Object> result = select(sql);
-        Object value = result.get(sqlList[1]);
-        //时间格式转换
-        if (value.getClass().getName().equals("java.time.LocalDateTime")) {
-            LocalDateTime time = (LocalDateTime) value;
-            DateTimeFormatter dateTimeFormatter= DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").withZone(ZoneId.of("Asia/Shanghai"));
-            return dateTimeFormatter.format(time);
-        } else {
-            return value.toString();
-        }
-    }
+//    public String selectOneCell(String sql) {
+//        String[] sqlList = sql.split(" ");
+//        //查询语句只能查询一列数据
+//        if (!sqlList[2].equalsIgnoreCase("from") || sqlList[1].equalsIgnoreCase("*") || sqlList[1].contains(",")) {
+//            log.warn("---->查询单格数据的sql格式不合规：{}", sql);
+//            return null;
+//        }
+//        Map<String, Object> result = select(sql);
+//        Object value = result.get(sqlList[1]);
+//        //时间格式转换
+//        if (value.getClass().getName().equals("java.time.LocalDateTime")) {
+//            LocalDateTime time = (LocalDateTime) value;
+//            DateTimeFormatter dateTimeFormatter= DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").withZone(ZoneId.of("Asia/Shanghai"));
+//            return dateTimeFormatter.format(time);
+//        } else {
+//            return value.toString();
+//        }
+//    }
 
-    public Integer delete(String sql) {
+    public String delete(String sql) {
         int effectRow = count(transformDelete2Select(sql));
-        if (effectRow > 10) {
-            log.warn("---->一次删除超过10行，请确认sql条件是否正确");
-            return -1;
+        if (effectRow > 50) {
+            return "一次删除超过10行，请确认sql条件是否正确";
         } else if (effectRow == 0) {
-            log.warn("---->查无此类数据，不需要更新");
-            return 0;
+            return "查无此类数据，不需要删除";
         }
-        return jdbcTemplate.update(sql);
+        return String.valueOf(jdbcTemplate.update(sql));
     }
 }

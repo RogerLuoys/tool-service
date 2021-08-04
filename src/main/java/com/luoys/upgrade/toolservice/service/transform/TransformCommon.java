@@ -3,6 +3,7 @@ package com.luoys.upgrade.toolservice.service.transform;
 import com.alibaba.fastjson.JSON;
 import com.luoys.upgrade.toolservice.common.StringUtil;
 import com.luoys.upgrade.toolservice.service.dto.*;
+import com.luoys.upgrade.toolservice.service.enums.SqlTypeEnum;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,7 +65,6 @@ public class TransformCommon {
             sqlDTO.setSql(commonDTO.getValue());
             sqlDTO.setType(commonDTO.getComment());
             sqlList.add(sqlDTO);
-
         }
         return sqlList;
 
@@ -78,7 +78,20 @@ public class TransformCommon {
         for (SqlDTO sqlDTO: sqlList) {
             CommonDTO commonDTO = new CommonDTO();
             commonDTO.setValue(sqlDTO.getSql());
-            commonDTO.setComment(sqlDTO.getType());
+            // 如果是正常类型就直接插入，否则根据sql判断类型
+            if (!sqlDTO.getType().equals(SqlTypeEnum.UNKNOWN.getValue())) {
+                commonDTO.setComment(sqlDTO.getType());
+            } else if (sqlDTO.getSql().toUpperCase().startsWith(SqlTypeEnum.INSERT.getValue())) {
+                commonDTO.setComment(SqlTypeEnum.INSERT.getValue());
+            } else if (sqlDTO.getSql().toUpperCase().startsWith(SqlTypeEnum.DELETE.getValue())) {
+                commonDTO.setComment(SqlTypeEnum.DELETE.getValue());
+            } else if (sqlDTO.getSql().toUpperCase().startsWith(SqlTypeEnum.UPDATE.getValue())) {
+                commonDTO.setComment(SqlTypeEnum.UPDATE.getValue());
+            } else if (sqlDTO.getSql().toUpperCase().startsWith(SqlTypeEnum.SELECT.getValue())) {
+                commonDTO.setComment(SqlTypeEnum.SELECT.getValue());
+            } else {
+                commonDTO.setComment(SqlTypeEnum.UNKNOWN.getValue());
+            }
             commonList.add(commonDTO);
 
         }

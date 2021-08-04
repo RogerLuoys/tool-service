@@ -156,8 +156,9 @@ public class TransformTool {
             case HTTP:
                 HttpRequestDTO httpRequestDTO = new HttpRequestDTO();
                 httpRequestDTO.setHttpURL(po.getHttpUrl());
-                httpRequestDTO.setHttpType(po.getHttpHeader());
+                httpRequestDTO.setHttpType(po.getHttpType());
                 httpRequestDTO.setHttpBody(po.getHttpBody());
+                httpRequestDTO.setHttpHeaderList(TransformCommon.toParameter(po.getHttpHeader()));
                 vo.setHttpRequest(httpRequestDTO);
                 break;
             case RPC:
