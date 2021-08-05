@@ -27,16 +27,12 @@ public class RPCClient {
         try {
             // 弱类型接口名
             reference.setInterface(interfaceName);
-//            reference.setGroup("dev");
-//            reference.setVersion("1.0");
             reference.setUrl(url);
             reference.setRetries(0);
-            // RpcContext中设置generic=gson
-            RpcContext.getContext().setAttachment("generic","gson");
             // 声明为泛化接口
             reference.setGeneric("true");
             reference.setCheck(false);
-            GenericService genericService = ReferenceConfigCache.getCache().get(reference);
+            GenericService genericService = reference.get();
             // 传递参数对象的json字符串进行一次调用
             Object result = genericService.$invoke(methodName, paramTypeList, paramList);
             return JSON.toJSONString(result);
@@ -66,4 +62,6 @@ public class RPCClient {
         }
         return invoke(rpcDTO.getUrl(), rpcDTO.getInterfaceName(), rpcDTO.getMethodName(), paramTypeArray, paramArray);
     }
+
+
 }
