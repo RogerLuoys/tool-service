@@ -23,12 +23,12 @@
     <result column="user_name" jdbcType="VARCHAR" property="userName" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, `name`, description, `type`, permission, jdbc_url, jdbc_driver, jdbc_username, 
-    jdbc_password, device_model, device_size, device_dpi, device_os, env_url, slave_url, 
+    id, `name`, description, `type`, permission, jdbc_url, jdbc_driver, jdbc_username,
+    jdbc_password, device_model, device_size, device_dpi, device_os, env_url, slave_url,
     owner_id, owner_name, user_id, user_name
   </sql>
   <select id="selectById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select 
+    select
     <include refid="Base_Column_List" />
     from resource
     where id = #{id,jdbcType=INTEGER}
@@ -42,34 +42,30 @@
     <if test="type != null">
       and type = #{type,jdbcType=TINYINT}
     </if>
-    <if test="title != null">
+    <if test="name != null">
       and `name` like concat('%', #{name,jdbcType=VARCHAR}, '%')
     </if>
     order by id desc limit ${startIndex}, 10
   </select>
-  <delete id="delete" parameterType="java.lang.Integer">
-    delete from resource
-    where id = #{id,jdbcType=INTEGER}
-  </delete>
   <update id="remove" parameterType="java.lang.Integer">
     update resource set is_delete = 1
     where id = #{id,jdbcType=INTEGER}
   </update>
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.luoys.upgrade.toolservice.dao.po.ResourcePO" useGeneratedKeys="true">
-    insert into resource (`name`, description, `type`, 
-      permission, jdbc_url, jdbc_driver, 
-      jdbc_username, jdbc_password, device_model, 
-      device_size, device_dpi, device_os, 
-      env_url, slave_url, owner_id, 
-      owner_name, user_id, user_name, 
+    insert into resource (`name`, description, `type`,
+      permission, jdbc_url, jdbc_driver,
+      jdbc_username, jdbc_password, device_model,
+      device_size, device_dpi, device_os,
+      env_url, slave_url, owner_id,
+      owner_name, user_id, user_name,
       is_delete, gmt_create, gmt_modified
       )
-    values (#{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{type,jdbcType=TINYINT}, 
-      #{permission,jdbcType=TINYINT}, #{jdbcUrl,jdbcType=VARCHAR}, #{jdbcDriver,jdbcType=VARCHAR}, 
-      #{jdbcUsername,jdbcType=VARCHAR}, #{jdbcPassword,jdbcType=VARCHAR}, #{deviceModel,jdbcType=VARCHAR}, 
-      #{deviceSize,jdbcType=VARCHAR}, #{deviceDpi,jdbcType=VARCHAR}, #{deviceOs,jdbcType=VARCHAR}, 
-      #{envUrl,jdbcType=VARCHAR}, #{slaveUrl,jdbcType=VARCHAR}, #{ownerId,jdbcType=VARCHAR}, 
-      #{ownerName,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR}, 
+    values (#{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{type,jdbcType=TINYINT},
+      #{permission,jdbcType=TINYINT}, #{jdbcUrl,jdbcType=VARCHAR}, #{jdbcDriver,jdbcType=VARCHAR},
+      #{jdbcUsername,jdbcType=VARCHAR}, #{jdbcPassword,jdbcType=VARCHAR}, #{deviceModel,jdbcType=VARCHAR},
+      #{deviceSize,jdbcType=VARCHAR}, #{deviceDpi,jdbcType=VARCHAR}, #{deviceOs,jdbcType=VARCHAR},
+      #{envUrl,jdbcType=VARCHAR}, #{slaveUrl,jdbcType=VARCHAR}, #{ownerId,jdbcType=VARCHAR},
+      #{ownerName,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR},
       0, now(), now()
       )
   </insert>

@@ -37,7 +37,7 @@ public class ResourceService {
      * @return 成功为true，失败为false
      */
     public Boolean remove(int resourceId) {
-        int result = resourceMapper.delete(resourceId);
+        int result = resourceMapper.remove(resourceId);
         return result == 1;
     }
 

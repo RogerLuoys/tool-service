@@ -11,8 +11,6 @@ public interface ResourceMapper {
 
     int insert(ResourcePO resourcePO);
 
-    int delete(Integer id);
-
     int remove(Integer id);
 
     int update(ResourcePO resourcePO);

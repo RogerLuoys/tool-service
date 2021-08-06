@@ -21,16 +21,11 @@ public class RpcDTO {
      * 需要调用的具体方法，如 queryByUserId
      */
     private String methodName;
-//
-//    /**
-//     * 参数类型列表，className，如：java.lang.String或com.luoys.upgrade.uc.share.dto.UserDTO
-//     */
-//    private List<String> paramTypeList;
-//
-//    /**
-//     * 入参列表，json格式，如："{'name':'Tom','age':24}"
-//     */
-//    private List<Object> paramList;
+
+    /**
+     * rpc入参类型
+     */
+    private String parameterType;
 
     /**
      * rpc接口的传参列表，其中

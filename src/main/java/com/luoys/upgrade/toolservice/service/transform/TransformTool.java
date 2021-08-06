@@ -166,6 +166,7 @@ public class TransformTool {
                 rpcDTO.setUrl(po.getRpcUrl());
                 rpcDTO.setInterfaceName(po.getRpcInterface());
                 rpcDTO.setMethodName(po.getRpcMethod());
+                rpcDTO.setParameterType(po.getRpcParameterType());
                 rpcDTO.setParameterList(TransformCommon.toParameter(po.getRpcParameter()));
                 vo.setRpc(rpcDTO);
                 break;
@@ -208,6 +209,7 @@ public class TransformTool {
                 po.setRpcInterface(vo.getRpc().getInterfaceName());
                 po.setRpcMethod(vo.getRpc().getMethodName());
                 po.setRpcUrl(vo.getRpc().getUrl());
+                po.setRpcParameterType(vo.getRpc().getParameterType());
                 po.setRpcParameter(TransformCommon.toParameter(vo.getRpc().getParameterList()));
                 break;
             case MULTIPLE:

@@ -18,6 +18,7 @@
     <result column="rpc_url" jdbcType="VARCHAR" property="rpcUrl" />
     <result column="rpc_interface" jdbcType="VARCHAR" property="rpcInterface" />
     <result column="rpc_method" jdbcType="VARCHAR" property="rpcMethod" />
+    <result column="rpc_parameter_type" jdbcType="VARCHAR" property="rpcParameterType" />
     <result column="rpc_parameter" jdbcType="VARCHAR" property="rpcParameter" />
     <result column="ui_type" jdbcType="TINYINT" property="uiType" />
     <result column="ui_url" jdbcType="VARCHAR" property="uiUrl" />
@@ -33,7 +34,7 @@
   </resultMap>
   <sql id="Base_Column_List">
     id, `name`, description, `type`, jdbc_sql, jdbc_url, jdbc_driver, jdbc_username,
-    jdbc_password, http_url, http_type, http_header, http_body, rpc_url, rpc_interface, rpc_method,
+    jdbc_password, http_url, http_type, http_header, http_body, rpc_url, rpc_interface, rpc_method, rpc_parameter_type,
     rpc_parameter, ui_type, ui_url, ui_element, ui_element_id, after_sleep, assert_type, actual_result,
     expect_result, owner_id, owner_name, is_public
   </sql>
@@ -69,7 +70,7 @@
       jdbc_sql, jdbc_url, jdbc_driver,
       jdbc_username, jdbc_password, http_url, http_type,
       http_header, http_body, rpc_url,
-      rpc_interface, rpc_method, rpc_parameter,
+      rpc_interface, rpc_method, rpc_parameter_type, rpc_parameter,
       ui_type, ui_url, ui_element, ui_element_id,
       after_sleep, assert_type, actual_result,
       expect_result, owner_id, owner_name,
@@ -79,7 +80,7 @@
       #{jdbcSql,jdbcType=VARCHAR}, #{jdbcUrl,jdbcType=VARCHAR}, #{jdbcDriver,jdbcType=VARCHAR},
       #{jdbcUsername,jdbcType=VARCHAR}, #{jdbcPassword,jdbcType=VARCHAR}, #{httpUrl,jdbcType=VARCHAR}, #{httpType,jdbcType=VARCHAR},
       #{httpHeader,jdbcType=VARCHAR}, #{httpBody,jdbcType=VARCHAR}, #{rpcUrl,jdbcType=VARCHAR},
-      #{rpcInterface,jdbcType=VARCHAR}, #{rpcMethod,jdbcType=VARCHAR}, #{rpcParameter,jdbcType=VARCHAR},
+      #{rpcInterface,jdbcType=VARCHAR}, #{rpcMethod,jdbcType=VARCHAR}, #{rpcParameterType,jdbcType=VARCHAR}, #{rpcParameter,jdbcType=VARCHAR},
       #{uiType,jdbcType=TINYINT}, #{uiUrl,jdbcType=VARCHAR}, #{uiElement,jdbcType=VARCHAR}, #{uiElementId,jdbcType=INTEGER},
       #{afterSleep,jdbcType=INTEGER}, #{assertType,jdbcType=TINYINT}, #{actualResult,jdbcType=VARCHAR},
       #{expectResult,jdbcType=VARCHAR}, #{ownerId,jdbcType=VARCHAR}, #{ownerName,jdbcType=VARCHAR},
@@ -132,6 +133,9 @@
       </if>
       <if test="rpcMethod != null">
         rpc_method = #{rpcMethod,jdbcType=VARCHAR},
+      </if>
+      <if test="rpcParameterType != null">
+        rpc_parameter_type = #{rpcParameterType,jdbcType=VARCHAR},
       </if>
       <if test="rpcParameter != null">
         rpc_parameter = #{rpcParameter,jdbcType=VARCHAR},

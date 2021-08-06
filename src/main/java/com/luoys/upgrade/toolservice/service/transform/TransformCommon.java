@@ -27,7 +27,6 @@ public class TransformCommon {
             parameterDTO.setValue(commonDTO.getValue());
             parameterDTO.setName(commonDTO.getTitle());
             parameterList.add(parameterDTO);
-
         }
         return parameterList;
     }

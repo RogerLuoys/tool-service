@@ -1,13 +1,19 @@
 package com.luoys.upgrade.toolservice.service.client;
 
 import com.alibaba.fastjson.JSON;
+import com.luoys.upgrade.toolservice.service.dto.ParameterDTO;
 import com.luoys.upgrade.toolservice.service.dto.RpcDTO;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.ReferenceConfig;
 import org.apache.dubbo.config.utils.ReferenceConfigCache;
 import org.apache.dubbo.rpc.RpcContext;
 import org.apache.dubbo.rpc.service.GenericService;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
+import java.util.Map;
+
+@Slf4j
 @Component
 public class RPCClient {
 
@@ -48,20 +54,42 @@ public class RPCClient {
      * @return 调用的response
      */
     public String execute(RpcDTO rpcDTO) {
-        String[] paramTypeArray = new String[rpcDTO.getParameterList().size()];
-        Object[] paramArray = new Object[rpcDTO.getParameterList().size()];
-        //把对象中的参数列表转换成对应的数组
-        for (int i = 0; i < rpcDTO.getParameterList().size(); i++) {
-            paramTypeArray[i] = rpcDTO.getParameterList().get(i).getComment();
+        Map<String, Object> paramMap = new HashMap<>();
+        for (ParameterDTO parameterDTO : rpcDTO.getParameterList()) {
             //如果参数类型是Integer，则把参数值从String转成Integer
-            if (rpcDTO.getParameterList().get(i).getComment().equals(Integer.class.getName())) {
-                paramArray[i] = Integer.valueOf(rpcDTO.getParameterList().get(i).getValue());
+            if (parameterDTO.getComment().equals(Integer.class.getName())) {
+                paramMap.put(parameterDTO.getName(), Integer.valueOf(parameterDTO.getValue()));
+            } else if (parameterDTO.getComment().equals(String.class.getName())) {
+                paramMap.put(parameterDTO.getName(), parameterDTO.getValue());
             } else {
-                paramArray[i] = rpcDTO.getParameterList().get(i).getValue();
+                log.error("--->不支持rpc入参类型：{}", parameterDTO);
+                return null;
             }
         }
-        return invoke(rpcDTO.getUrl(), rpcDTO.getInterfaceName(), rpcDTO.getMethodName(), paramTypeArray, paramArray);
+        return invoke(rpcDTO.getUrl(), rpcDTO.getInterfaceName(), rpcDTO.getMethodName(),
+                new String[]{rpcDTO.getParameterType()},
+                new Object[]{paramMap});
     }
 
 
+//    /**
+//     * 执行rpc调用
+//     * @param rpcDTO rpc对象
+//     * @return 调用的response
+//     */
+//    public String execute(RpcDTO rpcDTO) {
+//        String[] paramTypeArray = new String[rpcDTO.getParameterList().size()];
+//        Object[] paramArray = new Object[rpcDTO.getParameterList().size()];
+//        //把对象中的参数列表转换成对应的数组
+//        for (int i = 0; i < rpcDTO.getParameterList().size(); i++) {
+//            paramTypeArray[i] = rpcDTO.getParameterList().get(i).getComment();
+//            //如果参数类型是Integer，则把参数值从String转成Integer
+//            if (rpcDTO.getParameterList().get(i).getComment().equals(Integer.class.getName())) {
+//                paramArray[i] = Integer.valueOf(rpcDTO.getParameterList().get(i).getValue());
+//            } else {
+//                paramArray[i] = rpcDTO.getParameterList().get(i).getValue();
+//            }
+//        }
+//        return invoke(rpcDTO.getUrl(), rpcDTO.getInterfaceName(), rpcDTO.getMethodName(), paramTypeArray, paramArray);
+//    }
 }

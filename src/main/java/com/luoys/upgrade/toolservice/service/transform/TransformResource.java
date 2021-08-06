@@ -57,7 +57,7 @@ public class TransformResource {
             case DATA_SOURCE:
                 DataSourceDTO dataSourceDTO = new DataSourceDTO();
                 dataSourceDTO.setDriver(po.getJdbcDriver());
-                dataSourceDTO.setUrl(po.getEnvUrl());
+                dataSourceDTO.setUrl(po.getJdbcUrl());
                 dataSourceDTO.setUsername(po.getJdbcUsername());
                 dataSourceDTO.setPassword(po.getJdbcPassword());
                 vo.setDataSource(dataSourceDTO);

@@ -32,14 +32,14 @@ public class ResourceController {
         return Result.message(resourceService.remove(resourceId));
     }
 
-    @RequestMapping(value = "/update", method = RequestMethod.POST)
+    @RequestMapping(value = "/update", method = RequestMethod.PUT)
     public Result<String> update(@RequestBody ResourceVO resourceVO) {
         log.info("---》开始更新资源：{}", resourceVO);
         return Result.message(resourceService.update(resourceVO));
     }
 
-    @RequestMapping(value = "/queryList", method = RequestMethod.GET)
-    public Result<PageInfo<ResourceSimpleVO>> queryList(@RequestParam(value = "type", required = false) Integer type,
+    @RequestMapping(value = "/query", method = RequestMethod.GET)
+    public Result<PageInfo<ResourceSimpleVO>> query(@RequestParam(value = "type", required = false) Integer type,
                                                     @RequestParam(value = "name", required = false) String name,
                                                     @RequestHeader("userId") String userId,
                                                     @RequestParam("pageIndex") Integer pageIndex) {

@@ -109,6 +109,11 @@ public class ToolPO implements Serializable {
     private String rpcMethod;
 
     /**
+     * rpc入参类型
+     */
+    private String rpcParameterType;
+
+    /**
      * rpc入参，List<CommonDTO>类型
      */
     private String rpcParameter;
