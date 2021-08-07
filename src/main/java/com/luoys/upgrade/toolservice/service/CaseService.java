@@ -6,11 +6,13 @@ import com.luoys.upgrade.toolservice.service.enums.KeywordEnum;
 import com.luoys.upgrade.toolservice.web.vo.AutoCaseSimpleVO;
 import com.luoys.upgrade.toolservice.web.vo.AutoCaseVO;
 import com.luoys.upgrade.toolservice.service.transform.TransformAutoCase;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Slf4j
 @Service
 public class CaseService {
 
@@ -80,15 +82,33 @@ public class CaseService {
         return TransformAutoCase.transformPO2VO(autoCaseMapper.selectById(caseId));
     }
 
+    /**
+     * 使用用例
+     * @param autoCaseVO 用例对象
+     * @return 主要步骤全部执行结果都为true才返回true
+     */
     public Boolean use(AutoCaseVO autoCaseVO) {
-        execute(autoCaseVO.getPreStepList());
-        Boolean result = execute(autoCaseVO.getMainStepList());
-        execute(autoCaseVO.getAfterStepList());
+        boolean result;
+        // 执行前置步骤
+        if (autoCaseVO.getPreStepList() != null && autoCaseVO.getAfterStepList().size() != 0) {
+            execute(autoCaseVO.getPreStepList());
+        }
+        // 执行主要步骤
+        if (autoCaseVO.getMainStepList() != null && autoCaseVO.getMainStepList().size() != 0) {
+            result = execute(autoCaseVO.getMainStepList());
+        } else {
+            log.error("--->用例没有主步骤：caseId={}", autoCaseVO.getCaseId());
+            return false;
+        }
+        // 执行收尾步骤
+        if (autoCaseVO.getAfterStepList() != null && autoCaseVO.getAfterStepList().size() != 0) {
+            execute(autoCaseVO.getAfterStepList());
+        }
         return result;
     }
 
-    public Boolean execute(List<StepDTO> stepList) {
-        Boolean result = true;
+    private Boolean execute(List<StepDTO> stepList) {
+        boolean result = true;
         for (StepDTO stepDTO: stepList) {
             if (!stepService.use(stepService.queryDetail(stepDTO.getStepId()))) {
                 result = false;

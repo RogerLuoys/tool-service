@@ -109,19 +109,20 @@ public class StepService {
     /**
      * 使用单个步骤
      * @param autoStepVO 步骤对象
-     * @return 使用结果，sql为查出的数据，http为调用后的response
+     * @return 使用结果，执行成功且验证通过为true，失败或异常为false
      */
     public Boolean use(AutoStepVO autoStepVO) {
-        String actualResult = execute(autoStepVO);
-        // 步骤无需校验，执行完直接返回true
-        if (autoStepVO.getAssertType().equals(AssertTypeEnum.NO_ASSERT.getCode())) {
-            return true;
+        String actualResult;
+        try {
+            actualResult = execute(autoStepVO);
+        } catch (Exception e) {
+            log.error("--->步骤执行异常：stepId={}", autoStepVO.getStepId(), e);
+            return false;
         }
-        updateActualResult(actualResult, autoStepVO.getStepId());
         return verify(autoStepVO, actualResult);
     }
 
-    public String execute(AutoStepVO autoStepVO) {
+    private String execute(AutoStepVO autoStepVO) {
         switch (AutoStepTypeEnum.fromCode(autoStepVO.getType())) {
             case STEP_SQL:
                 //通过JdbcTemplate实现
@@ -140,22 +141,39 @@ public class StepService {
         }
     }
 
+    /**
+     * 校验步骤执行结果
+     * 如果校验结果为false，会将实际值写入
+     * @param autoStepVO 步骤对象
+     * @param actualResult 实际结果
+     * @return 如果无需校验或校验通过，则返回true；否则返回false
+     */
     public Boolean verify(AutoStepVO autoStepVO, String actualResult) {
+        boolean result;
         switch (AssertTypeEnum.fromCode(autoStepVO.getAssertType())) {
-            case EQUALS:
-                return autoStepVO.getExpectResult().equals(actualResult);
-            case CONTAINS:
-                return autoStepVO.getExpectResult().contains(actualResult);
             case NO_ASSERT:
-                return true;
+                result = true;
+                break;
+            case EQUALS:
+                result = autoStepVO.getExpectResult().equals(actualResult);
+                break;
+            case CONTAINS:
+                result = autoStepVO.getExpectResult().contains(actualResult);
+                break;
             default:
+                log.error("--->未知步骤校验类型");
                 return false;
         }
+        // 如果校验失败，才将实际结果写回
+        if (!result) {
+            updateActualResult(autoStepVO.getStepId(), actualResult);
+        }
+        return result;
     }
 
-    public Boolean updateActualResult(String actualResult, Integer stepId) {
-        //todo
-        return false;
+    public Boolean updateActualResult(Integer stepId, String actualResult) {
+        int result = autoStepMapper.updateResult(stepId, actualResult);
+        return result == 1;
     }
 
 }

@@ -19,6 +19,7 @@ public class TransformAutoCase {
         vo.setOwnerId(po.getOwnerId());
         vo.setName(po.getName());
         vo.setCaseId(po.getId());
+        vo.setType(po.getType());
         vo.setStatus(po.getStatus());
         vo.setMaxTime(po.getMaxTime());
         vo.setOwnerName(po.getOwnerName());
@@ -40,6 +41,7 @@ public class TransformAutoCase {
         AutoCaseVO vo = new AutoCaseVO();
         // 设置基本信息
         vo.setName(po.getName());
+        vo.setType(po.getType());
         vo.setDescription(po.getDescription());
         vo.setOwnerId(po.getOwnerId());
         vo.setOwnerName(po.getOwnerName());
@@ -64,6 +66,7 @@ public class TransformAutoCase {
         po.setOwnerId(vo.getOwnerId());
         po.setOwnerName(vo.getOwnerName());
         po.setId(vo.getCaseId());
+        po.setType(vo.getType());
         po.setStatus(vo.getStatus());
         po.setMaxTime(vo.getMaxTime());
         // 设置步骤信息

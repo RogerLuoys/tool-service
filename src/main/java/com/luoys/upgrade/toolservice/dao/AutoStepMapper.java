@@ -16,6 +16,9 @@ public interface AutoStepMapper {
 
     int update(AutoStepPO toolPO);
 
+    int updateResult(@Param("id") Integer id,
+                     @Param("actualResult") String actualResult);
+
     AutoStepPO selectById(Integer toolId);
 
     List<AutoStepPO> list(@Param("type") Integer type,

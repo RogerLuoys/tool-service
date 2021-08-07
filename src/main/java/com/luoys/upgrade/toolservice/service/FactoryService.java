@@ -147,7 +147,7 @@ public class FactoryService {
         return result.toString();
     }
 
-    public String execute(ToolVO toolVO) {
+    private String execute(ToolVO toolVO) {
         switch (ToolTypeEnum.fromCode(toolVO.getType())) {
             case MULTIPLE:
                 log.warn("--->不执行聚合工具类型");

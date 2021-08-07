@@ -26,6 +26,11 @@ public class AutoCaseVO {
     private Integer maxTime;
 
     /**
+     * 1 接口，2 UI
+     */
+    private Integer type;
+
+    /**
      * 1 未执行，2 失败，3成功
      */
     private Integer status;

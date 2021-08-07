@@ -6,6 +6,7 @@
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="description" jdbcType="VARCHAR" property="description" />
     <result column="max_time" jdbcType="INTEGER" property="maxTime" />
+    <result column="type" jdbcType="TINYINT" property="type" />
     <result column="status" jdbcType="TINYINT" property="status" />
     <result column="pre_step" jdbcType="VARCHAR" property="preStep" />
     <result column="main_step" jdbcType="VARCHAR" property="mainStep" />
@@ -14,7 +15,7 @@
     <result column="owner_name" jdbcType="VARCHAR" property="ownerName" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, `name`, description, max_time, `status`, pre_step, main_step, after_step, owner_id,
+    id, `name`, description, max_time, `type`, `status`, pre_step, main_step, after_step, owner_id,
     owner_name
   </sql>
   <select id="selectById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
@@ -43,12 +44,12 @@
   </update>
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.luoys.upgrade.toolservice.dao.po.AutoCasePO" useGeneratedKeys="true">
     insert into auto_case (`name`, description, max_time,
-      `status`, pre_step, main_step,
+      `type`, `status`, pre_step, main_step,
       after_step, owner_id, owner_name,
       is_delete, gmt_create, gmt_modified
       )
     values (#{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{maxTime,jdbcType=INTEGER},
-      #{status,jdbcType=TINYINT}, #{preStep,jdbcType=VARCHAR}, #{mainStep,jdbcType=VARCHAR},
+      #{type,jdbcType=TINYINT}, #{status,jdbcType=TINYINT}, #{preStep,jdbcType=VARCHAR}, #{mainStep,jdbcType=VARCHAR},
       #{afterStep,jdbcType=VARCHAR}, #{ownerId,jdbcType=VARCHAR}, #{ownerName,jdbcType=VARCHAR},
       0, now(), now()
       )
@@ -64,6 +65,9 @@
       </if>
       <if test="maxTime != null">
         max_time = #{maxTime,jdbcType=INTEGER},
+      </if>
+      <if test="type != null">
+        `type` = #{type,jdbcType=TINYINT},
       </if>
       <if test="status != null">
         `status` = #{status,jdbcType=TINYINT},

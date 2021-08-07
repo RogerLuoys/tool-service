@@ -176,4 +176,9 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
+  <update id="updateResult">
+    update auto_step
+    set actual_result = #{actualResult,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
 </mapper>
