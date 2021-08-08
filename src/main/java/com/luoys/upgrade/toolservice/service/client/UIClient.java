@@ -41,6 +41,14 @@ public class UIClient {
         }
     }
 
+    public void quit() {
+        if (driver == null) {
+            return;
+        }
+        driver.close();
+        driver.quit();
+    }
+
     private void init(String url) {
         this.driver = new ChromeDriver();
         this.driver.get(url);
@@ -50,14 +58,6 @@ public class UIClient {
     private void refresh(String url) {
         this.driver.get(url);
         forceWait(3);
-    }
-
-    private void quit() {
-        if (driver == null) {
-            return;
-        }
-        driver.close();
-        driver.quit();
     }
 
     private void forceWait(int second) {

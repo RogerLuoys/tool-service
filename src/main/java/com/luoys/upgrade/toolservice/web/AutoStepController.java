@@ -2,9 +2,11 @@ package com.luoys.upgrade.toolservice.web;
 
 import com.luoys.upgrade.toolservice.common.Result;
 import com.luoys.upgrade.toolservice.service.StepService;
+import com.luoys.upgrade.toolservice.service.enums.AutoStepTypeEnum;
 import com.luoys.upgrade.toolservice.web.vo.AutoCaseSimpleVO;
 import com.luoys.upgrade.toolservice.web.vo.AutoStepVO;
 import com.luoys.upgrade.toolservice.web.vo.PageInfo;
+import com.luoys.upgrade.toolservice.web.vo.ToolVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -54,5 +56,14 @@ public class AutoStepController {
     public Result<AutoStepVO> queryDetail(@RequestParam("stepId") Integer stepId) {
         log.info("---》开始查询步骤详情：stepId={}", stepId);
         return Result.success(stepService.queryDetail(stepId));
+    }
+
+    @RequestMapping(value = "/use", method = RequestMethod.POST)
+    public Result<String> use(@RequestBody AutoStepVO autoStepVO) {
+        log.info("---》开始调试步骤：{}", autoStepVO);
+        if (autoStepVO.getType().equals(AutoStepTypeEnum.STEP_UI.getCode())) {
+            return Result.error("UI自动化步骤不可单步调试");
+        }
+        return Result.message(stepService.use(autoStepVO), "执行异常，请确认参数是否正常");
     }
 }

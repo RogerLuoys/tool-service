@@ -2,6 +2,8 @@ package com.luoys.upgrade.toolservice.web;
 
 import com.luoys.upgrade.toolservice.common.Result;
 import com.luoys.upgrade.toolservice.service.CaseService;
+import com.luoys.upgrade.toolservice.service.enums.AutoStepTypeEnum;
+import com.luoys.upgrade.toolservice.web.vo.AutoStepVO;
 import com.luoys.upgrade.toolservice.web.vo.PageInfo;
 import com.luoys.upgrade.toolservice.web.vo.AutoCaseSimpleVO;
 import com.luoys.upgrade.toolservice.web.vo.AutoCaseVO;
@@ -53,5 +55,11 @@ public class AutoCaseController {
     public Result<AutoCaseVO> queryDetail(@RequestParam("caseId") Integer caseId) {
         log.info("---》开始查询用例详情：caseId={}", caseId);
         return Result.success(caseService.queryDetail(caseId));
+    }
+
+    @RequestMapping(value = "/use", method = RequestMethod.POST)
+    public Result<String> use(@RequestBody AutoCaseVO autoCaseVO) {
+        log.info("---》开始调试用例：{}", autoCaseVO);
+        return Result.message(caseService.use(autoCaseVO), "执行异常，请确认步骤是否正常");
     }
 }

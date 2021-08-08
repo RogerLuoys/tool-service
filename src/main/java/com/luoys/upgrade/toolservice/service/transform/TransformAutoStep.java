@@ -138,10 +138,10 @@ public class TransformAutoStep {
                 po.setRpcParameter(TransformCommon.toParameter(vo.getRpc().getParameterList()));
                 break;
             case STEP_UI:
-                po.setUiElement(po.getUiElement());
-                po.setUiElementId(po.getUiElementId());
-                po.setUiType(po.getUiType());
-                po.setUiUrl(po.getUiUrl());
+                po.setUiElement(vo.getUi().getElement());
+                po.setUiElementId(vo.getUi().getElementId());
+                po.setUiType(vo.getUi().getType());
+                po.setUiUrl(vo.getUi().getUrl());
                 break;
         }
         return po;

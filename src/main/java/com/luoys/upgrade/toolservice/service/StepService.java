@@ -117,6 +117,9 @@ public class StepService {
             actualResult = execute(autoStepVO);
         } catch (Exception e) {
             log.error("--->步骤执行异常：stepId={}", autoStepVO.getStepId(), e);
+            if (autoStepVO.getType().equals(AutoStepTypeEnum.STEP_UI.getCode())) {
+                uiClient.quit();
+            }
             return false;
         }
         return verify(autoStepVO, actualResult);

@@ -1,7 +1,9 @@
 package com.luoys.upgrade.toolservice.service;
 
 import com.luoys.upgrade.toolservice.dao.AutoCaseMapper;
+import com.luoys.upgrade.toolservice.service.client.UIClient;
 import com.luoys.upgrade.toolservice.service.dto.StepDTO;
+import com.luoys.upgrade.toolservice.service.enums.AutoCaseTypeEnum;
 import com.luoys.upgrade.toolservice.service.enums.KeywordEnum;
 import com.luoys.upgrade.toolservice.web.vo.AutoCaseSimpleVO;
 import com.luoys.upgrade.toolservice.web.vo.AutoCaseVO;
@@ -21,6 +23,9 @@ public class CaseService {
 
     @Autowired
     private StepService stepService;
+
+    @Autowired
+    private UIClient uiClient;
 
     /**
      * 新增单个用例
@@ -103,6 +108,9 @@ public class CaseService {
         // 执行收尾步骤
         if (autoCaseVO.getAfterStepList() != null && autoCaseVO.getAfterStepList().size() != 0) {
             execute(autoCaseVO.getAfterStepList());
+        }
+        if (autoCaseVO.getType().equals(AutoCaseTypeEnum.UI_CASE.getCode())) {
+            uiClient.quit();
         }
         return result;
     }
