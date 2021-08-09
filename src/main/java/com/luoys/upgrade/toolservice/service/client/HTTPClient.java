@@ -21,7 +21,7 @@ public class HTTPClient {
     private final RestTemplateBuilder restTemplateBuilder = new RestTemplateBuilder();
     private final RestTemplate restTemplate = restTemplateBuilder.build();
 
-    public String execute(HttpRequestDTO httpRequestDTO) {
+    public synchronized String execute(HttpRequestDTO httpRequestDTO) {
         String url = httpRequestDTO.getHttpURL();
         String body = httpRequestDTO.getHttpBody();
         Map<String, String> uriVariables = new HashMap<>();

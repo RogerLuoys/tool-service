@@ -53,7 +53,7 @@ public class RPCClient {
      * @param rpcDTO rpc对象
      * @return 调用的response
      */
-    public String execute(RpcDTO rpcDTO) {
+    public synchronized String execute(RpcDTO rpcDTO) {
         Map<String, Object> paramMap = new HashMap<>();
         for (ParameterDTO parameterDTO : rpcDTO.getParameterList()) {
             //如果参数类型是Integer，则把参数值从String转成Integer

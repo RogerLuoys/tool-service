@@ -1,5 +1,6 @@
 package com.luoys.upgrade.toolservice.service;
 
+import com.luoys.upgrade.toolservice.common.ThreadPoolUtil;
 import com.luoys.upgrade.toolservice.dao.AutoCaseMapper;
 import com.luoys.upgrade.toolservice.service.client.UIClient;
 import com.luoys.upgrade.toolservice.service.dto.StepDTO;
@@ -88,12 +89,36 @@ public class CaseService {
     }
 
     /**
+     * 使用用例（异步）
+     * @param autoCaseVO 用例对象
+     * @return 主要步骤全部执行结果都为true才返回true
+     */
+    public Boolean useAsync(AutoCaseVO autoCaseVO) {
+        try {
+            ThreadPoolUtil.execute(new Runnable() {
+                @Override
+                public void run() {
+                    use(autoCaseVO);
+                }
+            });
+        } catch (Exception e) {
+            log.error("--->执行用例异常", e);
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * 使用用例
      * @param autoCaseVO 用例对象
      * @return 主要步骤全部执行结果都为true才返回true
      */
     public Boolean use(AutoCaseVO autoCaseVO) {
         boolean result;
+        // 如果是UI用例，则执行前也退出
+        if (autoCaseVO.getType().equals(AutoCaseTypeEnum.UI_CASE.getCode())) {
+            uiClient.quit();
+        }
         // 执行前置步骤
         if (autoCaseVO.getPreStepList() != null && autoCaseVO.getAfterStepList().size() != 0) {
             execute(autoCaseVO.getPreStepList());

@@ -60,6 +60,6 @@ public class AutoCaseController {
     @RequestMapping(value = "/use", method = RequestMethod.POST)
     public Result<String> use(@RequestBody AutoCaseVO autoCaseVO) {
         log.info("---》开始调试用例：{}", autoCaseVO);
-        return Result.message(caseService.use(autoCaseVO), "执行异常，请确认步骤是否正常");
+        return Result.message(caseService.useAsync(autoCaseVO), "执行异常，请确认步骤是否正常");
     }
 }

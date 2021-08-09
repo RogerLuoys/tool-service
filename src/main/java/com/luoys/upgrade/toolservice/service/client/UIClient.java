@@ -22,7 +22,7 @@ public class UIClient {
     private WebDriver driver = null;
     private final int forceTimeOut = 1;
 
-    public String execute(UiDTO uiDTO) {
+    public synchronized String execute(UiDTO uiDTO) {
         switch (UiTypeEnum.fromCode(uiDTO.getType())) {
             case START:
                 init(uiDTO.getUrl());
@@ -41,12 +41,13 @@ public class UIClient {
         }
     }
 
-    public void quit() {
+    public synchronized void quit() {
         if (driver == null) {
             return;
         }
         driver.close();
         driver.quit();
+        log.info("--->关闭UI：{}", driver);
     }
 
     private void init(String url) {

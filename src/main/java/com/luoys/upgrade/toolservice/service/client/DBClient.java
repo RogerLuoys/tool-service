@@ -22,7 +22,7 @@ public class DBClient {
     private final DriverManagerDataSource dataSource = new DriverManagerDataSource();
     private final JdbcTemplate jdbcTemplate = new JdbcTemplate();
 
-    public void init(DataSourceDTO dataSourceDTO) {
+    public synchronized void init(DataSourceDTO dataSourceDTO) {
         dataSource.setDriverClassName(dataSourceDTO.getDriver());
         dataSource.setUrl(dataSourceDTO.getUrl());
         dataSource.setUsername(dataSourceDTO.getUsername());
@@ -35,7 +35,7 @@ public class DBClient {
      * @param jdbcDTO -
      * @return 全部执行成功则为true
      */
-    public String execute(JdbcDTO jdbcDTO) {
+    public synchronized String execute(JdbcDTO jdbcDTO) {
         if (jdbcDTO == null || jdbcDTO.getDataSource() == null || jdbcDTO.getSqlList() == null) {
             return "执行参数异常";
         }
