@@ -1,5 +1,6 @@
 package com.luoys.upgrade.toolservice.service;
 
+import com.luoys.upgrade.toolservice.common.ThreadPoolUtil;
 import com.luoys.upgrade.toolservice.dao.AutoStepMapper;
 import com.luoys.upgrade.toolservice.service.client.DBClient;
 import com.luoys.upgrade.toolservice.service.client.HTTPClient;
@@ -107,6 +108,30 @@ public class StepService {
     }
 
     /**
+     * 使用单个步骤（异步模式）
+     * @param autoStepVO 步骤对象
+     * @return 使用结果，执行成功且验证通过为true，失败或异常为false
+     */
+    public Boolean useAsync(AutoStepVO autoStepVO) {
+        if (autoStepVO.getType().equals(AutoStepTypeEnum.STEP_UI.getCode())) {
+            log.error("--->UI步骤不支持单步调试：stepId={}", autoStepVO.getStepId());
+            return false;
+        }
+        try {
+            ThreadPoolUtil.execute(new Runnable() {
+                @Override
+                public void run() {
+                    execute(autoStepVO);
+                }
+            });
+        } catch (Exception e) {
+            log.error("--->步骤执行异常：stepId={}", autoStepVO.getStepId(), e);
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * 使用单个步骤
      * @param autoStepVO 步骤对象
      * @return 使用结果，执行成功且验证通过为true，失败或异常为false
@@ -134,10 +159,10 @@ public class StepService {
                 //通过restTemplate实现
                 return  httpClient.execute(autoStepVO.getHttpRequest());
             case STEP_RPC:
-                //通过json格式的泛化调用实现
+                //通过dubbo的泛化调用实现
                 return  rpcClient.execute(autoStepVO.getRpc());
             case STEP_UI:
-                //todo
+                //通过selenium实现
                 return uiClient.execute(autoStepVO.getUi());
             default:
                 return null;

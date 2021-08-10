@@ -64,6 +64,6 @@ public class AutoStepController {
         if (autoStepVO.getType().equals(AutoStepTypeEnum.STEP_UI.getCode())) {
             return Result.error("UI自动化步骤不可单步调试");
         }
-        return Result.message(stepService.use(autoStepVO), "执行异常，请确认参数是否正常");
+        return Result.message(stepService.useAsync(autoStepVO), "已执行，请自行确认结果", "执行异常，请确认参数是否正常");
     }
 }

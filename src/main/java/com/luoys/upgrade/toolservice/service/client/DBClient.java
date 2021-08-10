@@ -22,14 +22,6 @@ public class DBClient {
     private final DriverManagerDataSource dataSource = new DriverManagerDataSource();
     private final JdbcTemplate jdbcTemplate = new JdbcTemplate();
 
-    public synchronized void init(DataSourceDTO dataSourceDTO) {
-        dataSource.setDriverClassName(dataSourceDTO.getDriver());
-        dataSource.setUrl(dataSourceDTO.getUrl());
-        dataSource.setUsername(dataSourceDTO.getUsername());
-        dataSource.setPassword(dataSourceDTO.getPassword());
-        jdbcTemplate.setDataSource(dataSource);
-    }
-
     /**
      * 执行sql
      * @param jdbcDTO -
@@ -63,6 +55,14 @@ public class DBClient {
             }
         }
         return result.toString();
+    }
+
+    private void init(DataSourceDTO dataSourceDTO) {
+        dataSource.setDriverClassName(dataSourceDTO.getDriver());
+        dataSource.setUrl(dataSourceDTO.getUrl());
+        dataSource.setUsername(dataSourceDTO.getUsername());
+        dataSource.setPassword(dataSourceDTO.getPassword());
+        jdbcTemplate.setDataSource(dataSource);
     }
 
     /**

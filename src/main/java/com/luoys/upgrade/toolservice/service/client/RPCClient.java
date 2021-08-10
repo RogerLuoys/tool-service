@@ -20,6 +20,29 @@ public class RPCClient {
     private final ReferenceConfig<GenericService> reference = new ReferenceConfig<>();
 
     /**
+     * 执行rpc调用
+     * @param rpcDTO rpc对象
+     * @return 调用的response
+     */
+    public synchronized String execute(RpcDTO rpcDTO) {
+        Map<String, Object> paramMap = new HashMap<>();
+        for (ParameterDTO parameterDTO : rpcDTO.getParameterList()) {
+            //如果参数类型是Integer，则把参数值从String转成Integer
+            if (parameterDTO.getComment().equals(Integer.class.getName())) {
+                paramMap.put(parameterDTO.getName(), Integer.valueOf(parameterDTO.getValue()));
+            } else if (parameterDTO.getComment().equals(String.class.getName())) {
+                paramMap.put(parameterDTO.getName(), parameterDTO.getValue());
+            } else {
+                log.error("--->不支持rpc入参类型：{}", parameterDTO);
+                return null;
+            }
+        }
+        return invoke(rpcDTO.getUrl(), rpcDTO.getInterfaceName(), rpcDTO.getMethodName(),
+                new String[]{rpcDTO.getParameterType()},
+                new Object[]{paramMap});
+    }
+
+    /**
      * 通过泛化调用的形式直接调用目标方法
      *
      * @param url           完整的RPC应用地址-格式(协议类型://IP:端口/对象名)
@@ -46,29 +69,6 @@ public class RPCClient {
             ex.printStackTrace();
         }
         return null;
-    }
-
-    /**
-     * 执行rpc调用
-     * @param rpcDTO rpc对象
-     * @return 调用的response
-     */
-    public synchronized String execute(RpcDTO rpcDTO) {
-        Map<String, Object> paramMap = new HashMap<>();
-        for (ParameterDTO parameterDTO : rpcDTO.getParameterList()) {
-            //如果参数类型是Integer，则把参数值从String转成Integer
-            if (parameterDTO.getComment().equals(Integer.class.getName())) {
-                paramMap.put(parameterDTO.getName(), Integer.valueOf(parameterDTO.getValue()));
-            } else if (parameterDTO.getComment().equals(String.class.getName())) {
-                paramMap.put(parameterDTO.getName(), parameterDTO.getValue());
-            } else {
-                log.error("--->不支持rpc入参类型：{}", parameterDTO);
-                return null;
-            }
-        }
-        return invoke(rpcDTO.getUrl(), rpcDTO.getInterfaceName(), rpcDTO.getMethodName(),
-                new String[]{rpcDTO.getParameterType()},
-                new Object[]{paramMap});
     }
 
 

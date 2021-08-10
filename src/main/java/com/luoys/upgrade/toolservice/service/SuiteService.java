@@ -1,7 +1,9 @@
 package com.luoys.upgrade.toolservice.service;
 
+import com.luoys.upgrade.toolservice.common.ThreadPoolUtil;
 import com.luoys.upgrade.toolservice.dao.AutoSuiteMapper;
 import com.luoys.upgrade.toolservice.service.dto.CaseDTO;
+import com.luoys.upgrade.toolservice.service.enums.AutoCaseTypeEnum;
 import com.luoys.upgrade.toolservice.service.transform.TransformAutoSuite;
 import com.luoys.upgrade.toolservice.web.vo.AutoSuiteSimpleVO;
 import com.luoys.upgrade.toolservice.web.vo.AutoSuiteVO;
@@ -10,7 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Service
@@ -74,17 +79,60 @@ public class SuiteService {
         return TransformAutoSuite.transformPO2VO(autoSuiteMapper.selectById(suiteId));
     }
 
-    public void use(AutoSuiteVO autoSuiteVO) {
+    public Boolean useAsync(AutoSuiteVO autoSuiteVO) {
         List<CaseDTO> caseList = autoSuiteVO.getCaseList();
-        order(caseList);
-        for (CaseDTO caseDTO: caseList) {
-            execute(caseDTO);
+        Map<Integer, List<CaseDTO>> casesMap = orderAndSort(caseList);
+        List<CaseDTO> uiCaseList = casesMap.get(AutoCaseTypeEnum.UI_CASE.getCode());
+        List<CaseDTO> apiCaseList = casesMap.get(AutoCaseTypeEnum.INTERFACE_CASE.getCode());
+        try {
+            if (apiCaseList.size() != 0) {
+                ThreadPoolUtil.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        execute(apiCaseList);
+                    }
+                });
+            }
+            if (uiCaseList.size() != 0) {
+                ThreadPoolUtil.executeUI(new Runnable() {
+                    @Override
+                    public void run() {
+                        execute(uiCaseList);
+                    }
+                });
+            }
+        } catch (Exception e) {
+            log.error("--->执行测试集异常", e);
+            return false;
         }
+        return true;
     }
 
-    public void order(List<CaseDTO> caseList) {
-        //todo 排序
+//    public void use(AutoSuiteVO autoSuiteVO) {
+//        List<CaseDTO> caseList = autoSuiteVO.getCaseList();
+//        order(caseList);
+//        for (CaseDTO caseDTO: caseList) {
+//            execute(caseDTO);
+//        }
+//    }
+
+    public Map<Integer, List<CaseDTO>> orderAndSort(List<CaseDTO> caseList) {
         quickOrder(caseList, 0, caseList.size());
+        Map<Integer, List<CaseDTO>> casesMap = new HashMap<>();
+        List<CaseDTO> uiCaseList = new ArrayList<>();
+        List<CaseDTO> apiCaseList = new ArrayList<>();
+        for (CaseDTO caseDTO : caseList) {
+            if (caseDTO.getType().equals(AutoCaseTypeEnum.INTERFACE_CASE.getCode())) {
+                apiCaseList.add(caseDTO);
+            } else if (caseDTO.getType().equals(AutoCaseTypeEnum.UI_CASE.getCode())) {
+                uiCaseList.add(caseDTO);
+            } else {
+                log.error("--->测试集中的未知用例类型：caseId={}", caseDTO.getCaseId());
+            }
+        }
+        casesMap.put(AutoCaseTypeEnum.UI_CASE.getCode(), uiCaseList);
+        casesMap.put(AutoCaseTypeEnum.INTERFACE_CASE.getCode(), apiCaseList);
+        return casesMap;
     }
 
     /**
@@ -118,7 +166,11 @@ public class SuiteService {
         quickOrder(targetList, low + 1, targetList.size());
     }
 
-    public Boolean execute(CaseDTO caseDTO) {
+    private Boolean execute(List<CaseDTO> caseList) {
+        return false;
+    }
+
+    private Boolean execute(CaseDTO caseDTO) {
         Boolean result;
         try {
             result = caseService.use(caseService.queryDetail(caseDTO.getCaseId()));

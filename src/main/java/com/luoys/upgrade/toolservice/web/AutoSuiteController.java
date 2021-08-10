@@ -2,6 +2,7 @@ package com.luoys.upgrade.toolservice.web;
 
 import com.luoys.upgrade.toolservice.common.Result;
 import com.luoys.upgrade.toolservice.service.SuiteService;
+import com.luoys.upgrade.toolservice.web.vo.AutoCaseVO;
 import com.luoys.upgrade.toolservice.web.vo.PageInfo;
 import com.luoys.upgrade.toolservice.web.vo.AutoSuiteSimpleVO;
 import com.luoys.upgrade.toolservice.web.vo.AutoSuiteVO;
@@ -48,8 +49,14 @@ public class AutoSuiteController {
 
     @RequestMapping(value = "/queryDetail", method = RequestMethod.GET)
     public Result<AutoSuiteVO> queryDetail(@RequestParam("suiteId") Integer suiteId) {
-        log.info("---》开始查询用例1详情：suiteId={}", suiteId);
+        log.info("---》开始查询用例详情：suiteId={}", suiteId);
         return Result.success(suiteService.queryDetail(suiteId));
+    }
+
+    @RequestMapping(value = "/use", method = RequestMethod.POST)
+    public Result<String> use(@RequestBody AutoSuiteVO autoSuiteVO) {
+        log.info("---》开始执行测试集：{}", autoSuiteVO);
+        return Result.message(suiteService.useAsync(autoSuiteVO), "超出队列，请稍后");
     }
 
 }

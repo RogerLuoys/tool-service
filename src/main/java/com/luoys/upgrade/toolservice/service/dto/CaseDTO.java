@@ -10,4 +10,6 @@ public class CaseDTO {
     private Integer caseId;
 
     private String name;
+
+    private Integer type;
 }
