@@ -92,6 +92,7 @@ public class TransformAutoStep {
                 uiDTO.setType(po.getUiType());
                 uiDTO.setElement(po.getUiElement());
                 uiDTO.setElementId(po.getUiElementId());
+                uiDTO.setKey(po.getUiKey());
                 vo.setUi(uiDTO);
                 break;
         }
@@ -142,6 +143,7 @@ public class TransformAutoStep {
                 po.setUiElementId(vo.getUi().getElementId());
                 po.setUiType(vo.getUi().getType());
                 po.setUiUrl(vo.getUi().getUrl());
+                po.setUiKey(vo.getUi().getKey());
                 break;
         }
         return po;

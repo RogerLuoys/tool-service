@@ -24,6 +24,7 @@
     <result column="ui_url" jdbcType="VARCHAR" property="uiUrl" />
     <result column="ui_element" jdbcType="VARCHAR" property="uiElement" />
     <result column="ui_element_id" jdbcType="INTEGER" property="uiElementId" />
+    <result column="ui_key" jdbcType="VARCHAR" property="uiKey" />
     <result column="after_sleep" jdbcType="INTEGER" property="afterSleep" />
     <result column="assert_type" jdbcType="TINYINT" property="assertType" />
     <result column="actual_result" jdbcType="VARCHAR" property="actualResult" />
@@ -35,7 +36,7 @@
   <sql id="Base_Column_List">
     id, `name`, description, `type`, jdbc_sql, jdbc_url, jdbc_driver, jdbc_username,
     jdbc_password, http_url, http_type, http_header, http_body, rpc_url, rpc_interface, rpc_method, rpc_parameter_type,
-    rpc_parameter, ui_type, ui_url, ui_element, ui_element_id, after_sleep, assert_type, actual_result,
+    rpc_parameter, ui_type, ui_url, ui_element, ui_element_id, ui_key, after_sleep, assert_type, actual_result,
     expect_result, owner_id, owner_name, is_public
   </sql>
   <select id="selectById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
@@ -71,7 +72,7 @@
       jdbc_username, jdbc_password, http_url, http_type,
       http_header, http_body, rpc_url,
       rpc_interface, rpc_method, rpc_parameter_type, rpc_parameter,
-      ui_type, ui_url, ui_element, ui_element_id,
+      ui_type, ui_url, ui_element, ui_element_id, ui_key,
       after_sleep, assert_type, actual_result,
       expect_result, owner_id, owner_name,
       is_public, is_delete, gmt_create,
@@ -82,7 +83,7 @@
       #{httpHeader,jdbcType=VARCHAR}, #{httpBody,jdbcType=VARCHAR}, #{rpcUrl,jdbcType=VARCHAR},
       #{rpcInterface,jdbcType=VARCHAR}, #{rpcMethod,jdbcType=VARCHAR}, #{rpcParameterType,jdbcType=VARCHAR}, #{rpcParameter,jdbcType=VARCHAR},
       #{uiType,jdbcType=TINYINT}, #{uiUrl,jdbcType=VARCHAR}, #{uiElement,jdbcType=VARCHAR}, #{uiElementId,jdbcType=INTEGER},
-      #{afterSleep,jdbcType=INTEGER}, #{assertType,jdbcType=TINYINT}, #{actualResult,jdbcType=VARCHAR},
+      #{uiKey,jdbcType=VARCHAR}, #{afterSleep,jdbcType=INTEGER}, #{assertType,jdbcType=TINYINT}, #{actualResult,jdbcType=VARCHAR},
       #{expectResult,jdbcType=VARCHAR}, #{ownerId,jdbcType=VARCHAR}, #{ownerName,jdbcType=VARCHAR},
       #{isPublic,jdbcType=TINYINT}, 0, now(), now())
   </insert>
@@ -151,6 +152,9 @@
       </if>
       <if test="uiElementId != null">
         ui_element_id = #{uiElementId,jdbcType=INTEGER},
+      </if>
+      <if test="uiKey != null">
+        ui_key = #{uiKey,jdbcType=VARCHAR},
       </if>
       <if test="afterSleep != null">
         after_sleep = #{afterSleep,jdbcType=INTEGER},

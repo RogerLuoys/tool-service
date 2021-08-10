@@ -95,12 +95,22 @@ public class CaseService {
      */
     public Boolean useAsync(AutoCaseVO autoCaseVO) {
         try {
-            ThreadPoolUtil.execute(new Runnable() {
-                @Override
-                public void run() {
-                    use(autoCaseVO);
-                }
-            });
+            // UI用例和API用例使用不同线程池，UI自动化只能单个子线程
+            if (autoCaseVO.getType().equals(AutoCaseTypeEnum.UI_CASE.getCode())) {
+                ThreadPoolUtil.executeUI(new Runnable() {
+                    @Override
+                    public void run() {
+                        useUI(autoCaseVO);
+                    }
+                });
+            } else {
+                ThreadPoolUtil.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        useAPI(autoCaseVO);
+                    }
+                });
+            }
         } catch (Exception e) {
             log.error("--->执行用例异常", e);
             return false;
@@ -117,37 +127,75 @@ public class CaseService {
         boolean result;
         // 如果是UI用例，则执行前也退出
         if (autoCaseVO.getType().equals(AutoCaseTypeEnum.UI_CASE.getCode())) {
-            uiClient.quit();
+            result = useUI(autoCaseVO);
+        } else {
+            result = useAPI(autoCaseVO);
         }
+        return result;
+    }
+
+    /**
+     * 执行接口自动化用例
+     * @param autoCaseVO 用例对象
+     * @return 主要步骤全部执行结果都为true才返回true
+     */
+    public Boolean useAPI(AutoCaseVO autoCaseVO) {
+        // 执行用例
+        return execute(autoCaseVO);
+    }
+
+    /**
+     * 执行UI自动化用例
+     * @param autoCaseVO 用例对象
+     * @return 主要步骤全部执行结果都为true才返回true
+     */
+    public Boolean useUI(AutoCaseVO autoCaseVO) {
+        boolean result;
+        // 确保webDrive退出
+        uiClient.quit();
+        // 执行用例
+        result = execute(autoCaseVO);
+        // 确保webDrive退出
+        uiClient.quit();
+        return result;
+    }
+
+    private Boolean execute(AutoCaseVO autoCaseVO) {
+        boolean result = true;
         // 执行前置步骤
         if (autoCaseVO.getPreStepList() != null && autoCaseVO.getAfterStepList().size() != 0) {
-            execute(autoCaseVO.getPreStepList());
+            for (StepDTO stepDTO: autoCaseVO.getPreStepList()) {
+                stepService.use(stepService.queryDetail(stepDTO.getStepId()));
+            }
         }
-        // 执行主要步骤
+        // 执行主要步骤，只要有一个步骤为false，则整个case结果为false
         if (autoCaseVO.getMainStepList() != null && autoCaseVO.getMainStepList().size() != 0) {
-            result = execute(autoCaseVO.getMainStepList());
+            for (StepDTO stepDTO: autoCaseVO.getMainStepList()) {
+                if (!stepService.use(stepService.queryDetail(stepDTO.getStepId()))) {
+                    result = false;
+                }
+            }
         } else {
             log.error("--->用例没有主步骤：caseId={}", autoCaseVO.getCaseId());
             return false;
         }
         // 执行收尾步骤
         if (autoCaseVO.getAfterStepList() != null && autoCaseVO.getAfterStepList().size() != 0) {
-            execute(autoCaseVO.getAfterStepList());
-        }
-        if (autoCaseVO.getType().equals(AutoCaseTypeEnum.UI_CASE.getCode())) {
-            uiClient.quit();
-        }
-        return result;
-    }
-
-    private Boolean execute(List<StepDTO> stepList) {
-        boolean result = true;
-        for (StepDTO stepDTO: stepList) {
-            if (!stepService.use(stepService.queryDetail(stepDTO.getStepId()))) {
-                result = false;
+            for (StepDTO stepDTO: autoCaseVO.getAfterStepList()) {
+                stepService.use(stepService.queryDetail(stepDTO.getStepId()));
             }
         }
         return result;
     }
+
+//    private Boolean execute(List<StepDTO> stepList) {
+//        boolean result = true;
+//        for (StepDTO stepDTO: stepList) {
+//            if (!stepService.use(stepService.queryDetail(stepDTO.getStepId()))) {
+//                result = false;
+//            }
+//        }
+//        return result;
+//    }
 
 }

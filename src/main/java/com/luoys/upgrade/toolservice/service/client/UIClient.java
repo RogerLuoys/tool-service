@@ -31,8 +31,7 @@ public class UIClient {
                 click(uiDTO.getElement());
                 return "true";
             case SEND_KEY:
-                //todo
-                sendKey(uiDTO.getElement(), "");
+                sendKey(uiDTO.getElement(), uiDTO.getKey());
                 return "true";
             case IS_EXIST:
                 return isElementExist(uiDTO.getElement()).toString();
@@ -45,8 +44,9 @@ public class UIClient {
         if (driver == null) {
             return;
         }
-        driver.close();
+        forceWait(forceTimeOut);
         driver.quit();
+        forceWait(forceTimeOut);
         log.info("--->关闭UI：{}", driver);
     }
 
@@ -54,6 +54,7 @@ public class UIClient {
         this.driver = new ChromeDriver();
         this.driver.get(url);
         this.driver.manage().window().maximize();
+        forceWait(5);
     }
 
     private void refresh(String url) {
@@ -74,13 +75,9 @@ public class UIClient {
         return driver.findElements(locator);
     }
 
-    private List<WebElement> getElements(String xpath) {
-        return getElements(By.xpath(xpath));
-    }
-
-    private void click(By locator) {
+    private void click(String xpath) {
         forceWait(forceTimeOut);
-        WebElement webElement = driver.findElement(locator);
+        WebElement webElement = driver.findElement(By.xpath(xpath));
         WebDriverWait webDriverWait = new WebDriverWait(driver, DEFAULT_WAIT_TIME);
         webDriverWait.until(ExpectedConditions.elementToBeClickable(webElement));
         Actions actions = new Actions(driver);
@@ -88,17 +85,9 @@ public class UIClient {
         actions.perform();
     }
 
-    private void click(String xpath) {
-        click(By.xpath(xpath));
-    }
-
     private void sendKey(String xpath, CharSequence key) {
-        sendKey(By.xpath(xpath), key);
-    }
-
-    private void sendKey(By locator, CharSequence key) {
         forceWait(forceTimeOut);
-        WebElement webElement = driver.findElement(locator);
+        WebElement webElement = driver.findElement(By.xpath(xpath));
         WebDriverWait webDriverWait = new WebDriverWait(driver, DEFAULT_WAIT_TIME);
         webDriverWait.until(ExpectedConditions.visibilityOf(webElement));
         webElement.clear();
@@ -107,18 +96,14 @@ public class UIClient {
         actions.perform();
     }
 
-    private void moveToElement(By locator) {
+    private void moveToElement(String xpath) {
         forceWait(forceTimeOut);
-        WebElement webElement = driver.findElement(locator);
+        WebElement webElement = driver.findElement(By.xpath(xpath));
         WebDriverWait webDriverWait = new WebDriverWait(driver, DEFAULT_WAIT_TIME);
         webDriverWait.until(ExpectedConditions.visibilityOf(webElement));
         Actions actions = new Actions(driver);
         actions.moveToElement(webElement);
         actions.perform();
-    }
-
-    private void moveToElement(String xpath) {
-        moveToElement(By.xpath(xpath));
     }
 
     private void moveAndClick(By locator) {

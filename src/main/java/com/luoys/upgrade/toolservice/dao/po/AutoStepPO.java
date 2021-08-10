@@ -118,6 +118,11 @@ public class AutoStepPO implements Serializable {
     private Integer uiElementId;
 
     /**
+     * 键盘输入的值
+     */
+    private String uiKey;
+
+    /**
      * 实际结果取到后的等待时间
      */
     private Integer afterSleep;

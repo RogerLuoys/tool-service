@@ -25,4 +25,9 @@ public class UiDTO {
      */
     private Integer elementId;
 
+    /**
+     * 键盘输入的值
+     */
+    private String key;
+
 }
