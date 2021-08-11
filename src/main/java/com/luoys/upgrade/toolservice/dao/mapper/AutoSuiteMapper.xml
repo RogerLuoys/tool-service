@@ -3,6 +3,7 @@
 <mapper namespace="com.luoys.upgrade.toolservice.dao.AutoSuiteMapper">
   <resultMap id="BaseResultMap" type="com.luoys.upgrade.toolservice.dao.po.AutoSuitePO">
     <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="suite_id" jdbcType="VARCHAR" property="suiteId" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="description" jdbcType="VARCHAR" property="description" />
     <result column="environment" jdbcType="VARCHAR" property="environment" />
@@ -16,14 +17,14 @@
     <result column="owner_name" jdbcType="VARCHAR" property="ownerName" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, `name`, description, environment, step_sleep, case_max_time, test_case, total,
+    id, suite_id, `name`, description, environment, step_sleep, case_max_time, test_case, total,
     passed, failed, owner_id, owner_name
   </sql>
-  <select id="selectById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+  <select id="selectByUUID" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from auto_suite
-    where id = #{id,jdbcType=INTEGER}
+    where suite_id = #{suiteId,jdbcType=VARCHAR}
   </select>
   <select id="list" resultMap="BaseResultMap">
     select
@@ -36,19 +37,19 @@
     <if test="name != null">
       and `name` like concat('%', #{name,jdbcType=VARCHAR}, '%')
     </if>
-    order by id desc limit ${startIndex}, 10
+    order by gmt_create desc limit ${startIndex}, 10
   </select>
-  <update id="remove" parameterType="java.lang.Integer">
+  <update id="remove">
     update auto_suite set is_delete = 1
-    where id = #{id,jdbcType=INTEGER}
+    where suite_id = #{suiteId,jdbcType=VARCHAR}
   </update>
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.luoys.upgrade.toolservice.dao.po.AutoSuitePO" useGeneratedKeys="true">
-    insert into auto_suite (`name`, description, environment,
+    insert into auto_suite (suite_id, `name`, description, environment,
       step_sleep, case_max_time, test_case,
       total, passed, failed,
       owner_id, owner_name, is_delete,
       gmt_create, gmt_modified)
-    values (#{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{environment,jdbcType=VARCHAR},
+    values (#{suiteId,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{environment,jdbcType=VARCHAR},
       #{stepSleep,jdbcType=INTEGER}, #{caseMaxTime,jdbcType=INTEGER}, #{testCase,jdbcType=VARCHAR},
       #{total,jdbcType=INTEGER}, #{passed,jdbcType=INTEGER}, #{failed,jdbcType=INTEGER},
       #{ownerId,jdbcType=VARCHAR}, #{ownerName,jdbcType=VARCHAR}, 0, now(), now())
@@ -91,6 +92,6 @@
       </if>
       gmt_modified = now,
     </set>
-    where id = #{id,jdbcType=INTEGER}
+    where suite_id = #{suiteId,jdbcType=VARCHAR}
   </update>
 </mapper>

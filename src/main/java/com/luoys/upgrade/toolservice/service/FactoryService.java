@@ -106,7 +106,7 @@ public class FactoryService {
      * @return 工具对象
      */
     public ToolVO queryDetail(String toolId) {
-        return TransformTool.transformPO2VO(toolMapper.selectByUID(toolId));
+        return TransformTool.transformPO2VO(toolMapper.selectByUUID(toolId));
     }
 
     /**

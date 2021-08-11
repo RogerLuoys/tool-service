@@ -3,6 +3,11 @@ package com.luoys.upgrade.toolservice.common;
 
 import com.alibaba.fastjson.JSON;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class StringUtil {
 
     /**
@@ -59,6 +64,20 @@ public class StringUtil {
 
     public static boolean isNotEmpty(String str) {
         return !isEmpty(str);
+    }
+
+    public static List<String> patternF(String str1, String str2) {
+        Pattern pattern = Pattern.compile("\\{\\{[A-Za-z0-9]{1,20}}}");
+        Matcher matcher = pattern.matcher(str1);
+        List<String> result = new ArrayList<>();
+        while (matcher.find()) {
+            result.add(matcher.group());
+        }
+        return result;
+    }
+
+    public static boolean isMatch(String regular, String target) {
+        return Pattern.matches(regular, target);
     }
 
 }

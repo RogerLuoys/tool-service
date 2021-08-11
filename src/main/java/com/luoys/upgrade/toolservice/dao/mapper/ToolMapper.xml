@@ -32,7 +32,7 @@
     jdbc_driver, jdbc_username, jdbc_password, http_url, http_type, http_header, http_body, rpc_url,
     rpc_interface, rpc_method, rpc_parameter_type, rpc_parameter, owner_id, owner_name
   </sql>
-  <select id="selectByUID" parameterType="java.lang.String" resultMap="BaseResultMap">
+  <select id="selectByUUID" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from tool
@@ -50,9 +50,9 @@
     <if test="name != null">
       and `name` like concat('%', #{name,jdbcType=VARCHAR}, '%')
     </if>
-    order by id desc limit ${startIndex}, 10
+    order by gmt_create desc limit ${startIndex}, 10
   </select>
-  <delete id="remove" parameterType="java.lang.String">
+  <delete id="remove">
     update tool set is_delete=1
     where tool_id = #{tool_id,jdbcType=VARCHAR}
   </delete>

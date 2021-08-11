@@ -6,7 +6,7 @@ import lombok.Data;
 
 /**
  * tool
- * @author
+ * @author luoys
  */
 @Data
 public class ToolPO implements Serializable {
@@ -14,7 +14,7 @@ public class ToolPO implements Serializable {
     private Integer id;
 
     /**
-     * uuid
+     * 业务id
      */
     private String toolId;
 

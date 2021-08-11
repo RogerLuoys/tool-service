@@ -7,7 +7,7 @@ public class CaseDTO {
 
     private Integer sequence;
 
-    private Integer caseId;
+    private String caseId;
 
     private String name;
 

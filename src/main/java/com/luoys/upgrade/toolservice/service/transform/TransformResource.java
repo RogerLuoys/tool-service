@@ -22,7 +22,7 @@ public class TransformResource {
         vo.setPermission(po.getPermission());
         vo.setName(po.getName());
         vo.setType(po.getType());
-        vo.setResourceId(po.getId());
+        vo.setResourceId(po.getResourceId());
         vo.setOwnerName(po.getOwnerName());
         vo.setUserId(po.getUserId());
         vo.setUserName(po.getUserName());
@@ -45,7 +45,7 @@ public class TransformResource {
         ResourceVO vo = new ResourceVO();
         vo.setDescription(po.getDescription());
         vo.setType(po.getType());
-        vo.setResourceId(po.getId());
+        vo.setResourceId(po.getResourceId());
         vo.setName(po.getName());
         vo.setPermission(po.getPermission());
         vo.setOwnerId(po.getOwnerId());
@@ -88,7 +88,7 @@ public class TransformResource {
         ResourcePO po = new ResourcePO();
         //转换基本信息
         po.setDescription(vo.getDescription());
-        po.setId(vo.getResourceId());
+        po.setResourceId(vo.getResourceId());
         po.setName(vo.getName());
         po.setPermission(vo.getPermission());
         po.setType(vo.getType());

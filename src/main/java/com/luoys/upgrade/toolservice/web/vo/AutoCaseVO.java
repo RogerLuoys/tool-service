@@ -8,7 +8,10 @@ import java.util.List;
 @Data
 public class AutoCaseVO {
 
-    private Integer caseId;
+    /**
+     * 业务id
+     */
+    private String caseId;
 
     /**
      * 名称

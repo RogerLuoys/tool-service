@@ -7,24 +7,63 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+/**
+ * 自动化步骤dao层接口
+ *
+ * @author luoys
+ */
 @Repository
 public interface AutoStepMapper {
 
-    int insert(AutoStepPO toolPO);
+    /**
+     * 插入数据
+     *
+     * @param autoStepPO 表对应的pojo对象
+     * @return 插入成功为1
+     */
+    int insert(AutoStepPO autoStepPO);
 
-    int remove(Integer toolId);
+    /**
+     * 逻辑删除数据
+     *
+     * @param stepId 业务id
+     * @return 删除成功为1
+     */
+    int remove(@Param("stepId") String stepId);
 
-    int update(AutoStepPO toolPO);
+    /**
+     * 更新数据
+     *
+     * @param autoStepPO 表对应的pojo对象
+     * @return 成功为1
+     */
+    int update(AutoStepPO autoStepPO);
 
-    int updateResult(@Param("id") Integer id,
+    int updateResult(@Param("stepId") String stepId,
                      @Param("actualResult") String actualResult);
 
-    AutoStepPO selectById(Integer toolId);
+    /**
+     * 根据id查询详情
+     *
+     * @param stepId 业务id
+     * @return 表对应的pojo对象
+     */
+    AutoStepPO selectByUUID(@Param("stepId") String stepId);
 
+    /**
+     * 按条件分页查询，默认10条数据一页
+     *
+     * @param type       类型
+     * @param name       名字
+     * @param ownerId    所属人id
+     * @param isPublic   是否公用
+     * @param startIndex 页码，从0开始
+     * @return
+     */
     List<AutoStepPO> list(@Param("type") Integer type,
-                      @Param("name") String name,
-                      @Param("ownerId") String ownerId,
-                      @Param("isPublic") Boolean isPublic,
-                      @Param("startIndex") Integer startIndex);
+                          @Param("name") String name,
+                          @Param("ownerId") String ownerId,
+                          @Param("isPublic") Boolean isPublic,
+                          @Param("startIndex") Integer startIndex);
 
 }

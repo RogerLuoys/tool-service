@@ -29,7 +29,7 @@ public class AutoStepController {
     }
 
     @RequestMapping(value = "/remove", method = RequestMethod.DELETE)
-    public Result<Boolean> remove(@RequestParam("stepId") Integer stepId) {
+    public Result<Boolean> remove(@RequestParam("stepId") String stepId) {
         log.info("---》开始删除步骤：{}", stepId);
         return Result.message(stepService.remove(stepId));
     }
@@ -53,7 +53,7 @@ public class AutoStepController {
     }
 
     @RequestMapping(value = "/queryDetail", method = RequestMethod.GET)
-    public Result<AutoStepVO> queryDetail(@RequestParam("stepId") Integer stepId) {
+    public Result<AutoStepVO> queryDetail(@RequestParam("stepId") String stepId) {
         log.info("---》开始查询步骤详情：stepId={}", stepId);
         return Result.success(stepService.queryDetail(stepId));
     }

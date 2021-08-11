@@ -10,7 +10,7 @@ import lombok.Data;
 public class ToolSimpleVO {
 
     /**
-     * uuid
+     * 业务id
      */
     private String toolId;
 

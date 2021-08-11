@@ -2,15 +2,23 @@ package com.luoys.upgrade.toolservice.dao.po;
 
 import java.io.Serializable;
 import java.util.Date;
+
 import lombok.Data;
 
 /**
  * resource-资源表
+ *
  * @author luoys
  */
 @Data
 public class ResourcePO implements Serializable {
+
     private Integer id;
+
+    /**
+     * 业务id
+     */
+    private String resourceId;
 
     /**
      * 名称

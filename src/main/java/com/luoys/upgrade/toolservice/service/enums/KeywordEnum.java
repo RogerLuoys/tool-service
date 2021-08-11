@@ -7,6 +7,7 @@ public enum KeywordEnum {
 
 //    SEPARATOR(" &&& ", "通用分隔符"),
     PARAM_SYMBOL("$$${", "参数占位符"),
+    PARAMETER_NAME("[A-Za-z0-9]", "参数名字"),
     JSON_START("{\"", "Json开始字符"),
     DEFAULT_USER("101", "默认用户");
 

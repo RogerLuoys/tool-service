@@ -6,7 +6,10 @@ import lombok.Data;
 @Data
 public class AutoSuiteSimpleVO {
 
-    private Integer suiteId;
+    /**
+     * 业务id
+     */
+    private String suiteId;
 
     /**
      * 名称

@@ -6,7 +6,10 @@ import lombok.Data;
 @Data
 public class AutoCaseSimpleVO {
 
-    private Integer caseId;
+    /**
+     * 业务id
+     */
+    private String caseId;
 
     /**
      * 名称

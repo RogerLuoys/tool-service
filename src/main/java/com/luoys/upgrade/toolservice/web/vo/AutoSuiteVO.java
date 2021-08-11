@@ -8,7 +8,10 @@ import java.util.List;
 @Data
 public class AutoSuiteVO {
 
-    private Integer suiteId;
+    /**
+     * 业务id
+     */
+    private String suiteId;
 
     /**
      * 名称

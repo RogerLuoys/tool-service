@@ -7,7 +7,10 @@ import lombok.Data;
 @Data
 public class ResourceSimpleVO {
 
-    private Integer resourceId;
+    /**
+     * 业务id
+     */
+    private String resourceId;
 
     /**
      * 名称

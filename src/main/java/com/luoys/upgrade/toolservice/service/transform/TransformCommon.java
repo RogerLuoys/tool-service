@@ -130,7 +130,7 @@ public class TransformCommon {
         List<StepDTO> stepList = new ArrayList<>();
         for (CommonDTO commonDTO: commonList) {
             StepDTO stepDTO = new StepDTO();
-            stepDTO.setStepId(Integer.valueOf(commonDTO.getValue()));
+            stepDTO.setStepId(commonDTO.getValue());
             stepDTO.setName(commonDTO.getTitle());
             stepDTO.setSequence(commonDTO.getIdx());
             stepList.add(stepDTO);
@@ -162,7 +162,7 @@ public class TransformCommon {
         List<CaseDTO> caseList = new ArrayList<>();
         for (CommonDTO commonDTO: commonList) {
             CaseDTO caseDTO = new CaseDTO();
-            caseDTO.setCaseId(Integer.valueOf(commonDTO.getValue()));
+            caseDTO.setCaseId(commonDTO.getValue());
             caseDTO.setName(commonDTO.getTitle());
             caseDTO.setSequence(commonDTO.getIdx());
             caseList.add(caseDTO);

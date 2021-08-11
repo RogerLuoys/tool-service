@@ -18,7 +18,7 @@ public class TransformAutoSuite {
         vo.setName(po.getName());
         vo.setFailed(po.getFailed());
         vo.setPassed(po.getPassed());
-        vo.setSuiteId(po.getId());
+        vo.setSuiteId(po.getSuiteId());
         vo.setOwnerId(po.getOwnerId());
         vo.setOwnerName(po.getOwnerName());
         vo.setEnvironment(po.getEnvironment());
@@ -48,7 +48,7 @@ public class TransformAutoSuite {
         vo.setName(po.getName());
         vo.setFailed(po.getFailed());
         vo.setPassed(po.getPassed());
-        vo.setSuiteId(po.getId());
+        vo.setSuiteId(po.getSuiteId());
         vo.setOwnerName(po.getOwnerName());
         vo.setEnvironment(po.getEnvironment());
         vo.setCaseMaxTime(po.getCaseMaxTime());
@@ -68,9 +68,9 @@ public class TransformAutoSuite {
         po.setDescription(vo.getDescription());
         po.setTotal(vo.getTotal());
         po.setName(vo.getName());
+        po.setSuiteId(vo.getSuiteId());
         po.setFailed(vo.getFailed());
         po.setPassed(vo.getPassed());
-        po.setId(vo.getSuiteId());
         po.setOwnerName(vo.getOwnerName());
         po.setEnvironment(vo.getEnvironment());
         po.setCaseMaxTime(vo.getCaseMaxTime());

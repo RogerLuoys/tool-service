@@ -2,15 +2,23 @@ package com.luoys.upgrade.toolservice.dao.po;
 
 import java.io.Serializable;
 import java.util.Date;
+
 import lombok.Data;
 
 /**
  * auto_step
- * @author
+ *
+ * @author luoys
  */
 @Data
 public class AutoStepPO implements Serializable {
+
     private Integer id;
+
+    /**
+     * 业务id
+     */
+    private String stepId;
 
     /**
      * 名称

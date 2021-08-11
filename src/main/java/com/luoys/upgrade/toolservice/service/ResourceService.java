@@ -1,5 +1,6 @@
 package com.luoys.upgrade.toolservice.service;
 
+import com.luoys.upgrade.toolservice.common.NumberSender;
 import com.luoys.upgrade.toolservice.dao.ResourceMapper;
 import com.luoys.upgrade.toolservice.service.enums.KeywordEnum;
 import com.luoys.upgrade.toolservice.service.transform.TransformResource;
@@ -22,6 +23,7 @@ public class ResourceService {
      * @return 成功为true，失败为false
      */
     public Boolean create(ResourceVO resourceVO) {
+        resourceVO.setResourceId(NumberSender.createResourceId());
         if (resourceVO.getOwnerId() == KeywordEnum.DEFAULT_USER.getCode()) {
             resourceVO.setOwnerName(KeywordEnum.DEFAULT_USER.getDescription());
         } else {
@@ -33,10 +35,10 @@ public class ResourceService {
 
     /**
      * 逻辑删除单个资源
-     * @param resourceId 资源主键id
+     * @param resourceId 资源业务id
      * @return 成功为true，失败为false
      */
-    public Boolean remove(int resourceId) {
+    public Boolean remove(String resourceId) {
         int result = resourceMapper.remove(resourceId);
         return result == 1;
     }
@@ -65,11 +67,11 @@ public class ResourceService {
 
     /**
      * 查询资源详情
-     * @param resourceId 资源主键id
+     * @param resourceId 资源业务id
      * @return 资源对象
      */
-    public ResourceVO queryDetail(Integer resourceId) {
-        return TransformResource.transformPO2VO(resourceMapper.selectById(resourceId));
+    public ResourceVO queryDetail(String resourceId) {
+        return TransformResource.transformPO2VO(resourceMapper.selectByUUID(resourceId));
     }
 
 }

@@ -16,7 +16,7 @@ public class TransformAutoStep {
             return null;
         AutoStepSimpleVO vo = new AutoStepSimpleVO();
         vo.setDescription(po.getDescription());
-        vo.setStepId(po.getId());
+        vo.setStepId(po.getStepId());
         vo.setOwnerId(po.getOwnerId());
         vo.setOwnerName(po.getOwnerName());
         vo.setName(po.getName());
@@ -45,7 +45,7 @@ public class TransformAutoStep {
         // 设置基本信息
         vo.setIsPublic(po.getIsPublic());
         vo.setDescription(po.getDescription());
-        vo.setStepId(po.getId());
+        vo.setStepId(po.getStepId());
         vo.setOwnerId(po.getOwnerId());
         vo.setOwnerName(po.getOwnerName());
         vo.setName(po.getName());
@@ -107,7 +107,7 @@ public class TransformAutoStep {
         // 设置基本信息
         po.setIsPublic(vo.getIsPublic());
         po.setDescription(vo.getDescription());
-        po.setId(vo.getStepId());
+        po.setStepId(vo.getStepId());
         po.setType(vo.getType());
         po.setOwnerId(vo.getOwnerId());
         po.setOwnerName(vo.getOwnerName());

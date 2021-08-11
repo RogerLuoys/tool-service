@@ -12,7 +12,7 @@ import java.util.List;
 public class ToolVO {
 
     /**
-     * uuid
+     * 业务id
      */
     private String toolId;
 

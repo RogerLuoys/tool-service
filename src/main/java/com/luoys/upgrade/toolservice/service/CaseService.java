@@ -1,5 +1,6 @@
 package com.luoys.upgrade.toolservice.service;
 
+import com.luoys.upgrade.toolservice.common.NumberSender;
 import com.luoys.upgrade.toolservice.common.ThreadPoolUtil;
 import com.luoys.upgrade.toolservice.dao.AutoCaseMapper;
 import com.luoys.upgrade.toolservice.service.client.UIClient;
@@ -34,6 +35,7 @@ public class CaseService {
      * @return 新增成功为true，失败为false
      */
     public Boolean create(AutoCaseVO autoCaseVO) {
+        autoCaseVO.setCaseId(NumberSender.createCaseId());
         if (autoCaseVO.getOwnerId().equals(KeywordEnum.DEFAULT_USER.getCode())) {
             autoCaseVO.setOwnerName(KeywordEnum.DEFAULT_USER.getDescription());
         } else {
@@ -45,10 +47,10 @@ public class CaseService {
 
     /**
      * 逻辑删除单个用例
-     * @param caseId 用例主键id
+     * @param caseId 用例业务id
      * @return 删除成功为true，失败为false
      */
-    public Boolean remove(Integer caseId) {
+    public Boolean remove(String caseId) {
         int result = autoCaseMapper.remove(caseId);
         return result == 1;
     }
@@ -81,11 +83,11 @@ public class CaseService {
 
     /**
      * 查询用例详情
-     * @param caseId 用例主键id
+     * @param caseId 用例业务id
      * @return 用例对象
      */
-    public AutoCaseVO queryDetail(Integer caseId) {
-        return TransformAutoCase.transformPO2VO(autoCaseMapper.selectById(caseId));
+    public AutoCaseVO queryDetail(String caseId) {
+        return TransformAutoCase.transformPO2VO(autoCaseMapper.selectByUUID(caseId));
     }
 
     /**

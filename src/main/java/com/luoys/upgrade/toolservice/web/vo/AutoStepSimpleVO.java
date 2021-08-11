@@ -5,7 +5,10 @@ import lombok.Data;
 @Data
 public class AutoStepSimpleVO {
 
-    private Integer stepId;
+    /**
+     * 业务id
+     */
+    private String stepId;
 
     /**
      * 名称

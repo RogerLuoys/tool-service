@@ -2,16 +2,23 @@ package com.luoys.upgrade.toolservice.dao.po;
 
 import java.io.Serializable;
 import java.util.Date;
+
 import lombok.Data;
 
 /**
  * auto_suite
- * @author
+ *
+ * @author luoys
  */
 @Data
 public class AutoSuitePO implements Serializable {
 
     private Integer id;
+
+    /**
+     * 业务id
+     */
+    private String suiteId;
 
     /**
      * 名称

@@ -3,6 +3,7 @@
 <mapper namespace="com.luoys.upgrade.toolservice.dao.ResourceMapper">
   <resultMap id="BaseResultMap" type="com.luoys.upgrade.toolservice.dao.po.ResourcePO">
     <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="resource_id" jdbcType="VARCHAR" property="resourceId" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="description" jdbcType="VARCHAR" property="description" />
     <result column="type" jdbcType="TINYINT" property="type" />
@@ -23,15 +24,15 @@
     <result column="user_name" jdbcType="VARCHAR" property="userName" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, `name`, description, `type`, permission, jdbc_url, jdbc_driver, jdbc_username,
+    id, resource_id, `name`, description, `type`, permission, jdbc_url, jdbc_driver, jdbc_username,
     jdbc_password, device_model, device_size, device_dpi, device_os, env_url, slave_url,
     owner_id, owner_name, user_id, user_name
   </sql>
-  <select id="selectById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+  <select id="selectByUUID" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from resource
-    where id = #{id,jdbcType=INTEGER}
+    where resource_id = #{resourceId,jdbcType=VARCHAR}
   </select>
   <select id="list" resultMap="BaseResultMap">
     select
@@ -45,14 +46,14 @@
     <if test="name != null">
       and `name` like concat('%', #{name,jdbcType=VARCHAR}, '%')
     </if>
-    order by id desc limit ${startIndex}, 10
+    order by gmt_create desc limit ${startIndex}, 10
   </select>
-  <update id="remove" parameterType="java.lang.Integer">
+  <update id="remove">
     update resource set is_delete = 1
-    where id = #{id,jdbcType=INTEGER}
+    where resource_id = #{resourceId,jdbcType=VARCHAR}
   </update>
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.luoys.upgrade.toolservice.dao.po.ResourcePO" useGeneratedKeys="true">
-    insert into resource (`name`, description, `type`,
+    insert into resource (resource_id, `name`, description, `type`,
       permission, jdbc_url, jdbc_driver,
       jdbc_username, jdbc_password, device_model,
       device_size, device_dpi, device_os,
@@ -60,7 +61,7 @@
       owner_name, user_id, user_name,
       is_delete, gmt_create, gmt_modified
       )
-    values (#{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{type,jdbcType=TINYINT},
+    values (#{resourceId,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{type,jdbcType=TINYINT},
       #{permission,jdbcType=TINYINT}, #{jdbcUrl,jdbcType=VARCHAR}, #{jdbcDriver,jdbcType=VARCHAR},
       #{jdbcUsername,jdbcType=VARCHAR}, #{jdbcPassword,jdbcType=VARCHAR}, #{deviceModel,jdbcType=VARCHAR},
       #{deviceSize,jdbcType=VARCHAR}, #{deviceDpi,jdbcType=VARCHAR}, #{deviceOs,jdbcType=VARCHAR},
@@ -116,6 +117,6 @@
       </if>
       gmt_modified = now(),
     </set>
-    where id = #{id,jdbcType=INTEGER}
+    where resource_id = #{resourceId,jdbcType=VARCHAR}
   </update>
 </mapper>

@@ -7,7 +7,7 @@ public class StepDTO {
 
     private Integer sequence;
 
-    private Integer stepId;
+    private String stepId;
 
     private String name;
 

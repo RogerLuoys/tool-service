@@ -3,6 +3,7 @@
 <mapper namespace="com.luoys.upgrade.toolservice.dao.AutoStepMapper">
   <resultMap id="BaseResultMap" type="com.luoys.upgrade.toolservice.dao.po.AutoStepPO">
     <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="step_id" jdbcType="VARCHAR" property="stepId" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="description" jdbcType="VARCHAR" property="description" />
     <result column="type" jdbcType="TINYINT" property="type" />
@@ -34,16 +35,16 @@
     <result column="is_public" jdbcType="TINYINT" property="isPublic" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, `name`, description, `type`, jdbc_sql, jdbc_url, jdbc_driver, jdbc_username,
+    id, step_id, `name`, description, `type`, jdbc_sql, jdbc_url, jdbc_driver, jdbc_username,
     jdbc_password, http_url, http_type, http_header, http_body, rpc_url, rpc_interface, rpc_method, rpc_parameter_type,
     rpc_parameter, ui_type, ui_url, ui_element, ui_element_id, ui_key, after_sleep, assert_type, actual_result,
     expect_result, owner_id, owner_name, is_public
   </sql>
-  <select id="selectById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+  <select id="selectByUUID" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from auto_step
-    where id = #{id,jdbcType=INTEGER}
+    where step_id = #{stepId,jdbcType=VARCHAR}
   </select>
   <select id="list" resultMap="BaseResultMap">
     select
@@ -60,14 +61,14 @@
     <if test="name != null">
       and `name` like concat('%', #{name,jdbcType=VARCHAR}, '%')
     </if>
-    order by id desc limit ${startIndex}, 10
+    order by gmt_create desc limit ${startIndex}, 10
   </select>
   <update id="remove" parameterType="java.lang.Integer">
     update auto_step set is_delete = 1
-    where id = #{id,jdbcType=INTEGER}
+    where step_id = #{stepId,jdbcType=VARCHAR}
   </update>
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.luoys.upgrade.toolservice.dao.po.AutoStepPO" useGeneratedKeys="true">
-    insert into auto_step (`name`, description, `type`,
+    insert into auto_step (step_id, `name`, description, `type`,
       jdbc_sql, jdbc_url, jdbc_driver,
       jdbc_username, jdbc_password, http_url, http_type,
       http_header, http_body, rpc_url,
@@ -77,7 +78,7 @@
       expect_result, owner_id, owner_name,
       is_public, is_delete, gmt_create,
       gmt_modified)
-    values (#{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{type,jdbcType=TINYINT},
+    values (#{stepId,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{type,jdbcType=TINYINT},
       #{jdbcSql,jdbcType=VARCHAR}, #{jdbcUrl,jdbcType=VARCHAR}, #{jdbcDriver,jdbcType=VARCHAR},
       #{jdbcUsername,jdbcType=VARCHAR}, #{jdbcPassword,jdbcType=VARCHAR}, #{httpUrl,jdbcType=VARCHAR}, #{httpType,jdbcType=VARCHAR},
       #{httpHeader,jdbcType=VARCHAR}, #{httpBody,jdbcType=VARCHAR}, #{rpcUrl,jdbcType=VARCHAR},
@@ -183,6 +184,6 @@
   <update id="updateResult">
     update auto_step
     set actual_result = #{actualResult,jdbcType=VARCHAR}
-    where id = #{id,jdbcType=INTEGER}
+    where step_id = #{stepId,jdbcType=VARCHAR}
   </update>
 </mapper>

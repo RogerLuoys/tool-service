@@ -29,7 +29,7 @@ public class AutoCaseController {
     }
 
     @RequestMapping(value = "/remove", method = RequestMethod.DELETE)
-    public Result<Boolean> remove(@RequestParam("caseId") Integer caseId) {
+    public Result<Boolean> remove(@RequestParam("caseId") String caseId) {
         log.info("---》开始删除用例：{}", caseId);
         return Result.message(caseService.remove(caseId));
     }
@@ -52,7 +52,7 @@ public class AutoCaseController {
     }
 
     @RequestMapping(value = "/queryDetail", method = RequestMethod.GET)
-    public Result<AutoCaseVO> queryDetail(@RequestParam("caseId") Integer caseId) {
+    public Result<AutoCaseVO> queryDetail(@RequestParam("caseId") String caseId) {
         log.info("---》开始查询用例详情：caseId={}", caseId);
         return Result.success(caseService.queryDetail(caseId));
     }

@@ -1,5 +1,6 @@
 package com.luoys.upgrade.toolservice.service;
 
+import com.luoys.upgrade.toolservice.common.NumberSender;
 import com.luoys.upgrade.toolservice.common.ThreadPoolUtil;
 import com.luoys.upgrade.toolservice.dao.AutoStepMapper;
 import com.luoys.upgrade.toolservice.service.client.DBClient;
@@ -47,6 +48,7 @@ public class StepService {
      * @return 成功为true，失败为false
      */
     public Boolean create(AutoStepVO autoStepVO) {
+        autoStepVO.setStepId(NumberSender.createStepId());
         if (autoStepVO.getOwnerId().equals(KeywordEnum.DEFAULT_USER.getCode())) {
             autoStepVO.setOwnerName(KeywordEnum.DEFAULT_USER.getDescription());
         } else {
@@ -58,10 +60,10 @@ public class StepService {
 
     /**
      * 逻辑删除单个步骤
-     * @param stepId 步骤uuid
+     * @param stepId 步骤业务id
      * @return 成功为true，失败为false
      */
-    public Boolean remove(Integer stepId) {
+    public Boolean remove(String stepId) {
         int result = autoStepMapper.remove(stepId);
         return result == 1;
     }
@@ -100,11 +102,11 @@ public class StepService {
 
     /**
      * 查询步骤详情
-     * @param stepId 步骤uuid
+     * @param stepId 步骤业务id
      * @return 步骤对象
      */
-    public AutoStepVO queryDetail(Integer stepId) {
-        return TransformAutoStep.transformPO2VO(autoStepMapper.selectById(stepId));
+    public AutoStepVO queryDetail(String stepId) {
+        return TransformAutoStep.transformPO2VO(autoStepMapper.selectByUUID(stepId));
     }
 
     /**
@@ -199,7 +201,7 @@ public class StepService {
         return result;
     }
 
-    public Boolean updateActualResult(Integer stepId, String actualResult) {
+    public Boolean updateActualResult(String stepId, String actualResult) {
         int result = autoStepMapper.updateResult(stepId, actualResult);
         return result == 1;
     }

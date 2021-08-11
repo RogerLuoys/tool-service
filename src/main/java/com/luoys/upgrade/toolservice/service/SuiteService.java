@@ -1,5 +1,6 @@
 package com.luoys.upgrade.toolservice.service;
 
+import com.luoys.upgrade.toolservice.common.NumberSender;
 import com.luoys.upgrade.toolservice.common.ThreadPoolUtil;
 import com.luoys.upgrade.toolservice.dao.AutoSuiteMapper;
 import com.luoys.upgrade.toolservice.service.dto.CaseDTO;
@@ -36,16 +37,17 @@ public class SuiteService {
      * @return 成功为true，失败为false
      */
     public Boolean create(AutoSuiteVO autoSuiteVO) {
+        autoSuiteVO.setSuiteId(NumberSender.createSuiteId());
         int result = autoSuiteMapper.insert(TransformAutoSuite.transformVO2PO(autoSuiteVO));
         return result == 1;
     }
 
     /**
      * 删除单个测试集
-     * @param suiteId 测试集主键id
+     * @param suiteId 测试集业务id
      * @return 成功为true，失败为false
      */
-    public Boolean remove(Integer suiteId) {
+    public Boolean remove(String suiteId) {
         int result = autoSuiteMapper.remove(suiteId);
         return result == 1;
     }
@@ -72,11 +74,11 @@ public class SuiteService {
 
     /**
      * 查询测试集详情
-     * @param suiteId 测试集主键id
+     * @param suiteId 测试集业务id
      * @return 测试集对象
      */
-    public AutoSuiteVO queryDetail(Integer suiteId) {
-        return TransformAutoSuite.transformPO2VO(autoSuiteMapper.selectById(suiteId));
+    public AutoSuiteVO queryDetail(String suiteId) {
+        return TransformAutoSuite.transformPO2VO(autoSuiteMapper.selectByUUID(suiteId));
     }
 
     public Boolean useAsync(AutoSuiteVO autoSuiteVO) {

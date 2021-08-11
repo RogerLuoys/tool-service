@@ -2,16 +2,23 @@ package com.luoys.upgrade.toolservice.dao.po;
 
 import java.io.Serializable;
 import java.util.Date;
+
 import lombok.Data;
 
 /**
  * auto_case
- * @author
+ *
+ * @author luoys
  */
 @Data
 public class AutoCasePO implements Serializable {
 
     private Integer id;
+
+    /**
+     * 业务id
+     */
+    private String caseId;
 
     /**
      * 名称

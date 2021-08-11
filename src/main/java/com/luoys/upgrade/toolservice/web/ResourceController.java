@@ -27,7 +27,7 @@ public class ResourceController {
     }
 
     @RequestMapping(value = "/remove", method = RequestMethod.DELETE)
-    public Result<String> remove(@RequestParam("resourceId") int resourceId) {
+    public Result<String> remove(@RequestParam("resourceId") String resourceId) {
         log.info("---》开始删除资源：{}", resourceId);
         return Result.message(resourceService.remove(resourceId));
     }
@@ -51,7 +51,7 @@ public class ResourceController {
     }
 
     @RequestMapping(value = "/queryDetail", method = RequestMethod.GET)
-    public Result<ResourceVO> queryDetail(@RequestParam("resourceId") Integer resourceId) {
+    public Result<ResourceVO> queryDetail(@RequestParam("resourceId") String resourceId) {
         log.info("---》开始查询资源详情：resourceId={}", resourceId);
         return Result.success(resourceService.queryDetail(resourceId));
     }

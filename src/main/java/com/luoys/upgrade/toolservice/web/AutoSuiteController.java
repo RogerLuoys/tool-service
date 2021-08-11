@@ -27,7 +27,7 @@ public class AutoSuiteController {
     }
 
     @RequestMapping(value = "/remove", method = RequestMethod.DELETE)
-    public Result<Boolean> remove(@RequestParam("testSuiteId") Integer testSuiteId) {
+    public Result<Boolean> remove(@RequestParam("testSuiteId") String testSuiteId) {
         log.info("---》开始删除用例：{}", testSuiteId);
         return Result.message(suiteService.remove(testSuiteId));
     }
@@ -48,7 +48,7 @@ public class AutoSuiteController {
     }
 
     @RequestMapping(value = "/queryDetail", method = RequestMethod.GET)
-    public Result<AutoSuiteVO> queryDetail(@RequestParam("suiteId") Integer suiteId) {
+    public Result<AutoSuiteVO> queryDetail(@RequestParam("suiteId") String suiteId) {
         log.info("---》开始查询用例详情：suiteId={}", suiteId);
         return Result.success(suiteService.queryDetail(suiteId));
     }
