@@ -2,6 +2,7 @@ package com.luoys.upgrade.toolservice.web;
 
 import com.luoys.upgrade.toolservice.common.Result;
 import com.luoys.upgrade.toolservice.service.SuiteService;
+import com.luoys.upgrade.toolservice.service.enums.KeywordEnum;
 import com.luoys.upgrade.toolservice.web.vo.AutoCaseVO;
 import com.luoys.upgrade.toolservice.web.vo.PageInfo;
 import com.luoys.upgrade.toolservice.web.vo.AutoSuiteSimpleVO;
@@ -24,6 +25,16 @@ public class AutoSuiteController {
     public Result<Boolean> create(@RequestBody AutoSuiteVO autoSuiteVO) {
         log.info("---》开始新增：{}", autoSuiteVO);
         return Result.message(suiteService.create(autoSuiteVO));
+    }
+
+    @RequestMapping(value = "/quickCreate", method = RequestMethod.GET)
+    public Result<Boolean> quickCreate(@RequestParam(value = "name") String name,
+                                       @RequestHeader(value = "userId") String userId) {
+        log.info("---》开始快速新增测试集：{}", name);
+        AutoSuiteVO autoSuiteVO = new AutoSuiteVO();
+        autoSuiteVO.setOwnerId(userId);
+        autoSuiteVO.setOwnerName(KeywordEnum.DEFAULT_USER.getDescription());
+        return Result.message(suiteService.quickCreate(autoSuiteVO));
     }
 
     @RequestMapping(value = "/remove", method = RequestMethod.DELETE)

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.luoys.upgrade.toolservice.dao.SuiteCaseRelationMapper">
+  <resultMap id="BaseResultMap" type="com.luoys.upgrade.toolservice.dao.po.SuiteCaseRelationPO">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="suite_id" jdbcType="VARCHAR" property="suiteId" />
+    <result column="case_id" jdbcType="VARCHAR" property="caseId" />
+    <result column="sequence" jdbcType="INTEGER" property="sequence" />
+    <result column="case_name" jdbcType="VARCHAR" property="caseName" />
+    <result column="case_type" jdbcType="VARCHAR" property="caseType" />
+    <result column="case_status" jdbcType="VARCHAR" property="caseStatus" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, suite_id, case_id, `sequence`, case_name, case_type, case_status
+  </sql>
+  <select id="selectById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from suite_case_relation
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="delete" parameterType="java.lang.Integer">
+    delete from suite_case_relation
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <update id="removeBySuiteId">
+    update suite_case_relation set is_delete = 1
+    where suite_id = #{suiteId,jdbcType=VARCHAR}
+  </update>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.luoys.upgrade.toolservice.dao.po.SuiteCaseRelationPO" useGeneratedKeys="true">
+    insert into suite_case_relation (suite_id, case_id, `sequence`,
+      is_delete, gmt_create, gmt_modified
+      )
+    values (#{suiteId,jdbcType=VARCHAR}, #{caseId,jdbcType=VARCHAR}, #{sequence,jdbcType=INTEGER},
+      0, now(), now()}
+      )
+  </insert>
+  <update id="update" parameterType="com.luoys.upgrade.toolservice.dao.po.SuiteCaseRelationPO">
+    update suite_case_relation
+    <set>
+      <if test="sequence != null">
+        `sequence` = #{sequence,jdbcType=INTEGER},
+      </if>
+      gmt_modified = now(),
+    </set>
+    where suite_id = #{suiteId,jdbcType=VARCHAR} and case_id = #{caseId,jdbcType=VARCHAR}
+  </update>
+  <select id="listCaseBySuiteId" resultMap="BaseResultMap">
+    select
+    ac.case_id, ac.name as case_name, ac.type as case_type, ac.status as case_status, scr.sequence
+    from auto_case ac
+    join suite_case_relation scr on ac.case_id = scr.case_id
+    where is_delete = 0
+    and suite_id = #{suiteId,jdbcType=VARCHAR}
+    order by scr.sequence
+  </select>
+</mapper>

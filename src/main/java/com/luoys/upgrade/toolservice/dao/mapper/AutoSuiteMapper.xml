@@ -9,7 +9,6 @@
     <result column="environment" jdbcType="VARCHAR" property="environment" />
     <result column="step_sleep" jdbcType="INTEGER" property="stepSleep" />
     <result column="case_max_time" jdbcType="INTEGER" property="caseMaxTime" />
-    <result column="test_case" jdbcType="VARCHAR" property="testCase" />
     <result column="total" jdbcType="INTEGER" property="total" />
     <result column="passed" jdbcType="INTEGER" property="passed" />
     <result column="failed" jdbcType="INTEGER" property="failed" />
@@ -17,7 +16,7 @@
     <result column="owner_name" jdbcType="VARCHAR" property="ownerName" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, suite_id, `name`, description, environment, step_sleep, case_max_time, test_case, total,
+    id, suite_id, `name`, description, environment, step_sleep, case_max_time, total,
     passed, failed, owner_id, owner_name
   </sql>
   <select id="selectByUUID" resultMap="BaseResultMap">
@@ -45,12 +44,12 @@
   </update>
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.luoys.upgrade.toolservice.dao.po.AutoSuitePO" useGeneratedKeys="true">
     insert into auto_suite (suite_id, `name`, description, environment,
-      step_sleep, case_max_time, test_case,
+      step_sleep, case_max_time,
       total, passed, failed,
       owner_id, owner_name, is_delete,
       gmt_create, gmt_modified)
     values (#{suiteId,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{environment,jdbcType=VARCHAR},
-      #{stepSleep,jdbcType=INTEGER}, #{caseMaxTime,jdbcType=INTEGER}, #{testCase,jdbcType=VARCHAR},
+      #{stepSleep,jdbcType=INTEGER}, #{caseMaxTime,jdbcType=INTEGER},
       #{total,jdbcType=INTEGER}, #{passed,jdbcType=INTEGER}, #{failed,jdbcType=INTEGER},
       #{ownerId,jdbcType=VARCHAR}, #{ownerName,jdbcType=VARCHAR}, 0, now(), now())
   </insert>
@@ -71,9 +70,6 @@
       </if>
       <if test="caseMaxTime != null">
         case_max_time = #{caseMaxTime,jdbcType=INTEGER},
-      </if>
-      <if test="testCase != null">
-        test_case = #{testCase,jdbcType=VARCHAR},
       </if>
       <if test="total != null">
         total = #{total,jdbcType=INTEGER},

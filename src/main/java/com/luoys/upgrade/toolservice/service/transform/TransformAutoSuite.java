@@ -54,7 +54,7 @@ public class TransformAutoSuite {
         vo.setCaseMaxTime(po.getCaseMaxTime());
         vo.setStepSleep(po.getStepSleep());
         // 设置用例信息
-        vo.setCaseList(TransformCommon.toCase(po.getTestCase()));
+//        vo.setCaseList(TransformCommon.toCase(po.getTestCase()));
         return vo;
     }
 
@@ -76,7 +76,7 @@ public class TransformAutoSuite {
         po.setCaseMaxTime(vo.getCaseMaxTime());
         po.setStepSleep(vo.getStepSleep());
         // 设置用例信息
-        po.setTestCase(TransformCommon.toCase(vo.getCaseList()));
+//        po.setTestCase(TransformCommon.toCase(vo.getCaseList()));
         return po;
     }
 

@@ -3,11 +3,14 @@ package com.luoys.upgrade.toolservice.service;
 import com.luoys.upgrade.toolservice.common.NumberSender;
 import com.luoys.upgrade.toolservice.common.ThreadPoolUtil;
 import com.luoys.upgrade.toolservice.dao.AutoSuiteMapper;
-import com.luoys.upgrade.toolservice.service.dto.CaseDTO;
+import com.luoys.upgrade.toolservice.dao.SuiteCaseRelationMapper;
 import com.luoys.upgrade.toolservice.service.enums.AutoCaseTypeEnum;
+import com.luoys.upgrade.toolservice.service.enums.KeywordEnum;
 import com.luoys.upgrade.toolservice.service.transform.TransformAutoSuite;
+import com.luoys.upgrade.toolservice.service.transform.TransformSuiteCaseRelation;
 import com.luoys.upgrade.toolservice.web.vo.AutoSuiteSimpleVO;
 import com.luoys.upgrade.toolservice.web.vo.AutoSuiteVO;
+import com.luoys.upgrade.toolservice.web.vo.SuiteCaseVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,6 +32,9 @@ public class SuiteService {
     private AutoSuiteMapper autoSuiteMapper;
 
     @Autowired
+    private SuiteCaseRelationMapper suiteCaseRelationMapper;
+
+    @Autowired
     private CaseService caseService;
 
     /**
@@ -43,11 +49,25 @@ public class SuiteService {
     }
 
     /**
+     * 快速测试集，必填项自动填入默认值
+     * @param autoSuiteVO 测试集对象
+     * @return 成功为true，失败为false
+     */
+    public Boolean quickCreate(AutoSuiteVO autoSuiteVO) {
+        autoSuiteVO.setSuiteId(NumberSender.createSuiteId());
+        int result = autoSuiteMapper.insert(TransformAutoSuite.transformVO2PO(autoSuiteVO));
+        return result == 1;
+    }
+
+    /**
      * 删除单个测试集
      * @param suiteId 测试集业务id
      * @return 成功为true，失败为false
      */
     public Boolean remove(String suiteId) {
+        // 删除关联的用例
+        suiteCaseRelationMapper.removeBySuiteId(suiteId);
+        // 删除测试集
         int result = autoSuiteMapper.remove(suiteId);
         return result == 1;
     }
@@ -78,14 +98,19 @@ public class SuiteService {
      * @return 测试集对象
      */
     public AutoSuiteVO queryDetail(String suiteId) {
-        return TransformAutoSuite.transformPO2VO(autoSuiteMapper.selectByUUID(suiteId));
+        // 查询基本信息
+        AutoSuiteVO autoSuiteVO = TransformAutoSuite.transformPO2VO(autoSuiteMapper.selectByUUID(suiteId));
+        // 查询用例列表
+        List<SuiteCaseVO> caseList = TransformSuiteCaseRelation.transformPO2SimpleVO(suiteCaseRelationMapper.listCaseBySuiteId(suiteId));
+        autoSuiteVO.setCaseList(caseList);
+        return autoSuiteVO;
     }
 
     public Boolean useAsync(AutoSuiteVO autoSuiteVO) {
-        List<CaseDTO> caseList = autoSuiteVO.getCaseList();
-        Map<Integer, List<CaseDTO>> casesMap = orderAndSort(caseList);
-        List<CaseDTO> uiCaseList = casesMap.get(AutoCaseTypeEnum.UI_CASE.getCode());
-        List<CaseDTO> apiCaseList = casesMap.get(AutoCaseTypeEnum.INTERFACE_CASE.getCode());
+        List<SuiteCaseVO> caseList = autoSuiteVO.getCaseList();
+        Map<Integer, List<SuiteCaseVO>> casesMap = orderAndSort(caseList);
+        List<SuiteCaseVO> uiCaseList = casesMap.get(AutoCaseTypeEnum.UI_CASE.getCode());
+        List<SuiteCaseVO> apiCaseList = casesMap.get(AutoCaseTypeEnum.INTERFACE_CASE.getCode());
         try {
             if (apiCaseList.size() != 0) {
                 ThreadPoolUtil.execute(new Runnable() {
@@ -111,25 +136,25 @@ public class SuiteService {
     }
 
 //    public void use(AutoSuiteVO autoSuiteVO) {
-//        List<CaseDTO> caseList = autoSuiteVO.getCaseList();
+//        List<SuiteCaseVO> caseList = autoSuiteVO.getCaseList();
 //        order(caseList);
-//        for (CaseDTO caseDTO: caseList) {
-//            execute(caseDTO);
+//        for (SuiteCaseVO suiteCaseVO: caseList) {
+//            execute(suiteCaseVO);
 //        }
 //    }
 
-    public Map<Integer, List<CaseDTO>> orderAndSort(List<CaseDTO> caseList) {
+    public Map<Integer, List<SuiteCaseVO>> orderAndSort(List<SuiteCaseVO> caseList) {
         quickOrder(caseList, 0, caseList.size());
-        Map<Integer, List<CaseDTO>> casesMap = new HashMap<>();
-        List<CaseDTO> uiCaseList = new ArrayList<>();
-        List<CaseDTO> apiCaseList = new ArrayList<>();
-        for (CaseDTO caseDTO : caseList) {
-            if (caseDTO.getType().equals(AutoCaseTypeEnum.INTERFACE_CASE.getCode())) {
-                apiCaseList.add(caseDTO);
-            } else if (caseDTO.getType().equals(AutoCaseTypeEnum.UI_CASE.getCode())) {
-                uiCaseList.add(caseDTO);
+        Map<Integer, List<SuiteCaseVO>> casesMap = new HashMap<>();
+        List<SuiteCaseVO> uiCaseList = new ArrayList<>();
+        List<SuiteCaseVO> apiCaseList = new ArrayList<>();
+        for (SuiteCaseVO suiteCaseVO : caseList) {
+            if (suiteCaseVO.getType().equals(AutoCaseTypeEnum.INTERFACE_CASE.getCode())) {
+                apiCaseList.add(suiteCaseVO);
+            } else if (suiteCaseVO.getType().equals(AutoCaseTypeEnum.UI_CASE.getCode())) {
+                uiCaseList.add(suiteCaseVO);
             } else {
-                log.error("--->测试集中的未知用例类型：caseId={}", caseDTO.getCaseId());
+                log.error("--->测试集中的未知用例类型：caseId={}", suiteCaseVO.getCaseId());
             }
         }
         casesMap.put(AutoCaseTypeEnum.UI_CASE.getCode(), uiCaseList);
@@ -143,10 +168,10 @@ public class SuiteService {
      * @param start
      * @param end
      */
-    private void quickOrder(List<CaseDTO> targetList, int start, int end) {
+    private void quickOrder(List<SuiteCaseVO> targetList, int start, int end) {
         int low = start;
         int high = end;
-        CaseDTO flag = targetList.get(start);
+        SuiteCaseVO flag = targetList.get(start);
         while (low < high) {
             while (low <= high && targetList.get(high).getSequence() >= flag.getSequence()) {
                 high--;
@@ -168,16 +193,16 @@ public class SuiteService {
         quickOrder(targetList, low + 1, targetList.size());
     }
 
-    private Boolean execute(List<CaseDTO> caseList) {
+    private Boolean execute(List<SuiteCaseVO> caseList) {
         return false;
     }
 
-    private Boolean execute(CaseDTO caseDTO) {
+    private Boolean execute(SuiteCaseVO suiteCaseVO) {
         Boolean result;
         try {
-            result = caseService.use(caseService.queryDetail(caseDTO.getCaseId()));
+            result = caseService.use(caseService.queryDetail(suiteCaseVO.getCaseId()));
         } catch (Exception e) {
-            log.error("---->执行用例异常：caseId={}", caseDTO.getCaseId());
+            log.error("---->执行用例异常：caseId={}", suiteCaseVO.getCaseId());
             result = false;
         }
         return result;

@@ -45,10 +45,10 @@ public class AutoSuitePO implements Serializable {
      */
     private Integer caseMaxTime;
 
-    /**
-     * 用例列表，List<ParamDTO>的json格式（最多放100-200个case）
-     */
-    private String testCase;
+//    /**
+//     * 用例列表，List<ParamDTO>的json格式（最多放100-200个case）
+//     */
+//    private String testCase;
 
     /**
      * 用例总数

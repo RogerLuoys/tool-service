@@ -41,7 +41,7 @@ public class AutoSuiteVO {
     /**
      * 用例列表，List<ParamDTO>的json格式（最多放100-200个case）
      */
-    private List<CaseDTO> caseList;
+    private List<SuiteCaseVO> caseList;
 
     /**
      * 用例总数

@@ -181,8 +181,8 @@ public class CaseService {
             log.error("--->用例没有主步骤：caseId={}", autoCaseVO.getCaseId());
             return false;
         }
-        // 执行收尾步骤
-        if (autoCaseVO.getAfterStepList() != null && autoCaseVO.getAfterStepList().size() != 0) {
+        // 执行收尾步骤，如果执行结果为false，则不执行该步骤
+        if (result && autoCaseVO.getAfterStepList() != null && autoCaseVO.getAfterStepList().size() != 0) {
             for (StepDTO stepDTO: autoCaseVO.getAfterStepList()) {
                 stepService.use(stepService.queryDetail(stepDTO.getStepId()));
             }
