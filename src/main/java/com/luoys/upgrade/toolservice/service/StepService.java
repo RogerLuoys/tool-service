@@ -48,6 +48,9 @@ public class StepService {
      * @return 成功为true，失败为false
      */
     public Boolean create(AutoStepVO autoStepVO) {
+        if (!autoStepVO.getIsPublic()) {
+            autoStepVO.setIsPublic(false);
+        }
         autoStepVO.setStepId(NumberSender.createStepId());
         if (autoStepVO.getOwnerId().equals(KeywordEnum.DEFAULT_USER.getCode())) {
             autoStepVO.setOwnerName(KeywordEnum.DEFAULT_USER.getDescription());

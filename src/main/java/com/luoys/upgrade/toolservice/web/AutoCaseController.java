@@ -3,10 +3,8 @@ package com.luoys.upgrade.toolservice.web;
 import com.luoys.upgrade.toolservice.common.Result;
 import com.luoys.upgrade.toolservice.service.CaseService;
 import com.luoys.upgrade.toolservice.service.enums.AutoStepTypeEnum;
-import com.luoys.upgrade.toolservice.web.vo.AutoStepVO;
-import com.luoys.upgrade.toolservice.web.vo.PageInfo;
-import com.luoys.upgrade.toolservice.web.vo.AutoCaseSimpleVO;
-import com.luoys.upgrade.toolservice.web.vo.AutoCaseVO;
+import com.luoys.upgrade.toolservice.service.enums.KeywordEnum;
+import com.luoys.upgrade.toolservice.web.vo.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -28,16 +26,44 @@ public class AutoCaseController {
         return Result.message(caseService.create(autoCaseVO));
     }
 
+    @RequestMapping(value = "/quickCreate", method = RequestMethod.GET)
+    public Result<Boolean> quickCreate(@RequestParam(value = "name") String name,
+                                       @RequestHeader(value = "userId") String userId) {
+        log.info("---》开始快速新增用例：{}", name);
+        AutoCaseVO autoCaseVO = new AutoCaseVO();
+        autoCaseVO.setOwnerId(userId);
+        autoCaseVO.setOwnerName(KeywordEnum.DEFAULT_USER.getDescription());
+        return Result.message(caseService.quickCreate(autoCaseVO));
+    }
+
+    @RequestMapping(value = "/createRelatedStep", method = RequestMethod.POST)
+    public Result<Boolean> createRelatedStep(@RequestBody CaseStepVO caseStepVO) {
+        log.info("---》开始新增测试集关联的用例：{}", caseStepVO);
+        return Result.message(caseService.createRelatedStep(caseStepVO));
+    }
+
     @RequestMapping(value = "/remove", method = RequestMethod.DELETE)
     public Result<Boolean> remove(@RequestParam("caseId") String caseId) {
         log.info("---》开始删除用例：{}", caseId);
         return Result.message(caseService.remove(caseId));
     }
 
+    @RequestMapping(value = "/removeRelatedStep", method = RequestMethod.DELETE)
+    public Result<Boolean> removeRelatedStep(@RequestBody CaseStepVO caseStepVO) {
+        log.info("---》开始删除测试集关联的用例：{}", caseStepVO);
+        return Result.message(caseService.removeRelatedStep(caseStepVO));
+    }
+
     @RequestMapping(value = "/update", method = RequestMethod.PUT)
     public Result<Boolean> update(@RequestBody AutoCaseVO autoCaseVO) {
         log.info("---》开始更新用例：{}", autoCaseVO);
         return Result.message(caseService.update(autoCaseVO));
+    }
+
+    @RequestMapping(value = "/updateRelatedStep", method = RequestMethod.PUT)
+    public Result<Boolean> updateRelatedCase(@RequestBody CaseStepVO caseStepVO) {
+        log.info("---》开始更新测试集关联的用例：{}", caseStepVO);
+        return Result.message(caseService.updateRelatedStep(caseStepVO));
     }
 
     @RequestMapping(value = "/query", method = RequestMethod.GET)

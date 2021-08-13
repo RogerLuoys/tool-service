@@ -58,7 +58,7 @@
             <version>4.5.5</version>
         </dependency>
 
-        <!--json序列化-->
+        <!--ui自动化-->
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-java</artifactId>
@@ -83,40 +83,20 @@
         </dependency>
         <!--jdbc template相关的包-->
 
+        <!--代码简化工具-->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>
         </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>javax.validation</groupId>-->
-<!--            <artifactId>validation-api</artifactId>-->
-<!--            <version>2.</version>-->
-<!--        </dependency>-->
+
     </dependencies>
-
-<!--    <build>-->
-<!--        <plugins>-->
-<!--            <plugin>-->
-<!--                <groupId>org.springframework.boot</groupId>-->
-<!--                <artifactId>spring-boot-maven-plugin</artifactId>-->
-<!--                <configuration>-->
-<!--                    <excludes>-->
-<!--                        <exclude>-->
-<!--                            <groupId>org.projectlombok</groupId>-->
-<!--                            <artifactId>lombok</artifactId>-->
-<!--                        </exclude>-->
-<!--                    </excludes>-->
-<!--                </configuration>-->
-<!--            </plugin>-->
-<!--        </plugins>-->
-<!--    </build>-->
-
 
     <build>
         <plugins>
@@ -126,7 +106,7 @@
                 <version>2.5.0</version>
             </plugin>
         </plugins>
-        <!--需要额外配置才会扫描xml文件-->
+        <!--需要额外配置才会扫描java目录下的xml文件-->
         <resources>
             <resource>
                 <directory>src/main/java</directory>

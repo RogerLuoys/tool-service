@@ -1,6 +1,5 @@
 package com.luoys.upgrade.toolservice.web.vo;
 
-import com.luoys.upgrade.toolservice.service.dto.StepDTO;
 import lombok.Data;
 
 import java.util.List;
@@ -41,17 +40,17 @@ public class AutoCaseVO {
     /**
      * 前置步骤，List<ParamDTO>的json格式
      */
-    private List<StepDTO> preStepList;
+    private List<CaseStepVO> preStepList;
 
     /**
      * 主要步骤，List<ParamDTO>的json格式
      */
-    private List<StepDTO> mainStepList;
+    private List<CaseStepVO> mainStepList;
 
     /**
      * 收尾步骤，List<ParamDTO>的json格式
      */
-    private List<StepDTO> afterStepList;
+    private List<CaseStepVO> afterStepList;
 
     /**
      * 所属人id

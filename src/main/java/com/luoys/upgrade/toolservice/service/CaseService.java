@@ -1,15 +1,19 @@
 package com.luoys.upgrade.toolservice.service;
 
 import com.luoys.upgrade.toolservice.common.NumberSender;
+import com.luoys.upgrade.toolservice.common.StringUtil;
 import com.luoys.upgrade.toolservice.common.ThreadPoolUtil;
 import com.luoys.upgrade.toolservice.dao.AutoCaseMapper;
+import com.luoys.upgrade.toolservice.dao.CaseStepRelationMapper;
 import com.luoys.upgrade.toolservice.service.client.UIClient;
-import com.luoys.upgrade.toolservice.service.dto.StepDTO;
+import com.luoys.upgrade.toolservice.service.enums.AutoCaseStatusEnum;
 import com.luoys.upgrade.toolservice.service.enums.AutoCaseTypeEnum;
 import com.luoys.upgrade.toolservice.service.enums.KeywordEnum;
+import com.luoys.upgrade.toolservice.service.transform.TransformCaseStepRelation;
 import com.luoys.upgrade.toolservice.web.vo.AutoCaseSimpleVO;
 import com.luoys.upgrade.toolservice.web.vo.AutoCaseVO;
 import com.luoys.upgrade.toolservice.service.transform.TransformAutoCase;
+import com.luoys.upgrade.toolservice.web.vo.CaseStepVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,6 +28,9 @@ public class CaseService {
     private AutoCaseMapper autoCaseMapper;
 
     @Autowired
+    private CaseStepRelationMapper caseStepRelationMapper;
+
+    @Autowired
     private StepService stepService;
 
     @Autowired
@@ -35,6 +42,18 @@ public class CaseService {
      * @return 新增成功为true，失败为false
      */
     public Boolean create(AutoCaseVO autoCaseVO) {
+        if (autoCaseVO.getType() == null) {
+            log.error("--->用例类型不能为空：{}", autoCaseVO);
+            return false;
+        }
+        if (autoCaseVO.getStatus() == null) {
+            log.error("--->用例状态不能为空：{}", autoCaseVO);
+            return false;
+        }
+        if (StringUtil.isBlank(autoCaseVO.getName())) {
+            log.error("--->用例名称不能为空：{}", autoCaseVO);
+            return false;
+        }
         autoCaseVO.setCaseId(NumberSender.createCaseId());
         if (autoCaseVO.getOwnerId().equals(KeywordEnum.DEFAULT_USER.getCode())) {
             autoCaseVO.setOwnerName(KeywordEnum.DEFAULT_USER.getDescription());
@@ -46,12 +65,53 @@ public class CaseService {
     }
 
     /**
+     * 快速新增单个用例
+     * @param autoCaseVO 用例对象，需要有名称和类型
+     * @return 新增成功为true，失败为false
+     */
+    public Boolean quickCreate(AutoCaseVO autoCaseVO) {
+        if (autoCaseVO.getType() == null) {
+            log.error("--->用例类型不能为空：{}", autoCaseVO);
+            return false;
+        }
+        if (StringUtil.isBlank(autoCaseVO.getName())) {
+            log.error("--->用例名称不能为空：{}", autoCaseVO);
+            return false;
+        }
+        autoCaseVO.setStatus(AutoCaseStatusEnum.PLANNING.getCode());
+        autoCaseVO.setCaseId(NumberSender.createCaseId());
+        int result = autoCaseMapper.insert(TransformAutoCase.transformVO2PO(autoCaseVO));
+        return result == 1;
+    }
+
+    /**
+     * 新增用例关联的步骤
+     * @param caseStepVO 步骤对象
+     * @return 成功为true，失败为false
+     */
+    public Boolean createRelatedStep(CaseStepVO caseStepVO) {
+        int result = caseStepRelationMapper.insert(TransformCaseStepRelation.transformVO2SimplePO(caseStepVO));
+        return result == 1;
+    }
+
+    /**
      * 逻辑删除单个用例
      * @param caseId 用例业务id
      * @return 删除成功为true，失败为false
      */
     public Boolean remove(String caseId) {
+        caseStepRelationMapper.removeByCaseId(caseId);
         int result = autoCaseMapper.remove(caseId);
+        return result == 1;
+    }
+
+    /**
+     * 删除测试集关联的用例
+     * @param caseStepVO 步骤对象
+     * @return 成功为true，失败为false
+     */
+    public Boolean removeRelatedStep(CaseStepVO caseStepVO) {
+        int result = caseStepRelationMapper.remove(TransformCaseStepRelation.transformVO2SimplePO(caseStepVO));
         return result == 1;
     }
 
@@ -62,6 +122,16 @@ public class CaseService {
      */
     public Boolean update(AutoCaseVO autoCaseVO) {
         int result = autoCaseMapper.update(TransformAutoCase.transformVO2PO(autoCaseVO));
+        return result == 1;
+    }
+
+    /**
+     * 更新用例关联的步骤
+     * @param caseStepVO 步骤对象
+     * @return 成功为true，失败为false
+     */
+    public Boolean updateRelatedStep(CaseStepVO caseStepVO) {
+        int result = caseStepRelationMapper.update(TransformCaseStepRelation.transformVO2SimplePO(caseStepVO));
         return result == 1;
     }
 
@@ -87,7 +157,9 @@ public class CaseService {
      * @return 用例对象
      */
     public AutoCaseVO queryDetail(String caseId) {
-        return TransformAutoCase.transformPO2VO(autoCaseMapper.selectByUUID(caseId));
+        AutoCaseVO autoCaseVO = TransformAutoCase.transformPO2VO(autoCaseMapper.selectByUUID(caseId));
+        List<CaseStepVO> caseStepList = TransformCaseStepRelation.transformPO2SimpleVO(caseStepRelationMapper.listStepByCaseId(caseId));
+        return autoCaseVO;
     }
 
     /**
@@ -166,14 +238,14 @@ public class CaseService {
         boolean result = true;
         // 执行前置步骤
         if (autoCaseVO.getPreStepList() != null && autoCaseVO.getAfterStepList().size() != 0) {
-            for (StepDTO stepDTO: autoCaseVO.getPreStepList()) {
-                stepService.use(stepService.queryDetail(stepDTO.getStepId()));
+            for (CaseStepVO vo: autoCaseVO.getPreStepList()) {
+                stepService.use(stepService.queryDetail(vo.getStepId()));
             }
         }
         // 执行主要步骤，只要有一个步骤为false，则整个case结果为false
         if (autoCaseVO.getMainStepList() != null && autoCaseVO.getMainStepList().size() != 0) {
-            for (StepDTO stepDTO: autoCaseVO.getMainStepList()) {
-                if (!stepService.use(stepService.queryDetail(stepDTO.getStepId()))) {
+            for (CaseStepVO vo: autoCaseVO.getMainStepList()) {
+                if (!stepService.use(stepService.queryDetail(vo.getStepId()))) {
                     result = false;
                 }
             }
@@ -181,10 +253,10 @@ public class CaseService {
             log.error("--->用例没有主步骤：caseId={}", autoCaseVO.getCaseId());
             return false;
         }
-        // 执行收尾步骤，如果执行结果为false，则不执行该步骤
+        // 执行收尾步骤，如果执行结果为false，则不执行该步骤保留现场
         if (result && autoCaseVO.getAfterStepList() != null && autoCaseVO.getAfterStepList().size() != 0) {
-            for (StepDTO stepDTO: autoCaseVO.getAfterStepList()) {
-                stepService.use(stepService.queryDetail(stepDTO.getStepId()));
+            for (CaseStepVO vo: autoCaseVO.getAfterStepList()) {
+                stepService.use(stepService.queryDetail(vo.getStepId()));
             }
         }
         return result;

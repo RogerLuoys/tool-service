@@ -9,6 +9,11 @@ import java.util.List;
 
 public class TransformAutoSuite {
 
+    /**
+     * 把AutoSuitePO转换成AutoSuiteSimpleVO
+     * @param po -
+     * @return -
+     */
     public static AutoSuiteSimpleVO transformPO2SimpleVO(AutoSuitePO po) {
         if (po == null) {
             return null;

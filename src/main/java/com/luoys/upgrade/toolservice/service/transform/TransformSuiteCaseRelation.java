@@ -1,9 +1,6 @@
 package com.luoys.upgrade.toolservice.service.transform;
 
-import com.luoys.upgrade.toolservice.dao.po.ResourcePO;
 import com.luoys.upgrade.toolservice.dao.po.SuiteCaseRelationPO;
-import com.luoys.upgrade.toolservice.service.dto.CaseDTO;
-import com.luoys.upgrade.toolservice.web.vo.ResourceSimpleVO;
 import com.luoys.upgrade.toolservice.web.vo.SuiteCaseVO;
 
 import java.util.ArrayList;
@@ -30,6 +27,19 @@ public class TransformSuiteCaseRelation {
             voList.add(transformPO2SimpleVO(po));
         }
         return voList;
+    }
+
+    public static SuiteCaseRelationPO transformVO2SimplePO(SuiteCaseVO vo) {
+        if (vo == null) {
+            return null;
+        }
+        SuiteCaseRelationPO po = new SuiteCaseRelationPO();
+        po.setCaseId(vo.getCaseId());
+        po.setSequence(vo.getSequence());
+        po.setCaseType(vo.getType());
+        po.setCaseName(vo.getName());
+        po.setCaseStatus(vo.getStatus());
+        return po;
     }
 
 }

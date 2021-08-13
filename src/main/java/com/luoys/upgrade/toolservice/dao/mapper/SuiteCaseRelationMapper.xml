@@ -19,13 +19,13 @@
     from suite_case_relation
     where id = #{id,jdbcType=INTEGER}
   </select>
-  <delete id="delete" parameterType="java.lang.Integer">
-    delete from suite_case_relation
-    where id = #{id,jdbcType=INTEGER}
-  </delete>
   <update id="removeBySuiteId">
     update suite_case_relation set is_delete = 1
     where suite_id = #{suiteId,jdbcType=VARCHAR}
+  </update>
+  <update id="remove" parameterType="com.luoys.upgrade.toolservice.dao.po.SuiteCaseRelationPO">
+    update suite_case_relation set is_delete = 1
+    where suite_id = #{suiteId,jdbcType=VARCHAR} and case_id = #{caseId,jdbcType=VARCHAR}
   </update>
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.luoys.upgrade.toolservice.dao.po.SuiteCaseRelationPO" useGeneratedKeys="true">
     insert into suite_case_relation (suite_id, case_id, `sequence`,

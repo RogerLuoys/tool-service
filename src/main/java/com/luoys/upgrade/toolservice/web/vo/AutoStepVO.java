@@ -82,6 +82,6 @@ public class AutoStepVO {
     /**
      * 是否公用
      */
-    private Integer isPublic;
+    private Boolean isPublic;
 
 }

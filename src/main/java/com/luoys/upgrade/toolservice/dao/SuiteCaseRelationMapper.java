@@ -9,9 +9,10 @@ import java.util.List;
 
 @Repository
 public interface SuiteCaseRelationMapper {
-    int delete(Integer id);
 
     int removeBySuiteId(@Param("suiteId") String suiteId);
+
+    int remove(SuiteCaseRelationPO record);
 
     int insert(SuiteCaseRelationPO record);
 

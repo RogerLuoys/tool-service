@@ -1,11 +1,11 @@
 package com.luoys.upgrade.toolservice.service;
 
 import com.luoys.upgrade.toolservice.common.NumberSender;
+import com.luoys.upgrade.toolservice.common.StringUtil;
 import com.luoys.upgrade.toolservice.common.ThreadPoolUtil;
 import com.luoys.upgrade.toolservice.dao.AutoSuiteMapper;
 import com.luoys.upgrade.toolservice.dao.SuiteCaseRelationMapper;
 import com.luoys.upgrade.toolservice.service.enums.AutoCaseTypeEnum;
-import com.luoys.upgrade.toolservice.service.enums.KeywordEnum;
 import com.luoys.upgrade.toolservice.service.transform.TransformAutoSuite;
 import com.luoys.upgrade.toolservice.service.transform.TransformSuiteCaseRelation;
 import com.luoys.upgrade.toolservice.web.vo.AutoSuiteSimpleVO;
@@ -43,19 +43,37 @@ public class SuiteService {
      * @return 成功为true，失败为false
      */
     public Boolean create(AutoSuiteVO autoSuiteVO) {
+        if (StringUtil.isBlank(autoSuiteVO.getName())) {
+            log.error("--->测试集名字必填：{}", autoSuiteVO);
+            return false;
+        }
         autoSuiteVO.setSuiteId(NumberSender.createSuiteId());
         int result = autoSuiteMapper.insert(TransformAutoSuite.transformVO2PO(autoSuiteVO));
         return result == 1;
     }
 
     /**
-     * 快速测试集，必填项自动填入默认值
+     * 快速新增测试集，必填项自动填入默认值
      * @param autoSuiteVO 测试集对象
      * @return 成功为true，失败为false
      */
     public Boolean quickCreate(AutoSuiteVO autoSuiteVO) {
+        if (StringUtil.isBlank(autoSuiteVO.getName())) {
+            log.error("--->测试集名字必填：{}", autoSuiteVO);
+            return false;
+        }
         autoSuiteVO.setSuiteId(NumberSender.createSuiteId());
         int result = autoSuiteMapper.insert(TransformAutoSuite.transformVO2PO(autoSuiteVO));
+        return result == 1;
+    }
+
+    /**
+     * 新增测试集关联的用例
+     * @param suiteCaseVO 用例对象
+     * @return 成功为true，失败为false
+     */
+    public Boolean createRelatedCase(SuiteCaseVO suiteCaseVO) {
+        int result = suiteCaseRelationMapper.insert(TransformSuiteCaseRelation.transformVO2SimplePO(suiteCaseVO));
         return result == 1;
     }
 
@@ -73,12 +91,32 @@ public class SuiteService {
     }
 
     /**
-     * 更新单个测试集
+     * 删除测试集关联的用例
+     * @param suiteCaseVO 用例对象
+     * @return 成功为true，失败为false
+     */
+    public Boolean removeRelatedCase(SuiteCaseVO suiteCaseVO) {
+        int result = suiteCaseRelationMapper.remove(TransformSuiteCaseRelation.transformVO2SimplePO(suiteCaseVO));
+        return result == 1;
+    }
+
+    /**
+     * 更新单个测试集的基本信息
      * @param autoSuiteVO 测试集对象
      * @return 成功为true，失败为false
      */
     public Boolean update(AutoSuiteVO autoSuiteVO) {
         int result = autoSuiteMapper.update(TransformAutoSuite.transformVO2PO(autoSuiteVO));
+        return result == 1;
+    }
+
+    /**
+     * 更新测试集关联的用例
+     * @param suiteCaseVO 用例对象
+     * @return 成功为true，失败为false
+     */
+    public Boolean updateRelatedCase(SuiteCaseVO suiteCaseVO) {
+        int result = suiteCaseRelationMapper.update(TransformSuiteCaseRelation.transformVO2SimplePO(suiteCaseVO));
         return result == 1;
     }
 
@@ -106,6 +144,11 @@ public class SuiteService {
         return autoSuiteVO;
     }
 
+    /**
+     * 执行测试集（异步模式）
+     * @param autoSuiteVO -
+     * @return -
+     */
     public Boolean useAsync(AutoSuiteVO autoSuiteVO) {
         List<SuiteCaseVO> caseList = autoSuiteVO.getCaseList();
         Map<Integer, List<SuiteCaseVO>> casesMap = orderAndSort(caseList);
@@ -135,15 +178,12 @@ public class SuiteService {
         return true;
     }
 
-//    public void use(AutoSuiteVO autoSuiteVO) {
-//        List<SuiteCaseVO> caseList = autoSuiteVO.getCaseList();
-//        order(caseList);
-//        for (SuiteCaseVO suiteCaseVO: caseList) {
-//            execute(suiteCaseVO);
-//        }
-//    }
-
-    public Map<Integer, List<SuiteCaseVO>> orderAndSort(List<SuiteCaseVO> caseList) {
+    /**
+     * 按执行顺序排序，并将接口用例与UI用例区分开
+     * @param caseList -
+     * @return 包含两条数据的Map对象
+     */
+    private Map<Integer, List<SuiteCaseVO>> orderAndSort(List<SuiteCaseVO> caseList) {
         quickOrder(caseList, 0, caseList.size());
         Map<Integer, List<SuiteCaseVO>> casesMap = new HashMap<>();
         List<SuiteCaseVO> uiCaseList = new ArrayList<>();
@@ -164,9 +204,9 @@ public class SuiteService {
 
     /**
      * 快速排序
-     * @param targetList
-     * @param start
-     * @param end
+     * @param targetList 需要排序的列表
+     * @param start 从0开始
+     * @param end 列表长度
      */
     private void quickOrder(List<SuiteCaseVO> targetList, int start, int end) {
         int low = start;
@@ -193,19 +233,14 @@ public class SuiteService {
         quickOrder(targetList, low + 1, targetList.size());
     }
 
-    private Boolean execute(List<SuiteCaseVO> caseList) {
-        return false;
-    }
-
-    private Boolean execute(SuiteCaseVO suiteCaseVO) {
-        Boolean result;
-        try {
-            result = caseService.use(caseService.queryDetail(suiteCaseVO.getCaseId()));
-        } catch (Exception e) {
-            log.error("---->执行用例异常：caseId={}", suiteCaseVO.getCaseId());
-            result = false;
+    private void execute(List<SuiteCaseVO> caseList) {
+        for (SuiteCaseVO vo : caseList) {
+            try {
+                caseService.use(caseService.queryDetail(vo.getCaseId()));
+            } catch (Exception e) {
+                log.error("--->批量执行用例异常：caseId={}", vo.getCaseId(), e);
+            }
         }
-        return result;
     }
 
 }

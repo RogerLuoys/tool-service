@@ -3,10 +3,7 @@ package com.luoys.upgrade.toolservice.web;
 import com.luoys.upgrade.toolservice.common.Result;
 import com.luoys.upgrade.toolservice.service.SuiteService;
 import com.luoys.upgrade.toolservice.service.enums.KeywordEnum;
-import com.luoys.upgrade.toolservice.web.vo.AutoCaseVO;
-import com.luoys.upgrade.toolservice.web.vo.PageInfo;
-import com.luoys.upgrade.toolservice.web.vo.AutoSuiteSimpleVO;
-import com.luoys.upgrade.toolservice.web.vo.AutoSuiteVO;
+import com.luoys.upgrade.toolservice.web.vo.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +20,7 @@ public class AutoSuiteController {
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     public Result<Boolean> create(@RequestBody AutoSuiteVO autoSuiteVO) {
-        log.info("---》开始新增：{}", autoSuiteVO);
+        log.info("---》开始新增测试集：{}", autoSuiteVO);
         return Result.message(suiteService.create(autoSuiteVO));
     }
 
@@ -37,16 +34,34 @@ public class AutoSuiteController {
         return Result.message(suiteService.quickCreate(autoSuiteVO));
     }
 
+    @RequestMapping(value = "/createRelatedCase", method = RequestMethod.POST)
+    public Result<Boolean> createRelatedCase(@RequestBody SuiteCaseVO suiteCaseVO) {
+        log.info("---》开始新增测试集关联的用例：{}", suiteCaseVO);
+        return Result.message(suiteService.createRelatedCase(suiteCaseVO));
+    }
+
     @RequestMapping(value = "/remove", method = RequestMethod.DELETE)
     public Result<Boolean> remove(@RequestParam("testSuiteId") String testSuiteId) {
         log.info("---》开始删除用例：{}", testSuiteId);
         return Result.message(suiteService.remove(testSuiteId));
     }
 
+    @RequestMapping(value = "/removeRelatedCase", method = RequestMethod.DELETE)
+    public Result<Boolean> removeRelatedCase(@RequestBody SuiteCaseVO suiteCaseVO) {
+        log.info("---》开始删除测试集关联的用例：{}", suiteCaseVO);
+        return Result.message(suiteService.removeRelatedCase(suiteCaseVO));
+    }
+
     @RequestMapping(value = "/update", method = RequestMethod.PUT)
     public Result<Boolean> update(@RequestBody AutoSuiteVO autoSuiteVO) {
         log.info("---》开始更新用例：{}", autoSuiteVO);
         return Result.message(suiteService.update(autoSuiteVO));
+    }
+
+    @RequestMapping(value = "/updateRelatedCase", method = RequestMethod.PUT)
+    public Result<Boolean> updateRelatedCase(@RequestBody SuiteCaseVO suiteCaseVO) {
+        log.info("---》开始更新测试集关联的用例：{}", suiteCaseVO);
+        return Result.message(suiteService.updateRelatedCase(suiteCaseVO));
     }
 
     @RequestMapping(value = "/query", method = RequestMethod.GET)

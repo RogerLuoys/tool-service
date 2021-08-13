@@ -7,116 +7,38 @@
     <result column="step_id" jdbcType="VARCHAR" property="stepId" />
     <result column="sequence" jdbcType="INTEGER" property="sequence" />
     <result column="type" jdbcType="TINYINT" property="type" />
-    <result column="is_delete" jdbcType="TINYINT" property="isDelete" />
-    <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
-    <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
   </resultMap>
   <sql id="Base_Column_List">
     id, case_id, step_id, `sequence`, `type`, is_delete, gmt_create, gmt_modified
   </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select 
+  <select id="listStepByCaseId" resultMap="BaseResultMap">
+    select
     <include refid="Base_Column_List" />
     from case_step_relation
-    where id = #{id,jdbcType=INTEGER}
+    where case_id = #{caseId,jdbcType=VARCHAR}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from case_step_relation
-    where id = #{id,jdbcType=INTEGER}
-  </delete>
+  <update id="removeByCaseId">
+    update case_step_relation set is_delete = 1
+    where case_id = #{caseId,jdbcType=VARCHAR}
+  </update>
+  <update id="remove" parameterType="com.luoys.upgrade.toolservice.dao.po.CaseStepRelationPO">
+    update case_step_relation set is_delete = 1
+    where case_id = #{caseId,jdbcType=VARCHAR} and step_id = #{stepId,jdbcType=VARCHAR}
+  </update>
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.luoys.upgrade.toolservice.dao.po.CaseStepRelationPO" useGeneratedKeys="true">
-    insert into case_step_relation (case_id, step_id, `sequence`, 
-      `type`, is_delete, gmt_create, 
+    insert into case_step_relation (case_id, step_id, `sequence`,
+      `type`, is_delete, gmt_create,
       gmt_modified)
-    values (#{caseId,jdbcType=VARCHAR}, #{stepId,jdbcType=VARCHAR}, #{sequence,jdbcType=INTEGER}, 
-      #{type,jdbcType=TINYINT}, #{isDelete,jdbcType=TINYINT}, #{gmtCreate,jdbcType=TIMESTAMP}, 
-      #{gmtModified,jdbcType=TIMESTAMP})
+    values (#{caseId,jdbcType=VARCHAR}, #{stepId,jdbcType=VARCHAR}, #{sequence,jdbcType=INTEGER},
+      #{type,jdbcType=TINYINT}, 0, now(), now())
   </insert>
-  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.luoys.upgrade.toolservice.dao.po.CaseStepRelationPO" useGeneratedKeys="true">
-    insert into case_step_relation
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="caseId != null">
-        case_id,
-      </if>
-      <if test="stepId != null">
-        step_id,
-      </if>
-      <if test="sequence != null">
-        `sequence`,
-      </if>
-      <if test="type != null">
-        `type`,
-      </if>
-      <if test="isDelete != null">
-        is_delete,
-      </if>
-      <if test="gmtCreate != null">
-        gmt_create,
-      </if>
-      <if test="gmtModified != null">
-        gmt_modified,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="caseId != null">
-        #{caseId,jdbcType=VARCHAR},
-      </if>
-      <if test="stepId != null">
-        #{stepId,jdbcType=VARCHAR},
-      </if>
-      <if test="sequence != null">
-        #{sequence,jdbcType=INTEGER},
-      </if>
-      <if test="type != null">
-        #{type,jdbcType=TINYINT},
-      </if>
-      <if test="isDelete != null">
-        #{isDelete,jdbcType=TINYINT},
-      </if>
-      <if test="gmtCreate != null">
-        #{gmtCreate,jdbcType=TIMESTAMP},
-      </if>
-      <if test="gmtModified != null">
-        #{gmtModified,jdbcType=TIMESTAMP},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.luoys.upgrade.toolservice.dao.po.CaseStepRelationPO">
+  <update id="update" parameterType="com.luoys.upgrade.toolservice.dao.po.CaseStepRelationPO">
     update case_step_relation
     <set>
-      <if test="caseId != null">
-        case_id = #{caseId,jdbcType=VARCHAR},
-      </if>
-      <if test="stepId != null">
-        step_id = #{stepId,jdbcType=VARCHAR},
-      </if>
       <if test="sequence != null">
         `sequence` = #{sequence,jdbcType=INTEGER},
       </if>
-      <if test="type != null">
-        `type` = #{type,jdbcType=TINYINT},
-      </if>
-      <if test="isDelete != null">
-        is_delete = #{isDelete,jdbcType=TINYINT},
-      </if>
-      <if test="gmtCreate != null">
-        gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
-      </if>
-      <if test="gmtModified != null">
-        gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
-      </if>
     </set>
-    where id = #{id,jdbcType=INTEGER}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.luoys.upgrade.toolservice.dao.po.CaseStepRelationPO">
-    update case_step_relation
-    set case_id = #{caseId,jdbcType=VARCHAR},
-      step_id = #{stepId,jdbcType=VARCHAR},
-      `sequence` = #{sequence,jdbcType=INTEGER},
-      `type` = #{type,jdbcType=TINYINT},
-      is_delete = #{isDelete,jdbcType=TINYINT},
-      gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
-      gmt_modified = #{gmtModified,jdbcType=TIMESTAMP}
-    where id = #{id,jdbcType=INTEGER}
+    where case_id = #{caseId,jdbcType=VARCHAR} and step_id = #{stepId,jdbcType=VARCHAR}
   </update>
 </mapper>

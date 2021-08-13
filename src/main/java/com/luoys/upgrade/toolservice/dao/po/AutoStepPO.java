@@ -163,7 +163,7 @@ public class AutoStepPO implements Serializable {
     /**
      * 是否公用
      */
-    private Integer isPublic;
+    private Boolean isPublic;
 
     private static final long serialVersionUID = 1L;
 }
