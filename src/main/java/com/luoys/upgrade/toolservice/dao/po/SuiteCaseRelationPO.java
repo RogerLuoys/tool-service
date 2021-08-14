@@ -5,8 +5,8 @@ import java.util.Date;
 import lombok.Data;
 
 /**
- * suite_case_relation
- * @author
+ * suite_case_relation，suite-case关联类，包含各自部分信息
+ * @author luoys
  */
 @Data
 public class SuiteCaseRelationPO implements Serializable {

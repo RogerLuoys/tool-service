@@ -5,20 +5,20 @@ import java.util.Date;
 import lombok.Data;
 
 /**
- * case_step_relation
- * @author
+ * case_step_relation，case-step关联类，包含step的所有信息
+ * @author luoys
  */
 @Data
 public class CaseStepRelationPO implements Serializable {
     private Integer id;
 
     /**
-     * 业务id
+     * 用例的业务id
      */
     private String caseId;
 
     /**
-     * 业务id
+     * 步骤的业务id
      */
     private String stepId;
 
@@ -33,14 +33,14 @@ public class CaseStepRelationPO implements Serializable {
     private Integer type;
 
     /**
-     * 名称
+     * 步骤名称
      */
-    private String caseName;
+    private String stepName;
 
     /**
      * 步骤类型：1 SQL，2 HTTP，3 RPC，4 UI
      */
-    private Integer caseType;
+    private Integer stepType;
 
     /**
      * sql语句列表，List<CommonDTO>类型

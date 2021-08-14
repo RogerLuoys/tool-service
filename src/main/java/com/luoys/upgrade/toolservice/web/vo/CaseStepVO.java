@@ -6,7 +6,12 @@ import lombok.Data;
 public class CaseStepVO {
 
     /**
-     * 业务id
+     * 用例的业务id
+     */
+    private String caseId;
+
+    /**
+     * 步骤的业务id
      */
     private String stepId;
 

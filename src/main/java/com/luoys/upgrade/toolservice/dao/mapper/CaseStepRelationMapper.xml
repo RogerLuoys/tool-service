@@ -4,17 +4,52 @@
   <resultMap id="BaseResultMap" type="com.luoys.upgrade.toolservice.dao.po.CaseStepRelationPO">
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="case_id" jdbcType="VARCHAR" property="caseId" />
-    <result column="step_id" jdbcType="VARCHAR" property="stepId" />
     <result column="sequence" jdbcType="INTEGER" property="sequence" />
     <result column="type" jdbcType="TINYINT" property="type" />
+    <result column="step_id" jdbcType="VARCHAR" property="stepId" />
+    <result column="step_name" jdbcType="VARCHAR" property="stepName" />
+    <result column="step_type" jdbcType="TINYINT" property="stepType" />
+    <result column="jdbc_sql" jdbcType="VARCHAR" property="jdbcSql" />
+    <result column="jdbc_url" jdbcType="VARCHAR" property="jdbcUrl" />
+    <result column="jdbc_driver" jdbcType="VARCHAR" property="jdbcDriver" />
+    <result column="jdbc_username" jdbcType="VARCHAR" property="jdbcUsername" />
+    <result column="jdbc_password" jdbcType="VARCHAR" property="jdbcPassword" />
+    <result column="http_url" jdbcType="VARCHAR" property="httpUrl" />
+    <result column="http_type" jdbcType="VARCHAR" property="httpType" />
+    <result column="http_header" jdbcType="VARCHAR" property="httpHeader" />
+    <result column="http_body" jdbcType="VARCHAR" property="httpBody" />
+    <result column="rpc_url" jdbcType="VARCHAR" property="rpcUrl" />
+    <result column="rpc_interface" jdbcType="VARCHAR" property="rpcInterface" />
+    <result column="rpc_method" jdbcType="VARCHAR" property="rpcMethod" />
+    <result column="rpc_parameter_type" jdbcType="VARCHAR" property="rpcParameterType" />
+    <result column="rpc_parameter" jdbcType="VARCHAR" property="rpcParameter" />
+    <result column="ui_type" jdbcType="TINYINT" property="uiType" />
+    <result column="ui_url" jdbcType="VARCHAR" property="uiUrl" />
+    <result column="ui_element" jdbcType="VARCHAR" property="uiElement" />
+    <result column="ui_element_id" jdbcType="INTEGER" property="uiElementId" />
+    <result column="ui_key" jdbcType="VARCHAR" property="uiKey" />
+    <result column="after_sleep" jdbcType="INTEGER" property="afterSleep" />
+    <result column="assert_type" jdbcType="TINYINT" property="assertType" />
+    <result column="actual_result" jdbcType="VARCHAR" property="actualResult" />
+    <result column="expect_result" jdbcType="VARCHAR" property="expectResult" />
+    <result column="owner_id" jdbcType="VARCHAR" property="ownerId" />
+    <result column="owner_name" jdbcType="VARCHAR" property="ownerName" />
+    <result column="is_public" jdbcType="TINYINT" property="isPublic" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, case_id, step_id, `sequence`, `type`, is_delete, gmt_create, gmt_modified
+    id, case_id, `sequence`, `type`, step_id, step_name, step_type, jdbc_sql, jdbc_url, jdbc_driver, jdbc_username,
+    jdbc_password, http_url, http_type, http_header, http_body, rpc_url, rpc_interface, rpc_method, rpc_parameter_type,
+    rpc_parameter, ui_type, ui_url, ui_element, ui_element_id, ui_key, after_sleep, assert_type, actual_result,
+    expect_result, owner_id, owner_name, is_public
   </sql>
   <select id="listStepByCaseId" resultMap="BaseResultMap">
     select
-    <include refid="Base_Column_List" />
-    from case_step_relation
+      csr.case_id, csr.`sequence`, csr.`type`, s.step_id, s.name as step_name, s.type as step_type, s.jdbc_sql, s.jdbc_url, s.jdbc_driver, s.jdbc_username,
+      jdbc_password, s.http_url, s.http_type, s.http_header, s.http_body, s.rpc_url, s.rpc_interface, s.rpc_method, s.rpc_parameter_type,
+      rpc_parameter, s.ui_type, s.ui_url, s.ui_element, s.ui_element_id, s.ui_key, s.after_sleep, s.assert_type, s.actual_result,
+      expect_result, s.owner_id, s.owner_name, s.is_public
+    from case_step_relation csr
+    inner join auto_step s on csr.step_id = s.step_id
     where case_id = #{caseId,jdbcType=VARCHAR}
   </select>
   <update id="removeByCaseId">

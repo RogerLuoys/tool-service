@@ -9,6 +9,7 @@ import com.luoys.upgrade.toolservice.service.client.UIClient;
 import com.luoys.upgrade.toolservice.service.enums.AutoCaseStatusEnum;
 import com.luoys.upgrade.toolservice.service.enums.AutoCaseTypeEnum;
 import com.luoys.upgrade.toolservice.service.enums.KeywordEnum;
+import com.luoys.upgrade.toolservice.service.enums.RelatedStepTypeEnum;
 import com.luoys.upgrade.toolservice.service.transform.TransformCaseStepRelation;
 import com.luoys.upgrade.toolservice.web.vo.AutoCaseSimpleVO;
 import com.luoys.upgrade.toolservice.web.vo.AutoCaseVO;
@@ -18,7 +19,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Service
@@ -90,7 +94,10 @@ public class CaseService {
      * @return 成功为true，失败为false
      */
     public Boolean createRelatedStep(CaseStepVO caseStepVO) {
-        int result = caseStepRelationMapper.insert(TransformCaseStepRelation.transformVO2SimplePO(caseStepVO));
+        if (StringUtil.isBlank(caseStepVO.getStepId())) {
+            caseStepVO.setStepId(stepService.quickCreate());
+        }
+        int result = caseStepRelationMapper.insert(TransformCaseStepRelation.transformVO2PO(caseStepVO));
         return result == 1;
     }
 
@@ -111,7 +118,7 @@ public class CaseService {
      * @return 成功为true，失败为false
      */
     public Boolean removeRelatedStep(CaseStepVO caseStepVO) {
-        int result = caseStepRelationMapper.remove(TransformCaseStepRelation.transformVO2SimplePO(caseStepVO));
+        int result = caseStepRelationMapper.remove(TransformCaseStepRelation.transformVO2PO(caseStepVO));
         return result == 1;
     }
 
@@ -131,7 +138,7 @@ public class CaseService {
      * @return 成功为true，失败为false
      */
     public Boolean updateRelatedStep(CaseStepVO caseStepVO) {
-        int result = caseStepRelationMapper.update(TransformCaseStepRelation.transformVO2SimplePO(caseStepVO));
+        int result = caseStepRelationMapper.update(TransformCaseStepRelation.transformVO2PO(caseStepVO));
         return result == 1;
     }
 
@@ -157,8 +164,29 @@ public class CaseService {
      * @return 用例对象
      */
     public AutoCaseVO queryDetail(String caseId) {
+        // 查基本信息
         AutoCaseVO autoCaseVO = TransformAutoCase.transformPO2VO(autoCaseMapper.selectByUUID(caseId));
-        List<CaseStepVO> caseStepList = TransformCaseStepRelation.transformPO2SimpleVO(caseStepRelationMapper.listStepByCaseId(caseId));
+        // 查关联的步骤
+        List<CaseStepVO> caseStepList = TransformCaseStepRelation.transformPO2VO(caseStepRelationMapper.listStepByCaseId(caseId));
+        List<CaseStepVO> preList = new ArrayList<>();
+        List<CaseStepVO> mainList = new ArrayList<>();
+        List<CaseStepVO> afterList = new ArrayList<>();
+        for (CaseStepVO vo : caseStepList) {
+            switch (RelatedStepTypeEnum.fromCode(vo.getType())) {
+                case PRE_STEP:
+                    preList.add(vo);
+                    break;
+                case MAIN_STEP:
+                    mainList.add(vo);
+                    break;
+                case AFTER_STEP:
+                    afterList.add(vo);
+                    break;
+            }
+        }
+        autoCaseVO.setPreStepList(preList);
+        autoCaseVO.setMainStepList(mainList);
+        autoCaseVO.setAfterStepList(afterList);
         return autoCaseVO;
     }
 

@@ -46,21 +46,6 @@ public class AutoCasePO implements Serializable {
     private Integer status;
 
     /**
-     * 前置步骤，List<ParamDTO>的json格式
-     */
-    private String preStep;
-
-    /**
-     * 主要步骤，List<ParamDTO>的json格式
-     */
-    private String mainStep;
-
-    /**
-     * 收尾步骤，List<ParamDTO>的json格式
-     */
-    private String afterStep;
-
-    /**
      * 所属人id
      */
     private String ownerId;

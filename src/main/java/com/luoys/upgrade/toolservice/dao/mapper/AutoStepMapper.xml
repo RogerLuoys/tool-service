@@ -179,7 +179,7 @@
         is_public = #{isPublic,jdbcType=TINYINT},
       </if>
     </set>
-    where id = #{id,jdbcType=INTEGER}
+    where step_id = #{stepId,jdbcType=VARCHAR}
   </update>
   <update id="updateResult">
     update auto_step

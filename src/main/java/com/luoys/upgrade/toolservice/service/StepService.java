@@ -1,6 +1,7 @@
 package com.luoys.upgrade.toolservice.service;
 
 import com.luoys.upgrade.toolservice.common.NumberSender;
+import com.luoys.upgrade.toolservice.common.StringUtil;
 import com.luoys.upgrade.toolservice.common.ThreadPoolUtil;
 import com.luoys.upgrade.toolservice.dao.AutoStepMapper;
 import com.luoys.upgrade.toolservice.service.client.DBClient;
@@ -59,6 +60,24 @@ public class StepService {
         }
         int result = autoStepMapper.insert(TransformAutoStep.transformVO2PO(autoStepVO));
         return result == 1;
+    }
+
+    /**
+     * 快速创建单个步骤
+     * @return 成功则返回stepId
+     */
+    public String quickCreate() {
+        AutoStepVO autoStepVO = new AutoStepVO();
+        autoStepVO.setStepId(NumberSender.createStepId());
+        // 设置默认值
+        autoStepVO.setName(KeywordEnum.DEFAULT_STEP_NAME.getCode());
+        autoStepVO.setIsPublic(false);
+        autoStepVO.setOwnerId(KeywordEnum.DEFAULT_USER.getCode());
+        autoStepVO.setOwnerName(KeywordEnum.DEFAULT_USER.getDescription());
+        autoStepVO.setType(AutoStepTypeEnum.STEP_SQL.getCode());
+        autoStepVO.setAssertType(AssertTypeEnum.NO_ASSERT.getCode());
+        autoStepMapper.insert(TransformAutoStep.transformVO2PO(autoStepVO));
+        return autoStepVO.getStepId();
     }
 
     /**

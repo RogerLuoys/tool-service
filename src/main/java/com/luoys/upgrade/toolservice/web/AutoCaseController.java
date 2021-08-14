@@ -26,11 +26,10 @@ public class AutoCaseController {
         return Result.message(caseService.create(autoCaseVO));
     }
 
-    @RequestMapping(value = "/quickCreate", method = RequestMethod.GET)
-    public Result<Boolean> quickCreate(@RequestParam(value = "name") String name,
+    @RequestMapping(value = "/quickCreate", method = RequestMethod.POST)
+    public Result<Boolean> quickCreate(@RequestBody AutoCaseVO autoCaseVO,
                                        @RequestHeader(value = "userId") String userId) {
-        log.info("---》开始快速新增用例：{}", name);
-        AutoCaseVO autoCaseVO = new AutoCaseVO();
+        log.info("---》开始快速新增用例");
         autoCaseVO.setOwnerId(userId);
         autoCaseVO.setOwnerName(KeywordEnum.DEFAULT_USER.getDescription());
         return Result.message(caseService.quickCreate(autoCaseVO));

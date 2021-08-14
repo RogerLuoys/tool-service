@@ -54,7 +54,7 @@ public class TransformAutoStep {
         vo.setExpectResult(po.getExpectResult());
         vo.setAfterSleep(po.getAfterSleep());
         vo.setAssertType(po.getAssertType());
-        // 模板转换
+        // 详细信息转换
         switch (AutoStepTypeEnum.fromCode(po.getType())) {
             case STEP_SQL:
                 JdbcDTO jdbcDTO = new JdbcDTO();
@@ -116,9 +116,12 @@ public class TransformAutoStep {
         po.setExpectResult(vo.getExpectResult());
         po.setAfterSleep(vo.getAfterSleep());
         po.setAssertType(vo.getAssertType());
-        // 模板转换
+        // 详细信息转换
         switch (AutoStepTypeEnum.fromCode(vo.getType())) {
             case STEP_SQL:
+                if (vo.getJdbc() == null || vo.getJdbc().getDataSource() == null || vo.getJdbc().getSqlList() == null) {
+                    break;
+                }
                 po.setJdbcDriver(vo.getJdbc().getDataSource().getDriver());
                 po.setJdbcUrl(vo.getJdbc().getDataSource().getUrl());
                 po.setJdbcUsername(vo.getJdbc().getDataSource().getUsername());
@@ -126,12 +129,18 @@ public class TransformAutoStep {
                 po.setJdbcSql(TransformCommon.toSql(vo.getJdbc().getSqlList()));
                 break;
             case STEP_HTTP:
+                if (vo.getHttpRequest() == null) {
+                    break;
+                }
                 po.setHttpUrl(vo.getHttpRequest().getHttpURL());
                 po.setHttpBody(vo.getHttpRequest().getHttpBody());
                 po.setHttpHeader(TransformCommon.toParameter(vo.getHttpRequest().getHttpHeaderList()));
                 po.setHttpType(vo.getHttpRequest().getHttpType());
                 break;
             case STEP_RPC:
+                if (vo.getRpc() == null) {
+                    break;
+                }
                 po.setRpcInterface(vo.getRpc().getInterfaceName());
                 po.setRpcMethod(vo.getRpc().getMethodName());
                 po.setRpcUrl(vo.getRpc().getUrl());
@@ -139,6 +148,9 @@ public class TransformAutoStep {
                 po.setRpcParameter(TransformCommon.toParameter(vo.getRpc().getParameterList()));
                 break;
             case STEP_UI:
+                if (vo.getUi() == null) {
+                    break;
+                }
                 po.setUiElement(vo.getUi().getElement());
                 po.setUiElementId(vo.getUi().getElementId());
                 po.setUiType(vo.getUi().getType());
@@ -146,6 +158,7 @@ public class TransformAutoStep {
                 po.setUiKey(vo.getUi().getKey());
                 break;
         }
+
         return po;
     }
 
