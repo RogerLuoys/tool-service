@@ -78,4 +78,8 @@
     </set>
     where case_id = #{caseId,jdbcType=VARCHAR}
   </update>
+  <update id="updateStatus">
+    update auto_case set `status` = #{status,jdbcType=TINYINT}
+    where case_id = #{caseId,jdbcType=VARCHAR}
+  </update>
 </mapper>

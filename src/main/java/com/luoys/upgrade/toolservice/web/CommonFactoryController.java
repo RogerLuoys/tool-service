@@ -55,7 +55,6 @@ public class CommonFactoryController {
     @RequestMapping(value = "/queryDetail", method = RequestMethod.GET)
     public Result<ToolVO> queryDetail(@RequestParam("toolId") String toolId) {
         log.info("---》开始查询通用工具详情：toolId={}", toolId);
-//        return Result.success(TransformTool.transformPO2VO(toolMapper.selectByUID(toolId)));
         return Result.success(factoryService.queryDetail(toolId));
     }
 

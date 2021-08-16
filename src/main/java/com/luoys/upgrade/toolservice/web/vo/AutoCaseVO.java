@@ -38,17 +38,17 @@ public class AutoCaseVO {
     private Integer status;
 
     /**
-     * 前置步骤，List<ParamDTO>的json格式
+     * 前置步骤
      */
     private List<CaseStepVO> preStepList;
 
     /**
-     * 主要步骤，List<ParamDTO>的json格式
+     * 主要步骤
      */
     private List<CaseStepVO> mainStepList;
 
     /**
-     * 收尾步骤，List<ParamDTO>的json格式
+     * 收尾步骤
      */
     private List<CaseStepVO> afterStepList;
 

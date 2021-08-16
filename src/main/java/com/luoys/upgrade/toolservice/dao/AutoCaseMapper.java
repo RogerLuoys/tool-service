@@ -39,6 +39,16 @@ public interface AutoCaseMapper {
     int update(AutoCasePO autoCasePO);
 
     /**
+     * 更新用例状态
+     *
+     * @param caseId 用例业务id
+     * @param status 用例业务状态
+     * @return 成功为1
+     */
+    int updateStatus(@Param("caseId") String caseId,
+                     @Param("status") Integer status);
+
+    /**
      * 根据id查询详情
      *
      * @param caseId id

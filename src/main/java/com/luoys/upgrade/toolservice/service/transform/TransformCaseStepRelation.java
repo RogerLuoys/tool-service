@@ -16,6 +16,7 @@ public class TransformCaseStepRelation {
             return null;
         }
         CaseStepVO vo = new CaseStepVO();
+        vo.setCaseId(po.getCaseId());
         vo.setStepId(po.getStepId());
         vo.setSequence(po.getSequence());
         vo.setType(po.getType());
@@ -28,8 +29,9 @@ public class TransformCaseStepRelation {
         vo.getAutoStep().setOwnerName(po.getOwnerName());
         vo.getAutoStep().setName(po.getStepName());
         vo.getAutoStep().setType(po.getStepType());
-        vo.getAutoStep().setActualResult(po.getActualResult());
-        vo.getAutoStep().setExpectResult(po.getExpectResult());
+        vo.getAutoStep().setAssertActual(po.getAssertActual());
+        vo.getAutoStep().setAssertExpect(po.getAssertExpect());
+        vo.getAutoStep().setAssertResult(po.getAssertResult());
         vo.getAutoStep().setAfterSleep(po.getAfterSleep());
         vo.getAutoStep().setAssertType(po.getAssertType());
         // 模板转换
@@ -51,7 +53,8 @@ public class TransformCaseStepRelation {
             case STEP_HTTP:
                 HttpRequestDTO httpRequestDTO = new HttpRequestDTO();
                 httpRequestDTO.setHttpURL(po.getHttpUrl());
-                httpRequestDTO.setHttpType(po.getHttpHeader());
+                httpRequestDTO.setHttpType(po.getHttpType());
+                httpRequestDTO.setHttpHeaderList(TransformCommon.toParameter(po.getHttpHeader()));
                 httpRequestDTO.setHttpBody(po.getHttpBody());
                 vo.getAutoStep().setHttpRequest(httpRequestDTO);
                 break;
@@ -90,6 +93,7 @@ public class TransformCaseStepRelation {
             return null;
         }
         CaseStepRelationPO po = new CaseStepRelationPO();
+        // 只需要关联表数据
         po.setStepId(vo.getStepId());
         po.setSequence(vo.getSequence());
         po.setType(vo.getType());

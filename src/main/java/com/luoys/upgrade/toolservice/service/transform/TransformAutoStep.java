@@ -22,8 +22,9 @@ public class TransformAutoStep {
         vo.setName(po.getName());
         vo.setType(po.getType());
         vo.setIsPublic(po.getIsPublic());
-        vo.setActualResult(po.getActualResult());
-        vo.setExpectResult(po.getExpectResult());
+        vo.setAssertActual(po.getAssertActual());
+        vo.setAssertExpect(po.getAssertExpect());
+        vo.setAssertResult(po.getAssertResult());
         vo.setAfterSleep(po.getAfterSleep());
         vo.setAssertType(po.getAssertType());
         return vo;
@@ -50,8 +51,9 @@ public class TransformAutoStep {
         vo.setOwnerName(po.getOwnerName());
         vo.setName(po.getName());
         vo.setType(po.getType());
-        vo.setActualResult(po.getActualResult());
-        vo.setExpectResult(po.getExpectResult());
+        vo.setAssertActual(po.getAssertActual());
+        vo.setAssertExpect(po.getAssertExpect());
+        vo.setAssertResult(po.getAssertResult());
         vo.setAfterSleep(po.getAfterSleep());
         vo.setAssertType(po.getAssertType());
         // 详细信息转换
@@ -73,7 +75,8 @@ public class TransformAutoStep {
             case STEP_HTTP:
                 HttpRequestDTO httpRequestDTO = new HttpRequestDTO();
                 httpRequestDTO.setHttpURL(po.getHttpUrl());
-                httpRequestDTO.setHttpType(po.getHttpHeader());
+                httpRequestDTO.setHttpType(po.getHttpType());
+                httpRequestDTO.setHttpHeaderList(TransformCommon.toParameter(po.getHttpHeader()));
                 httpRequestDTO.setHttpBody(po.getHttpBody());
                 vo.setHttpRequest(httpRequestDTO);
                 break;
@@ -112,8 +115,9 @@ public class TransformAutoStep {
         po.setOwnerId(vo.getOwnerId());
         po.setOwnerName(vo.getOwnerName());
         po.setName(vo.getName());
-        po.setActualResult(vo.getActualResult());
-        po.setExpectResult(vo.getExpectResult());
+        po.setAssertActual(vo.getAssertActual());
+        po.setAssertExpect(vo.getAssertExpect());
+        po.setAssertResult(vo.getAssertResult());
         po.setAfterSleep(vo.getAfterSleep());
         po.setAssertType(vo.getAssertType());
         // 详细信息转换

@@ -106,7 +106,7 @@ public class AutoStepPO implements Serializable {
     private String rpcParameter;
 
     /**
-     * 控件操作类型：1 click，2 sendkey，3 is exist
+     * 控件操作类型：1 click，2 sendKey，3 is exist
      */
     private Integer uiType;
 
@@ -143,12 +143,17 @@ public class AutoStepPO implements Serializable {
     /**
      * 实际结果
      */
-    private String actualResult;
+    private String assertActual;
 
     /**
      * 预期结果
      */
-    private String expectResult;
+    private String assertExpect;
+
+    /**
+     * 断言结果
+     */
+    private Boolean assertResult;
 
     /**
      * 所属人id

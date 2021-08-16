@@ -89,11 +89,12 @@ public class CaseService {
     }
 
     /**
-     * 新增用例关联的步骤
+     * 新增用例中关联的步骤
      * @param caseStepVO 步骤对象
      * @return 成功为true，失败为false
      */
     public Boolean createRelatedStep(CaseStepVO caseStepVO) {
+        // 如果关联步骤为空，则先快速创建一个步骤
         if (StringUtil.isBlank(caseStepVO.getStepId())) {
             caseStepVO.setStepId(stepService.quickCreate());
         }
@@ -227,7 +228,7 @@ public class CaseService {
      */
     public Boolean use(AutoCaseVO autoCaseVO) {
         boolean result;
-        // 如果是UI用例，则执行前也退出
+        // UI和接口用例分开执行
         if (autoCaseVO.getType().equals(AutoCaseTypeEnum.UI_CASE.getCode())) {
             result = useUI(autoCaseVO);
         } else {
@@ -267,13 +268,13 @@ public class CaseService {
         // 执行前置步骤
         if (autoCaseVO.getPreStepList() != null && autoCaseVO.getAfterStepList().size() != 0) {
             for (CaseStepVO vo: autoCaseVO.getPreStepList()) {
-                stepService.use(stepService.queryDetail(vo.getStepId()));
+                stepService.use(vo.getAutoStep());
             }
         }
         // 执行主要步骤，只要有一个步骤为false，则整个case结果为false
         if (autoCaseVO.getMainStepList() != null && autoCaseVO.getMainStepList().size() != 0) {
             for (CaseStepVO vo: autoCaseVO.getMainStepList()) {
-                if (!stepService.use(stepService.queryDetail(vo.getStepId()))) {
+                if (!stepService.use(vo.getAutoStep())) {
                     result = false;
                 }
             }
@@ -284,9 +285,11 @@ public class CaseService {
         // 执行收尾步骤，如果执行结果为false，则不执行该步骤保留现场
         if (result && autoCaseVO.getAfterStepList() != null && autoCaseVO.getAfterStepList().size() != 0) {
             for (CaseStepVO vo: autoCaseVO.getAfterStepList()) {
-                stepService.use(stepService.queryDetail(vo.getStepId()));
+                stepService.use(vo.getAutoStep());
             }
         }
+        // 更新用例执行状态
+        autoCaseMapper.updateStatus(autoCaseVO.getCaseId(), result ? AutoCaseStatusEnum.SUCCESS.getCode() : AutoCaseStatusEnum.FAIL.getCode());
         return result;
     }
 

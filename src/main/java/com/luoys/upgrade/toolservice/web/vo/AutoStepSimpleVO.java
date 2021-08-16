@@ -38,12 +38,17 @@ public class AutoStepSimpleVO {
     /**
      * 实际结果
      */
-    private String actualResult;
+    private String assertActual;
 
     /**
      * 预期结果
      */
-    private String expectResult;
+    private String assertExpect;
+
+    /**
+     * 断言结果
+     */
+    private Boolean assertResult;
 
     /**
      * 所属人id
