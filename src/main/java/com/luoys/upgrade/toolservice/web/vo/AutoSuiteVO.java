@@ -38,7 +38,7 @@ public class AutoSuiteVO {
     private Integer caseMaxTime;
 
     /**
-     * 用例列表，List<ParamDTO>的json格式（最多放100-200个case）
+     * 用例列表
      */
     private List<SuiteCaseVO> caseList;
 

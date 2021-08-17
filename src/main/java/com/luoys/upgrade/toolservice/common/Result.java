@@ -71,4 +71,8 @@ public class Result<T> implements Serializable {
         return new Result<>(ResultEnum.ERROR_FOR_CUSTOM.getCode(), false, message, null);
     }
 
+    public static <T> Result errorMessage(String message) {
+        return new Result<>(ResultEnum.ERROR_FOR_MESSAGE.getCode(), false, message, null);
+    }
+
 }

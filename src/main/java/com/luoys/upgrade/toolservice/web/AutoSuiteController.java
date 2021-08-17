@@ -8,6 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.concurrent.RejectedExecutionException;
+
 @CrossOrigin
 @Slf4j
 @RestController
@@ -82,7 +84,11 @@ public class AutoSuiteController {
     @RequestMapping(value = "/use", method = RequestMethod.POST)
     public Result<String> use(@RequestBody AutoSuiteVO autoSuiteVO) {
         log.info("---》开始执行测试集：{}", autoSuiteVO);
-        return Result.message(suiteService.useAsync(autoSuiteVO), "超出队列，请稍后");
+        try {
+            return Result.message(suiteService.useAsync(autoSuiteVO), "执行测试集异常");
+        } catch (RejectedExecutionException e) {
+            return Result.errorMessage("执行队列已满，请稍后再试");
+        }
     }
 
 }

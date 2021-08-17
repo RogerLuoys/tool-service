@@ -6,7 +6,12 @@ import lombok.Data;
 public class SuiteCaseVO {
 
     /**
-     * 业务id
+     * 测试集业务id
+     */
+    private String suiteId;
+
+    /**
+     * 用例业务id
      */
     private String caseId;
 

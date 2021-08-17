@@ -24,8 +24,8 @@ public class UIClient {
 
     public synchronized String execute(UiDTO uiDTO) {
         switch (UiTypeEnum.fromCode(uiDTO.getType())) {
-            case START:
-                init(uiDTO.getUrl());
+            case OPEN_URL:
+                openUrl(uiDTO.getUrl());
                 return "true";
             case CLICK:
                 click(uiDTO.getElement());
@@ -44,22 +44,18 @@ public class UIClient {
         if (driver == null) {
             return;
         }
-        forceWait(forceTimeOut);
         driver.quit();
-        forceWait(forceTimeOut);
-        log.info("--->关闭UI：{}", driver);
+        forceWait(3);
     }
 
-    private void init(String url) {
+    public void init() {
         this.driver = new ChromeDriver();
+    }
+
+    private void openUrl(String url) {
         this.driver.get(url);
         this.driver.manage().window().maximize();
         forceWait(5);
-    }
-
-    private void refresh(String url) {
-        this.driver.get(url);
-        forceWait(3);
     }
 
     private void forceWait(int second) {

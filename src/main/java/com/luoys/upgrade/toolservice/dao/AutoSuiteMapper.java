@@ -40,6 +40,18 @@ public interface AutoSuiteMapper {
     int update(AutoSuitePO autoSuitePO);
 
     /**
+     * 更新测试集执行结果
+     *
+     * @param suiteId 业务id
+     * @param passed 成功数
+     * @param failed 失败数
+     * @return 成功为1
+     */
+    int updateResult(@Param("suiteId") String suiteId,
+                     @Param("passed") Integer passed,
+                     @Param("failed") Integer failed);
+
+    /**
      * 根据id查询详情
      *
      * @param suiteId 业务id

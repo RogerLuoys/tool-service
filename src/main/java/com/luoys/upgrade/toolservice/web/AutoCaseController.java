@@ -9,6 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.concurrent.RejectedExecutionException;
+
 @CrossOrigin
 @Slf4j
 @RestController
@@ -83,8 +85,12 @@ public class AutoCaseController {
     }
 
     @RequestMapping(value = "/use", method = RequestMethod.POST)
-    public Result<String> use(@RequestBody AutoCaseVO autoCaseVO) {
-        log.info("--->开始调试用例：{}", autoCaseVO);
-        return Result.message(caseService.useAsync(autoCaseVO), "执行异常，请确认步骤是否正常");
+    public Result<Boolean> use(@RequestBody AutoCaseVO autoCaseVO) {
+        log.info("--->开始执行用例：{}", autoCaseVO);
+        try {
+            return Result.message(caseService.useAsync(autoCaseVO), "执行异常，请检查步骤");
+        } catch (RejectedExecutionException e) {
+            return Result.errorMessage("执行队列已满，请稍后再试");
+        }
     }
 }

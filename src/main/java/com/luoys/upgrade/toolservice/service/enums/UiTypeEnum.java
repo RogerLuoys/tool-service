@@ -8,7 +8,7 @@ import java.util.Map;
 @Getter
 public enum UiTypeEnum {
 
-    START(1, "启动浏览器"),
+    OPEN_URL(1, "打开网站"),
     CLICK(2, "单击控件"),
     SEND_KEY(3, "键盘输入"),
     IS_EXIST(4, "判断控件是否存在");

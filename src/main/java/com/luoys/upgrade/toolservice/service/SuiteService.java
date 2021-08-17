@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.RejectedExecutionException;
 
 @Slf4j
 @Service
@@ -149,32 +150,35 @@ public class SuiteService {
      * @param autoSuiteVO -
      * @return -
      */
-    public Boolean useAsync(AutoSuiteVO autoSuiteVO) {
+    public Boolean useAsync(AutoSuiteVO autoSuiteVO) throws RejectedExecutionException {
         List<SuiteCaseVO> caseList = autoSuiteVO.getCaseList();
         Map<Integer, List<SuiteCaseVO>> casesMap = orderAndSort(caseList);
         List<SuiteCaseVO> uiCaseList = casesMap.get(AutoCaseTypeEnum.UI_CASE.getCode());
         List<SuiteCaseVO> apiCaseList = casesMap.get(AutoCaseTypeEnum.INTERFACE_CASE.getCode());
-        try {
-            if (apiCaseList.size() != 0) {
-                ThreadPoolUtil.execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        execute(apiCaseList);
-                    }
-                });
-            }
-            if (uiCaseList.size() != 0) {
-                ThreadPoolUtil.executeUI(new Runnable() {
-                    @Override
-                    public void run() {
-                        execute(uiCaseList);
-                    }
-                });
-            }
-        } catch (Exception e) {
-            log.error("--->执行测试集异常", e);
-            return false;
+        if (apiCaseList.size() != 0) {
+            ThreadPoolUtil.execute(new Runnable() {
+                @Override
+                public void run() {
+                    Map<String, Integer> result = execute(apiCaseList);
+                    autoSuiteMapper.updateResult(autoSuiteVO.getSuiteId(), result.get("passed"), result.get("failed"));
+                }
+            });
         }
+        if (uiCaseList.size() != 0) {
+            ThreadPoolUtil.executeUI(new Runnable() {
+                @Override
+                public void run() {
+                    Map<String, Integer> result = execute(uiCaseList);
+                    autoSuiteMapper.updateResult(autoSuiteVO.getSuiteId(), result.get("passed"), result.get("failed"));
+                }
+            });
+        }
+//        try {
+//
+//        } catch (Exception e) {
+//            log.error("--->执行测试集异常", e);
+//            return false;
+//        }
         return true;
     }
 
@@ -233,14 +237,26 @@ public class SuiteService {
         quickOrder(targetList, low + 1, targetList.size());
     }
 
-    private void execute(List<SuiteCaseVO> caseList) {
+    private Map<String, Integer> execute(List<SuiteCaseVO> caseList) {
+        int passed = 0;
+        int failed = 0;
         for (SuiteCaseVO vo : caseList) {
             try {
-                caseService.use(caseService.queryDetail(vo.getCaseId()));
+                // 先通过caseId查到用例详情，再执行用例
+                if (caseService.use(caseService.queryDetail(vo.getCaseId()))) {
+                    passed++;
+                } else {
+                    failed++;
+                }
             } catch (Exception e) {
                 log.error("--->批量执行用例异常：caseId={}", vo.getCaseId(), e);
+                failed++;
             }
         }
+        Map<String, Integer> result = new HashMap<>();
+        result.put("passed", passed);
+        result.put("failed", failed);
+        return result;
     }
 
 }

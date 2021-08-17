@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.RejectedExecutionException;
 
 @Slf4j
 @Service
@@ -196,28 +197,29 @@ public class CaseService {
      * @param autoCaseVO 用例对象
      * @return 主要步骤全部执行结果都为true才返回true
      */
-    public Boolean useAsync(AutoCaseVO autoCaseVO) {
-        try {
-            // UI用例和API用例使用不同线程池，UI自动化只能单个子线程
-            if (autoCaseVO.getType().equals(AutoCaseTypeEnum.UI_CASE.getCode())) {
-                ThreadPoolUtil.executeUI(new Runnable() {
-                    @Override
-                    public void run() {
-                        useUI(autoCaseVO);
-                    }
-                });
-            } else {
-                ThreadPoolUtil.execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        useAPI(autoCaseVO);
-                    }
-                });
-            }
-        } catch (Exception e) {
-            log.error("--->执行用例异常", e);
-            return false;
+    public Boolean useAsync(AutoCaseVO autoCaseVO) throws RejectedExecutionException {
+        // UI用例和API用例使用不同线程池，UI自动化只能单个子线程
+        if (autoCaseVO.getType().equals(AutoCaseTypeEnum.UI_CASE.getCode())) {
+            ThreadPoolUtil.executeUI(new Runnable() {
+                @Override
+                public void run() {
+                    useUI(autoCaseVO);
+                }
+            });
+        } else {
+            ThreadPoolUtil.execute(new Runnable() {
+                @Override
+                public void run() {
+                    useAPI(autoCaseVO);
+                }
+            });
         }
+//        try {
+//
+//        } catch (RejectedExecutionException e) {
+//            log.error("--->执行队列已满");
+//            return false;
+//        }
         return true;
     }
 
@@ -254,12 +256,18 @@ public class CaseService {
      */
     public Boolean useUI(AutoCaseVO autoCaseVO) {
         boolean result;
-        // 确保webDrive退出
-        uiClient.quit();
-        // 执行用例
-        result = execute(autoCaseVO);
-        // 确保webDrive退出
-        uiClient.quit();
+        try {
+            // 打开webDrive，默认chrome
+            uiClient.init();
+            // 执行包含ui步骤的用例
+            result = execute(autoCaseVO);
+        } catch (Exception e) {
+            log.error("--->执行ui用例异常：caseId={}", autoCaseVO.getCaseId(), e);
+            return false;
+        } finally {
+            // 退出webDrive
+            uiClient.quit();
+        }
         return result;
     }
 

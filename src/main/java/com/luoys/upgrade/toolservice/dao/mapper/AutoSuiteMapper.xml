@@ -90,4 +90,9 @@
     </set>
     where suite_id = #{suiteId,jdbcType=VARCHAR}
   </update>
+  <update id="updateResult">
+    update auto_suite
+    set passed = passed + #{passed,jdbcType=INTEGER}, failed = failed + #{failed,jdbcType=INTEGER}
+    where suite_id = #{suiteId,jdbcType=VARCHAR}
+  </update>
 </mapper>
