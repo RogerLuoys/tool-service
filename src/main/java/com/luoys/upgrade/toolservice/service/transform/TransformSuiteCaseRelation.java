@@ -1,6 +1,7 @@
 package com.luoys.upgrade.toolservice.service.transform;
 
 import com.luoys.upgrade.toolservice.dao.po.SuiteCaseRelationPO;
+import com.luoys.upgrade.toolservice.web.vo.AutoCaseSimpleVO;
 import com.luoys.upgrade.toolservice.web.vo.SuiteCaseVO;
 
 import java.util.ArrayList;
@@ -13,11 +14,15 @@ public class TransformSuiteCaseRelation {
             return null;
         }
         SuiteCaseVO vo = new SuiteCaseVO();
-        vo.setCaseId(po.getCaseId());
         vo.setSequence(po.getSequence());
-        vo.setType(po.getCaseType());
-        vo.setName(po.getCaseName());
-        vo.setStatus(po.getCaseStatus());
+        vo.setCaseId(po.getCaseId());
+        // 设置用例信息
+        AutoCaseSimpleVO childVO = new AutoCaseSimpleVO();
+        childVO.setName(po.getCaseName());
+        childVO.setCaseId(po.getCaseId());
+        childVO.setStatus(po.getCaseStatus());
+        childVO.setType(po.getCaseType());
+        vo.setAutoCase(childVO);
         return vo;
     }
 
@@ -35,10 +40,8 @@ public class TransformSuiteCaseRelation {
         }
         SuiteCaseRelationPO po = new SuiteCaseRelationPO();
         po.setCaseId(vo.getCaseId());
+        po.setSuiteId(vo.getSuiteId());
         po.setSequence(vo.getSequence());
-        po.setCaseType(vo.getType());
-        po.setCaseName(vo.getName());
-        po.setCaseStatus(vo.getStatus());
         return po;
     }
 

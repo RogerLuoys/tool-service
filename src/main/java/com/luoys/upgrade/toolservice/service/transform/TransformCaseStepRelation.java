@@ -20,6 +20,7 @@ public class TransformCaseStepRelation {
         vo.setStepId(po.getStepId());
         vo.setSequence(po.getSequence());
         vo.setType(po.getType());
+        // 设置步骤信息
         AutoStepVO autoStepVO = new AutoStepVO();
         vo.setAutoStep(autoStepVO);
         // 设置步骤基本信息

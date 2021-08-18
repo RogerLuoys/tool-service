@@ -6,6 +6,7 @@ import com.luoys.upgrade.toolservice.common.ThreadPoolUtil;
 import com.luoys.upgrade.toolservice.dao.AutoSuiteMapper;
 import com.luoys.upgrade.toolservice.dao.SuiteCaseRelationMapper;
 import com.luoys.upgrade.toolservice.service.enums.AutoCaseTypeEnum;
+import com.luoys.upgrade.toolservice.service.enums.KeywordEnum;
 import com.luoys.upgrade.toolservice.service.transform.TransformAutoSuite;
 import com.luoys.upgrade.toolservice.service.transform.TransformSuiteCaseRelation;
 import com.luoys.upgrade.toolservice.web.vo.AutoSuiteSimpleVO;
@@ -74,6 +75,9 @@ public class SuiteService {
      * @return 成功为true，失败为false
      */
     public Boolean createRelatedCase(SuiteCaseVO suiteCaseVO) {
+        if (suiteCaseVO.getSequence() == null) {
+            suiteCaseVO.setSequence(KeywordEnum.DEFAULT_CASE_SEQUENCE.getCode());
+        }
         int result = suiteCaseRelationMapper.insert(TransformSuiteCaseRelation.transformVO2SimplePO(suiteCaseVO));
         return result == 1;
     }
@@ -151,6 +155,12 @@ public class SuiteService {
      * @return -
      */
     public Boolean useAsync(AutoSuiteVO autoSuiteVO) throws RejectedExecutionException {
+        if (autoSuiteVO == null || autoSuiteVO.getCaseList() == null || autoSuiteVO.getCaseList().size() == 0) {
+            log.error("--->执行测试集入参异常：{}", autoSuiteVO);
+            return false;
+        }
+        // 先将上次执行结果清零
+        autoSuiteMapper.updateResult(autoSuiteVO.getSuiteId(), 0, 0);
         List<SuiteCaseVO> caseList = autoSuiteVO.getCaseList();
         Map<Integer, List<SuiteCaseVO>> casesMap = orderAndSort(caseList);
         List<SuiteCaseVO> uiCaseList = casesMap.get(AutoCaseTypeEnum.UI_CASE.getCode());
@@ -193,12 +203,12 @@ public class SuiteService {
         List<SuiteCaseVO> uiCaseList = new ArrayList<>();
         List<SuiteCaseVO> apiCaseList = new ArrayList<>();
         for (SuiteCaseVO suiteCaseVO : caseList) {
-            if (suiteCaseVO.getType().equals(AutoCaseTypeEnum.INTERFACE_CASE.getCode())) {
+            if (suiteCaseVO.getAutoCase().getType().equals(AutoCaseTypeEnum.INTERFACE_CASE.getCode())) {
                 apiCaseList.add(suiteCaseVO);
-            } else if (suiteCaseVO.getType().equals(AutoCaseTypeEnum.UI_CASE.getCode())) {
+            } else if (suiteCaseVO.getAutoCase().getType().equals(AutoCaseTypeEnum.UI_CASE.getCode())) {
                 uiCaseList.add(suiteCaseVO);
             } else {
-                log.error("--->测试集中的未知用例类型：caseId={}", suiteCaseVO.getCaseId());
+                log.error("--->测试集中的未知用例类型：caseId={}", suiteCaseVO.getAutoCase().getCaseId());
             }
         }
         casesMap.put(AutoCaseTypeEnum.UI_CASE.getCode(), uiCaseList);
@@ -243,13 +253,13 @@ public class SuiteService {
         for (SuiteCaseVO vo : caseList) {
             try {
                 // 先通过caseId查到用例详情，再执行用例
-                if (caseService.use(caseService.queryDetail(vo.getCaseId()))) {
+                if (caseService.use(caseService.queryDetail(vo.getAutoCase().getCaseId()))) {
                     passed++;
                 } else {
                     failed++;
                 }
             } catch (Exception e) {
-                log.error("--->批量执行用例异常：caseId={}", vo.getCaseId(), e);
+                log.error("--->批量执行用例异常：caseId={}", vo.getAutoCase().getCaseId(), e);
                 failed++;
             }
         }

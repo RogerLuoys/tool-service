@@ -9,7 +9,7 @@ import lombok.Data;
  * @author luoys
  */
 @Data
-public class SuiteCaseRelationPO implements Serializable {
+public class SuiteCaseRelationPO {
     private Integer id;
 
     /**
@@ -42,5 +42,4 @@ public class SuiteCaseRelationPO implements Serializable {
      */
     private Integer caseStatus;
 
-    private static final long serialVersionUID = 1L;
 }

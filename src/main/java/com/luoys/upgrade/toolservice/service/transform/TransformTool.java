@@ -55,10 +55,10 @@ public class TransformTool {
         for (SqlDTO sqlDTO : toolVO.getJdbc().getSqlList()) {
             oneSql = sqlDTO.getSql();
             //先判断指定sql模板中是否有参数占位符，有则进入替换逻辑
-            if (oneSql.contains(KeywordEnum.PARAM_SYMBOL.getCode())) {
+            if (oneSql.contains(KeywordEnum.PARAM_SYMBOL.getValue())) {
                 //将所有实际参数与其中一条sql模板的占位符替换
                 for (ParameterDTO parameterDTO : toolVO.getParameterList()) {
-                    fullParamSymbol = KeywordEnum.PARAM_SYMBOL.getCode()+parameterDTO.getName()+"}";
+                    fullParamSymbol = KeywordEnum.PARAM_SYMBOL.getValue()+parameterDTO.getName()+"}";
                     if (oneSql.contains(fullParamSymbol)) {
                         sqlDTO.setSql(oneSql.replace(fullParamSymbol, parameterDTO.getValue()));
                     }
@@ -107,10 +107,10 @@ public class TransformTool {
         for (ParameterDTO rpcParam : toolVO.getRpc().getParameterList()) {
             String oneValue = rpcParam.getValue();
             //判断入参中是否有指定占位符，无则不用替换直接插入
-            if (oneValue.contains(KeywordEnum.PARAM_SYMBOL.getCode())) {
+            if (oneValue.contains(KeywordEnum.PARAM_SYMBOL.getValue())) {
                 //将所有实际参数与其中一个rpc入参值中的占位符替换
                 for (ParameterDTO parameterDTO : toolVO.getParameterList()) {
-                    fullParamSymbol = KeywordEnum.PARAM_SYMBOL.getCode()+parameterDTO.getName()+"}";
+                    fullParamSymbol = KeywordEnum.PARAM_SYMBOL.getValue()+parameterDTO.getName()+"}";
                     if (oneValue.contains(fullParamSymbol)) {
                         rpcParam.setValue(oneValue.replace(fullParamSymbol, parameterDTO.getValue()));
                     }

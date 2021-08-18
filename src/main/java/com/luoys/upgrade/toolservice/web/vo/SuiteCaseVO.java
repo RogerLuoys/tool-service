@@ -11,7 +11,7 @@ public class SuiteCaseVO {
     private String suiteId;
 
     /**
-     * 用例业务id
+     * 用例的业务id
      */
     private String caseId;
 
@@ -21,18 +21,27 @@ public class SuiteCaseVO {
     private Integer sequence;
 
     /**
-     * 用例名称
+     * 测试集关联的用例
      */
-    private String name;
-
-    /**
-     * 1 接口，2 UI
-     */
-    private Integer type;
-
-    /**
-     * 1 未执行，2 失败，3成功
-     */
-    private Integer status;
+    private AutoCaseSimpleVO autoCase;
+//    /**
+//     * 用例业务id
+//     */
+//    private String caseId;
+//
+//    /**
+//     * 用例名称
+//     */
+//    private String name;
+//
+//    /**
+//     * 1 接口，2 UI
+//     */
+//    private Integer type;
+//
+//    /**
+//     * 1 未执行，2 失败，3成功
+//     */
+//    private Integer status;
 
 }

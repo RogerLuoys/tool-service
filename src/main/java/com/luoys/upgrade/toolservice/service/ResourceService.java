@@ -24,7 +24,7 @@ public class ResourceService {
      */
     public Boolean create(ResourceVO resourceVO) {
         resourceVO.setResourceId(NumberSender.createResourceId());
-        if (resourceVO.getOwnerId() == KeywordEnum.DEFAULT_USER.getCode()) {
+        if (resourceVO.getOwnerId().equals(KeywordEnum.DEFAULT_USER.getValue())) {
             resourceVO.setOwnerName(KeywordEnum.DEFAULT_USER.getDescription());
         } else {
             //todo 查用户名

@@ -32,7 +32,7 @@
       is_delete, gmt_create, gmt_modified
       )
     values (#{suiteId,jdbcType=VARCHAR}, #{caseId,jdbcType=VARCHAR}, #{sequence,jdbcType=INTEGER},
-      0, now(), now()}
+      0, now(), now()
       )
   </insert>
   <update id="update" parameterType="com.luoys.upgrade.toolservice.dao.po.SuiteCaseRelationPO">
@@ -49,9 +49,9 @@
     select
     ac.case_id, ac.name as case_name, ac.type as case_type, ac.status as case_status, scr.sequence
     from auto_case ac
-    join suite_case_relation scr on ac.case_id = scr.case_id
-    where is_delete = 0
-    and suite_id = #{suiteId,jdbcType=VARCHAR}
+    inner join suite_case_relation scr on ac.case_id = scr.case_id
+    where scr.is_delete = 0
+    and scr.suite_id = #{suiteId,jdbcType=VARCHAR}
     order by scr.sequence
   </select>
 </mapper>
