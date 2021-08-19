@@ -22,6 +22,11 @@ public class AutoSuiteSimpleVO {
     private String description;
 
     /**
+     * 测试集状态：1 空闲，2 执行中
+     */
+    private Integer status;
+
+    /**
      * 用例执行的环境
      */
     private String environment;

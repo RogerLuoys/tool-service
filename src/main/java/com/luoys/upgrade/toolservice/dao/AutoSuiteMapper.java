@@ -52,6 +52,28 @@ public interface AutoSuiteMapper {
                      @Param("failed") Integer failed);
 
     /**
+     * 更新测试集状态
+     *
+     * @param suiteId 业务id
+     * @param status 状态
+     * @return 成功为1
+     */
+    int updateStatus(@Param("suiteId") String suiteId,
+                     @Param("status") Integer status);
+
+    /**
+     * 同步测试集执行状态
+     *
+     * @param suiteId 业务id
+     * @param isApiCompleted 测试集中的api用例是否执行完成
+     * @param isUiCompleted 测试集中的ui用例是否执行完成
+     * @return 成功为1
+     */
+    int updateExecuteStatus(@Param("suiteId") String suiteId,
+                     @Param("isApiCompleted") Boolean isApiCompleted,
+                     @Param("isUiCompleted") Boolean isUiCompleted);
+
+    /**
      * 根据id查询详情
      *
      * @param suiteId 业务id

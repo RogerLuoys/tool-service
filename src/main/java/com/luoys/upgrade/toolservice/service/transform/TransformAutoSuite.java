@@ -30,6 +30,7 @@ public class TransformAutoSuite {
         vo.setCaseMaxTime(po.getCaseMaxTime());
         vo.setStepSleep(po.getStepSleep());
         vo.setTotal(po.getTotal());
+        vo.setStatus(po.getStatus());
         return vo;
     }
 
@@ -57,7 +58,10 @@ public class TransformAutoSuite {
         vo.setOwnerName(po.getOwnerName());
         vo.setEnvironment(po.getEnvironment());
         vo.setCaseMaxTime(po.getCaseMaxTime());
+        vo.setStatus(po.getStatus());
         vo.setStepSleep(po.getStepSleep());
+        vo.setIsUiCompleted(po.getIsUiCompleted());
+        vo.setIsApiCompleted(po.getIsApiCompleted());
         // 设置用例信息
 //        vo.setCaseList(TransformCommon.toCase(po.getTestCase()));
         return vo;
@@ -79,7 +83,10 @@ public class TransformAutoSuite {
         po.setOwnerName(vo.getOwnerName());
         po.setEnvironment(vo.getEnvironment());
         po.setCaseMaxTime(vo.getCaseMaxTime());
+        po.setStatus(vo.getStatus());
         po.setStepSleep(vo.getStepSleep());
+        po.setIsApiCompleted(vo.getIsApiCompleted());
+        po.setIsUiCompleted(vo.getIsUiCompleted());
         // 设置用例信息
 //        po.setTestCase(TransformCommon.toCase(vo.getCaseList()));
         return po;

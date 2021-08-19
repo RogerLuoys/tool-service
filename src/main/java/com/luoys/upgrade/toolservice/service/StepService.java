@@ -142,7 +142,7 @@ public class StepService {
             return false;
         }
         try {
-            ThreadPoolUtil.execute(new Runnable() {
+            ThreadPoolUtil.executeAPI(new Runnable() {
                 @Override
                 public void run() {
                     execute(autoStepVO);

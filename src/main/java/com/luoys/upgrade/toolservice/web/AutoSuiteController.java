@@ -75,16 +75,18 @@ public class AutoSuiteController {
     }
 
     @RequestMapping(value = "/queryDetail", method = RequestMethod.GET)
-    public Result<AutoSuiteVO> queryDetail(@RequestParam("suiteId") String suiteId) {
+    public Result<AutoSuiteVO> queryDetail(@RequestParam("suiteId") String suiteId,
+                                           @RequestParam("startIndex") Integer startIndex) {
         log.info("--->开始查询测试集详情：suiteId={}", suiteId);
-        return Result.success(suiteService.queryDetail(suiteId));
+        return Result.success(suiteService.queryDetail(suiteId, startIndex));
     }
 
-    @RequestMapping(value = "/use", method = RequestMethod.POST)
-    public Result<String> use(@RequestBody AutoSuiteVO autoSuiteVO) {
-        log.info("--->开始执行测试集：{}", autoSuiteVO);
+    @RequestMapping(value = "/use", method = RequestMethod.GET)
+    public Result<String> use(@RequestParam("suiteId") String suiteId,
+                              @RequestParam(value = "retry", required = false) Boolean retry) {
+        log.info("--->开始执行测试集：suiteId={}, retry={}", suiteId, retry);
         try {
-            return Result.message(suiteService.useAsync(autoSuiteVO), "执行测试集异常");
+            return Result.message(suiteService.useAsync(suiteId, retry), "执行测试集异常");
         } catch (RejectedExecutionException e) {
             return Result.errorMessage("执行队列已满，请稍后再试");
         }

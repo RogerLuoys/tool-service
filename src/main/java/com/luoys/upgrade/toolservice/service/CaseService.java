@@ -207,7 +207,7 @@ public class CaseService {
                 }
             });
         } else {
-            ThreadPoolUtil.execute(new Runnable() {
+            ThreadPoolUtil.executeAPI(new Runnable() {
                 @Override
                 public void run() {
                     useAPI(autoCaseVO);

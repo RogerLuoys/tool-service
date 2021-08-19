@@ -24,8 +24,21 @@ public interface SuiteCaseRelationMapper {
      * 按条件查询用例列表
      *
      * @param suiteId    测试集id
-     * @return
+     * @param startIndex    分页，为空则查全部
+     * @param retry    true查询状态不通过的用例
+     * @return 关联用例列表
      */
-    List<SuiteCaseRelationPO> listCaseBySuiteId(@Param("suiteId") String suiteId);
+    List<SuiteCaseRelationPO> listCaseBySuiteId(@Param("suiteId") String suiteId,
+                                                @Param("startIndex") Integer startIndex,
+                                                @Param("retry") Boolean retry);
+
+    /**
+     * 查询总数
+     * @param suiteId 测试集id
+     * @param status 用例状态，为空则查询所有状态
+     * @return -
+     */
+    int countBySuiteId(@Param("suiteId") String suiteId,
+                       @Param("status") Integer status);
 
 }

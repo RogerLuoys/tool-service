@@ -23,6 +23,11 @@ public class AutoSuiteVO {
     private String description;
 
     /**
+     * 测试集状态：1 空闲，2 执行中
+     */
+    private Integer status;
+
+    /**
      * 用例执行的环境
      */
     private String environment;
@@ -40,7 +45,9 @@ public class AutoSuiteVO {
     /**
      * 用例列表
      */
-    private List<SuiteCaseVO> caseList;
+//    private List<SuiteCaseVO> caseList;
+
+    private PageInfo<SuiteCaseVO> relatedCase;
 
     /**
      * 用例总数
@@ -66,5 +73,15 @@ public class AutoSuiteVO {
      * 所属人
      */
     private String ownerName;
+
+    /**
+     * ui用例是否执行完成
+     */
+    private Boolean isUiCompleted;
+
+    /**
+     * api用例是否执行完成
+     */
+    private Boolean isApiCompleted;
 
 }

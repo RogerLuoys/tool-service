@@ -11,7 +11,7 @@ import lombok.Data;
  * @author luoys
  */
 @Data
-public class AutoSuitePO implements Serializable {
+public class AutoSuitePO {
 
     private Integer id;
 
@@ -29,6 +29,11 @@ public class AutoSuitePO implements Serializable {
      * 描述
      */
     private String description;
+
+    /**
+     * 测试集状态：1 空闲，2 执行中
+     */
+    private Integer status;
 
     /**
      * 用例执行的环境
@@ -70,5 +75,14 @@ public class AutoSuitePO implements Serializable {
      */
     private String ownerName;
 
-    private static final long serialVersionUID = 1L;
+    /**
+     * ui用例是否执行完成
+     */
+    private Boolean isUiCompleted;
+
+    /**
+     * api用例是否执行完成
+     */
+    private Boolean isApiCompleted;
+
 }

@@ -50,8 +50,25 @@
     ac.case_id, ac.name as case_name, ac.type as case_type, ac.status as case_status, scr.sequence
     from auto_case ac
     inner join suite_case_relation scr on ac.case_id = scr.case_id
-    where scr.is_delete = 0
+    where scr.is_delete = 0 and ac.is_delete = 0
     and scr.suite_id = #{suiteId,jdbcType=VARCHAR}
+    <if test="retry != null">
+      and ac.status != 3
+    </if>
     order by scr.sequence
+    <if test="startIndex != null">
+      limit ${startIndex}, 10
+    </if>
+  </select>
+  <select id="countBySuiteId" resultType="java.lang.Integer">
+    select
+    count(1)
+    from auto_case ac
+    inner join suite_case_relation scr on ac.case_id = scr.case_id
+    where scr.is_delete = 0 and ac.is_delete = 0
+    and scr.suite_id = #{suiteId,jdbcType=VARCHAR}
+    <if test="status != null">
+      and ac.status = #{sequence,jdbcType=INTEGER}
+    </if>
   </select>
 </mapper>
