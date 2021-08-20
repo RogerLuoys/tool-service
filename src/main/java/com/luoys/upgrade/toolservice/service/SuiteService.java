@@ -44,6 +44,7 @@ public class SuiteService {
 
     /**
      * 新增单个测试集
+     *
      * @param autoSuiteVO 测试集对象
      * @return 成功为true，失败为false
      */
@@ -59,6 +60,7 @@ public class SuiteService {
 
     /**
      * 快速新增测试集，必填项自动填入默认值
+     *
      * @param autoSuiteVO 测试集对象
      * @return 成功为true，失败为false
      */
@@ -68,12 +70,14 @@ public class SuiteService {
             return false;
         }
         autoSuiteVO.setSuiteId(NumberSender.createSuiteId());
+        autoSuiteVO.setStatus(AutoSuiteStatusEnum.SUITE_FREE.getCode());
         int result = autoSuiteMapper.insert(TransformAutoSuite.transformVO2PO(autoSuiteVO));
         return result == 1;
     }
 
     /**
      * 新增测试集关联的用例
+     *
      * @param suiteCaseVO 用例对象
      * @return 成功为true，失败为false
      */
@@ -81,12 +85,16 @@ public class SuiteService {
         if (suiteCaseVO.getSequence() == null) {
             suiteCaseVO.setSequence(KeywordEnum.DEFAULT_CASE_SEQUENCE.getCode());
         }
+        if (suiteCaseVO.getStatus() == null) {
+            suiteCaseVO.setStatus(AutoCaseStatusEnum.PLANNING.getCode());
+        }
         int result = suiteCaseRelationMapper.insert(TransformSuiteCaseRelation.transformVO2SimplePO(suiteCaseVO));
         return result == 1;
     }
 
     /**
      * 删除单个测试集
+     *
      * @param suiteId 测试集业务id
      * @return 成功为true，失败为false
      */
@@ -100,6 +108,7 @@ public class SuiteService {
 
     /**
      * 删除测试集关联的用例
+     *
      * @param suiteCaseVO 用例对象
      * @return 成功为true，失败为false
      */
@@ -110,6 +119,7 @@ public class SuiteService {
 
     /**
      * 更新单个测试集的基本信息
+     *
      * @param autoSuiteVO 测试集对象
      * @return 成功为true，失败为false
      */
@@ -120,6 +130,7 @@ public class SuiteService {
 
     /**
      * 更新测试集关联的用例
+     *
      * @param suiteCaseVO 用例对象
      * @return 成功为true，失败为false
      */
@@ -130,18 +141,20 @@ public class SuiteService {
 
     /**
      * 查询测试集列表
-     * @param name 名字，可空
+     *
+     * @param name      名字，可空
      * @param pageIndex 页码
      * @return 测试集列表
      */
     public List<AutoSuiteSimpleVO> query(String name, String ownerId, Integer pageIndex) {
-        return TransformAutoSuite.transformPO2SimpleVO(autoSuiteMapper.list(name, ownerId, pageIndex-1));
+        return TransformAutoSuite.transformPO2SimpleVO(autoSuiteMapper.list(name, ownerId, pageIndex - 1));
     }
 
     /**
      * 查询测试集详情，
      * 分页查询测试集关联的用例
-     * @param suiteId 测试集业务id
+     *
+     * @param suiteId    测试集业务id
      * @param startIndex 测试集业务id
      * @return 测试集对象
      */
@@ -151,6 +164,7 @@ public class SuiteService {
 
     /**
      * 查询测试集详情
+     *
      * @param suiteId 测试集业务id
      * @return 测试集对象
      */
@@ -161,7 +175,8 @@ public class SuiteService {
         // 查询基本信息
         AutoSuiteVO autoSuiteVO = TransformAutoSuite.transformPO2VO(autoSuiteMapper.selectByUUID(suiteId));
         // 查询用例列表
-        List<SuiteCaseVO> caseList = TransformSuiteCaseRelation.transformPO2SimpleVO(suiteCaseRelationMapper.listCaseBySuiteId(suiteId, startIndex, retry));
+        List<SuiteCaseVO> caseList = TransformSuiteCaseRelation.transformPO2SimpleVO(
+                suiteCaseRelationMapper.listCaseBySuiteId(suiteId, startIndex == null ? null : startIndex - 1, retry));
         PageInfo<SuiteCaseVO> pageInfo = new PageInfo<>();
         pageInfo.setList(caseList);
         pageInfo.setTotal(suiteCaseRelationMapper.countBySuiteId(suiteId, null));
@@ -171,13 +186,14 @@ public class SuiteService {
 
     /**
      * 执行测试集（异步模式）
+     *
      * @param suiteId -
      * @return -
      */
     public Boolean useAsync(String suiteId, Boolean retry) throws RejectedExecutionException {
         // 全量查询测试集详情，如果重试则只查询其中未通过用例
         AutoSuiteVO autoSuiteVO = queryDetail(suiteId, null, retry);
-        // 测试集只能同时执行一个
+        // 测试集只能同时执行一个，如果状态已是执行中，则直接退出
         if (autoSuiteVO.getStatus().equals(AutoSuiteStatusEnum.SUITE_RUNNING.getCode())) {
             log.error("--->测试集内正在执行中：suiteId={}", suiteId);
             return false;
@@ -188,19 +204,21 @@ public class SuiteService {
             log.error("--->测试集内未找到关联的用例：suiteId={}", suiteId);
             return false;
         }
-        // 将测试集上次执行结果清零，并设置成执行中
+        // 将测试集上次的所有执行结果重置，并设置成执行中
         autoSuiteMapper.updateResult(suiteId, 0, 0);
         autoSuiteMapper.updateStatus(suiteId, AutoSuiteStatusEnum.SUITE_RUNNING.getCode());
-        // 根据优先级排序，且将ui和api用例分开
+        suiteCaseRelationMapper.resetStatusBySuiteId(suiteId);
+        // 根据优先级排序，并将ui和api用例分开
         Map<Integer, List<SuiteCaseVO>> casesMap = orderAndSort(caseList);
         List<SuiteCaseVO> uiCaseList = casesMap.get(AutoCaseTypeEnum.UI_CASE.getCode());
         List<SuiteCaseVO> apiCaseList = casesMap.get(AutoCaseTypeEnum.INTERFACE_CASE.getCode());
+
         if (apiCaseList.size() != 0) {
             // 使用api线程池执行api用例，并更新结果
             ThreadPoolUtil.executeAPI(() -> {
                 try {
                     // 先执行，后更新结果
-                    execute(apiCaseList);
+                    execute(apiCaseList, suiteId);
                     autoSuiteMapper.updateResult(suiteId,
                             suiteCaseRelationMapper.countBySuiteId(autoSuiteVO.getSuiteId(), AutoCaseStatusEnum.SUCCESS.getCode()),
                             suiteCaseRelationMapper.countBySuiteId(autoSuiteVO.getSuiteId(), AutoCaseStatusEnum.FAIL.getCode()));
@@ -218,8 +236,10 @@ public class SuiteService {
             // 使用ui线程池执行ui用例，并更新结果
             ThreadPoolUtil.executeUI(() -> {
                 try {
-                    // 先执行，后更新结果
-                    execute(uiCaseList);
+                    // 先测试集ui用例的执行状态更新
+                    autoSuiteMapper.updateExecuteStatus(suiteId, null, false);
+                    // 执行所有用例，后更新结果
+                    execute(uiCaseList, suiteId);
                     autoSuiteMapper.updateResult(suiteId,
                             suiteCaseRelationMapper.countBySuiteId(autoSuiteVO.getSuiteId(), AutoCaseStatusEnum.SUCCESS.getCode()),
                             suiteCaseRelationMapper.countBySuiteId(autoSuiteVO.getSuiteId(), AutoCaseStatusEnum.FAIL.getCode()));
@@ -232,40 +252,17 @@ public class SuiteService {
                 }
             });
         }
-//        // 分别执行ui与api用例
-//        if (apiCaseList.size() != 0) {
-//            // 使用api线程池执行api用例，并更新结果
-//            ThreadPoolUtil.execute(new Runnable() {
-//                @Override
-//                public void run() {
-//                    execute(apiCaseList);
-//                    autoSuiteMapper.updateResult(autoSuiteVO.getSuiteId(),
-//                            suiteCaseRelationMapper.countBySuiteId(autoSuiteVO.getSuiteId(), AutoCaseStatusEnum.SUCCESS.getCode()),
-//                            suiteCaseRelationMapper.countBySuiteId(autoSuiteVO.getSuiteId(), AutoCaseStatusEnum.FAIL.getCode()));
-//                }
-//            });
-//        }
-//        if (uiCaseList.size() != 0) {
-//            // 使用ui线程池执行ui用例，并更新结果
-//            ThreadPoolUtil.executeUI(new Runnable() {
-//                @Override
-//                public void run() {
-//                    execute(uiCaseList);
-//                    autoSuiteMapper.updateResult(autoSuiteVO.getSuiteId(),
-//                            suiteCaseRelationMapper.countBySuiteId(autoSuiteVO.getSuiteId(), AutoCaseStatusEnum.SUCCESS.getCode()),
-//                            suiteCaseRelationMapper.countBySuiteId(autoSuiteVO.getSuiteId(), AutoCaseStatusEnum.FAIL.getCode()));                }
-//            });
-//        }
         return true;
     }
 
     /**
      * 按执行顺序排序，并将接口用例与UI用例区分开
+     *
      * @param caseList -
      * @return 包含两条数据的Map对象
      */
     private Map<Integer, List<SuiteCaseVO>> orderAndSort(List<SuiteCaseVO> caseList) {
-        quickOrder(caseList, 0, caseList.size());
+//        quickOrder(caseList, 0, caseList.size() - 1);
         Map<Integer, List<SuiteCaseVO>> casesMap = new HashMap<>();
         List<SuiteCaseVO> uiCaseList = new ArrayList<>();
         List<SuiteCaseVO> apiCaseList = new ArrayList<>();
@@ -285,9 +282,10 @@ public class SuiteService {
 
     /**
      * 快速排序
+     *
      * @param targetList 需要排序的列表
-     * @param start 从0开始
-     * @param end 列表长度
+     * @param start      从0开始
+     * @param end        列表长度-1
      */
     private void quickOrder(List<SuiteCaseVO> targetList, int start, int end) {
         int low = start;
@@ -316,29 +314,22 @@ public class SuiteService {
 
     /**
      * 执行用例
+     *
      * @param caseList -
      * @return 返回所执行用例的成功数和失败数
      */
-    private Map<String, Integer> execute(List<SuiteCaseVO> caseList) {
-        int passed = 0;
-        int failed = 0;
+    private void execute(List<SuiteCaseVO> caseList, String suiteId) {
+        boolean result;
         for (SuiteCaseVO vo : caseList) {
             try {
                 // 先通过caseId查到用例详情，再执行用例
-                if (caseService.use(caseService.queryDetail(vo.getAutoCase().getCaseId()))) {
-                    passed++;
-                } else {
-                    failed++;
-                }
+                result = caseService.use(caseService.queryDetail(vo.getAutoCase().getCaseId()));
+                // 更新测试集中关联用例的执行状态
+                suiteCaseRelationMapper.updateStatus(suiteId, vo.getCaseId(),
+                        result ? AutoCaseStatusEnum.SUCCESS.getCode() : AutoCaseStatusEnum.SUCCESS.getCode());
             } catch (Exception e) {
                 log.error("--->批量执行用例异常：caseId={}", vo.getAutoCase().getCaseId(), e);
-                failed++;
             }
         }
-        Map<String, Integer> result = new HashMap<>();
-        result.put("passed", passed);
-        result.put("failed", failed);
-        return result;
     }
-
 }

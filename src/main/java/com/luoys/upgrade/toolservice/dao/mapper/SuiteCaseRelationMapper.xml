@@ -5,13 +5,14 @@
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="suite_id" jdbcType="VARCHAR" property="suiteId" />
     <result column="case_id" jdbcType="VARCHAR" property="caseId" />
+    <result column="status" jdbcType="TINYINT" property="status" />
     <result column="sequence" jdbcType="INTEGER" property="sequence" />
     <result column="case_name" jdbcType="VARCHAR" property="caseName" />
-    <result column="case_type" jdbcType="VARCHAR" property="caseType" />
-    <result column="case_status" jdbcType="VARCHAR" property="caseStatus" />
+    <result column="case_type" jdbcType="TINYINT" property="caseType" />
+    <result column="case_status" jdbcType="TINYINT" property="caseStatus" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, suite_id, case_id, `sequence`, case_name, case_type, case_status
+    id, suite_id, case_id, status, `sequence`, case_name, case_type, case_status
   </sql>
   <select id="selectById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select
@@ -28,10 +29,10 @@
     where suite_id = #{suiteId,jdbcType=VARCHAR} and case_id = #{caseId,jdbcType=VARCHAR}
   </update>
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.luoys.upgrade.toolservice.dao.po.SuiteCaseRelationPO" useGeneratedKeys="true">
-    insert into suite_case_relation (suite_id, case_id, `sequence`,
+    insert into suite_case_relation (suite_id, case_id, status, `sequence`,
       is_delete, gmt_create, gmt_modified
       )
-    values (#{suiteId,jdbcType=VARCHAR}, #{caseId,jdbcType=VARCHAR}, #{sequence,jdbcType=INTEGER},
+    values (#{suiteId,jdbcType=VARCHAR}, #{caseId,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, #{sequence,jdbcType=INTEGER},
       0, now(), now()
       )
   </insert>
@@ -45,15 +46,23 @@
     </set>
     where suite_id = #{suiteId,jdbcType=VARCHAR} and case_id = #{caseId,jdbcType=VARCHAR}
   </update>
+  <update id="updateStatus">
+    update suite_case_relation set status = #{status,jdbcType=INTEGER}
+    where suite_id = #{suiteId,jdbcType=VARCHAR} and case_id = #{caseId,jdbcType=VARCHAR}
+  </update>
+  <update id="resetStatusBySuiteId">
+    update suite_case_relation set status = 1
+    where suite_id = #{suiteId,jdbcType=VARCHAR}
+  </update>
   <select id="listCaseBySuiteId" resultMap="BaseResultMap">
     select
-    ac.case_id, ac.name as case_name, ac.type as case_type, ac.status as case_status, scr.sequence
+    scr.suite_id, scr.case_id, scr.status, ac.name as case_name, ac.type as case_type, ac.status as case_status, scr.sequence
     from auto_case ac
     inner join suite_case_relation scr on ac.case_id = scr.case_id
     where scr.is_delete = 0 and ac.is_delete = 0
     and scr.suite_id = #{suiteId,jdbcType=VARCHAR}
     <if test="retry != null">
-      and ac.status != 3
+      and scr.status != 3
     </if>
     order by scr.sequence
     <if test="startIndex != null">
@@ -68,7 +77,7 @@
     where scr.is_delete = 0 and ac.is_delete = 0
     and scr.suite_id = #{suiteId,jdbcType=VARCHAR}
     <if test="status != null">
-      and ac.status = #{sequence,jdbcType=INTEGER}
+      and scr.status = #{status,jdbcType=INTEGER}
     </if>
   </select>
 </mapper>

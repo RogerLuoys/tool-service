@@ -20,6 +20,12 @@ public interface SuiteCaseRelationMapper {
 
     int update(SuiteCaseRelationPO record);
 
+    int updateStatus(@Param("suiteId") String suiteId,
+                     @Param("caseId") String caseId,
+                     @Param("status") Integer status);
+
+    int resetStatusBySuiteId(@Param("suiteId") String suiteId);
+
     /**
      * 按条件查询用例列表
      *

@@ -5,6 +5,7 @@ import com.luoys.upgrade.toolservice.common.StringUtil;
 import com.luoys.upgrade.toolservice.common.ThreadPoolUtil;
 import com.luoys.upgrade.toolservice.dao.AutoCaseMapper;
 import com.luoys.upgrade.toolservice.dao.CaseStepRelationMapper;
+import com.luoys.upgrade.toolservice.dao.SuiteCaseRelationMapper;
 import com.luoys.upgrade.toolservice.service.client.UIClient;
 import com.luoys.upgrade.toolservice.service.enums.AutoCaseStatusEnum;
 import com.luoys.upgrade.toolservice.service.enums.AutoCaseTypeEnum;
@@ -34,6 +35,9 @@ public class CaseService {
 
     @Autowired
     private CaseStepRelationMapper caseStepRelationMapper;
+
+    @Autowired
+    private SuiteCaseRelationMapper suiteCaseRelationMapper;
 
     @Autowired
     private StepService stepService;
@@ -168,7 +172,7 @@ public class CaseService {
     public AutoCaseVO queryDetail(String caseId) {
         // 查基本信息
         AutoCaseVO autoCaseVO = TransformAutoCase.transformPO2VO(autoCaseMapper.selectByUUID(caseId));
-        // 查关联的步骤
+        // 查关联的步骤，并区分类型
         List<CaseStepVO> caseStepList = TransformCaseStepRelation.transformPO2VO(caseStepRelationMapper.listStepByCaseId(caseId));
         List<CaseStepVO> preList = new ArrayList<>();
         List<CaseStepVO> mainList = new ArrayList<>();
@@ -193,38 +197,31 @@ public class CaseService {
     }
 
     /**
-     * 使用用例（异步）
+     * 使用用例（异步），并更新用例的执行结果
      * @param autoCaseVO 用例对象
      * @return 主要步骤全部执行结果都为true才返回true
      */
     public Boolean useAsync(AutoCaseVO autoCaseVO) throws RejectedExecutionException {
         // UI用例和API用例使用不同线程池，UI自动化只能单个子线程
         if (autoCaseVO.getType().equals(AutoCaseTypeEnum.UI_CASE.getCode())) {
-            ThreadPoolUtil.executeUI(new Runnable() {
-                @Override
-                public void run() {
-                    useUI(autoCaseVO);
-                }
+            ThreadPoolUtil.executeUI(()->{
+                boolean result = executeUI(autoCaseVO);
+                autoCaseMapper.updateStatus(autoCaseVO.getCaseId(),
+                        result ? AutoCaseStatusEnum.SUCCESS.getCode() : AutoCaseStatusEnum.FAIL.getCode());
             });
         } else {
-            ThreadPoolUtil.executeAPI(new Runnable() {
-                @Override
-                public void run() {
-                    useAPI(autoCaseVO);
-                }
+            ThreadPoolUtil.executeAPI(() -> {
+                boolean result = executeAPI(autoCaseVO);
+                autoCaseMapper.updateStatus(autoCaseVO.getCaseId(),
+                        result ? AutoCaseStatusEnum.SUCCESS.getCode() : AutoCaseStatusEnum.FAIL.getCode());
             });
         }
-//        try {
-//
-//        } catch (RejectedExecutionException e) {
-//            log.error("--->执行队列已满");
-//            return false;
-//        }
         return true;
     }
 
     /**
-     * 使用用例
+     * 使用用例 (仅执行，不更新结果)
+     *
      * @param autoCaseVO 用例对象
      * @return 主要步骤全部执行结果都为true才返回true
      */
@@ -232,9 +229,9 @@ public class CaseService {
         boolean result;
         // UI和接口用例分开执行
         if (autoCaseVO.getType().equals(AutoCaseTypeEnum.UI_CASE.getCode())) {
-            result = useUI(autoCaseVO);
+            result = executeUI(autoCaseVO);
         } else {
-            result = useAPI(autoCaseVO);
+            result = executeAPI(autoCaseVO);
         }
         return result;
     }
@@ -244,9 +241,13 @@ public class CaseService {
      * @param autoCaseVO 用例对象
      * @return 主要步骤全部执行结果都为true才返回true
      */
-    public Boolean useAPI(AutoCaseVO autoCaseVO) {
-        // 执行用例
-        return execute(autoCaseVO);
+    private Boolean executeAPI(AutoCaseVO autoCaseVO) {
+        try {
+            return execute(autoCaseVO);
+        } catch (Exception e) {
+            log.error("--->执行api用例异常：caseId={}", autoCaseVO.getCaseId(), e);
+            return false;
+        }
     }
 
     /**
@@ -254,7 +255,7 @@ public class CaseService {
      * @param autoCaseVO 用例对象
      * @return 主要步骤全部执行结果都为true才返回true
      */
-    public Boolean useUI(AutoCaseVO autoCaseVO) {
+    private Boolean executeUI(AutoCaseVO autoCaseVO) {
         boolean result;
         try {
             // 打开webDrive，默认chrome
@@ -296,19 +297,7 @@ public class CaseService {
                 stepService.use(vo.getAutoStep());
             }
         }
-        // 更新用例执行状态
-        autoCaseMapper.updateStatus(autoCaseVO.getCaseId(), result ? AutoCaseStatusEnum.SUCCESS.getCode() : AutoCaseStatusEnum.FAIL.getCode());
         return result;
     }
-
-//    private Boolean execute(List<StepDTO> stepList) {
-//        boolean result = true;
-//        for (StepDTO stepDTO: stepList) {
-//            if (!stepService.use(stepService.queryDetail(stepDTO.getStepId()))) {
-//                result = false;
-//            }
-//        }
-//        return result;
-//    }
 
 }

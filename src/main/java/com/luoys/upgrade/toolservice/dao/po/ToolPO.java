@@ -9,7 +9,7 @@ import lombok.Data;
  * @author luoys
  */
 @Data
-public class ToolPO implements Serializable {
+public class ToolPO {
 
     private Integer id;
 
@@ -128,5 +128,4 @@ public class ToolPO implements Serializable {
      */
     private String ownerName;
 
-    private static final long serialVersionUID = 1L;
 }

@@ -11,7 +11,7 @@ import lombok.Data;
  * @author luoys
  */
 @Data
-public class AutoCasePO implements Serializable {
+public class AutoCasePO {
 
     private Integer id;
 
@@ -55,5 +55,4 @@ public class AutoCasePO implements Serializable {
      */
     private String ownerName;
 
-    private static final long serialVersionUID = 1L;
 }

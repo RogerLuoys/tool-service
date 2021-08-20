@@ -9,7 +9,7 @@ import lombok.Data;
  * @author luoys
  */
 @Data
-public class CaseStepRelationPO implements Serializable {
+public class CaseStepRelationPO {
     private Integer id;
 
     /**
@@ -177,5 +177,4 @@ public class CaseStepRelationPO implements Serializable {
      */
     private Boolean isPublic;
 
-    private static final long serialVersionUID = 1L;
 }

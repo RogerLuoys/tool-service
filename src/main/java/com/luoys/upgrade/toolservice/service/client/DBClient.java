@@ -91,43 +91,6 @@ public class DBClient {
         return "select count(1) " + condition;
     }
 
-    /**
-     * 加默认查询规则，默认按ID倒序，最多查10条，避免没必要的全表查询
-     *
-     * @param sql 完整的sql
-     * @return 拼接默认查询规则后的sql
-     */
-    private String addSelectDefault(String sql) {
-        String defaultSql = sql.replace(";", "");
-        // 截取sql后缀，避免字符串中有同样的值
-        int startIndex = Math.max(defaultSql.lastIndexOf("\""), defaultSql.lastIndexOf("'"));
-        startIndex = Math.max(startIndex, defaultSql.lastIndexOf(")"));
-        String suffixSql = defaultSql.substring(startIndex != -1 ? startIndex : 0).toLowerCase();
-
-        if (!suffixSql.contains(" order by ")) {
-            String DEFAULT_ORDER = " order by id desc";
-            defaultSql = defaultSql + DEFAULT_ORDER;
-        }
-        if (!suffixSql.contains(" limit ")) {
-            String DEFAULT_LIMIT = " limit 10";
-            defaultSql = defaultSql + DEFAULT_LIMIT;
-        }
-        return defaultSql + ";";
-    }
-
-    public Integer updateWithLimit(String sql) {
-        int effectRow = count(transformUpdate2Select(sql));
-        if (effectRow > 10) {
-            log.warn("---->一次更新超过10行，请确认sql条件是否正确");
-            return null;
-        } else if (effectRow == 0) {
-            log.warn("---->查无此类数据，不需要更新");
-            return null;
-        }
-        log.info("---->最终执行sql：" + sql);
-        return jdbcTemplate.update(sql);
-    }
-
     public String update(String sql) {
         int effectRow = count(transformUpdate2Select(sql));
         if (effectRow > 200) {
@@ -154,8 +117,7 @@ public class DBClient {
     }
 
     public String select(String sql) {
-        String executeSql = addSelectDefault(sql);
-        return jdbcTemplate.queryForList(executeSql).toString();
+        return jdbcTemplate.queryForList(sql).toString();
     }
 
 //    public String selectOneCell(String sql) {
@@ -180,7 +142,7 @@ public class DBClient {
     public String delete(String sql) {
         int effectRow = count(transformDelete2Select(sql));
         if (effectRow > 50) {
-            return "一次删除超过10行，请确认sql条件是否正确";
+            return "一次删除超过50行，请确认sql条件是否正确";
         } else if (effectRow == 0) {
             return "查无此类数据，不需要删除";
         }

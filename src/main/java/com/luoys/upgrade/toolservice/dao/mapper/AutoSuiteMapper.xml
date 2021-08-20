@@ -105,13 +105,14 @@
   </update>
   <update id="updateExecuteStatus">
     update auto_suite
-    set
-    <if test="is_api_completed != null">
-      is_api_completed = #{isApiCompleted,jdbcType=TINYINT},
-    </if>
-    <if test="is_ui_completed != null">
-      is_ui_completed = #{isUiCompleted,jdbcType=TINYINT},
-    </if>
+    <set>
+      <if test="isApiCompleted != null">
+        is_api_completed = #{isApiCompleted,jdbcType=TINYINT},
+      </if>
+      <if test="isUiCompleted != null">
+        is_ui_completed = #{isUiCompleted,jdbcType=TINYINT},
+      </if>
+    </set>
     where suite_id = #{suiteId,jdbcType=VARCHAR}
   </update>
 </mapper>

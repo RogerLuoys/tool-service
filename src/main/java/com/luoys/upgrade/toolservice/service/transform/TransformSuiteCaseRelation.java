@@ -16,6 +16,7 @@ public class TransformSuiteCaseRelation {
         SuiteCaseVO vo = new SuiteCaseVO();
         vo.setSequence(po.getSequence());
         vo.setCaseId(po.getCaseId());
+        vo.setStatus(po.getStatus());
         // 设置用例信息
         AutoCaseSimpleVO childVO = new AutoCaseSimpleVO();
         childVO.setName(po.getCaseName());
@@ -42,6 +43,7 @@ public class TransformSuiteCaseRelation {
         po.setCaseId(vo.getCaseId());
         po.setSuiteId(vo.getSuiteId());
         po.setSequence(vo.getSequence());
+        po.setStatus(vo.getStatus());
         return po;
     }
 

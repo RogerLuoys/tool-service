@@ -11,7 +11,7 @@ import lombok.Data;
  * @author luoys
  */
 @Data
-public class ResourcePO implements Serializable {
+public class ResourcePO {
 
     private Integer id;
 
@@ -110,5 +110,4 @@ public class ResourcePO implements Serializable {
      */
     private String userName;
 
-    private static final long serialVersionUID = 1L;
 }

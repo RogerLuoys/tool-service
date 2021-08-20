@@ -142,11 +142,8 @@ public class StepService {
             return false;
         }
         try {
-            ThreadPoolUtil.executeAPI(new Runnable() {
-                @Override
-                public void run() {
-                    execute(autoStepVO);
-                }
+            ThreadPoolUtil.executeAPI(() -> {
+                execute(autoStepVO);
             });
         } catch (Exception e) {
             log.error("--->步骤执行异常：stepId={}", autoStepVO.getStepId(), e);

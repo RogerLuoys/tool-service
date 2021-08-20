@@ -23,6 +23,11 @@ public class SuiteCaseRelationPO {
     private String caseId;
 
     /**
+     * 测试集关联用例的执行状态：1 未执行，2 失败，3成功
+     */
+    private Integer status;
+
+    /**
      * 用例执行顺序，默认999
      */
     private Integer sequence;

@@ -11,7 +11,7 @@ import lombok.Data;
  * @author luoys
  */
 @Data
-public class AutoStepPO implements Serializable {
+public class AutoStepPO {
 
     private Integer id;
 
@@ -170,5 +170,4 @@ public class AutoStepPO implements Serializable {
      */
     private Boolean isPublic;
 
-    private static final long serialVersionUID = 1L;
 }
