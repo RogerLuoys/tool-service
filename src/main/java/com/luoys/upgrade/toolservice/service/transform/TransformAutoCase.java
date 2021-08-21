@@ -23,6 +23,8 @@ public class TransformAutoCase {
         vo.setStatus(po.getStatus());
         vo.setMaxTime(po.getMaxTime());
         vo.setOwnerName(po.getOwnerName());
+        vo.setEnvironment(po.getEnvironment());
+        vo.setFinishTime(po.getFinishTime());
         return vo;
     }
 
@@ -47,6 +49,8 @@ public class TransformAutoCase {
         vo.setOwnerName(po.getOwnerName());
         vo.setCaseId(po.getCaseId());
         vo.setStatus(po.getStatus());
+        vo.setEnvironment(po.getEnvironment());
+        vo.setFinishTime(po.getFinishTime());
         vo.setMaxTime(po.getMaxTime());
         // 设置步骤信息
 //        vo.setPreStepList(TransformCommon.toStep(po.getPreStep()));
@@ -69,6 +73,8 @@ public class TransformAutoCase {
         po.setType(vo.getType());
         po.setStatus(vo.getStatus());
         po.setMaxTime(vo.getMaxTime());
+        po.setEnvironment(vo.getEnvironment());
+        po.setFinishTime(vo.getFinishTime());
         // 设置步骤信息
 //        po.setPreStep(TransformCommon.toStep(vo.getPreStepList()));
 //        po.setMainStep(TransformCommon.toStep(vo.getMainStepList()));
