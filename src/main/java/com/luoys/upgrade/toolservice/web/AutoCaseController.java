@@ -29,7 +29,7 @@ public class AutoCaseController {
     }
 
     @RequestMapping(value = "/quickCreate", method = RequestMethod.POST)
-    public Result<Boolean> quickCreate(@RequestBody AutoCaseVO autoCaseVO,
+    public Result<String> quickCreate(@RequestBody AutoCaseVO autoCaseVO,
                                        @RequestHeader(value = "userId") String userId) {
         log.info("--->开始快速新增用例");
         autoCaseVO.setOwnerId(userId);

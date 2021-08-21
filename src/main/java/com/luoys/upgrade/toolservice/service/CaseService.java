@@ -78,19 +78,19 @@ public class CaseService {
      * @param autoCaseVO 用例对象，需要有名称和类型
      * @return 新增成功为true，失败为false
      */
-    public Boolean quickCreate(AutoCaseVO autoCaseVO) {
+    public String quickCreate(AutoCaseVO autoCaseVO) {
         if (autoCaseVO.getType() == null) {
             log.error("--->用例类型不能为空：{}", autoCaseVO);
-            return false;
+            return null;
         }
         if (StringUtil.isBlank(autoCaseVO.getName())) {
             log.error("--->用例名称不能为空：{}", autoCaseVO);
-            return false;
+            return null;
         }
         autoCaseVO.setStatus(AutoCaseStatusEnum.PLANNING.getCode());
         autoCaseVO.setCaseId(NumberSender.createCaseId());
         int result = autoCaseMapper.insert(TransformAutoCase.transformVO2PO(autoCaseVO));
-        return result == 1;
+        return result == 1 ? autoCaseVO.getCaseId() : null;
     }
 
     /**

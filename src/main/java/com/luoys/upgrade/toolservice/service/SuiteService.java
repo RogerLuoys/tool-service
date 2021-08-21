@@ -62,17 +62,17 @@ public class SuiteService {
      * 快速新增测试集，必填项自动填入默认值
      *
      * @param autoSuiteVO 测试集对象
-     * @return 成功为true，失败为false
+     * @return 成功为suiteId，失败为null
      */
-    public Boolean quickCreate(AutoSuiteVO autoSuiteVO) {
+    public String quickCreate(AutoSuiteVO autoSuiteVO) {
         if (StringUtil.isBlank(autoSuiteVO.getName())) {
             log.error("--->测试集名字必填：{}", autoSuiteVO);
-            return false;
+            return null;
         }
         autoSuiteVO.setSuiteId(NumberSender.createSuiteId());
         autoSuiteVO.setStatus(AutoSuiteStatusEnum.SUITE_FREE.getCode());
         int result = autoSuiteMapper.insert(TransformAutoSuite.transformVO2PO(autoSuiteVO));
-        return result == 1;
+        return result == 1 ? autoSuiteVO.getSuiteId() : null;
     }
 
     /**

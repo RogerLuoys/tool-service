@@ -27,7 +27,7 @@ public class AutoSuiteController {
     }
 
     @RequestMapping(value = "/quickCreate", method = RequestMethod.POST)
-    public Result<Boolean> quickCreate(@RequestBody AutoSuiteVO autoSuiteVO,
+    public Result<String> quickCreate(@RequestBody AutoSuiteVO autoSuiteVO,
                                        @RequestHeader(value = "userId") String userId) {
         log.info("--->开始快速新增测试集：{}", autoSuiteVO);
         autoSuiteVO.setOwnerId(userId);
