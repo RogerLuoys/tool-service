@@ -277,12 +277,14 @@ public class CaseService {
         // 执行前置步骤
         if (autoCaseVO.getPreStepList() != null && autoCaseVO.getAfterStepList().size() != 0) {
             for (CaseStepVO vo: autoCaseVO.getPreStepList()) {
+                vo.getAutoStep().setEnvironment(StringUtil.isBlank(autoCaseVO.getEnvironment()) ? null : autoCaseVO.getEnvironment());
                 stepService.use(vo.getAutoStep());
             }
         }
         // 执行主要步骤，只要有一个步骤为false，则整个case结果为false
         if (autoCaseVO.getMainStepList() != null && autoCaseVO.getMainStepList().size() != 0) {
             for (CaseStepVO vo: autoCaseVO.getMainStepList()) {
+                vo.getAutoStep().setEnvironment(StringUtil.isBlank(autoCaseVO.getEnvironment()) ? null : autoCaseVO.getEnvironment());
                 if (!stepService.use(vo.getAutoStep())) {
                     result = false;
                 }
@@ -294,6 +296,7 @@ public class CaseService {
         // 执行收尾步骤，如果执行结果为false，则不执行该步骤保留现场
         if (result && autoCaseVO.getAfterStepList() != null && autoCaseVO.getAfterStepList().size() != 0) {
             for (CaseStepVO vo: autoCaseVO.getAfterStepList()) {
+                vo.getAutoStep().setEnvironment(StringUtil.isBlank(autoCaseVO.getEnvironment()) ? null : autoCaseVO.getEnvironment());
                 stepService.use(vo.getAutoStep());
             }
         }

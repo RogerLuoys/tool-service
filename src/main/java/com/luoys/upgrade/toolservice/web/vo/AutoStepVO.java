@@ -72,6 +72,11 @@ public class AutoStepVO {
     private Boolean assertResult;
 
     /**
+     * 用例执行环境（参数）
+     */
+    private String environment;
+
+    /**
      * 所属人id
      */
     private String ownerId;

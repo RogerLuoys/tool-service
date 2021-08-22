@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.concurrent.RejectedExecutionException;
 
 @Slf4j
 @Service
@@ -136,19 +137,20 @@ public class StepService {
      * @param autoStepVO 步骤对象
      * @return 使用结果，执行成功且验证通过为true，失败或异常为false
      */
-    public Boolean useAsync(AutoStepVO autoStepVO) {
+    public Boolean useAsync(AutoStepVO autoStepVO) throws RejectedExecutionException {
         if (autoStepVO.getType().equals(AutoStepTypeEnum.STEP_UI.getCode())) {
             log.error("--->UI步骤不支持单步调试：stepId={}", autoStepVO.getStepId());
             return false;
         }
-        try {
-            ThreadPoolUtil.executeAPI(() -> {
-                execute(autoStepVO);
-            });
-        } catch (Exception e) {
-            log.error("--->步骤执行异常：stepId={}", autoStepVO.getStepId(), e);
-            return false;
-        }
+        ThreadPoolUtil.executeAPI(() -> {
+            execute(autoStepVO);
+        });
+//        try {
+//
+//        } catch (Exception e) {
+//            log.error("--->步骤执行异常：stepId={}", autoStepVO.getStepId(), e);
+//            return false;
+//        }
         return true;
     }
 
@@ -161,6 +163,9 @@ public class StepService {
         try {
             // 执行步骤并设置实际结果
             autoStepVO.setAssertActual(execute(autoStepVO));
+            if (autoStepVO.getType().equals(AutoStepTypeEnum.STEP_UI.getCode())) {
+                Thread.sleep(autoStepVO.getAfterSleep());
+            }
         } catch (Exception e) {
             log.error("--->步骤执行异常：stepId={}", autoStepVO.getStepId(), e);
             if (autoStepVO.getType().equals(AutoStepTypeEnum.STEP_UI.getCode())) {
@@ -177,12 +182,15 @@ public class StepService {
                 //通过JdbcTemplate实现
                 return dbClient.execute(autoStepVO.getJdbc());
             case STEP_HTTP:
+                TransformAutoStep.mergeParam(autoStepVO);
                 //通过restTemplate实现
                 return httpClient.execute(autoStepVO.getHttpRequest());
             case STEP_RPC:
+                TransformAutoStep.mergeParam(autoStepVO);
                 //通过dubbo的泛化调用实现
                 return rpcClient.execute(autoStepVO.getRpc());
             case STEP_UI:
+                TransformAutoStep.mergeParam(autoStepVO);
                 //通过selenium实现
                 return uiClient.execute(autoStepVO.getUi());
             default:

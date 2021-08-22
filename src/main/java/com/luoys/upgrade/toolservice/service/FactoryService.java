@@ -147,6 +147,11 @@ public class FactoryService {
         return result.toString();
     }
 
+    /**
+     * 执行指定类型的工具，执行前先替换变量
+     * @param toolVO
+     * @return
+     */
     private String execute(ToolVO toolVO) {
         switch (ToolTypeEnum.fromCode(toolVO.getType())) {
             case MULTIPLE:

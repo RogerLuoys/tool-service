@@ -1,8 +1,10 @@
 package com.luoys.upgrade.toolservice.service.transform;
 
+import com.luoys.upgrade.toolservice.common.StringUtil;
 import com.luoys.upgrade.toolservice.dao.po.AutoStepPO;
 import com.luoys.upgrade.toolservice.service.dto.*;
 import com.luoys.upgrade.toolservice.service.enums.AutoStepTypeEnum;
+import com.luoys.upgrade.toolservice.service.enums.KeywordEnum;
 import com.luoys.upgrade.toolservice.web.vo.AutoStepSimpleVO;
 import com.luoys.upgrade.toolservice.web.vo.AutoStepVO;
 
@@ -166,4 +168,31 @@ public class TransformAutoStep {
         return po;
     }
 
+    /**
+     * 变量合并
+     * @param autoStepVO -
+     */
+    public static void mergeParam(AutoStepVO autoStepVO) {
+        if (StringUtil.isBlank(autoStepVO.getEnvironment())) {
+            return;
+        }
+        String actualURL;
+        switch (AutoStepTypeEnum.fromCode(autoStepVO.getType())) {
+            case STEP_HTTP:
+                actualURL = autoStepVO.getHttpRequest().getHttpURL().replace(
+                        KeywordEnum.PRE_PARAM_ENV.getValue(), autoStepVO.getEnvironment());
+                autoStepVO.getHttpRequest().setHttpURL(actualURL);
+                break;
+            case STEP_RPC:
+                actualURL = autoStepVO.getRpc().getUrl().replace(
+                        KeywordEnum.PRE_PARAM_ENV.getValue(), autoStepVO.getEnvironment());
+                autoStepVO.getRpc().setUrl(actualURL);
+                break;
+            case STEP_UI:
+                actualURL = autoStepVO.getUi().getUrl().replace(
+                        KeywordEnum.PRE_PARAM_ENV.getValue(), autoStepVO.getEnvironment());
+                autoStepVO.getUi().setUrl(actualURL);
+                break;
+        }
+    }
 }

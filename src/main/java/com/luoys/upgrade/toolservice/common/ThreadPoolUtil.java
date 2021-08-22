@@ -1,5 +1,6 @@
 package com.luoys.upgrade.toolservice.common;
 
+import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -18,6 +19,14 @@ public class ThreadPoolUtil {
 
     public static void executeUI(Runnable task) {
         uiExecutor.execute(task);
+    }
+
+    public static Future submitUI(Runnable task) {
+        return uiExecutor.submit(task);
+    }
+
+    public static Future submitAPI(Runnable task) {
+        return apiExecutor.submit(task);
     }
 
 }

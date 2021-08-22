@@ -11,10 +11,7 @@ import com.luoys.upgrade.toolservice.service.enums.AutoSuiteStatusEnum;
 import com.luoys.upgrade.toolservice.service.enums.KeywordEnum;
 import com.luoys.upgrade.toolservice.service.transform.TransformAutoSuite;
 import com.luoys.upgrade.toolservice.service.transform.TransformSuiteCaseRelation;
-import com.luoys.upgrade.toolservice.web.vo.AutoSuiteSimpleVO;
-import com.luoys.upgrade.toolservice.web.vo.AutoSuiteVO;
-import com.luoys.upgrade.toolservice.web.vo.PageInfo;
-import com.luoys.upgrade.toolservice.web.vo.SuiteCaseVO;
+import com.luoys.upgrade.toolservice.web.vo.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -218,7 +215,7 @@ public class SuiteService {
             ThreadPoolUtil.executeAPI(() -> {
                 try {
                     // 先执行，后更新结果
-                    execute(apiCaseList, suiteId);
+                    execute(apiCaseList, autoSuiteVO.getEnvironment());
                     autoSuiteMapper.updateResult(suiteId,
                             suiteCaseRelationMapper.countBySuiteId(autoSuiteVO.getSuiteId(), AutoCaseStatusEnum.SUCCESS.getCode()),
                             suiteCaseRelationMapper.countBySuiteId(autoSuiteVO.getSuiteId(), AutoCaseStatusEnum.FAIL.getCode()));
@@ -239,7 +236,7 @@ public class SuiteService {
                     // 先测试集ui用例的执行状态更新
                     autoSuiteMapper.updateExecuteStatus(suiteId, null, false);
                     // 执行所有用例，后更新结果
-                    execute(uiCaseList, suiteId);
+                    execute(uiCaseList, autoSuiteVO.getEnvironment());
                     autoSuiteMapper.updateResult(suiteId,
                             suiteCaseRelationMapper.countBySuiteId(autoSuiteVO.getSuiteId(), AutoCaseStatusEnum.SUCCESS.getCode()),
                             suiteCaseRelationMapper.countBySuiteId(autoSuiteVO.getSuiteId(), AutoCaseStatusEnum.FAIL.getCode()));
@@ -318,17 +315,21 @@ public class SuiteService {
      * @param caseList -
      * @return 返回所执行用例的成功数和失败数
      */
-    private void execute(List<SuiteCaseVO> caseList, String suiteId) {
-        boolean result;
+    private void execute(List<SuiteCaseVO> caseList, String environment) {
+        boolean result = false;
         for (SuiteCaseVO vo : caseList) {
             try {
-                // 先通过caseId查到用例详情，再执行用例
-                result = caseService.use(caseService.queryDetail(vo.getAutoCase().getCaseId()));
-                // 更新测试集中关联用例的执行状态
-                suiteCaseRelationMapper.updateStatus(suiteId, vo.getCaseId(),
-                        result ? AutoCaseStatusEnum.SUCCESS.getCode() : AutoCaseStatusEnum.SUCCESS.getCode());
+                // 先通过caseId查出用例详情，再设置执行参数，最后执行用例
+                AutoCaseVO autoCaseVO = caseService.queryDetail(vo.getAutoCase().getCaseId());
+                autoCaseVO.setEnvironment(environment);
+                result = caseService.use(autoCaseVO);
             } catch (Exception e) {
                 log.error("--->批量执行用例异常：caseId={}", vo.getAutoCase().getCaseId(), e);
+                result = false;
+            } finally {
+                // 更新测试集中关联用例的执行状态
+                suiteCaseRelationMapper.updateStatus(vo.getSuiteId(), vo.getCaseId(),
+                        result ? AutoCaseStatusEnum.SUCCESS.getCode() : AutoCaseStatusEnum.SUCCESS.getCode());
             }
         }
     }

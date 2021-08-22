@@ -41,7 +41,7 @@
     rpc_parameter, ui_type, ui_url, ui_element, ui_element_id, ui_key, after_sleep, assert_type, assert_actual,
     assert_expect, assert_result, owner_id, owner_name, is_public
   </sql>
-  <select id="selectByUUID" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+  <select id="selectByUUID" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from auto_step

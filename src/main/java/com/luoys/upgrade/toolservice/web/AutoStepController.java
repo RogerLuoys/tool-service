@@ -11,6 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.concurrent.RejectedExecutionException;
+
 @CrossOrigin
 @Slf4j
 @RestController
@@ -64,6 +66,10 @@ public class AutoStepController {
         if (autoStepVO.getType().equals(AutoStepTypeEnum.STEP_UI.getCode())) {
             return Result.error("UI自动化步骤不可单步调试");
         }
-        return Result.message(stepService.useAsync(autoStepVO), "已执行，请自行确认结果", "执行异常，请确认参数是否正常");
+        try {
+            return Result.message(stepService.useAsync(autoStepVO), "执行异常，请检查步骤");
+        } catch (RejectedExecutionException e) {
+            return Result.errorMessage("执行队列已满，请稍后再试");
+        }
     }
 }
