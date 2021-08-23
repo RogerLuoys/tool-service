@@ -36,7 +36,10 @@
     <if test="name != null">
       and `name` like concat('%', #{name,jdbcType=VARCHAR}, '%')
     </if>
-    order by gmt_create desc limit ${startIndex}, 10
+    order by gmt_create desc
+    <if test="startIndex != null">
+      limit ${startIndex}, 10
+    </if>
   </select>
   <update id="remove" parameterType="java.lang.String">
     update auto_case set is_delete = 1

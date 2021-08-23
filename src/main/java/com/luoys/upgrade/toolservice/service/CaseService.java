@@ -6,12 +6,15 @@ import com.luoys.upgrade.toolservice.common.ThreadPoolUtil;
 import com.luoys.upgrade.toolservice.dao.AutoCaseMapper;
 import com.luoys.upgrade.toolservice.dao.CaseStepRelationMapper;
 import com.luoys.upgrade.toolservice.dao.SuiteCaseRelationMapper;
+import com.luoys.upgrade.toolservice.dao.po.AutoCasePO;
+import com.luoys.upgrade.toolservice.dao.po.SuiteCaseRelationPO;
 import com.luoys.upgrade.toolservice.service.client.UIClient;
 import com.luoys.upgrade.toolservice.service.enums.AutoCaseStatusEnum;
 import com.luoys.upgrade.toolservice.service.enums.AutoCaseTypeEnum;
 import com.luoys.upgrade.toolservice.service.enums.KeywordEnum;
 import com.luoys.upgrade.toolservice.service.enums.RelatedStepTypeEnum;
 import com.luoys.upgrade.toolservice.service.transform.TransformCaseStepRelation;
+import com.luoys.upgrade.toolservice.service.transform.TransformSuiteCaseRelation;
 import com.luoys.upgrade.toolservice.web.vo.AutoCaseSimpleVO;
 import com.luoys.upgrade.toolservice.web.vo.AutoCaseVO;
 import com.luoys.upgrade.toolservice.service.transform.TransformAutoCase;
@@ -162,6 +165,36 @@ public class CaseService {
             userId = null;
         }
         return TransformAutoCase.transformPO2SimpleVO(autoCaseMapper.list(status, name, userId, pageIndex-1));
+    }
+
+    /**
+     * 查询符合条件的所有用例
+     * @param suiteId
+     * @param userId
+     * @param name
+     * @return
+     */
+    public List<AutoCaseSimpleVO> queryAll(String suiteId, String userId, String name) {
+        List<AutoCasePO> allCase = autoCaseMapper.list(AutoCaseStatusEnum.SUCCESS.getCode(), name, userId, null);
+        List<SuiteCaseRelationPO> selectedCase = suiteCaseRelationMapper.listCaseBySuiteId(suiteId, null, null);
+        List<AutoCasePO> selectableCase = new ArrayList<>();
+        // 筛选出未添加过的用例
+        boolean isExist;
+        for (AutoCasePO po : allCase) {
+            // 先判断用例是否已被关联，如果关联过，则标记为true
+            isExist = false;
+            for (SuiteCaseRelationPO selectedPO: selectedCase) {
+                if (po.getCaseId().equals(selectedPO.getCaseId())) {
+                    isExist = true;
+                    break;
+                }
+            }
+            // 如果未关联，则加入可选择列表
+            if (!isExist) {
+                selectableCase.add(po);
+            }
+        }
+        return TransformAutoCase.transformPO2SimpleVO(selectableCase);
     }
 
     /**
