@@ -3,12 +3,16 @@ package com.luoys.upgrade.toolservice.service;
 import com.luoys.upgrade.toolservice.common.NumberSender;
 import com.luoys.upgrade.toolservice.common.StringUtil;
 import com.luoys.upgrade.toolservice.common.ThreadPoolUtil;
+import com.luoys.upgrade.toolservice.dao.AutoCaseMapper;
 import com.luoys.upgrade.toolservice.dao.AutoSuiteMapper;
 import com.luoys.upgrade.toolservice.dao.SuiteCaseRelationMapper;
+import com.luoys.upgrade.toolservice.dao.po.AutoCasePO;
+import com.luoys.upgrade.toolservice.dao.po.SuiteCaseRelationPO;
 import com.luoys.upgrade.toolservice.service.enums.AutoCaseStatusEnum;
 import com.luoys.upgrade.toolservice.service.enums.AutoCaseTypeEnum;
 import com.luoys.upgrade.toolservice.service.enums.AutoSuiteStatusEnum;
 import com.luoys.upgrade.toolservice.service.enums.KeywordEnum;
+import com.luoys.upgrade.toolservice.service.transform.TransformAutoCase;
 import com.luoys.upgrade.toolservice.service.transform.TransformAutoSuite;
 import com.luoys.upgrade.toolservice.service.transform.TransformSuiteCaseRelation;
 import com.luoys.upgrade.toolservice.web.vo.*;
@@ -32,6 +36,9 @@ public class SuiteService {
 
     @Autowired
     private AutoSuiteMapper autoSuiteMapper;
+
+    @Autowired
+    private AutoCaseMapper autoCaseMapper;
 
     @Autowired
     private SuiteCaseRelationMapper suiteCaseRelationMapper;
@@ -73,7 +80,7 @@ public class SuiteService {
     }
 
     /**
-     * 新增测试集关联的用例
+     * 测试集关联单个用例
      *
      * @param suiteCaseVO 用例对象
      * @return 成功为true，失败为false
@@ -86,6 +93,27 @@ public class SuiteService {
             suiteCaseVO.setStatus(AutoCaseStatusEnum.PLANNING.getCode());
         }
         int result = suiteCaseRelationMapper.insert(TransformSuiteCaseRelation.transformVO2SimplePO(suiteCaseVO));
+        return result == 1;
+    }
+
+    /**
+     * 测试集关联批量用例
+     * @param suiteId
+     * @param userId
+     * @param name
+     * @return
+     */
+    public Boolean createRelatedCase(String suiteId, String userId, String name) {
+        List<SuiteCaseRelationPO> relateCase = new ArrayList<>();
+        for(AutoCaseSimpleVO vo: queryAll(suiteId, userId, name)) {
+            SuiteCaseRelationPO po = new SuiteCaseRelationPO();
+            po.setCaseId(vo.getCaseId());
+            po.setSequence(KeywordEnum.DEFAULT_CASE_SEQUENCE.getCode());
+            po.setStatus(AutoCaseStatusEnum.PLANNING.getCode());
+            po.setSuiteId(suiteId);
+            relateCase.add(po);
+        }
+        int result = suiteCaseRelationMapper.batchInsert(relateCase);
         return result == 1;
     }
 
@@ -145,6 +173,36 @@ public class SuiteService {
      */
     public List<AutoSuiteSimpleVO> query(String name, String ownerId, Integer pageIndex) {
         return TransformAutoSuite.transformPO2SimpleVO(autoSuiteMapper.list(name, ownerId, pageIndex - 1));
+    }
+
+    /**
+     * 查询符合条件且尚未被测试集添加过的所有用例
+     * @param suiteId
+     * @param userId
+     * @param name
+     * @return
+     */
+    public List<AutoCaseSimpleVO> queryAll(String suiteId, String userId, String name) {
+        List<AutoCasePO> allCase = autoCaseMapper.list(AutoCaseStatusEnum.SUCCESS.getCode(), name, userId, null);
+        List<SuiteCaseRelationPO> selectedCase = suiteCaseRelationMapper.listCaseBySuiteId(suiteId, null, null);
+        List<AutoCasePO> selectableCase = new ArrayList<>();
+        // 筛选出未添加过的用例
+        boolean isExist;
+        for (AutoCasePO po : allCase) {
+            // 先判断用例是否已被关联，如果关联过，则标记为true
+            isExist = false;
+            for (SuiteCaseRelationPO selectedPO: selectedCase) {
+                if (po.getCaseId().equals(selectedPO.getCaseId())) {
+                    isExist = true;
+                    break;
+                }
+            }
+            // 如果未关联，则加入可选择列表
+            if (!isExist) {
+                selectableCase.add(po);
+            }
+        }
+        return TransformAutoCase.transformPO2SimpleVO(selectableCase);
     }
 
     /**

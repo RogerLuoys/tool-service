@@ -41,6 +41,14 @@ public class AutoSuiteController {
         return Result.message(suiteService.createRelatedCase(suiteCaseVO));
     }
 
+    @RequestMapping(value = "/batchRelatedCase", method = RequestMethod.GET)
+    public Result<Boolean> batchRelatedCase(@RequestParam("suiteId") String suiteId,
+                                            @RequestParam("caseId") String caseId,
+                                            @RequestParam("caseName") String caseName) {
+        log.info("--->开始批量关联的用例");
+        return Result.message(suiteService.createRelatedCase(suiteId, caseId, caseName));
+    }
+
     @RequestMapping(value = "/remove", method = RequestMethod.DELETE)
     public Result<Boolean> remove(@RequestParam("testSuiteId") String testSuiteId) {
         log.info("--->开始删除用例：{}", testSuiteId);

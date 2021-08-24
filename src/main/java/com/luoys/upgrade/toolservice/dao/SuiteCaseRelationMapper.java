@@ -16,6 +16,8 @@ public interface SuiteCaseRelationMapper {
 
     int insert(SuiteCaseRelationPO record);
 
+    int batchInsert(@Param("list") List<SuiteCaseRelationPO> recordList);
+
     SuiteCaseRelationPO selectById(Integer id);
 
     int update(SuiteCaseRelationPO record);

@@ -168,36 +168,6 @@ public class CaseService {
     }
 
     /**
-     * 查询符合条件的所有用例
-     * @param suiteId
-     * @param userId
-     * @param name
-     * @return
-     */
-    public List<AutoCaseSimpleVO> queryAll(String suiteId, String userId, String name) {
-        List<AutoCasePO> allCase = autoCaseMapper.list(AutoCaseStatusEnum.SUCCESS.getCode(), name, userId, null);
-        List<SuiteCaseRelationPO> selectedCase = suiteCaseRelationMapper.listCaseBySuiteId(suiteId, null, null);
-        List<AutoCasePO> selectableCase = new ArrayList<>();
-        // 筛选出未添加过的用例
-        boolean isExist;
-        for (AutoCasePO po : allCase) {
-            // 先判断用例是否已被关联，如果关联过，则标记为true
-            isExist = false;
-            for (SuiteCaseRelationPO selectedPO: selectedCase) {
-                if (po.getCaseId().equals(selectedPO.getCaseId())) {
-                    isExist = true;
-                    break;
-                }
-            }
-            // 如果未关联，则加入可选择列表
-            if (!isExist) {
-                selectableCase.add(po);
-            }
-        }
-        return TransformAutoCase.transformPO2SimpleVO(selectableCase);
-    }
-
-    /**
      * 查询用例详情
      * @param caseId 用例业务id
      * @return 用例对象
