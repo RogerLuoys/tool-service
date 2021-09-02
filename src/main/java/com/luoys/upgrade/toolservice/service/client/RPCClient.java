@@ -66,9 +66,9 @@ public class RPCClient {
             Object result = genericService.$invoke(methodName, paramTypeList, paramList);
             return JSON.toJSONString(result);
         } catch (Throwable ex) {
-            ex.printStackTrace();
+            log.error("--->调用rpc接口异常", ex);
+            return null;
         }
-        return null;
     }
 
 

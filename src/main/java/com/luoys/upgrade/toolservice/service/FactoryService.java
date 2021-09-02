@@ -119,7 +119,7 @@ public class FactoryService {
         List<ToolVO> toolList = new ArrayList<>();
         StringBuilder result = new StringBuilder();
         // 如果是聚合工具类型，则把子工具全取出
-        if (toolVO.getType() == ToolTypeEnum.MULTIPLE.getCode()) {
+        if (toolVO.getType().equals(ToolTypeEnum.MULTIPLE.getCode())) {
             if (toolVO.getToolList().size() > MULTIPLE_LIMIT) {
                 log.warn("--->聚合工具个数超过上限");
                 return null;

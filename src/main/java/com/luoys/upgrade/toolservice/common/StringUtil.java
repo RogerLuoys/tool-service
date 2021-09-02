@@ -66,18 +66,19 @@ public class StringUtil {
         return !isEmpty(str);
     }
 
-    public static List<String> patternF(String str1, String str2) {
-        Pattern pattern = Pattern.compile("\\{\\{[A-Za-z0-9]{1,20}}}");
-        Matcher matcher = pattern.matcher(str1);
+    /**
+     * 获取符合正则表达式的所有字符串
+     * @param regex
+     * @param target
+     * @return
+     */
+    public static List<String> getMatch(String regex, String target) {
+        Matcher matcher = Pattern.compile(regex).matcher(target);
         List<String> result = new ArrayList<>();
         while (matcher.find()) {
             result.add(matcher.group());
         }
         return result;
-    }
-
-    public static boolean isMatch(String regular, String target) {
-        return Pattern.matches(regular, target);
     }
 
 }
