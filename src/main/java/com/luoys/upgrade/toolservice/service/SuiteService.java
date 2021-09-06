@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
 
 @Slf4j
@@ -267,6 +268,48 @@ public class SuiteService {
         Map<Integer, List<SuiteCaseVO>> casesMap = orderAndSort(caseList);
         List<SuiteCaseVO> uiCaseList = casesMap.get(AutoCaseTypeEnum.UI_CASE.getCode());
         List<SuiteCaseVO> apiCaseList = casesMap.get(AutoCaseTypeEnum.INTERFACE_CASE.getCode());
+
+//        Future futureUI = null;
+//        Future futureAPI = null;
+//        if (apiCaseList.size() != 0) {
+//            // 使用api线程池执行api用例，并更新结果
+//            futureUI = ThreadPoolUtil.submitUI(() -> {
+//                try {
+//                    // 先执行，后更新结果
+//                    execute(apiCaseList, autoSuiteVO.getEnvironment());
+//                    autoSuiteMapper.updateResult(suiteId,
+//                            suiteCaseRelationMapper.countBySuiteId(autoSuiteVO.getSuiteId(), AutoCaseStatusEnum.SUCCESS.getCode()),
+//                            suiteCaseRelationMapper.countBySuiteId(autoSuiteVO.getSuiteId(), AutoCaseStatusEnum.FAIL.getCode()));
+//                } finally {
+//                    // api用例执行完成后，如果ui用例也执行完成，则将测试集状态变更为空闲
+//                    if (futureAPI == null || futureAPI.isDone()) {
+//                        autoSuiteMapper.updateStatus(suiteId, AutoSuiteStatusEnum.SUITE_FREE.getCode());
+//                    }
+//                }
+//
+//            });
+//
+//        }
+//        if (uiCaseList.size() != 0) {
+//            // 使用ui线程池执行ui用例，并更新结果
+//            futureAPI = ThreadPoolUtil.submitAPI(() -> {
+//                try {
+//                    // 先测试集ui用例的执行状态更新
+//                    autoSuiteMapper.updateExecuteStatus(suiteId, null, false);
+//                    // 执行所有用例，后更新结果
+//                    execute(uiCaseList, autoSuiteVO.getEnvironment());
+//                    autoSuiteMapper.updateResult(suiteId,
+//                            suiteCaseRelationMapper.countBySuiteId(autoSuiteVO.getSuiteId(), AutoCaseStatusEnum.SUCCESS.getCode()),
+//                            suiteCaseRelationMapper.countBySuiteId(autoSuiteVO.getSuiteId(), AutoCaseStatusEnum.FAIL.getCode()));
+//                } finally {
+//                    // ui用例执行完成后，如果api用例也执行完成，则将测试集状态变更为空闲
+//                    if (futureUI == null || futureUI.isDone()) {
+//                        autoSuiteMapper.updateStatus(suiteId, AutoSuiteStatusEnum.SUITE_FREE.getCode());
+//                    }
+//                }
+//            });
+//        }
+
 
         if (apiCaseList.size() != 0) {
             // 使用api线程池执行api用例，并更新结果
