@@ -2,6 +2,11 @@ package com.luoys.upgrade.toolservice.service.enums;
 
 import lombok.Getter;
 
+/**
+ * 自动化用例类型
+ *
+ * @author luoys
+ */
 @Getter
 public enum AutoCaseTypeEnum {
 

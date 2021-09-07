@@ -8,6 +8,11 @@ import com.luoys.upgrade.toolservice.service.enums.SqlTypeEnum;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 公共参数数据转换
+ *
+ * @author luoys
+ */
 public class TransformCommon {
 
     /**

@@ -3,10 +3,7 @@ package com.luoys.upgrade.toolservice.web;
 import com.luoys.upgrade.toolservice.common.Result;
 import com.luoys.upgrade.toolservice.service.StepService;
 import com.luoys.upgrade.toolservice.service.enums.AutoStepTypeEnum;
-import com.luoys.upgrade.toolservice.web.vo.AutoCaseSimpleVO;
-import com.luoys.upgrade.toolservice.web.vo.AutoStepVO;
-import com.luoys.upgrade.toolservice.web.vo.PageInfo;
-import com.luoys.upgrade.toolservice.web.vo.ToolVO;
+import com.luoys.upgrade.toolservice.web.vo.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -43,14 +40,16 @@ public class AutoStepController {
     }
 
     @RequestMapping(value = "/query", method = RequestMethod.GET)
-    public Result<PageInfo<AutoCaseSimpleVO>> query(@RequestHeader("userId") String userId,
+    public Result<PageInfo<AutoStepSimpleVO>> query(@RequestHeader("userId") String userId,
                                                     @RequestParam(value = "isOnlyOwner", required = false) Boolean isOnlyOwner,
                                                     @RequestParam(value = "type", required = false) Integer type,
                                                     @RequestParam(value = "name", required = false) String name,
                                                     @RequestParam(value = "isPublic", required = false) Boolean isPublic,
                                                     @RequestParam("pageIndex") Integer pageIndex) {
         log.info("---》开始查询步骤列表：");
-        PageInfo<AutoCaseSimpleVO> pageInfo = new PageInfo(stepService.query(userId, isOnlyOwner, type, name, isPublic, pageIndex));
+        PageInfo<AutoStepSimpleVO> pageInfo = new PageInfo();
+        pageInfo.setList(stepService.query(userId, isOnlyOwner, type, name, isPublic, pageIndex));
+        pageInfo.setTotal(stepService.count(userId, isOnlyOwner, type, name, isPublic));
         return Result.success(pageInfo);
     }
 

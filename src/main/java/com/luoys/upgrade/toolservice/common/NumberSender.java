@@ -2,6 +2,11 @@ package com.luoys.upgrade.toolservice.common;
 
 import java.util.Random;
 
+/**
+ * 发号器，uuid
+ *
+ * @author luoys
+ */
 public class NumberSender {
     private static final long SUITE_PREFIX = 10000000000000L;
     private static final long CASE_PREFIX = 20000000000000L;

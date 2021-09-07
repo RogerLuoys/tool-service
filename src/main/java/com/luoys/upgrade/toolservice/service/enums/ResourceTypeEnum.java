@@ -5,6 +5,11 @@ import lombok.Getter;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * 资源类型
+ *
+ * @author luoys
+ */
 @Getter
 public enum ResourceTypeEnum {
 

@@ -6,6 +6,11 @@ import lombok.Data;
 
 import java.io.Serializable;
 
+/**
+ * 对外返回结果
+ *
+ * @author luoys
+ */
 @Data
 public class Result<T> implements Serializable {
     private int code;

@@ -29,9 +29,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.RejectedExecutionException;
 
+/**
+ * 用例服务，包含自动化用例相关的所有业务逻辑
+ *
+ * @author luoys
+ */
 @Slf4j
 @Service
 public class CaseService {
+
+    private static final Integer DEFAULT_PAGE_SIZE = 10;
 
     @Autowired
     private AutoCaseMapper autoCaseMapper;
@@ -67,8 +74,8 @@ public class CaseService {
             return false;
         }
         autoCaseVO.setCaseId(NumberSender.createCaseId());
-        if (autoCaseVO.getOwnerId().equals(KeywordEnum.DEFAULT_USER.getCode())) {
-            autoCaseVO.setOwnerName(KeywordEnum.DEFAULT_USER.getDescription());
+        if (autoCaseVO.getOwnerId().equals(KeywordEnum.DEFAULT_USER.getCode().toString())) {
+            autoCaseVO.setOwnerName(KeywordEnum.DEFAULT_USER.getValue());
         } else {
             //todo 查用户名
         }
@@ -164,7 +171,15 @@ public class CaseService {
         if (!isOnlyOwner) {
             userId = null;
         }
-        return TransformAutoCase.transformPO2SimpleVO(autoCaseMapper.list(status, name, userId, pageIndex-1));
+        int startIndex = (pageIndex - 1) * KeywordEnum.DEFAULT_PAGE_SIZE.getCode();
+        return TransformAutoCase.transformPO2SimpleVO(autoCaseMapper.list(status, name, userId, startIndex));
+    }
+
+    public Integer count(String userId, Boolean isOnlyOwner, Integer status, String name) {
+        if (!isOnlyOwner) {
+            userId = null;
+        }
+        return autoCaseMapper.count(status, name, userId);
     }
 
     /**

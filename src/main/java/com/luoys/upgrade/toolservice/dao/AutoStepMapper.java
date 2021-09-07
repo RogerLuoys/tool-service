@@ -42,7 +42,7 @@ public interface AutoStepMapper {
     /**
      * 更新步骤执行结果
      *
-     * @param stepId 步骤业务id
+     * @param stepId       步骤业务id
      * @param assertActual 步骤实际结果
      * @param assertResult 步骤断言结果，根据实际值、预期值和断言类型得出
      * @return 成功为1
@@ -74,5 +74,19 @@ public interface AutoStepMapper {
                           @Param("ownerId") String ownerId,
                           @Param("isPublic") Boolean isPublic,
                           @Param("startIndex") Integer startIndex);
+
+    /**
+     * 按条件查询总数
+     *
+     * @param type     类型
+     * @param name     名字
+     * @param ownerId  所属人id
+     * @param isPublic 是否公用
+     * @return
+     */
+    int count(@Param("type") Integer type,
+              @Param("name") String name,
+              @Param("ownerId") String ownerId,
+              @Param("isPublic") Boolean isPublic);
 
 }

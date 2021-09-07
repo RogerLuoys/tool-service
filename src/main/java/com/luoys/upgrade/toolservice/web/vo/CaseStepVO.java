@@ -2,6 +2,11 @@ package com.luoys.upgrade.toolservice.web.vo;
 
 import lombok.Data;
 
+/**
+ * 用例下关联的步骤类
+ *
+ * @author luoys
+ */
 @Data
 public class CaseStepVO {
 

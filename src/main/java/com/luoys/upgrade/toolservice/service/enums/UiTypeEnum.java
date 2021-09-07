@@ -5,6 +5,11 @@ import lombok.Getter;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * ui操作类型
+ *
+ * @author luoys
+ */
 @Getter
 public enum UiTypeEnum {
 

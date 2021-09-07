@@ -4,7 +4,11 @@ import lombok.Data;
 
 import java.util.Date;
 
-
+/**
+ * 简单的用例类，用于列表展示
+ *
+ * @author luoys
+ */
 @Data
 public class AutoCaseSimpleVO {
 

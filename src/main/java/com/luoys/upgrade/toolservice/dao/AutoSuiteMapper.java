@@ -93,4 +93,14 @@ public interface AutoSuiteMapper {
                            @Param("ownerId") String ownerId,
                            @Param("startIndex") Integer startIndex);
 
+    /**
+     * 按条件查询总条数
+     *
+     * @param name       名字
+     * @param ownerId    所属人id
+     * @return
+     */
+    int count(@Param("name") String name,
+                           @Param("ownerId") String ownerId);
+
 }

@@ -5,6 +5,11 @@ import lombok.Getter;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * sql语句类型
+ *
+ * @author luoys
+ */
 @Getter
 public enum SqlTypeEnum {
 

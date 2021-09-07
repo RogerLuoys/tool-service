@@ -2,6 +2,11 @@ package com.luoys.upgrade.toolservice.web.vo;
 
 import lombok.Data;
 
+/**
+ * 简单的步骤类，用于列表展示
+ *
+ * @author luoys
+ */
 @Data
 public class AutoStepSimpleVO {
 

@@ -2,6 +2,11 @@ package com.luoys.upgrade.toolservice.service.enums;
 
 import lombok.Getter;
 
+/**
+ * 结果类型，不同类型前端会有不同处理
+ *
+ * @author luoys
+ */
 @Getter
 public enum ResultEnum {
     ERROR_FOR_MESSAGE(-1, null, "前端会直接把message作为提示"),

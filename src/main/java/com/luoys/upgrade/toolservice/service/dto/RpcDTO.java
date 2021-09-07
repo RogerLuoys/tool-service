@@ -4,6 +4,11 @@ import lombok.Data;
 
 import java.util.List;
 
+/**
+ * rpc类
+ *
+ * @author luoys
+ */
 @Data
 public class RpcDTO {
 

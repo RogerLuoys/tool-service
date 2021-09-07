@@ -7,6 +7,11 @@ import com.luoys.upgrade.toolservice.web.vo.AutoCaseVO;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 自动化用例数据转换
+ *
+ * @author luoys
+ */
 public class TransformAutoCase {
 
 

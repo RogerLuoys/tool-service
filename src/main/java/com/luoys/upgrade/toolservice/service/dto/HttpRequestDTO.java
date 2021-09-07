@@ -4,6 +4,11 @@ import lombok.Data;
 
 import java.util.List;
 
+/**
+ * http类
+ *
+ * @author luoys
+ */
 @Data
 public class HttpRequestDTO {
 

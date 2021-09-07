@@ -41,6 +41,18 @@
       limit ${startIndex}, 10
     </if>
   </select>
+  <select id="count" resultType="java.lang.Integer">
+    select count(1)
+    from auto_case
+    where is_delete = 0
+    and owner_id = #{ownerId,jdbcType=VARCHAR}
+    <if test="status != null">
+      and `status` = #{status,jdbcType=TINYINT}
+    </if>
+    <if test="name != null">
+      and `name` like concat('%', #{name,jdbcType=VARCHAR}, '%')
+    </if>
+  </select>
   <update id="remove" parameterType="java.lang.String">
     update auto_case set is_delete = 1
     where case_id = #{caseId,jdbcType=VARCHAR}

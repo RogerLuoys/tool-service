@@ -13,6 +13,11 @@ import org.springframework.stereotype.Component;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * rpc调用客户端
+ *
+ * @author luoys
+ */
 @Slf4j
 @Component
 public class RPCClient {

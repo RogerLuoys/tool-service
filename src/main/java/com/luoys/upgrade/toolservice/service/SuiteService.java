@@ -28,6 +28,11 @@ import java.util.Map;
 import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
 
+/**
+ * 测试集服务，包含自动化测试集相关的所有业务逻辑
+ *
+ * @author luoys
+ */
 @Slf4j
 @Service
 public class SuiteService {
@@ -57,6 +62,11 @@ public class SuiteService {
         if (StringUtil.isBlank(autoSuiteVO.getName())) {
             log.error("--->测试集名字必填：{}", autoSuiteVO);
             return false;
+        }
+        if (autoSuiteVO.getOwnerId().equals(KeywordEnum.DEFAULT_USER.getCode().toString())) {
+            autoSuiteVO.setOwnerName(KeywordEnum.DEFAULT_USER.getValue());
+        } else {
+//            autoSuiteVO.setOwnerName(userService.queryByUserId(autoStepVO.getOwnerId()).getData().getUserName());
         }
         autoSuiteVO.setSuiteId(NumberSender.createSuiteId());
         int result = autoSuiteMapper.insert(TransformAutoSuite.transformVO2PO(autoSuiteVO));
@@ -173,7 +183,19 @@ public class SuiteService {
      * @return 测试集列表
      */
     public List<AutoSuiteSimpleVO> query(String name, String ownerId, Integer pageIndex) {
-        return TransformAutoSuite.transformPO2SimpleVO(autoSuiteMapper.list(name, ownerId, pageIndex - 1));
+        int startIndex = (pageIndex - 1) * KeywordEnum.DEFAULT_PAGE_SIZE.getCode();
+        return TransformAutoSuite.transformPO2SimpleVO(autoSuiteMapper.list(name, ownerId, startIndex));
+    }
+
+    /**
+     * 查询测试集总条数
+     *
+     * @param name      名字，可空
+     * @param ownerId 用户名
+     * @return 测试集列表
+     */
+    public Integer count(String name, String ownerId) {
+        return autoSuiteMapper.count(name, ownerId);
     }
 
     /**

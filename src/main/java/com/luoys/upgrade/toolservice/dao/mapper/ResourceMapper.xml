@@ -48,6 +48,18 @@
     </if>
     order by gmt_create desc limit ${startIndex}, 10
   </select>
+  <select id="count" resultType="java.lang.Integer">
+    select count(1)
+    from resource
+    where is_delete = 0
+    and (owner_id = #{ownerId,jdbcType=VARCHAR} or permission = 1)
+    <if test="type != null">
+      and type = #{type,jdbcType=TINYINT}
+    </if>
+    <if test="name != null">
+      and `name` like concat('%', #{name,jdbcType=VARCHAR}, '%')
+    </if>
+  </select>
   <update id="remove">
     update resource set is_delete = 1
     where resource_id = #{resourceId,jdbcType=VARCHAR}

@@ -2,6 +2,11 @@ package com.luoys.upgrade.toolservice.service.dto;
 
 import lombok.Data;
 
+/**
+ * 设备类
+ *
+ * @author luoys
+ */
 @Data
 public class DeviceDTO {
 

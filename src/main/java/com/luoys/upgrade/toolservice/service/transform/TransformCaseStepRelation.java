@@ -9,6 +9,11 @@ import com.luoys.upgrade.toolservice.web.vo.CaseStepVO;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 用例步骤关联关系数据转换
+ *
+ * @author luoys
+ */
 public class TransformCaseStepRelation {
 
     public static CaseStepVO transformPO2VO(CaseStepRelationPO po) {

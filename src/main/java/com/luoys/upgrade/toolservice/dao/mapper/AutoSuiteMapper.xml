@@ -41,6 +41,17 @@
     </if>
     order by gmt_create desc limit ${startIndex}, 10
   </select>
+  <select id="count" resultType="java.lang.Integer">
+    select count(1)
+    from auto_suite
+    where is_delete = 0
+    <if test="ownerId != null">
+      and owner_id = #{ownerId,jdbcType=VARCHAR}
+    </if>
+    <if test="name != null">
+      and `name` like concat('%', #{name,jdbcType=VARCHAR}, '%')
+    </if>
+  </select>
   <update id="remove">
     update auto_suite set is_delete = 1
     where suite_id = #{suiteId,jdbcType=VARCHAR}

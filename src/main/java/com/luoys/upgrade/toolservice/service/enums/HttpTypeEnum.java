@@ -5,6 +5,11 @@ import lombok.Getter;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * http请求类型
+ *
+ * @author luoys
+ */
 @Getter
 public enum HttpTypeEnum {
 

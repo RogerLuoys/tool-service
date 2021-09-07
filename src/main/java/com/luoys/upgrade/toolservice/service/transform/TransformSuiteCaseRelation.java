@@ -7,6 +7,11 @@ import com.luoys.upgrade.toolservice.web.vo.SuiteCaseVO;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 测试集用例关联关系数据转换
+ *
+ * @author luoys
+ */
 public class TransformSuiteCaseRelation {
 
     public static SuiteCaseVO transformPO2SimpleVO(SuiteCaseRelationPO po) {

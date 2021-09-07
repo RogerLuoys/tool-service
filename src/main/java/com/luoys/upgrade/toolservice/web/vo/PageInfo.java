@@ -4,6 +4,11 @@ import lombok.Data;
 
 import java.util.List;
 
+/**
+ * 通用分页查询类
+ *
+ * @author luoys
+ */
 @Data
 public class PageInfo <T> {
     private List<T> list;

@@ -70,4 +70,16 @@ public interface AutoCaseMapper {
                           @Param("ownerId") String ownerId,
                           @Param("startIndex") Integer startIndex);
 
+    /**
+     * 按条件查询总数
+     *
+     * @param status     状态
+     * @param name       名字
+     * @param ownerId    所属人id
+     * @return
+     */
+    int count(@Param("status") Integer status,
+              @Param("name") String name,
+              @Param("ownerId") String ownerId);
+
 }

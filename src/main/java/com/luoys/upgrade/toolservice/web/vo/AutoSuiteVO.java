@@ -4,6 +4,11 @@ import lombok.Data;
 
 import java.util.List;
 
+/**
+ * 全量的测试集类
+ *
+ * @author luoys
+ */
 @Data
 public class AutoSuiteVO {
 

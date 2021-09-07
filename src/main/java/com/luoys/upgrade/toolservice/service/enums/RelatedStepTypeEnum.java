@@ -5,6 +5,11 @@ import lombok.Getter;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * 用例关联步骤的类型
+ *
+ * @author luoys
+ */
 @Getter
 public enum RelatedStepTypeEnum {
 

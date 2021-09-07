@@ -2,6 +2,11 @@ package com.luoys.upgrade.toolservice.web.vo;
 
 import lombok.Data;
 
+/**
+ * 测试集关联的用例类
+ *
+ * @author luoys
+ */
 @Data
 public class SuiteCaseVO {
 

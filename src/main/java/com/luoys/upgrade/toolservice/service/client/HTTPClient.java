@@ -15,6 +15,11 @@ import org.springframework.web.client.RestTemplate;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * http调用客户端
+ *
+ * @author luoys
+ */
 @Slf4j
 @Component
 public class HTTPClient {

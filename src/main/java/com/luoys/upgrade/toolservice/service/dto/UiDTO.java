@@ -2,6 +2,11 @@ package com.luoys.upgrade.toolservice.service.dto;
 
 import lombok.Data;
 
+/**
+ * ui类
+ *
+ * @author luoys
+ */
 @Data
 public class UiDTO {
 

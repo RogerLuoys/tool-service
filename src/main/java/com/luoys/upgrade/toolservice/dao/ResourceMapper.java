@@ -60,4 +60,16 @@ public interface ResourceMapper {
                           @Param("ownerId") String ownerId,
                           @Param("startIndex") Integer startIndex);
 
+    /**
+     * 按条件查询总数
+     *
+     * @param type    类型
+     * @param name    名字
+     * @param ownerId 所属人id
+     * @return
+     */
+    Integer count(@Param("type") Integer type,
+                  @Param("name") String name,
+                  @Param("ownerId") String ownerId);
+
 }

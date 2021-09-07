@@ -10,6 +10,11 @@ import com.luoys.upgrade.toolservice.web.vo.ResourceVO;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 资源数据转换
+ *
+ * @author luoys
+ */
 public class TransformResource {
 
     public static ResourceSimpleVO transformPO2SimpleVO(ResourcePO po) {

@@ -5,6 +5,11 @@ import lombok.Getter;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * 数据权限
+ *
+ * @author luoys
+ */
 @Getter
 public enum PermissionEnum {
 

@@ -45,8 +45,8 @@ public class ResourceController {
                                                     @RequestParam("pageIndex") Integer pageIndex) {
         log.info("---》开始查询资源列表：");
         PageInfo<ResourceSimpleVO> pageInfo = new PageInfo<>();
-        pageInfo.setList(resourceService.queryList(type, name, userId, pageIndex));
-        pageInfo.setTotal(pageInfo.getList().size());
+        pageInfo.setList(resourceService.query(type, name, userId, pageIndex));
+        pageInfo.setTotal(resourceService.count(type, name, userId));
         return Result.success(pageInfo);
     }
 

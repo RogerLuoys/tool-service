@@ -15,6 +15,11 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 数据库客户端
+ *
+ * @author luoys
+ */
 @Slf4j
 @Component
 public class DBClient {

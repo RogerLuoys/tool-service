@@ -11,6 +11,11 @@ import com.luoys.upgrade.toolservice.web.vo.AutoStepVO;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 自动化步骤数据转换
+ *
+ * @author luoys
+ */
 public class TransformAutoStep {
 
     public static AutoStepSimpleVO transformPO2SimpleVO(AutoStepPO po) {

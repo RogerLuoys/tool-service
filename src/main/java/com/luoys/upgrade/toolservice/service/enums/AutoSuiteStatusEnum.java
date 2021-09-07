@@ -2,6 +2,11 @@ package com.luoys.upgrade.toolservice.service.enums;
 
 import lombok.Getter;
 
+/**
+ * 自动化测试集状态
+ *
+ * @author luoys
+ */
 @Getter
 public enum AutoSuiteStatusEnum {
 

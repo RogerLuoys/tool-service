@@ -4,6 +4,11 @@ import com.luoys.upgrade.toolservice.service.dto.DataSourceDTO;
 import com.luoys.upgrade.toolservice.service.dto.DeviceDTO;
 import lombok.Data;
 
+/**
+ * 简单的资源类，用于列表展示
+ *
+ * @author luoys
+ */
 @Data
 public class ResourceSimpleVO {
 

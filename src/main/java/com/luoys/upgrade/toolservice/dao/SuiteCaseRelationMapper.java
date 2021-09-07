@@ -7,6 +7,11 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+/**
+ * 测试集用例关联关系dao层接口
+ *
+ * @author luoys
+ */
 @Repository
 public interface SuiteCaseRelationMapper {
 

@@ -4,6 +4,11 @@ import lombok.Data;
 
 import java.util.Map;
 
+/**
+ * rpc入参类
+ *
+ * @author luoys
+ */
 @Data
 public class RpcParameterDTO {
     private String type;

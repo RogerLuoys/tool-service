@@ -31,7 +31,7 @@ public class AutoSuiteController {
                                        @RequestHeader(value = "userId") String userId) {
         log.info("--->开始快速新增测试集：{}", autoSuiteVO);
         autoSuiteVO.setOwnerId(userId);
-        autoSuiteVO.setOwnerName(KeywordEnum.DEFAULT_USER.getDescription());
+        autoSuiteVO.setOwnerName(KeywordEnum.DEFAULT_USER.getValue());
         return Result.message(suiteService.quickCreate(autoSuiteVO));
     }
 
@@ -78,7 +78,9 @@ public class AutoSuiteController {
                                                      @RequestHeader(value = "userId") String userId,
                                                      @RequestParam("pageIndex") Integer pageIndex) {
         log.info("--->开始查询测试集列表：");
-        PageInfo<AutoSuiteSimpleVO> pageInfo = new PageInfo<>(suiteService.query(name, userId, pageIndex));
+        PageInfo<AutoSuiteSimpleVO> pageInfo = new PageInfo<>();
+        pageInfo.setList(suiteService.query(name, userId, pageIndex));
+        pageInfo.setTotal(suiteService.count(name, userId));
         return Result.success(pageInfo);
     }
 

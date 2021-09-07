@@ -5,6 +5,11 @@ import lombok.Getter;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * 自动化步骤类型
+ *
+ * @author luoys
+ */
 @Getter
 public enum AutoStepTypeEnum {
 

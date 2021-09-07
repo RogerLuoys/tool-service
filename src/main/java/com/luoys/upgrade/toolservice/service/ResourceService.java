@@ -11,6 +11,11 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * 资源服务，包含资源相关的所有业务逻辑
+ *
+ * @author luoys
+ */
 @Service
 public class ResourceService {
 
@@ -19,13 +24,14 @@ public class ResourceService {
 
     /**
      * 创建单个资源
+     *
      * @param resourceVO 资源对象
      * @return 成功为true，失败为false
      */
     public Boolean create(ResourceVO resourceVO) {
         resourceVO.setResourceId(NumberSender.createResourceId());
-        if (resourceVO.getOwnerId().equals(KeywordEnum.DEFAULT_USER.getValue())) {
-            resourceVO.setOwnerName(KeywordEnum.DEFAULT_USER.getDescription());
+        if (resourceVO.getOwnerId().equals(KeywordEnum.DEFAULT_USER.getCode().toString())) {
+            resourceVO.setOwnerName(KeywordEnum.DEFAULT_USER.getValue());
         } else {
             //todo 查用户名
         }
@@ -35,6 +41,7 @@ public class ResourceService {
 
     /**
      * 逻辑删除单个资源
+     *
      * @param resourceId 资源业务id
      * @return 成功为true，失败为false
      */
@@ -45,6 +52,7 @@ public class ResourceService {
 
     /**
      * 更新单个资源
+     *
      * @param resourceVO 资源对象
      * @return 成功为true，失败为false
      */
@@ -55,18 +63,33 @@ public class ResourceService {
 
     /**
      * 查询资源列表
-     * @param type 类型
-     * @param name 名字
-     * @param userId 用户id
+     *
+     * @param type      类型
+     * @param name      名字
+     * @param userId    用户id
      * @param pageIndex 页码
      * @return 资源列表
      */
-    public List<ResourceSimpleVO> queryList(Integer type, String name, String userId, Integer pageIndex) {
-        return TransformResource.transformPO2SimpleVO(resourceMapper.list(type, name, userId, pageIndex-1));
+    public List<ResourceSimpleVO> query(Integer type, String name, String userId, Integer pageIndex) {
+        int startIndex = (pageIndex - 1) * KeywordEnum.DEFAULT_PAGE_SIZE.getCode();
+        return TransformResource.transformPO2SimpleVO(resourceMapper.list(type, name, userId, startIndex));
+    }
+
+    /**
+     * 查询资源总数
+     *
+     * @param type   类型
+     * @param name   名字
+     * @param userId 用户id
+     * @return 资源列表
+     */
+    public Integer count(Integer type, String name, String userId) {
+        return resourceMapper.count(type, name, userId);
     }
 
     /**
      * 查询资源详情
+     *
      * @param resourceId 资源业务id
      * @return 资源对象
      */

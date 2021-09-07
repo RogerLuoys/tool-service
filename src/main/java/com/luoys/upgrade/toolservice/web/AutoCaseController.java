@@ -33,7 +33,7 @@ public class AutoCaseController {
                                        @RequestHeader(value = "userId") String userId) {
         log.info("--->开始快速新增用例");
         autoCaseVO.setOwnerId(userId);
-        autoCaseVO.setOwnerName(KeywordEnum.DEFAULT_USER.getDescription());
+        autoCaseVO.setOwnerName(KeywordEnum.DEFAULT_USER.getValue());
         return Result.message(caseService.quickCreate(autoCaseVO));
     }
 
@@ -74,7 +74,9 @@ public class AutoCaseController {
                                                     @RequestParam(value = "name", required = false) String name,
                                                     @RequestParam("pageIndex") Integer pageIndex) {
         log.info("--->开始查询用例列表：");
-        PageInfo<AutoCaseSimpleVO> pageInfo = new PageInfo(caseService.query(userId, isOnlyOwner, status, name, pageIndex));
+        PageInfo<AutoCaseSimpleVO> pageInfo = new PageInfo();
+        pageInfo.setList(caseService.query(userId, isOnlyOwner, status, name, pageIndex));
+        pageInfo.setTotal(caseService.count(userId, isOnlyOwner, status, name));
         return Result.success(pageInfo);
     }
 

@@ -11,6 +11,11 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 数据工厂工具的数据转换
+ *
+ * @author luoys
+ */
 @Slf4j
 public class TransformTool {
 

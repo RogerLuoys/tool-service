@@ -5,6 +5,11 @@ import lombok.Data;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * 全量的用例类
+ *
+ * @author luoys
+ */
 @Data
 public class AutoCaseVO {
 

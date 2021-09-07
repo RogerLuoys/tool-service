@@ -64,7 +64,22 @@
     </if>
     order by gmt_create desc limit ${startIndex}, 10
   </select>
-  <update id="remove" parameterType="java.lang.Integer">
+  <select id="count" resultType="java.lang.Integer">
+    select count(1)
+    from auto_step
+    where is_delete = 0
+    and owner_id = #{ownerId,jdbcType=VARCHAR}
+    <if test="isPublic != null">
+      and is_public = #{isPublic,jdbcType=TINYINT}
+    </if>
+    <if test="type != null">
+      and `type` = #{type,jdbcType=TINYINT}
+    </if>
+    <if test="name != null">
+      and `name` like concat('%', #{name,jdbcType=VARCHAR}, '%')
+    </if>
+  </select>
+  <update id="remove">
     update auto_step set is_delete = 1
     where step_id = #{stepId,jdbcType=VARCHAR}
   </update>

@@ -4,6 +4,11 @@ import com.luoys.upgrade.toolservice.service.dto.DataSourceDTO;
 import com.luoys.upgrade.toolservice.service.dto.DeviceDTO;
 import lombok.Data;
 
+/**
+ * 全量的资源类
+ *
+ * @author luoys
+ */
 @Data
 public class ResourceVO {
 

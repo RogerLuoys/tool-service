@@ -17,6 +17,11 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 数据工厂服务，包含数据工厂相关的所有业务逻辑
+ *
+ * @author luoys
+ */
 @Slf4j
 @Service
 public class FactoryService {
@@ -46,8 +51,8 @@ public class FactoryService {
      */
     public Boolean create(ToolVO toolVO) {
         toolVO.setToolId(NumberSender.createToolId());
-        if (toolVO.getOwnerId().equals(KeywordEnum.DEFAULT_USER.getCode())) {
-            toolVO.setOwnerName(KeywordEnum.DEFAULT_USER.getDescription());
+        if (toolVO.getOwnerId().equals(KeywordEnum.DEFAULT_USER.getCode().toString())) {
+            toolVO.setOwnerName(KeywordEnum.DEFAULT_USER.getValue());
         } else {
 //            toolVO.setOwnerName(userService.queryByUserId(toolVO.getOwnerId()).getData().getUserName());
         }
@@ -96,7 +101,27 @@ public class FactoryService {
             userId = null;
         }
         //数据库startIndex从0开始
-        return TransformTool.transformPO2VO(toolMapper.list(type, name, userId, pageIndex - 1));
+        int startIndex = (pageIndex - 1) * KeywordEnum.DEFAULT_PAGE_SIZE.getCode();
+        return TransformTool.transformPO2VO(toolMapper.list(type, name, userId, startIndex));
+    }
+
+    /**
+     * 查询工具总数
+     *
+     * @param userId      用户id
+     * @param isOnlyOwner 是否只查自己
+     * @param type        类型
+     * @param name        名字
+     * @return 工具列表
+     */
+    public Integer count(String userId,
+                         Boolean isOnlyOwner,
+                         Integer type,
+                         String name) {
+        if (isOnlyOwner != null && isOnlyOwner) {
+            userId = null;
+        }
+        return toolMapper.count(type, name, userId);
     }
 
     /**
@@ -132,7 +157,7 @@ public class FactoryService {
         }
         // 执行工具
         try {
-            for (ToolVO targetVO: toolList) {
+            for (ToolVO targetVO : toolList) {
                 if (targetVO.getType().equals(ToolTypeEnum.MULTIPLE.getCode())) {
                     log.error("---->不支持套娃：toolId={}", targetVO.getToolId());
                     return null;
@@ -149,6 +174,7 @@ public class FactoryService {
 
     /**
      * 执行指定类型的工具，执行前先替换变量
+     *
      * @param toolVO
      * @return
      */

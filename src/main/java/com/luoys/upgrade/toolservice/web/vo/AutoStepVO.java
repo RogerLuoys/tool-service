@@ -3,6 +3,11 @@ package com.luoys.upgrade.toolservice.web.vo;
 import com.luoys.upgrade.toolservice.service.dto.*;
 import lombok.Data;
 
+/**
+ * 全量的步骤类
+ *
+ * @author luoys
+ */
 @Data
 public class AutoStepVO {
 
