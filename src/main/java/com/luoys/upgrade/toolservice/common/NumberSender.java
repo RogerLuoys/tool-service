@@ -13,6 +13,7 @@ public class NumberSender {
     private static final long STEP_PREFIX = 30000000000000L;
     private static final long RESOURCE_PREFIX = 40000000000000L;
     private static final long TOOL_PREFIX = 50000000000000L;
+    private static final long USER_PREFIX = 50000000000000L;
     private static final int RANDOM_BOUND = 9;
     private static final Random rd = new Random();
 
@@ -50,4 +51,7 @@ public class NumberSender {
         return String.valueOf(TOOL_PREFIX + createIdByCurrentTime());
     }
 
+    public static String createUserId() {
+        return String.valueOf(USER_PREFIX + createIdByCurrentTime());
+    }
 }

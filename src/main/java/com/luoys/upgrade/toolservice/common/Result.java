@@ -68,6 +68,16 @@ public class Result<T> implements Serializable {
         return message(data, ResultEnum.SUCCESS_FOR_MESSAGE.getValue(), ResultEnum.ERROR_FOR_MESSAGE.getValue());
     }
 
+    /**
+     * 根据data的值和类型，返回不同的结果
+     *
+     * @param data -支持Boolean、String、Integer
+     * @return -Result实例，如果data为空，则success字段为false
+     */
+    public static <T> Result ifSuccess(T data) {
+        return message(data, ResultEnum.SUCCESS_FOR_MESSAGE.getValue(), ResultEnum.ERROR_FOR_MESSAGE.getValue());
+    }
+
     public static <T> Result success(T data) {
         return new Result<>(ResultEnum.SUCCESS_FOR_CUSTOM.getCode(), true, ResultEnum.SUCCESS_FOR_CUSTOM.getValue(), data);
     }
