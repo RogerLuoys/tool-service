@@ -12,8 +12,7 @@
     <result column="status" jdbcType="TINYINT" property="status" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, user_id, login_name, pass_word, phone, user_name, `type`, `status`, is_delete,
-    gmt_create, gmt_modified
+    id, user_id, login_name, pass_word, phone, user_name, `type`, `status`
   </sql>
   <!--新增-->
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.luoys.upgrade.toolservice.dao.po.UserPO" useGeneratedKeys="true">

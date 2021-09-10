@@ -10,145 +10,60 @@
     <result column="status" jdbcType="TINYINT" property="status" />
     <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
     <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+    <result column="owner_id" jdbcType="VARCHAR" property="ownerId" />
+    <result column="owner_name" jdbcType="VARCHAR" property="ownerName" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, task_daily_id, `name`, description, `comment`, `status`, start_time, end_time
+    id, task_daily_id, `name`, description, `comment`, `status`, start_time, end_time, owner_id, owner_name
   </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select
-    <include refid="Base_Column_List" />
-    from task_daily
-    where id = #{id,jdbcType=INTEGER}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from task_daily
-    where id = #{id,jdbcType=INTEGER}
-  </delete>
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.luoys.upgrade.toolservice.dao.po.TaskDailyPO" useGeneratedKeys="true">
     insert into task_daily (task_daily_id, `name`, description,
       `comment`, `status`, start_time,
-      end_time, is_delete, gmt_create,
+      end_time, owner_id, owner_name, is_delete, gmt_create,
       gmt_modified)
     values (#{taskDailyId,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR},
       #{comment,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT}, #{startTime,jdbcType=TIMESTAMP},
-      #{endTime,jdbcType=TIMESTAMP}, #{isDelete,jdbcType=TINYINT}, #{gmtCreate,jdbcType=TIMESTAMP},
-      #{gmtModified,jdbcType=TIMESTAMP})
+      #{endTime,jdbcType=TIMESTAMP}, #{ownerId,jdbcType=VARCHAR}, #{ownerName,jdbcType=VARCHAR},
+      0, now(), now())
   </insert>
-  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.luoys.upgrade.toolservice.dao.po.TaskDailyPO" useGeneratedKeys="true">
-    insert into task_daily
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="taskDailyId != null">
-        task_daily_id,
-      </if>
-      <if test="name != null">
-        `name`,
-      </if>
-      <if test="description != null">
-        description,
-      </if>
-      <if test="comment != null">
-        `comment`,
-      </if>
-      <if test="status != null">
-        `status`,
-      </if>
-      <if test="startTime != null">
-        start_time,
-      </if>
-      <if test="endTime != null">
-        end_time,
-      </if>
-      <if test="isDelete != null">
-        is_delete,
-      </if>
-      <if test="gmtCreate != null">
-        gmt_create,
-      </if>
-      <if test="gmtModified != null">
-        gmt_modified,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="taskDailyId != null">
-        #{taskDailyId,jdbcType=VARCHAR},
-      </if>
-      <if test="name != null">
-        #{name,jdbcType=VARCHAR},
-      </if>
-      <if test="description != null">
-        #{description,jdbcType=VARCHAR},
-      </if>
-      <if test="comment != null">
-        #{comment,jdbcType=VARCHAR},
-      </if>
-      <if test="status != null">
-        #{status,jdbcType=TINYINT},
-      </if>
-      <if test="startTime != null">
-        #{startTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="endTime != null">
-        #{endTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="isDelete != null">
-        #{isDelete,jdbcType=TINYINT},
-      </if>
-      <if test="gmtCreate != null">
-        #{gmtCreate,jdbcType=TIMESTAMP},
-      </if>
-      <if test="gmtModified != null">
-        #{gmtModified,jdbcType=TIMESTAMP},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.luoys.upgrade.toolservice.dao.po.TaskDailyPO">
+  <update id="updateStatusByTaskDailyId">
     update task_daily
-    <set>
-      <if test="taskDailyId != null">
-        task_daily_id = #{taskDailyId,jdbcType=VARCHAR},
-      </if>
-      <if test="name != null">
-        `name` = #{name,jdbcType=VARCHAR},
-      </if>
-      <if test="description != null">
-        description = #{description,jdbcType=VARCHAR},
-      </if>
-      <if test="comment != null">
-        `comment` = #{comment,jdbcType=VARCHAR},
-      </if>
-      <if test="status != null">
-        `status` = #{status,jdbcType=TINYINT},
-      </if>
-      <if test="startTime != null">
-        start_time = #{startTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="endTime != null">
-        end_time = #{endTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="isDelete != null">
-        is_delete = #{isDelete,jdbcType=TINYINT},
-      </if>
-      <if test="gmtCreate != null">
-        gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
-      </if>
-      <if test="gmtModified != null">
-        gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
-      </if>
-    </set>
-    where id = #{id,jdbcType=INTEGER}
+    set `status` = #{status,jdbcType=TINYINT},
+        gmt_modified = now()
+    where task_daily_id = #{taskDailyId,jdbcType=VARCHAR}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.luoys.upgrade.toolservice.dao.po.TaskDailyPO">
+  <update id="updateCommentByTaskDailyId">
     update task_daily
-    set task_daily_id = #{taskDailyId,jdbcType=VARCHAR},
-      `name` = #{name,jdbcType=VARCHAR},
-      description = #{description,jdbcType=VARCHAR},
-      `comment` = #{comment,jdbcType=VARCHAR},
-      `status` = #{status,jdbcType=TINYINT},
-      start_time = #{startTime,jdbcType=TIMESTAMP},
-      end_time = #{endTime,jdbcType=TIMESTAMP},
-      is_delete = #{isDelete,jdbcType=TINYINT},
-      gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
-      gmt_modified = #{gmtModified,jdbcType=TIMESTAMP}
-    where id = #{id,jdbcType=INTEGER}
+    set comment = #{comment,jdbcType=VARCHAR},
+        gmt_modified = now()
+    where task_daily_id = #{taskDailyId,jdbcType=VARCHAR}
   </update>
+  <update id="deleteByTaskDailyId">
+    update task_daily
+    set is_delete = 1,
+        gmt_modified = now()
+    where task_daily_id = #{taskDailyId,jdbcType=VARCHAR}
+  </update>
+  <select id="selectByTaskDailyId" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from task_daily
+    where task_daily_id = #{taskDailyId,jdbcType=INTEGER}
+  </select>
+  <select id="listUserTaskDaily" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from task_daily
+    where
+    is_delete = 0
+    <if test="ownerId != null">
+      and owner_id = #{ownerId,jdbcType=VARCHAR}
+    </if>
+    <if test="startTime != null">
+      and start_time >= #{startTime,jdbcType=TIMESTAMP}
+    </if>
+    <if test="endTime != null">
+      and end_time &lt;= #{endTime,jdbcType=TIMESTAMP}
+    </if>
+  </select>
 </mapper>

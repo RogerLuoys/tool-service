@@ -1,17 +1,29 @@
 package com.luoys.upgrade.toolservice.dao;
 
 import com.luoys.upgrade.toolservice.dao.po.TaskDailyPO;
+import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 
+import java.util.Date;
+import java.util.List;
+
+@Repository
 public interface TaskDailyMapper {
-    int deleteByPrimaryKey(Integer id);
 
     int insert(TaskDailyPO record);
 
-    int insertSelective(TaskDailyPO record);
+    int updateStatusByTaskDailyId(@Param("taskDailyId") String taskDailyId,
+                                  @Param("status") Integer status);
 
-    TaskDailyPO selectByPrimaryKey(Integer id);
+    int updateCommentByTaskDailyId(@Param("taskDailyId") String taskDailyId,
+                                   @Param("comment") String comment);
 
-    int updateByPrimaryKeySelective(TaskDailyPO record);
+    int deleteByTaskDailyId(@Param("taskDailyId") String taskDailyId);
 
-    int updateByPrimaryKey(TaskDailyPO record);
+    TaskDailyPO selectByTaskDailyId(@Param("taskDailyId") String taskDailyId);
+
+    List<TaskDailyPO> listUserTaskDaily(@Param("ownerId") String ownerId,
+                                        @Param("startTime") Date startTime,
+                                        @Param("endTime") Date endTime);
+
 }

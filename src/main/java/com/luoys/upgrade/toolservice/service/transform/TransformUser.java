@@ -5,7 +5,7 @@ import com.luoys.upgrade.toolservice.web.vo.UserVO;
 
 public class TransformUser {
 
-    public static UserPO transformBO2PO(UserVO vo) {
+    public static UserPO transformVO2PO(UserVO vo) {
         if (vo == null) {
             return null;
         }
@@ -20,7 +20,7 @@ public class TransformUser {
         return po;
     }
 
-    public static UserVO transformPO2BO(UserPO po) {
+    public static UserVO transformPO2VO(UserPO po) {
         if (po == null) {
             return null;
         }

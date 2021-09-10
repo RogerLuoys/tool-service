@@ -30,7 +30,7 @@ public class UserService {
         if (userVO == null) {
             return null;
         }
-        int result = userMapper.update(TransformUser.transformBO2PO(userVO));
+        int result = userMapper.update(TransformUser.transformVO2PO(userVO));
         return  result == 1;
     }
 
@@ -38,21 +38,21 @@ public class UserService {
         if (loginName == null || passWord == null) {
             return null;
         }
-        return TransformUser.transformPO2BO(userMapper.selectByLoginInfo(loginName, null, passWord));
+        return TransformUser.transformPO2VO(userMapper.selectByLoginInfo(loginName, null, passWord));
     }
 
     public UserVO queryByPhone(String phone, String passWord) {
         if (phone == null || passWord == null) {
             return null;
         }
-        return TransformUser.transformPO2BO(userMapper.selectByLoginInfo(null, phone, passWord));
+        return TransformUser.transformPO2VO(userMapper.selectByLoginInfo(null, phone, passWord));
     }
 
     public UserVO queryByUserId(String userId) {
         if (null == userId) {
             return null;
         }
-        return TransformUser.transformPO2BO(userMapper.selectByUUId(userId));
+        return TransformUser.transformPO2VO(userMapper.selectByUUId(userId));
     }
 
     public Boolean checkUserExist(String loginName) {
@@ -79,7 +79,7 @@ public class UserService {
         }
         userVO.setUserId(NumberSender.createUserId());
         log.info("====》新增用户：{}", userVO);
-        int insertUserResult = userMapper.insert(TransformUser.transformBO2PO(userVO));
+        int insertUserResult = userMapper.insert(TransformUser.transformVO2PO(userVO));
         return insertUserResult == 1 ? userVO : null;
     }
 

@@ -1,16 +1,12 @@
-package com.luoys.upgrade.toolservice.dao.po;
+package com.luoys.upgrade.toolservice.web.vo;
 
-import java.io.Serializable;
-import java.util.Date;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
-/**
- * task_daily
- * @author luoys
- */
+import java.util.Date;
+
 @Data
-public class TaskDailyPO {
-    private Integer id;
+public class TaskDailyVO {
 
     /**
      * 业务id
@@ -40,11 +36,13 @@ public class TaskDailyPO {
     /**
      * 任务开始时间
      */
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date startTime;
 
     /**
      * 任务结束时间（完成时间）
      */
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date endTime;
 
     /**

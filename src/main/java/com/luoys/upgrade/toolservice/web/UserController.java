@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+@CrossOrigin
 @Slf4j
 @RestController
 @RequestMapping(value = "/user")
@@ -21,8 +22,8 @@ public class UserController {
         return Result.success(userService.queryByLoginName(loginName, password));
     }
 
-    @RequestMapping(value = "/queryByUserId", method = RequestMethod.GET)
-    public Result<UserVO> queryByUserId(@RequestParam("userId") String userId) {
+    @RequestMapping(value = "/queryDetail", method = RequestMethod.GET)
+    public Result<UserVO> queryDetail(@RequestHeader("userId") String userId) {
         log.info("====》查询用户信息开始：userId={}", userId);
         return Result.success(userService.queryByUserId(userId));
     }
