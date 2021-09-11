@@ -17,9 +17,9 @@ public class UserController {
     private UserService userService;
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
-    public Result<UserVO> login(@RequestParam("loginName") String loginName, @RequestParam("password") String password){
-        log.info("====》用户登录开始：loginName={}, password={}", loginName, password);
-        return Result.success(userService.queryByLoginName(loginName, password));
+    public Result<UserVO> login(@RequestParam("loginName") String loginName, @RequestParam("passWord") String passWord){
+        log.info("====》用户登录开始：loginName={}, passWord={}", loginName, passWord);
+        return Result.success(userService.queryByLoginName(loginName, passWord));
     }
 
     @RequestMapping(value = "/queryDetail", method = RequestMethod.GET)
@@ -29,14 +29,17 @@ public class UserController {
     }
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
-    public Result<Integer> register(@RequestBody UserVO userBO){
-        log.info("====》注册用户开始：{}", userBO);
-        return Result.success(userService.newUser(userBO));
+    public Result<Integer> register(@RequestBody UserVO userVO){
+        log.info("====》注册用户开始：{}", userVO);
+        if (userService.checkUserExist(userVO.getLoginName())) {
+            return Result.error("登录名已存在");
+        }
+        return Result.success(userService.newUser(userVO));
     }
 
     @RequestMapping(value = "/update", method = RequestMethod.PUT)
-    public Result<Boolean> update(@RequestBody UserVO userBO){
-        log.info("====》修改用户信息开始：{}", userBO);
-        return Result.success(userService.update(userBO));
+    public Result<Boolean> update(@RequestBody UserVO userVO){
+        log.info("====》修改用户信息开始：{}", userVO);
+        return Result.success(userService.update(userVO));
     }
 }

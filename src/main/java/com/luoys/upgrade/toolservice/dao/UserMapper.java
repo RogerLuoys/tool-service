@@ -41,12 +41,12 @@ public interface UserMapper {
      *
      * @param loginName 登录账号
      * @param phone     手机号
-     * @param password  登录密码
+     * @param passWord  登录密码
      * @return 账号信息
      */
     UserPO selectByLoginInfo(@Param("loginName") String loginName,
                              @Param("phone") String phone,
-                             @Param("password") String password);
+                             @Param("passWord") String passWord);
 
     /**
      * 通过登录账号查询

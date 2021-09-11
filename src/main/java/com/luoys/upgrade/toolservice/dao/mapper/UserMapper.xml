@@ -20,7 +20,7 @@
                       phone, user_name, `type`,
                       `status`, is_delete, gmt_create,
                       gmt_modified)
-    values (#{userId,jdbcType=VARCHAR}, #{loginName,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR},
+    values (#{userId,jdbcType=VARCHAR}, #{loginName,jdbcType=VARCHAR}, #{passWord,jdbcType=VARCHAR},
             #{phone,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR}, #{type,jdbcType=TINYINT},
             #{status,jdbcType=TINYINT}, 0, now(), now())
   </insert>
@@ -31,8 +31,8 @@
       <if test="loginName != null">
         login_name = #{loginName,jdbcType=VARCHAR},
       </if>
-      <if test="password != null">
-        pass_word = #{password,jdbcType=VARCHAR},
+      <if test="passWord != null">
+        pass_word = #{passWord,jdbcType=VARCHAR},
       </if>
       <if test="phone != null">
         phone = #{phone,jdbcType=VARCHAR},
@@ -62,7 +62,7 @@
     <include refid="Base_Column_List" />
     from user
     where is_delete = 0
-    and pass_word = #{password,jdbcType=VARCHAR}
+    and pass_word = #{passWord,jdbcType=VARCHAR}
     <if test="loginName != null">
       and login_name = #{loginName,jdbcType=VARCHAR}
     </if>
@@ -94,8 +94,8 @@
     <if test="loginName != null">
       and login_name = #{loginName,jdbcType=VARCHAR},
     </if>
-    <if test="password != null">
-      and pass_word = #{password,jdbcType=VARCHAR},
+    <if test="passWord != null">
+      and pass_word = #{passWord,jdbcType=VARCHAR},
     </if>
     <if test="phone != null">
       and phone = #{phone,jdbcType=VARCHAR},

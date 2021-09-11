@@ -57,7 +57,7 @@ public class UserService {
 
     public Boolean checkUserExist(String loginName) {
         if (loginName == null) {
-            log.error("----》入参为空");
+            log.error("--->校验入参为空");
             return null;
         }
         return null != userMapper.selectByLoginName(loginName);
@@ -65,7 +65,7 @@ public class UserService {
 
     public UserVO newUser(UserVO userVO) {
         if (userVO == null || userVO.getLoginName() == null || userVO.getPassWord() == null) {
-            log.error("----》入参为空");
+            log.error("--->注册入参为空");
             return null;
         }
         if (userVO.getUserName() == null) {
@@ -78,7 +78,6 @@ public class UserService {
             userVO.setStatus(DEFAULT_USER_STATUS);
         }
         userVO.setUserId(NumberSender.createUserId());
-        log.info("====》新增用户：{}", userVO);
         int insertUserResult = userMapper.insert(TransformUser.transformVO2PO(userVO));
         return insertUserResult == 1 ? userVO : null;
     }
