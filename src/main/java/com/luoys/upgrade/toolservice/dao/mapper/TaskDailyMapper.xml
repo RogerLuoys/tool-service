@@ -55,15 +55,12 @@
     <include refid="Base_Column_List" />
     from task_daily
     where
-    is_delete = 0
-    <if test="ownerId != null">
-      and owner_id = #{ownerId,jdbcType=VARCHAR}
-    </if>
+    is_delete = 0 and owner_id = #{ownerId,jdbcType=VARCHAR}
     <if test="startTime != null">
       and start_time >= #{startTime,jdbcType=TIMESTAMP}
     </if>
     <if test="endTime != null">
-      and end_time &lt;= #{endTime,jdbcType=TIMESTAMP}
+      and start_time &lt;= #{endTime,jdbcType=TIMESTAMP}
     </if>
   </select>
 </mapper>

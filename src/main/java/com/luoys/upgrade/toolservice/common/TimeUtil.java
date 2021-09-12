@@ -1,5 +1,6 @@
 package com.luoys.upgrade.toolservice.common;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -32,89 +33,55 @@ public class TimeUtil {
     }
 
     /**
-     * 获取指定日期所在周，周一的日期
+     * 获取指定日期所在周，周一的开始时间
      * @param date 目标日期，为空则取当前日期
-     * @return 周一对应的日期
+     * @return 周一对应的日期的0点
      */
     public static Date getMonday(Date date) {
-        Calendar c = Calendar.getInstance();
+        Calendar calendar = Calendar.getInstance();
         if (date != null) {
-            c.setTime(date);
+            calendar.setTime(date);
         }
-        int day_of_week = c.get(Calendar.DAY_OF_WEEK) - 1;
-        if (day_of_week == 0)
+        int day_of_week = calendar.get(Calendar.DAY_OF_WEEK) - 1;
+        if (day_of_week == 0) {
             day_of_week = 7;
-        c.add(Calendar.DATE, 1 - day_of_week);
-        return c.getTime();
+        }
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 30);
+        calendar.add(Calendar.DATE, 1 - day_of_week);
+        return calendar.getTime();
     }
 
     /**
-     * 获取指定日期所在周，周日的日期
+     * 获取指定日期所在周，周日的结束时间
      * @param date 目标日期，为空则取当前日期
-     * @return 周日对应的日期
+     * @return 周日对应日期的23点
      */
     public static Date getSunday(Date date) {
-        Calendar c = Calendar.getInstance();
+        Calendar calendar = Calendar.getInstance();
         if (date != null) {
-            c.setTime(date);
+            calendar.setTime(date);
         }
-        int day_of_week = c.get(Calendar.DAY_OF_WEEK) - 1;
-        if (day_of_week == 0)
+        int day_of_week = calendar.get(Calendar.DAY_OF_WEEK) - 1;
+        if (day_of_week == 0) {
             day_of_week = 7;
-        c.add(Calendar.DATE, 7 - day_of_week);
-        return c.getTime();
-    }
-
-    /**
-     * 默认当天为周日，只能用于按周循环的模板
-     *
-     * @param cycle task表里的周cycle
-     * @return 以周为周期的每日任务开始时间
-     */
-    public static Date getWeekCycleStartTime(long cycle) {
-        if (cycle < 1 || cycle > 7) {
-            return null;
         }
-        // 获取当天零点（有精度丢失）
-        Date todayStart = getToday(0, 0, 30);
-        return new Date(todayStart.getTime() + 24 * 60 * 60 * 1000 * cycle);
+        calendar.set(Calendar.HOUR_OF_DAY, 23);
+        calendar.set(Calendar.MINUTE, 59);
+        calendar.set(Calendar.SECOND, 30);
+        calendar.add(Calendar.DATE, 7 - day_of_week);
+        return calendar.getTime();
     }
 
     /**
-     * 默认当天为周日，只能用于按周循环的模板
-     *
-     * @param cycle task表里的周cycle
-     * @return 以周为周期的每日任务开始时间
+     * Date 转 yyyy-MM-dd HH:mm:ss类型的字符串
+     * @param date 需转换的日期
+     * @return 转换后的字符串
      */
-    public static Date getWeekCycleStartTime(String cycle) {
-        return getWeekCycleStartTime(Long.parseLong(cycle));
+    public static String dateFormat(Date date) {
+        return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date);
     }
-
-    /**
-     * 默认当天为周日，只能用于按周循环的模板
-     *
-     * @param cycle task表里的周cycle
-     * @return 以周为周期的每日任务结束时间
-     */
-    public static Date getWeekCycleEndTime(long cycle) {
-        if (cycle < 1 || cycle > 7) {
-            return null;
-        }
-        // 获取当天半夜（有精度丢失）
-        Date todayEnd = getToday(23, 59, 30);
-        return new Date(todayEnd.getTime() + 24 * 60 * 60 * 1000 * cycle);
-    }
-
-    /**
-     * 默认当天为周日，只能用于按周循环的模板
-     *
-     * @param cycle task表里的周cycle
-     * @return 以周为周期的每日任务结束时间
-     */
-    public static Date getWeekCycleEndTime(String cycle) {
-        return getWeekCycleEndTime(Long.parseLong(cycle));
-    }
-
 
     /**
      * 设置时间
