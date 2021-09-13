@@ -9,8 +9,9 @@ import lombok.Data;
  */
 @Data
 public class CommonQuery {
-    private Integer type;
+    private String uuid;
     private String name;
+    private Integer type;
+    private Integer status;
     private Integer pageIndex;
-    private Boolean isTestStep;
 }
