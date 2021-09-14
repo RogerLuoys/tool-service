@@ -40,9 +40,6 @@ public class FactoryService {
     @Autowired
     private DBClient dbClient;
 
-//    @DubboReference
-//    private UserService userService;
-
     /**
      * 创建单个工具
      *
