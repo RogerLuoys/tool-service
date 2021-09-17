@@ -42,19 +42,17 @@ public class DBClient {
         for (SqlDTO sqlDTO : sqlDTOList) {
             switch (SqlTypeEnum.fromValue(sqlDTO.getType())) {
                 case INSERT:
-                    log.info("---->执行插入sql：{}", sqlDTO.getSql());
-                    result.append(update(sqlDTO.getSql())).append(" ");
+                    result.append(insert(sqlDTO.getSql())).append(" ");
                     break;
                 case DELETE:
-                    log.info("---->执行删除sql：{}", sqlDTO.getSql());
                     result.append(delete(sqlDTO.getSql())).append(" ");
                     break;
                 case UPDATE:
-                    log.info("---->执行更新sql：{}", sqlDTO.getSql());
                     result.append(update(sqlDTO.getSql())).append(" ");
                     break;
                 case SELECT:
                     result.append(select(sqlDTO.getSql())).append(" ");
+                    break;
                 default:
                     result.append("不支持sql类型 ");
             }

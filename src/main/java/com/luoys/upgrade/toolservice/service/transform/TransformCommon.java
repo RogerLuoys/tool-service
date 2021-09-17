@@ -85,31 +85,17 @@ public class TransformCommon {
             // 如果是正常类型就直接插入，否则根据sql判断类型
             if (!sqlDTO.getType().equals(SqlTypeEnum.UNKNOWN.getValue())) {
                 commonDTO.setComment(sqlDTO.getType());
-            } else if (sqlDTO.getSql().toUpperCase().matches("^INSERT INTO")) {
+            } else if (sqlDTO.getSql().toUpperCase().matches("^INSERT INTO .+")) {
                 commonDTO.setComment(SqlTypeEnum.INSERT.getValue());
-            } else if (sqlDTO.getSql().toUpperCase().matches("^DELETE FROM [A-Z0-9_]+ WHERE")) {
+            } else if (sqlDTO.getSql().toUpperCase().matches("^DELETE FROM [A-Z0-9_]+ WHERE .+")) {
                 commonDTO.setComment(SqlTypeEnum.DELETE.getValue());
-            } else if (sqlDTO.getSql().toUpperCase().matches("^UPDATE [A-Z0-9_]+ SET .+ WHERE")) {
+            } else if (sqlDTO.getSql().toUpperCase().matches("^UPDATE [A-Z0-9_]+ SET .+ WHERE .+")) {
                 commonDTO.setComment(SqlTypeEnum.UPDATE.getValue());
-            } else if (sqlDTO.getSql().toUpperCase().matches("^SELECT .+ FROM [A-Z0-9_]+ WHERE")) {
+            } else if (sqlDTO.getSql().toUpperCase().matches("^SELECT .+ FROM [A-Z0-9_]+ WHERE .+")) {
                 commonDTO.setComment(SqlTypeEnum.SELECT.getValue());
             } else {
                 commonDTO.setComment(SqlTypeEnum.UNKNOWN.getValue());
             }
-//            // 如果是正常类型就直接插入，否则根据sql判断类型
-//            if (!sqlDTO.getType().equals(SqlTypeEnum.UNKNOWN.getValue())) {
-//                commonDTO.setComment(sqlDTO.getType());
-//            } else if (sqlDTO.getSql().toUpperCase().startsWith(SqlTypeEnum.INSERT.getValue())) {
-//                commonDTO.setComment(SqlTypeEnum.INSERT.getValue());
-//            } else if (sqlDTO.getSql().toUpperCase().startsWith(SqlTypeEnum.DELETE.getValue())) {
-//                commonDTO.setComment(SqlTypeEnum.DELETE.getValue());
-//            } else if (sqlDTO.getSql().toUpperCase().startsWith(SqlTypeEnum.UPDATE.getValue())) {
-//                commonDTO.setComment(SqlTypeEnum.UPDATE.getValue());
-//            } else if (sqlDTO.getSql().toUpperCase().startsWith(SqlTypeEnum.SELECT.getValue())) {
-//                commonDTO.setComment(SqlTypeEnum.SELECT.getValue());
-//            } else {
-//                commonDTO.setComment(SqlTypeEnum.UNKNOWN.getValue());
-//            }
             commonList.add(commonDTO);
 
         }

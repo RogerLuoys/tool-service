@@ -61,7 +61,8 @@
     </if>
   </select>
   <update id="remove">
-    update resource set is_delete = 1
+    update resource
+    set is_delete = 1, gmt_modified = now()
     where resource_id = #{resourceId,jdbcType=VARCHAR}
   </update>
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.luoys.upgrade.toolservice.dao.po.ResourcePO" useGeneratedKeys="true">
@@ -127,7 +128,7 @@
       <if test="slaveUrl != null">
         slave_url = #{slaveUrl,jdbcType=VARCHAR},
       </if>
-      gmt_modified = now(),
+      gmt_modified = now()
     </set>
     where resource_id = #{resourceId,jdbcType=VARCHAR}
   </update>

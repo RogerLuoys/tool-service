@@ -21,11 +21,13 @@
     where id = #{id,jdbcType=INTEGER}
   </select>
   <update id="removeBySuiteId">
-    update suite_case_relation set is_delete = 1
+    update suite_case_relation
+    set is_delete = 1, gmt_modified = now()
     where suite_id = #{suiteId,jdbcType=VARCHAR}
   </update>
   <update id="remove" parameterType="com.luoys.upgrade.toolservice.dao.po.SuiteCaseRelationPO">
-    update suite_case_relation set is_delete = 1
+    update suite_case_relation
+    set is_delete = 1, gmt_modified = now()
     where suite_id = #{suiteId,jdbcType=VARCHAR} and case_id = #{caseId,jdbcType=VARCHAR}
   </update>
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.luoys.upgrade.toolservice.dao.po.SuiteCaseRelationPO" useGeneratedKeys="true">
@@ -53,16 +55,18 @@
       <if test="sequence != null">
         `sequence` = #{sequence,jdbcType=INTEGER},
       </if>
-      gmt_modified = now(),
+      gmt_modified = now()
     </set>
     where suite_id = #{suiteId,jdbcType=VARCHAR} and case_id = #{caseId,jdbcType=VARCHAR}
   </update>
   <update id="updateStatus">
-    update suite_case_relation set status = #{status,jdbcType=INTEGER}
+    update suite_case_relation
+    set status = #{status,jdbcType=INTEGER}, gmt_modified = now()
     where suite_id = #{suiteId,jdbcType=VARCHAR} and case_id = #{caseId,jdbcType=VARCHAR}
   </update>
   <update id="resetStatusBySuiteId">
-    update suite_case_relation set status = 1
+    update suite_case_relation
+    set status = 1, gmt_modified = now()
     where suite_id = #{suiteId,jdbcType=VARCHAR}
   </update>
   <select id="listCaseBySuiteId" resultMap="BaseResultMap">

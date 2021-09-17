@@ -53,7 +53,8 @@
     </if>
   </select>
   <update id="remove">
-    update auto_suite set is_delete = 1
+    update auto_suite
+    set is_delete = 1, gmt_modified = now()
     where suite_id = #{suiteId,jdbcType=VARCHAR}
   </update>
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.luoys.upgrade.toolservice.dao.po.AutoSuitePO" useGeneratedKeys="true">
@@ -100,7 +101,7 @@
       <if test="ownerName != null">
         owner_name = #{ownerName,jdbcType=VARCHAR},
       </if>
-      gmt_modified = now,
+      gmt_modified = now()
     </set>
     where suite_id = #{suiteId,jdbcType=VARCHAR}
   </update>
@@ -123,6 +124,7 @@
       <if test="isUiCompleted != null">
         is_ui_completed = #{isUiCompleted,jdbcType=TINYINT},
       </if>
+      gmt_modified = now()
     </set>
     where suite_id = #{suiteId,jdbcType=VARCHAR}
   </update>

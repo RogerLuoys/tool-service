@@ -77,7 +77,7 @@
       <if test="comment != null">
         `comment` = #{comment,jdbcType=VARCHAR},
       </if>
-      gmt_modified = now(),
+      gmt_modified = now()
     </set>
     where task_id = #{taskId,jdbcType=INTEGER}
   </update>

@@ -54,7 +54,8 @@
     </if>
   </select>
   <update id="remove" parameterType="java.lang.String">
-    update auto_case set is_delete = 1
+    update auto_case
+    set is_delete = 1, gmt_modified = now()
     where case_id = #{caseId,jdbcType=VARCHAR}
   </update>
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.luoys.upgrade.toolservice.dao.po.AutoCasePO" useGeneratedKeys="true">
@@ -97,12 +98,13 @@
       <if test="ownerName != null">
         owner_name = #{ownerName,jdbcType=VARCHAR},
       </if>
-      gmt_modified = now(),
+      gmt_modified = now()
     </set>
     where case_id = #{caseId,jdbcType=VARCHAR}
   </update>
   <update id="updateStatus">
-    update auto_case set `status` = #{status,jdbcType=TINYINT}
+    update auto_case
+    set `status` = #{status,jdbcType=TINYINT}, gmt_modified = now()
     where case_id = #{caseId,jdbcType=VARCHAR}
   </update>
 </mapper>

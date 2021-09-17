@@ -148,7 +148,7 @@
       <if test="rpcParameter != null">
         rpc_parameter = #{rpcParameter,jdbcType=VARCHAR},
       </if>
-      gmt_modified = now(),
+      gmt_modified = now()
     </set>
     where tool_id = #{toolId,jdbcType=VARCHAR}
   </update>

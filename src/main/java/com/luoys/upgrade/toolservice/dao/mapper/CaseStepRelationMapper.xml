@@ -54,11 +54,13 @@
     where csr.case_id = #{caseId,jdbcType=VARCHAR} and csr.is_delete = 0
   </select>
   <update id="removeByCaseId">
-    update case_step_relation set is_delete = 1
+    update case_step_relation
+    set is_delete = 1, gmt_modified = now()
     where case_id = #{caseId,jdbcType=VARCHAR}
   </update>
   <update id="remove" parameterType="com.luoys.upgrade.toolservice.dao.po.CaseStepRelationPO">
-    update case_step_relation set is_delete = 1
+    update case_step_relation
+    set is_delete = 1, gmt_modified = now()
     where case_id = #{caseId,jdbcType=VARCHAR} and step_id = #{stepId,jdbcType=VARCHAR}
   </update>
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.luoys.upgrade.toolservice.dao.po.CaseStepRelationPO" useGeneratedKeys="true">
@@ -74,6 +76,7 @@
       <if test="sequence != null">
         `sequence` = #{sequence,jdbcType=INTEGER},
       </if>
+      gmt_modified = now()
     </set>
     where case_id = #{caseId,jdbcType=VARCHAR} and step_id = #{stepId,jdbcType=VARCHAR}
   </update>

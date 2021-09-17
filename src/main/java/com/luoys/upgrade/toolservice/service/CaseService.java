@@ -223,13 +223,17 @@ public class CaseService {
         // UI用例和API用例使用不同线程池，UI自动化只能单个子线程
         if (autoCaseVO.getType().equals(AutoCaseTypeEnum.UI_CASE.getCode())) {
             ThreadPoolUtil.executeUI(()->{
+                log.info("--->执行ui用例的步骤：caseId={}", autoCaseVO.getCaseId());
                 boolean result = executeUI(autoCaseVO);
+                log.info("---->步骤执行完毕，更新用例结果：caseId={}", autoCaseVO.getCaseId());
                 autoCaseMapper.updateStatus(autoCaseVO.getCaseId(),
                         result ? AutoCaseStatusEnum.SUCCESS.getCode() : AutoCaseStatusEnum.FAIL.getCode());
             });
         } else {
             ThreadPoolUtil.executeAPI(() -> {
+                log.info("--->执行api用例的步骤：caseId={}", autoCaseVO.getCaseId());
                 boolean result = executeAPI(autoCaseVO);
+                log.info("---->步骤执行完毕，更新用例结果：caseId={}", autoCaseVO.getCaseId());
                 autoCaseMapper.updateStatus(autoCaseVO.getCaseId(),
                         result ? AutoCaseStatusEnum.SUCCESS.getCode() : AutoCaseStatusEnum.FAIL.getCode());
             });
@@ -244,6 +248,7 @@ public class CaseService {
      * @return 主要步骤全部执行结果都为true才返回true
      */
     public Boolean use(AutoCaseVO autoCaseVO) {
+        log.info("--->执行用例：caseId={}, caseName={}", autoCaseVO.getCaseId(), autoCaseVO.getName());
         boolean result;
         // UI和接口用例分开执行
         if (autoCaseVO.getType().equals(AutoCaseTypeEnum.UI_CASE.getCode())) {
@@ -293,7 +298,7 @@ public class CaseService {
     private Boolean execute(AutoCaseVO autoCaseVO) {
         boolean result = true;
         // 执行前置步骤
-        if (autoCaseVO.getPreStepList() != null && autoCaseVO.getAfterStepList().size() != 0) {
+        if (autoCaseVO.getPreStepList() != null && autoCaseVO.getPreStepList().size() != 0) {
             for (CaseStepVO vo: autoCaseVO.getPreStepList()) {
                 vo.getAutoStep().setEnvironment(StringUtil.isBlank(autoCaseVO.getEnvironment()) ? null : autoCaseVO.getEnvironment());
                 stepService.use(vo.getAutoStep());

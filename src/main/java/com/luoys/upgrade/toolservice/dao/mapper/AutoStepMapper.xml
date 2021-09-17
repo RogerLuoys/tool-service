@@ -80,7 +80,8 @@
     </if>
   </select>
   <update id="remove">
-    update auto_step set is_delete = 1
+    update auto_step
+    set is_delete = 1, gmt_modified = now()
     where step_id = #{stepId,jdbcType=VARCHAR}
   </update>
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.luoys.upgrade.toolservice.dao.po.AutoStepPO" useGeneratedKeys="true">
@@ -191,12 +192,16 @@
       <if test="isPublic != null">
         is_public = #{isPublic,jdbcType=TINYINT},
       </if>
+      gmt_modified = now()
     </set>
     where step_id = #{stepId,jdbcType=VARCHAR}
   </update>
   <update id="updateResult">
     update auto_step
-    set assert_actual = #{assertActual,jdbcType=VARCHAR}, assert_result = #{assertResult,jdbcType=TINYINT}
+    set
+        assert_actual = #{assertActual,jdbcType=VARCHAR},
+        assert_result = #{assertResult,jdbcType=TINYINT},
+        gmt_modified = now()
     where step_id = #{stepId,jdbcType=VARCHAR}
   </update>
 </mapper>
