@@ -23,15 +23,34 @@ public class TaskService {
     @Autowired
     private TaskMapper taskMapper;
 
+    /**
+     * 创建任务
+     *
+     * @param taskVO 任务对象
+     * @return 成功返回taskId，失败为null
+     */
     public String create(TaskVO taskVO) {
         taskVO.setTaskId(NumberSender.createTaskDailyId());
         return taskMapper.insert(TransformTask.transformVO2PO(taskVO)) == 1 ? taskVO.getTaskId() : null;
     }
 
+    /**
+     * 逻辑删除任务
+     *
+     * @param taskId 业务id
+     * @return 成功为true
+     */
     public Boolean remove(String taskId) {
         return taskMapper.remove(taskId) == 1;
     }
 
+    /**
+     * 更新任务状态
+     *
+     * @param taskId 业务id
+     * @param status 要更新的状态
+     * @return 成功为true
+     */
     public Boolean updateStatus(String taskId, Integer status) {
         if (taskId == null || status == null) {
             log.error("--->入参不能为空，修改状态失败");
@@ -40,6 +59,13 @@ public class TaskService {
         return taskMapper.updateStatusByUUID(taskId, status) == 1;
     }
 
+    /**
+     * 更新备注
+     *
+     * @param taskId  任务id
+     * @param comment 备注
+     * @return 成功为true
+     */
     public Boolean updateComment(String taskId, String comment) {
         if (taskId == null || comment == null) {
             log.error("--->入参不能为空，修改备注失败");
@@ -48,6 +74,14 @@ public class TaskService {
         return taskMapper.updateCommentByUUID(taskId, comment) == 1;
     }
 
+    /**
+     * 按时间段查询任务列表
+     *
+     * @param ownerId   任务所属人id
+     * @param startTime 时间段开始时间
+     * @param endTime   时间段结束时间
+     * @return 任务列表
+     */
     public List<TaskVO> query(String ownerId, Date startTime, Date endTime) {
         if (StringUtil.isBlank(ownerId)) {
             log.error("--->所有者不能为空");
@@ -58,6 +92,13 @@ public class TaskService {
         return TransformTask.TransformPO2VO(poList);
     }
 
+    /**
+     * 按周查询任务列表
+     *
+     * @param ownerId     所属人id
+     * @param currentDate 当前时间，根据此时间查询周一和周日
+     * @return 当前时间所在周的所有任务
+     */
     public List<TaskWeeklyVO> queryByWeekly(String ownerId, Date currentDate) {
         List<TaskWeeklyVO> weekList = new ArrayList<>();
         Date monStart = TimeUtil.getDayStart(TimeUtil.getWeekDate(currentDate, 1));

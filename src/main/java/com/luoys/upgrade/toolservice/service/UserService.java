@@ -21,11 +21,15 @@ public class UserService {
 
 
     private final static int DEFAULT_USER_STATUS = 1;
-    private final static String SUCCESS = "成功";
 
     @Autowired
     private UserMapper userMapper;
 
+    /**
+     * 更新用户信息
+     * @param userVO 用户对象
+     * @return 更新成功为true
+     */
     public Boolean update(UserVO userVO) {
         if (userVO == null) {
             return null;
@@ -34,6 +38,12 @@ public class UserService {
         return  result == 1;
     }
 
+    /**
+     * 根据账号密码查询用户
+     * @param loginName 账号
+     * @param passWord 密码
+     * @return 用户对象
+     */
     public UserVO queryByLoginName(String loginName, String passWord) {
         if (loginName == null || passWord == null) {
             return null;
@@ -41,6 +51,12 @@ public class UserService {
         return TransformUser.transformPO2VO(userMapper.selectByLoginInfo(loginName, null, passWord));
     }
 
+    /**
+     * 根据手机号密码查询用户
+     * @param phone 手机号
+     * @param passWord 密码
+     * @return 用户对象
+     */
     public UserVO queryByPhone(String phone, String passWord) {
         if (phone == null || passWord == null) {
             return null;
@@ -48,6 +64,11 @@ public class UserService {
         return TransformUser.transformPO2VO(userMapper.selectByLoginInfo(null, phone, passWord));
     }
 
+    /**
+     * 根据业务id查询用户
+     * @param userId 业务id
+     * @return 用户对象
+     */
     public UserVO queryByUserId(String userId) {
         if (null == userId) {
             return null;
@@ -55,6 +76,11 @@ public class UserService {
         return TransformUser.transformPO2VO(userMapper.selectByUUId(userId));
     }
 
+    /**
+     * 判断账号是否存在
+     * @param loginName 账号
+     * @return 存在为
+     */
     public Boolean checkUserExist(String loginName) {
         if (loginName == null) {
             log.error("--->校验入参为空");
@@ -63,6 +89,11 @@ public class UserService {
         return null != userMapper.selectByLoginName(loginName);
     }
 
+    /**
+     * 创建用户
+     * @param userVO 用户对象
+     * @return 创建后的用户对象
+     */
     public UserVO newUser(UserVO userVO) {
         if (userVO == null || userVO.getLoginName() == null || userVO.getPassWord() == null) {
             log.error("--->注册入参为空");
