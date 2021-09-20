@@ -2,7 +2,7 @@ package com.luoys.upgrade.toolservice.web;
 
 
 import com.alibaba.fastjson.JSON;
-import com.luoys.common.api.Result;
+import com.luoys.upgrade.toolservice.common.Result;
 import com.luoys.upgrade.toolservice.common.TimeUtil;
 import com.luoys.upgrade.toolservice.service.TaskService;
 import com.luoys.upgrade.toolservice.web.vo.TaskVO;
@@ -28,27 +28,33 @@ public class TaskController {
                                        @RequestBody TaskVO taskVO) {
         log.info("--->创建每日任务开始：{}", JSON.toJSONString(taskVO));
         taskVO.setOwnerId(userId);
-        return Result.ifSuccess(taskService.create(taskVO));
+        return Result.success(taskService.create(taskVO));
     }
 
     @RequestMapping(value = "/remove", method = RequestMethod.DELETE)
     public Result<String> remove(@RequestParam("taskId") String taskId) {
         log.info("--->删除任务开始：{}", taskId);
-        return Result.ifSuccess(taskService.remove(taskId));
+        return Result.success(taskService.remove(taskId));
+    }
+
+    @RequestMapping(value = "/update", method = RequestMethod.PUT)
+    public Result<Integer> update(@RequestBody TaskVO taskVO) {
+        log.info("--->更新任务状态开始：{}", taskVO);
+        return Result.success(taskService.update(taskVO));
     }
 
     @RequestMapping(value = "/updateStatus", method = RequestMethod.PUT)
     public Result<Integer> updateStatus(@RequestParam("taskId") String taskId,
                                                  @RequestParam("status") Integer status) {
         log.info("--->修改每日任务状态开始：taskId={}，status={}", taskId, status);
-        return Result.ifSuccess(taskService.updateStatus(taskId, status));
+        return Result.success(taskService.updateStatus(taskId, status));
     }
 
     @RequestMapping(value = "/updateComment", method = RequestMethod.PUT)
     public Result<String> updateComment(@RequestParam("taskId") String taskId,
                                                  @RequestParam("comment") String comment) {
         log.info("--->修改每日任务备注开始：taskId={}，comment={}", taskId, comment);
-        return Result.ifSuccess(taskService.updateComment(taskId, comment));
+        return Result.success(taskService.updateComment(taskId, comment));
     }
 
     @RequestMapping(value = "/query", method = RequestMethod.GET)

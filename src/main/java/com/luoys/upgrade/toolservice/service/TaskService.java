@@ -45,6 +45,17 @@ public class TaskService {
     }
 
     /**
+     * 更新任务
+     *
+     * @param taskVO 任务对象
+     * @return 成功为true
+     */
+    public Boolean update(TaskVO taskVO) {
+        int result = taskMapper.update(TransformTask.transformVO2PO(taskVO));
+        return result == 1;
+    }
+
+    /**
      * 更新任务状态
      *
      * @param taskId 业务id
