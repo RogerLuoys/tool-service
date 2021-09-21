@@ -19,7 +19,7 @@ import java.util.List;
 @Slf4j
 public class TransformTool {
 
-    private static final String PARAM_REGEX = "\\$\\{[A-Za-z0-9]+}";
+    private static final String PARAM_REGEX = ".*\\$\\{[A-Za-z0-9]+}.*";
 
     public static ToolSimpleVO transformPO2SimpleVO(ToolPO po) {
         if (po == null)
