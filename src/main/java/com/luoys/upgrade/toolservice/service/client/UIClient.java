@@ -27,6 +27,11 @@ public class UIClient {
     private WebDriver driver = null;
     private final int forceTimeOut = 1;
 
+    /**
+     * 执行ui步骤，有同步锁
+     * @param uiDTO -
+     * @return 执行结果
+     */
     public synchronized String execute(UiDTO uiDTO) {
         switch (UiTypeEnum.fromCode(uiDTO.getType())) {
             case OPEN_URL:
@@ -45,6 +50,9 @@ public class UIClient {
         }
     }
 
+    /**
+     * 退出webdriver
+     */
     public synchronized void quit() {
         if (driver == null) {
             return;
@@ -53,29 +61,49 @@ public class UIClient {
         forceWait(3);
     }
 
+    /**
+     * webdriver初始化，默认chrome
+     */
     public void init() {
         this.driver = new ChromeDriver();
     }
 
+    /**
+     * 访问指定url
+     * @param url 要访问的url
+     */
     private void openUrl(String url) {
         this.driver.get(url);
         this.driver.manage().window().maximize();
         forceWait(5);
     }
 
+    /**
+     * 强制等待
+     * @param second
+     */
     private void forceWait(int second) {
         try {
             Thread.sleep((long) second * 1000);
         } catch (InterruptedException e) {
-            log.error("\n---->线程睡眠异常");
+            log.error("--->线程睡眠异常");
         }
     }
 
+    /**
+     * 获取元素列表
+     * @param locator 元素位置
+     * @return 元素列表
+     */
     private List<WebElement> getElements(By locator) {
         forceWait(forceTimeOut);
         return driver.findElements(locator);
     }
 
+    /**
+     * 先根据xpath找到所有符合条件的元素，再点击对应序号的元素
+     * @param xpath 元素的xpath
+     */
     private void click(String xpath) {
         forceWait(forceTimeOut);
         WebElement webElement = driver.findElement(By.xpath(xpath));
@@ -86,6 +114,11 @@ public class UIClient {
         actions.perform();
     }
 
+    /**
+     * 在元素中输入执行字符
+     * @param xpath 元素的xpath
+     * @param key 要输入的字符
+     */
     private void sendKey(String xpath, CharSequence key) {
         forceWait(forceTimeOut);
         WebElement webElement = driver.findElement(By.xpath(xpath));
@@ -97,15 +130,15 @@ public class UIClient {
         actions.perform();
     }
 
-    private void moveToElement(String xpath) {
-        forceWait(forceTimeOut);
-        WebElement webElement = driver.findElement(By.xpath(xpath));
-        WebDriverWait webDriverWait = new WebDriverWait(driver, DEFAULT_WAIT_TIME);
-        webDriverWait.until(ExpectedConditions.visibilityOf(webElement));
-        Actions actions = new Actions(driver);
-        actions.moveToElement(webElement);
-        actions.perform();
-    }
+//    private void moveToElement(String xpath) {
+//        forceWait(forceTimeOut);
+//        WebElement webElement = driver.findElement(By.xpath(xpath));
+//        WebDriverWait webDriverWait = new WebDriverWait(driver, DEFAULT_WAIT_TIME);
+//        webDriverWait.until(ExpectedConditions.visibilityOf(webElement));
+//        Actions actions = new Actions(driver);
+//        actions.moveToElement(webElement);
+//        actions.perform();
+//    }
 
     private void moveAndClick(By locator) {
         forceWait(forceTimeOut);

@@ -63,7 +63,7 @@ public interface AutoCaseMapper {
      * @param name       名字
      * @param ownerId    所属人id
      * @param startIndex 页码，从0开始
-     * @return
+     * @return 对象列表
      */
     List<AutoCasePO> list(@Param("status") Integer status,
                           @Param("name") String name,
@@ -73,10 +73,10 @@ public interface AutoCaseMapper {
     /**
      * 按条件查询总数
      *
-     * @param status     状态
-     * @param name       名字
-     * @param ownerId    所属人id
-     * @return
+     * @param status  状态
+     * @param name    名字
+     * @param ownerId 所属人id
+     * @return 总数
      */
     int count(@Param("status") Integer status,
               @Param("name") String name,

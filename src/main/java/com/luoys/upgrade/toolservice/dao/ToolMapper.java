@@ -53,7 +53,7 @@ public interface ToolMapper {
      * @param name       名字
      * @param ownerId    用例所属人id
      * @param startIndex 页码，从0开始
-     * @return
+     * @return 工具对象列表
      */
     List<ToolPO> list(@Param("type") Integer type,
                       @Param("name") String name,
@@ -66,7 +66,7 @@ public interface ToolMapper {
      * @param type    状态
      * @param name    名字
      * @param ownerId 用例所属人id
-     * @return
+     * @return 总数
      */
     Integer count(@Param("type") Integer type,
                   @Param("name") String name,

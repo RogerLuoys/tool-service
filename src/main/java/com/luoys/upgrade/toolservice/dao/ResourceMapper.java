@@ -53,7 +53,7 @@ public interface ResourceMapper {
      * @param name       名字
      * @param ownerId    所属人id
      * @param startIndex 页码，从0开始
-     * @return
+     * @return 对象列表
      */
     List<ResourcePO> list(@Param("type") Integer type,
                           @Param("name") String name,
@@ -66,7 +66,7 @@ public interface ResourceMapper {
      * @param type    类型
      * @param name    名字
      * @param ownerId 所属人id
-     * @return
+     * @return 总数
      */
     Integer count(@Param("type") Integer type,
                   @Param("name") String name,

@@ -23,7 +23,8 @@ public class RPCClient {
     private final ReferenceConfig<GenericService> reference = new ReferenceConfig<>();
 
     /**
-     * 执行rpc调用
+     * 执行rpc调用，有同步锁
+     *
      * @param rpcDTO rpc对象
      * @return 调用的response
      */

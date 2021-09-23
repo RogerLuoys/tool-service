@@ -225,7 +225,7 @@ public class CaseService {
             ThreadPoolUtil.executeUI(()->{
                 log.info("--->执行ui用例的步骤：caseId={}", autoCaseVO.getCaseId());
                 boolean result = executeUI(autoCaseVO);
-                log.info("---->步骤执行完毕，更新用例结果：caseId={}", autoCaseVO.getCaseId());
+                log.info("---->步骤执行完毕，更新用例结果：caseId={}, result={}", autoCaseVO.getCaseId(), result);
                 autoCaseMapper.updateStatus(autoCaseVO.getCaseId(),
                         result ? AutoCaseStatusEnum.SUCCESS.getCode() : AutoCaseStatusEnum.FAIL.getCode());
             });
@@ -233,7 +233,7 @@ public class CaseService {
             ThreadPoolUtil.executeAPI(() -> {
                 log.info("--->执行api用例的步骤：caseId={}", autoCaseVO.getCaseId());
                 boolean result = executeAPI(autoCaseVO);
-                log.info("---->步骤执行完毕，更新用例结果：caseId={}", autoCaseVO.getCaseId());
+                log.info("---->步骤执行完毕，更新用例结果：caseId={}, result={}", autoCaseVO.getCaseId(), result);
                 autoCaseMapper.updateStatus(autoCaseVO.getCaseId(),
                         result ? AutoCaseStatusEnum.SUCCESS.getCode() : AutoCaseStatusEnum.FAIL.getCode());
             });

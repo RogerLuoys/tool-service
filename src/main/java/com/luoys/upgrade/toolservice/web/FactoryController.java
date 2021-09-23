@@ -22,20 +22,20 @@ public class FactoryController {
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     public Result<String> create(@RequestHeader("userId") String userId, @RequestBody ToolVO toolVO) {
         toolVO.setOwnerId(userId);
-        log.info("---》开始新增通用工具：{}", toolVO);
+        log.info("--->开始新增通用工具：{}", toolVO);
         return Result.message(factoryService.create(toolVO));
     }
 
     @RequestMapping(value = "/remove", method = RequestMethod.DELETE)
     public Result<String> remove(@RequestParam("toolId") String toolId) {
-        log.info("---》开始删除通用工具：{}", toolId);
+        log.info("--->开始删除通用工具：{}", toolId);
         return Result.message(factoryService.remove(toolId));
 
     }
 
     @RequestMapping(value = "/update", method = RequestMethod.PUT)
     public Result<Boolean> update(@RequestBody ToolVO toolVO) {
-        log.info("---》开始更新通用工具：{}", toolVO);
+        log.info("--->开始更新通用工具：{}", toolVO);
         return Result.message(factoryService.update(toolVO));
     }
 
@@ -45,7 +45,7 @@ public class FactoryController {
                                                 @RequestParam(value = "type", required = false) Integer type,
                                                 @RequestParam(value = "name", required = false) String name,
                                                 @RequestParam("pageIndex") Integer pageIndex) {
-        log.info("---》开始查询通用工具列表：type={}, title={}, userId={}, startIndex={}", type, name, userId, pageIndex);
+        log.info("--->开始查询通用工具列表：type={}, title={}, userId={}, startIndex={}", type, name, userId, pageIndex);
         PageInfo<ToolSimpleVO> pageInfo = new PageInfo<>();
         pageInfo.setList(factoryService.query(userId, isOnlyOwner, type, name, pageIndex));
         pageInfo.setTotal(factoryService.count(userId, isOnlyOwner, type, name));
@@ -54,13 +54,13 @@ public class FactoryController {
 
     @RequestMapping(value = "/queryDetail", method = RequestMethod.GET)
     public Result<ToolVO> queryDetail(@RequestParam("toolId") String toolId) {
-        log.info("---》开始查询通用工具详情：toolId={}", toolId);
+        log.info("--->开始查询通用工具详情：toolId={}", toolId);
         return Result.success(factoryService.queryDetail(toolId));
     }
 
     @RequestMapping(value = "/use", method = RequestMethod.POST)
     public Result<String> use(@RequestBody ToolVO toolVO) {
-        log.info("---》开始使用通用工具：{}", toolVO);
+        log.info("--->开始使用通用工具：{}", toolVO);
         return Result.message(factoryService.use(toolVO), "执行异常，请确认参数是否正常");
     }
 }

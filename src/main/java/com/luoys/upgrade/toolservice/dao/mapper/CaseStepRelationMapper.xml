@@ -78,6 +78,6 @@
       </if>
       gmt_modified = now()
     </set>
-    where case_id = #{caseId,jdbcType=VARCHAR} and step_id = #{stepId,jdbcType=VARCHAR}
+    where case_id = #{caseId,jdbcType=VARCHAR} and step_id = #{stepId,jdbcType=VARCHAR} and is_delete = 0
   </update>
 </mapper>

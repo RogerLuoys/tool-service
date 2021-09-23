@@ -26,6 +26,12 @@ public class HTTPClient {
     private final RestTemplateBuilder restTemplateBuilder = new RestTemplateBuilder();
     private final RestTemplate restTemplate = restTemplateBuilder.build();
 
+    /**
+     * 执行http请求，有同步锁
+     *
+     * @param httpRequestDTO -
+     * @return 执行结果
+     */
     public synchronized String execute(HttpRequestDTO httpRequestDTO) {
         String url = httpRequestDTO.getHttpURL();
         String body = httpRequestDTO.getHttpBody();

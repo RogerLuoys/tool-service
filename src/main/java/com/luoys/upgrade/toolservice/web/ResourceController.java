@@ -22,19 +22,19 @@ public class ResourceController {
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     public Result<String> create(@RequestHeader("userId") String userId, @RequestBody ResourceVO resourceVO) {
         resourceVO.setOwnerId(userId);
-        log.info("---》开始新增资源：{}", resourceVO);
+        log.info("--->开始新增资源：{}", resourceVO);
         return Result.message(resourceService.create(resourceVO));
     }
 
     @RequestMapping(value = "/remove", method = RequestMethod.DELETE)
     public Result<String> remove(@RequestParam("resourceId") String resourceId) {
-        log.info("---》开始删除资源：{}", resourceId);
+        log.info("--->开始删除资源：{}", resourceId);
         return Result.message(resourceService.remove(resourceId));
     }
 
     @RequestMapping(value = "/update", method = RequestMethod.PUT)
     public Result<String> update(@RequestBody ResourceVO resourceVO) {
-        log.info("---》开始更新资源：{}", resourceVO);
+        log.info("--->开始更新资源：{}", resourceVO);
         return Result.message(resourceService.update(resourceVO));
     }
 
@@ -43,7 +43,7 @@ public class ResourceController {
                                                     @RequestParam(value = "name", required = false) String name,
                                                     @RequestHeader("userId") String userId,
                                                     @RequestParam("pageIndex") Integer pageIndex) {
-        log.info("---》开始查询资源列表：");
+        log.info("--->开始查询资源列表：");
         PageInfo<ResourceSimpleVO> pageInfo = new PageInfo<>();
         pageInfo.setList(resourceService.query(type, name, userId, pageIndex));
         pageInfo.setTotal(resourceService.count(type, name, userId));
@@ -52,7 +52,7 @@ public class ResourceController {
 
     @RequestMapping(value = "/queryDetail", method = RequestMethod.GET)
     public Result<ResourceVO> queryDetail(@RequestParam("resourceId") String resourceId) {
-        log.info("---》开始查询资源详情：resourceId={}", resourceId);
+        log.info("--->开始查询资源详情：resourceId={}", resourceId);
         return Result.success(resourceService.queryDetail(resourceId));
     }
 

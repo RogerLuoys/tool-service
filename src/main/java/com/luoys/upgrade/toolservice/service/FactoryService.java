@@ -156,13 +156,13 @@ public class FactoryService {
         try {
             for (ToolVO targetVO : toolList) {
                 if (targetVO.getType().equals(ToolTypeEnum.MULTIPLE.getCode())) {
-                    log.error("---->不支持套娃：toolId={}", targetVO.getToolId());
+                    log.error("--->不支持套娃：toolId={}", targetVO.getToolId());
                     return null;
                 }
                 result.append(execute(targetVO)).append("\n");
             }
         } catch (Exception e) {
-            log.error("---->工具执行异常：toolId={}", toolVO.getToolId(), e);
+            log.error("--->工具执行异常：toolId={}", toolVO.getToolId(), e);
             return null;
         }
         result.delete(result.length() - 2, result.length());

@@ -1,7 +1,6 @@
 package com.luoys.upgrade.toolservice.dao;
 
 import com.luoys.upgrade.toolservice.dao.po.AutoStepPO;
-import com.luoys.upgrade.toolservice.dao.po.ToolPO;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -67,7 +66,7 @@ public interface AutoStepMapper {
      * @param ownerId    所属人id
      * @param isPublic   是否公用
      * @param startIndex 页码，从0开始
-     * @return
+     * @return 对象列表
      */
     List<AutoStepPO> list(@Param("type") Integer type,
                           @Param("name") String name,
@@ -82,7 +81,7 @@ public interface AutoStepMapper {
      * @param name     名字
      * @param ownerId  所属人id
      * @param isPublic 是否公用
-     * @return
+     * @return 总数
      */
     int count(@Param("type") Integer type,
               @Param("name") String name,

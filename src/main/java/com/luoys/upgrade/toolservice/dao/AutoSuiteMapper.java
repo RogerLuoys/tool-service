@@ -1,7 +1,6 @@
 package com.luoys.upgrade.toolservice.dao;
 
 import com.luoys.upgrade.toolservice.dao.po.AutoSuitePO;
-import com.luoys.upgrade.toolservice.dao.po.AutoSuitePO;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -87,7 +86,7 @@ public interface AutoSuiteMapper {
      * @param name       名字
      * @param ownerId    所属人id
      * @param startIndex 页码，从0开始
-     * @return
+     * @return 对象列表
      */
     List<AutoSuitePO> list(@Param("name") String name,
                            @Param("ownerId") String ownerId,
@@ -98,7 +97,7 @@ public interface AutoSuiteMapper {
      *
      * @param name       名字
      * @param ownerId    所属人id
-     * @return
+     * @return 总数
      */
     int count(@Param("name") String name,
                            @Param("ownerId") String ownerId);
