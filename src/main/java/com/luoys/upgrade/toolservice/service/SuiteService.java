@@ -6,6 +6,7 @@ import com.luoys.upgrade.toolservice.common.ThreadPoolUtil;
 import com.luoys.upgrade.toolservice.dao.AutoCaseMapper;
 import com.luoys.upgrade.toolservice.dao.AutoSuiteMapper;
 import com.luoys.upgrade.toolservice.dao.SuiteCaseRelationMapper;
+import com.luoys.upgrade.toolservice.dao.UserMapper;
 import com.luoys.upgrade.toolservice.dao.po.AutoCasePO;
 import com.luoys.upgrade.toolservice.dao.po.SuiteCaseRelationPO;
 import com.luoys.upgrade.toolservice.service.enums.AutoCaseStatusEnum;
@@ -18,7 +19,6 @@ import com.luoys.upgrade.toolservice.service.transform.TransformSuiteCaseRelatio
 import com.luoys.upgrade.toolservice.web.vo.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -37,9 +37,6 @@ import java.util.concurrent.RejectedExecutionException;
 @Service
 public class SuiteService {
 
-    @Value("${tool.node.isMain}")
-    private String test;
-
     @Autowired
     private AutoSuiteMapper autoSuiteMapper;
 
@@ -48,6 +45,9 @@ public class SuiteService {
 
     @Autowired
     private SuiteCaseRelationMapper suiteCaseRelationMapper;
+
+    @Autowired
+    private UserMapper userMapper;
 
     @Autowired
     private CaseService caseService;
@@ -66,7 +66,8 @@ public class SuiteService {
         if (autoSuiteVO.getOwnerId().equals(KeywordEnum.DEFAULT_USER.getCode().toString())) {
             autoSuiteVO.setOwnerName(KeywordEnum.DEFAULT_USER.getValue());
         } else {
-//            autoSuiteVO.setOwnerName(userService.queryByUserId(autoStepVO.getOwnerId()).getData().getUserName());
+            String userName = userMapper.selectByUUId(autoSuiteVO.getOwnerId()).getUserName();
+            autoSuiteVO.setOwnerName(userName);
         }
         autoSuiteVO.setSuiteId(NumberSender.createSuiteId());
         int result = autoSuiteMapper.insert(TransformAutoSuite.transformVO2PO(autoSuiteVO));
@@ -109,14 +110,15 @@ public class SuiteService {
 
     /**
      * 测试集关联批量用例
-     * @param suiteId
-     * @param userId
-     * @param name
-     * @return
+     *
+     * @param suiteId 测试集业务id
+     * @param userId  用例所属人
+     * @param name    用例名称
+     * @return 成功为true
      */
     public Boolean createRelatedCase(String suiteId, String userId, String name) {
         List<SuiteCaseRelationPO> relateCase = new ArrayList<>();
-        for(AutoCaseSimpleVO vo: queryAll(suiteId, userId, name)) {
+        for (AutoCaseSimpleVO vo : queryAll(suiteId, userId, name)) {
             SuiteCaseRelationPO po = new SuiteCaseRelationPO();
             po.setCaseId(vo.getCaseId());
             po.setSequence(KeywordEnum.DEFAULT_CASE_SEQUENCE.getCode());
@@ -190,7 +192,7 @@ public class SuiteService {
     /**
      * 查询测试集总条数
      *
-     * @param name      名字，可空
+     * @param name    名字，可空
      * @param ownerId 用户名
      * @return 测试集列表
      */
@@ -200,10 +202,11 @@ public class SuiteService {
 
     /**
      * 查询符合条件且尚未被测试集添加过的所有用例
-     * @param suiteId
-     * @param userId
-     * @param name
-     * @return
+     *
+     * @param suiteId 测试集业务id
+     * @param userId  用例所属人
+     * @param name    用例名称
+     * @return 用例列表
      */
     public List<AutoCaseSimpleVO> queryAll(String suiteId, String userId, String name) {
         List<AutoCasePO> allCase = autoCaseMapper.list(AutoCaseStatusEnum.SUCCESS.getCode(), name, userId, null);
@@ -214,7 +217,7 @@ public class SuiteService {
         for (AutoCasePO po : allCase) {
             // 先判断用例是否已被关联，如果关联过，则标记为true
             isExist = false;
-            for (SuiteCaseRelationPO selectedPO: selectedCase) {
+            for (SuiteCaseRelationPO selectedPO : selectedCase) {
                 if (po.getCaseId().equals(selectedPO.getCaseId())) {
                     isExist = true;
                     break;
@@ -265,8 +268,8 @@ public class SuiteService {
     /**
      * 执行测试集（异步模式）
      *
-     * @param suiteId -
-     * @return -
+     * @param suiteId 测试集业务id
+     * @return true只代表唤起执行操作成功
      */
     public Boolean useAsync(String suiteId, Boolean retry) throws RejectedExecutionException {
         // 全量查询测试集详情，如果重试则只查询其中未通过用例
@@ -378,7 +381,7 @@ public class SuiteService {
     /**
      * 按执行顺序排序，并将接口用例与UI用例区分开
      *
-     * @param caseList -
+     * @param caseList 用例列表
      * @return 包含两条数据的Map对象
      */
     private Map<Integer, List<SuiteCaseVO>> orderAndSort(List<SuiteCaseVO> caseList) {
@@ -435,7 +438,7 @@ public class SuiteService {
     /**
      * 执行用例
      *
-     * @param caseList -
+     * @param caseList 用例列表
      * @return 返回所执行用例的成功数和失败数
      */
     private void execute(List<SuiteCaseVO> caseList, String environment) {

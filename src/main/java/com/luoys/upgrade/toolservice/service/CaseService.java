@@ -5,16 +5,13 @@ import com.luoys.upgrade.toolservice.common.StringUtil;
 import com.luoys.upgrade.toolservice.common.ThreadPoolUtil;
 import com.luoys.upgrade.toolservice.dao.AutoCaseMapper;
 import com.luoys.upgrade.toolservice.dao.CaseStepRelationMapper;
-import com.luoys.upgrade.toolservice.dao.SuiteCaseRelationMapper;
-import com.luoys.upgrade.toolservice.dao.po.AutoCasePO;
-import com.luoys.upgrade.toolservice.dao.po.SuiteCaseRelationPO;
+import com.luoys.upgrade.toolservice.dao.UserMapper;
 import com.luoys.upgrade.toolservice.service.client.UIClient;
 import com.luoys.upgrade.toolservice.service.enums.AutoCaseStatusEnum;
 import com.luoys.upgrade.toolservice.service.enums.AutoCaseTypeEnum;
 import com.luoys.upgrade.toolservice.service.enums.KeywordEnum;
 import com.luoys.upgrade.toolservice.service.enums.RelatedStepTypeEnum;
 import com.luoys.upgrade.toolservice.service.transform.TransformCaseStepRelation;
-import com.luoys.upgrade.toolservice.service.transform.TransformSuiteCaseRelation;
 import com.luoys.upgrade.toolservice.web.vo.AutoCaseSimpleVO;
 import com.luoys.upgrade.toolservice.web.vo.AutoCaseVO;
 import com.luoys.upgrade.toolservice.service.transform.TransformAutoCase;
@@ -24,9 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.RejectedExecutionException;
 
 /**
@@ -38,8 +33,6 @@ import java.util.concurrent.RejectedExecutionException;
 @Service
 public class CaseService {
 
-    private static final Integer DEFAULT_PAGE_SIZE = 10;
-
     @Autowired
     private AutoCaseMapper autoCaseMapper;
 
@@ -47,7 +40,7 @@ public class CaseService {
     private CaseStepRelationMapper caseStepRelationMapper;
 
     @Autowired
-    private SuiteCaseRelationMapper suiteCaseRelationMapper;
+    private UserMapper userMapper;
 
     @Autowired
     private StepService stepService;
@@ -77,7 +70,8 @@ public class CaseService {
         if (autoCaseVO.getOwnerId().equals(KeywordEnum.DEFAULT_USER.getCode().toString())) {
             autoCaseVO.setOwnerName(KeywordEnum.DEFAULT_USER.getValue());
         } else {
-            //todo 查用户名
+            String userName = userMapper.selectByUUId(autoCaseVO.getOwnerId()).getUserName();
+            autoCaseVO.setOwnerName(userName);
         }
         int result = autoCaseMapper.insert(TransformAutoCase.transformVO2PO(autoCaseVO));
         return result == 1;

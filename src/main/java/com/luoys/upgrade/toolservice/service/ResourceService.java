@@ -2,6 +2,7 @@ package com.luoys.upgrade.toolservice.service;
 
 import com.luoys.upgrade.toolservice.common.NumberSender;
 import com.luoys.upgrade.toolservice.dao.ResourceMapper;
+import com.luoys.upgrade.toolservice.dao.UserMapper;
 import com.luoys.upgrade.toolservice.service.enums.KeywordEnum;
 import com.luoys.upgrade.toolservice.service.transform.TransformResource;
 import com.luoys.upgrade.toolservice.web.vo.ResourceSimpleVO;
@@ -22,6 +23,9 @@ public class ResourceService {
     @Autowired
     private ResourceMapper resourceMapper;
 
+    @Autowired
+    private UserMapper userMapper;
+
     /**
      * 创建单个资源
      *
@@ -33,7 +37,8 @@ public class ResourceService {
         if (resourceVO.getOwnerId().equals(KeywordEnum.DEFAULT_USER.getCode().toString())) {
             resourceVO.setOwnerName(KeywordEnum.DEFAULT_USER.getValue());
         } else {
-            //todo 查用户名
+            String userName = userMapper.selectByUUId(resourceVO.getOwnerId()).getUserName();
+            resourceVO.setOwnerName(userName);
         }
         int result = resourceMapper.insert(TransformResource.transformVO2PO(resourceVO));
         return result == 1;

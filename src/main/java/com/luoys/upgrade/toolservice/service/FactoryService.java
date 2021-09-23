@@ -2,6 +2,7 @@ package com.luoys.upgrade.toolservice.service;
 
 import com.luoys.upgrade.toolservice.common.NumberSender;
 import com.luoys.upgrade.toolservice.dao.ToolMapper;
+import com.luoys.upgrade.toolservice.dao.UserMapper;
 import com.luoys.upgrade.toolservice.service.client.DBClient;
 import com.luoys.upgrade.toolservice.service.client.HTTPClient;
 import com.luoys.upgrade.toolservice.service.client.RPCClient;
@@ -32,6 +33,9 @@ public class FactoryService {
     private ToolMapper toolMapper;
 
     @Autowired
+    private UserMapper userMapper;
+
+    @Autowired
     private HTTPClient httpClient;
 
     @Autowired
@@ -51,7 +55,8 @@ public class FactoryService {
         if (toolVO.getOwnerId().equals(KeywordEnum.DEFAULT_USER.getCode().toString())) {
             toolVO.setOwnerName(KeywordEnum.DEFAULT_USER.getValue());
         } else {
-//            toolVO.setOwnerName(userService.queryByUserId(toolVO.getOwnerId()).getData().getUserName());
+            String userName = userMapper.selectByUUId(toolVO.getOwnerId()).getUserName();
+            toolVO.setOwnerName(userName);
         }
         int result = toolMapper.insert(TransformTool.transformVO2PO(toolVO));
         return result == 1;
@@ -172,8 +177,8 @@ public class FactoryService {
     /**
      * 执行指定类型的工具，执行前先替换变量
      *
-     * @param toolVO
-     * @return
+     * @param toolVO 工具对象
+     * @return 执行结果
      */
     private String execute(ToolVO toolVO) {
         switch (ToolTypeEnum.fromCode(toolVO.getType())) {

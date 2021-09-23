@@ -1,9 +1,9 @@
 package com.luoys.upgrade.toolservice.service;
 
 import com.luoys.upgrade.toolservice.common.NumberSender;
-import com.luoys.upgrade.toolservice.common.StringUtil;
 import com.luoys.upgrade.toolservice.common.ThreadPoolUtil;
 import com.luoys.upgrade.toolservice.dao.AutoStepMapper;
+import com.luoys.upgrade.toolservice.dao.UserMapper;
 import com.luoys.upgrade.toolservice.service.client.DBClient;
 import com.luoys.upgrade.toolservice.service.client.HTTPClient;
 import com.luoys.upgrade.toolservice.service.client.RPCClient;
@@ -11,7 +11,6 @@ import com.luoys.upgrade.toolservice.service.client.UIClient;
 import com.luoys.upgrade.toolservice.service.enums.AssertTypeEnum;
 import com.luoys.upgrade.toolservice.service.enums.AutoStepTypeEnum;
 import com.luoys.upgrade.toolservice.service.enums.KeywordEnum;
-import com.luoys.upgrade.toolservice.service.enums.ToolTypeEnum;
 import com.luoys.upgrade.toolservice.service.transform.TransformAutoStep;
 import com.luoys.upgrade.toolservice.web.vo.AutoStepSimpleVO;
 import com.luoys.upgrade.toolservice.web.vo.AutoStepVO;
@@ -33,6 +32,9 @@ public class StepService {
 
     @Autowired
     private AutoStepMapper autoStepMapper;
+
+    @Autowired
+    private UserMapper userMapper;
 
     @Autowired
     private HTTPClient httpClient;
@@ -63,7 +65,8 @@ public class StepService {
         if (autoStepVO.getOwnerId().equals(KeywordEnum.DEFAULT_USER.getCode().toString())) {
             autoStepVO.setOwnerName(KeywordEnum.DEFAULT_USER.getValue());
         } else {
-//            autoStepVO.setOwnerName(userService.queryByUserId(autoStepVO.getOwnerId()).getData().getUserName());
+            String userName = userMapper.selectByUUId(autoStepVO.getOwnerId()).getUserName();
+            autoStepVO.setOwnerName(userName);
         }
         int result = autoStepMapper.insert(TransformAutoStep.transformVO2PO(autoStepVO));
         return result == 1;
@@ -175,15 +178,7 @@ public class StepService {
             log.error("--->UI步骤不支持单步调试：stepId={}", autoStepVO.getStepId());
             return false;
         }
-        ThreadPoolUtil.executeAPI(() -> {
-            execute(autoStepVO);
-        });
-//        try {
-//
-//        } catch (Exception e) {
-//            log.error("--->步骤执行异常：stepId={}", autoStepVO.getStepId(), e);
-//            return false;
-//        }
+        ThreadPoolUtil.executeAPI(() -> execute(autoStepVO));
         return true;
     }
 

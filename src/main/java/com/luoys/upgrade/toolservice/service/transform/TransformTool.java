@@ -2,7 +2,6 @@ package com.luoys.upgrade.toolservice.service.transform;
 
 import com.luoys.upgrade.toolservice.dao.po.ToolPO;
 import com.luoys.upgrade.toolservice.service.dto.*;
-import com.luoys.upgrade.toolservice.service.enums.KeywordEnum;
 import com.luoys.upgrade.toolservice.service.enums.ToolTypeEnum;
 import com.luoys.upgrade.toolservice.web.vo.ToolSimpleVO;
 import com.luoys.upgrade.toolservice.web.vo.ToolVO;
@@ -43,10 +42,6 @@ public class TransformTool {
         return voList;
     }
 
-    private static String mergeParam(String paramName) {
-        return "${" + paramName + "}";
-    }
-
     /**
      * 将参数合并入sql列表中-新
      * @param toolVO -
@@ -79,40 +74,9 @@ public class TransformTool {
         log.info("---->合并后sql列表：{}", toolVO.getJdbc().getSqlList());
     }
 
-//    /**
-//     * 将参数合并入sql列表中
-//     * @param toolVO -
-//     */
-//    public static void mergeSql(ToolVO toolVO) {
-//        // 无变量
-//        if (toolVO.getParameterList() == null || toolVO.getParameterList().size() == 0) {
-//            log.info("---->无参数需要合并");
-//            return;
-//        }
-//        log.info("---->合并前sql列表：{}", toolVO.getJdbc().getSqlList());
-//        List<SqlDTO> actualSqlList = new ArrayList<>();
-//        String oneSql, fullParamSymbol;
-//        for (SqlDTO sqlDTO : toolVO.getJdbc().getSqlList()) {
-//            oneSql = sqlDTO.getSql();
-//            //先判断指定sql模板中是否有参数占位符，有则进入替换逻辑
-//            if (oneSql.matches(PARAM_REGEX)) {
-//                //将所有实际参数与其中一条sql模板的占位符替换
-//                for (ParameterDTO parameterDTO : toolVO.getParameterList()) {
-//                    fullParamSymbol = KeywordEnum.PARAM_SYMBOL.getValue()+parameterDTO.getName()+"}";
-//                    if (oneSql.contains(fullParamSymbol)) {
-//                        sqlDTO.setSql(oneSql.replace(fullParamSymbol, parameterDTO.getValue()));
-//                    }
-//                }
-//            }
-//            actualSqlList.add(sqlDTO);
-//        }
-//        toolVO.getJdbc().setSqlList(actualSqlList);
-//        log.info("---->合并后sql列表：{}", toolVO.getJdbc().getSqlList());
-//    }
-
     /**
      * 将参数合并入http请求中
-     * @param toolVO
+     * @param toolVO 工具对象
      */
     public static void mergeHttp(ToolVO toolVO) {
         // 无变量
@@ -138,33 +102,9 @@ public class TransformTool {
         log.info("---->合并后http请求：{}", toolVO.getHttpRequest());
     }
 
-//    public static void mergeHttp(ToolVO toolVO) {
-//        // 无变量
-//        if (toolVO.getParameterList() == null || toolVO.getParameterList().size() == 0) {
-//            return;
-//        }
-//        log.info("---->合并前http请求：{}", toolVO.getHttpRequest());
-//        String fullParamSymbol;
-//        String url = toolVO.getHttpRequest().getHttpURL();
-//        String body = toolVO.getHttpRequest().getHttpBody();
-//        //将参数一个个替换入url和body中
-//        for (ParameterDTO parameterDTO : toolVO.getParameterList()) {
-//            fullParamSymbol = KeywordEnum.PARAM_SYMBOL.getCode()+parameterDTO.getName()+"}";
-//            if (url.contains(fullParamSymbol)) {
-//                url = url.replace(fullParamSymbol, parameterDTO.getValue());
-//            }
-//            if (body != null && body.contains(fullParamSymbol)) {
-//                body = body.replace(fullParamSymbol, parameterDTO.getValue());
-//            }
-//        }
-//        toolVO.getHttpRequest().setHttpURL(url);
-//        toolVO.getHttpRequest().setHttpBody(body);
-//        log.info("---->合并后http请求：{}", toolVO.getHttpRequest());
-//    }
-
     /**
      * 将参数合并入rpc请求中
-     * @param toolVO
+     * @param toolVO 工具对象
      */
     public static void mergeRpc(ToolVO toolVO) {
         // 无变量
