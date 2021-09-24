@@ -18,7 +18,8 @@ import java.util.List;
 @Slf4j
 public class TransformTool {
 
-    private static final String PARAM_REGEX = ".*\\$\\{[A-Za-z0-9]+}.*";
+    // 变量格式 ${name}, 1<=name长度<=20
+    private static final String PARAM_REGEX = ".*\\$\\{[A-Za-z0-9]{1,20}}.*";
 
     public static ToolSimpleVO transformPO2SimpleVO(ToolPO po) {
         if (po == null)
@@ -114,7 +115,16 @@ public class TransformTool {
         log.info("---->合并前rpc请求：{}", toolVO.getRpc());
         String fullParamSymbol;
         List<ParameterDTO> rpcParamList = new ArrayList<>();
-        //先遍历目标，rpc入参
+        // 替换url字段中的变量
+        if (toolVO.getRpc().getUrl().matches(PARAM_REGEX)) {
+            for (ParameterDTO parameterDTO : toolVO.getParameterList()) {
+                fullParamSymbol = "${" + parameterDTO.getName() + "}";
+                if (toolVO.getRpc().getUrl().contains(fullParamSymbol)) {
+                    toolVO.getRpc().setUrl(toolVO.getRpc().getUrl().replace(fullParamSymbol, parameterDTO.getValue()));
+                }
+            }
+        }
+        //遍历目标，替换rpc入参
         for (ParameterDTO rpcParam : toolVO.getRpc().getParameterList()) {
             String oneValue = rpcParam.getValue();
             //判断入参中是否有指定占位符，无则不用替换直接插入
