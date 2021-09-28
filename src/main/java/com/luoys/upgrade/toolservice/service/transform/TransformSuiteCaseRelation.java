@@ -19,6 +19,7 @@ public class TransformSuiteCaseRelation {
             return null;
         }
         SuiteCaseVO vo = new SuiteCaseVO();
+        vo.setSuiteId(po.getSuiteId());
         vo.setSequence(po.getSequence());
         vo.setCaseId(po.getCaseId());
         vo.setStatus(po.getStatus());

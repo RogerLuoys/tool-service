@@ -16,7 +16,9 @@ public enum UiTypeEnum {
     OPEN_URL(1, "打开网站"),
     CLICK(2, "单击控件"),
     SEND_KEY(3, "键盘输入"),
-    IS_EXIST(4, "判断控件是否存在");
+    IS_EXIST(4, "判断控件是否存在"),
+    SWITCH_FRAME(5, "切换frame"),
+    HOVER(6, "鼠标悬停");
 
 
     private final Integer code;

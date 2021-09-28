@@ -3,6 +3,7 @@ package com.luoys.upgrade.toolservice.service.client;
 import com.luoys.upgrade.toolservice.service.dto.UiDTO;
 import com.luoys.upgrade.toolservice.service.enums.UiTypeEnum;
 import lombok.extern.slf4j.Slf4j;
+import org.openqa.selenium.Keys;
 import org.springframework.stereotype.Component;
 
 import org.openqa.selenium.By;
@@ -45,6 +46,12 @@ public class UIClient {
                 return "true";
             case IS_EXIST:
                 return isElementExist(uiDTO.getElement()).toString();
+            case SWITCH_FRAME:
+                switchToFrame(uiDTO.getElement());
+                return "true";
+            case HOVER:
+                hover(uiDTO.getElement());
+                return "true";
             default:
                 return "false";
         }
@@ -110,8 +117,7 @@ public class UIClient {
         WebDriverWait webDriverWait = new WebDriverWait(driver, DEFAULT_WAIT_TIME);
         webDriverWait.until(ExpectedConditions.elementToBeClickable(webElement));
         Actions actions = new Actions(driver);
-        actions.click(webElement);
-        actions.perform();
+        actions.click(webElement).perform();
     }
 
     /**
@@ -126,8 +132,34 @@ public class UIClient {
         webDriverWait.until(ExpectedConditions.visibilityOf(webElement));
         webElement.clear();
         Actions actions = new Actions(driver);
-        actions.sendKeys(webElement, key);
-        actions.perform();
+        actions.sendKeys(webElement, key).perform();
+    }
+
+    /**
+     * 切换至对应的frame中
+     * @param frame iframe的id、name或xpath
+     */
+    private void switchToFrame(String frame) {
+        forceWait(forceTimeOut);
+        if (frame.startsWith("\\\\")) {
+            WebElement iFrameElement = driver.findElement(By.xpath(frame));
+            driver.switchTo().frame(iFrameElement);
+        } else {
+            driver.switchTo().frame(frame);
+        }
+    }
+
+    /**
+     * 鼠标悬停对应元素上
+     * @param xpath 元素的xpath
+     */
+    private void hover(String xpath) {
+        forceWait(forceTimeOut);
+        WebElement webElement = driver.findElement(By.xpath(xpath));
+        WebDriverWait webDriverWait = new WebDriverWait(driver, DEFAULT_WAIT_TIME);
+        webDriverWait.until(ExpectedConditions.elementToBeClickable(webElement));
+        Actions actions = new Actions(driver);
+        actions.moveToElement(webElement).perform();
     }
 
 //    private void moveToElement(String xpath) {

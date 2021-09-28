@@ -242,7 +242,6 @@ public class CaseService {
      * @return 主要步骤全部执行结果都为true才返回true
      */
     public Boolean use(AutoCaseVO autoCaseVO) {
-        log.info("--->执行用例：caseId={}, caseName={}", autoCaseVO.getCaseId(), autoCaseVO.getName());
         boolean result;
         // UI和接口用例分开执行
         if (autoCaseVO.getType().equals(AutoCaseTypeEnum.UI_CASE.getCode())) {
@@ -250,6 +249,7 @@ public class CaseService {
         } else {
             result = executeAPI(autoCaseVO);
         }
+        log.info("--->执行用例完成：caseId={}, caseName={}, result={}", autoCaseVO.getCaseId(), autoCaseVO.getName(), result);
         return result;
     }
 

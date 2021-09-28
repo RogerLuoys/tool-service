@@ -285,7 +285,7 @@ public class SuiteService {
             log.error("--->测试集内未找到关联的用例：suiteId={}", suiteId);
             return false;
         }
-        // 将测试集上次的所有执行结果重置，并设置成执行中
+        // 将测试集上次的所有执行结果重置，并将状态设置成执行中
         autoSuiteMapper.updateResult(suiteId, 0, 0);
         autoSuiteMapper.updateStatus(suiteId, AutoSuiteStatusEnum.SUITE_RUNNING.getCode());
         suiteCaseRelationMapper.resetStatusBySuiteId(suiteId);
@@ -455,7 +455,7 @@ public class SuiteService {
             } finally {
                 // 更新测试集中关联用例的执行状态
                 suiteCaseRelationMapper.updateStatus(vo.getSuiteId(), vo.getCaseId(),
-                        result ? AutoCaseStatusEnum.SUCCESS.getCode() : AutoCaseStatusEnum.SUCCESS.getCode());
+                        result ? AutoCaseStatusEnum.SUCCESS.getCode() : AutoCaseStatusEnum.FAIL.getCode());
             }
         }
     }

@@ -66,7 +66,7 @@
   </select>
   <delete id="remove">
     update tool set is_delete=1
-    where tool_id = #{tool_id,jdbcType=VARCHAR}
+    where tool_id = #{toolId,jdbcType=VARCHAR}
   </delete>
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.luoys.upgrade.toolservice.dao.po.ToolPO" useGeneratedKeys="true">
     insert into tool (tool_id, `name`, description,

@@ -18,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.RejectedExecutionException;
 
@@ -192,8 +193,8 @@ public class StepService {
         try {
             // 执行步骤并设置实际结果
             autoStepVO.setAssertActual(execute(autoStepVO));
-            if (autoStepVO.getType().equals(AutoStepTypeEnum.STEP_UI.getCode())) {
-                Thread.sleep(autoStepVO.getAfterSleep());
+            if (autoStepVO.getType().equals(AutoStepTypeEnum.STEP_UI.getCode()) && autoStepVO.getAfterSleep() > 0) {
+                Thread.sleep(autoStepVO.getAfterSleep() * 1000);
             }
         } catch (Exception e) {
             log.error("--->步骤执行异常：stepId={}", autoStepVO.getStepId(), e);

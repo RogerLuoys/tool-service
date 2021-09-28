@@ -96,7 +96,7 @@ public class AutoSuiteController {
                               @RequestParam(value = "retry", required = false) Boolean retry) {
         log.info("--->开始执行测试集：suiteId={}, retry={}", suiteId, retry);
         try {
-            return Result.message(suiteService.useAsync(suiteId, retry), "执行测试集异常");
+            return Result.message(suiteService.useAsync(suiteId, retry), "套件未执行，请检查状态");
         } catch (RejectedExecutionException e) {
             return Result.errorMessage("执行队列已满，请稍后再试");
         }
