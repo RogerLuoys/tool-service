@@ -67,6 +67,17 @@ public class ResourceService {
     }
 
     /**
+     * 更换使用者
+     *
+     * @param resourceVO 资源对象
+     * @return 成功为true，失败为false
+     */
+    public Boolean updateUser(ResourceVO resourceVO) {
+        int result = resourceMapper.updateUser(resourceVO.getResourceId(), resourceVO.getUserId(), resourceVO.getUserName());
+        return result == 1;
+    }
+
+    /**
      * 查询资源列表
      *
      * @param type      类型

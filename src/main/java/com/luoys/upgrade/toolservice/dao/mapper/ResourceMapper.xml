@@ -132,4 +132,12 @@
     </set>
     where resource_id = #{resourceId,jdbcType=VARCHAR}
   </update>
+  <update id="updateUser">
+    update resource
+    set
+        user_id = #{userId,jdbcType=VARCHAR},
+        user_name = #{userName,jdbcType=VARCHAR},
+        gmt_modified = now()
+    where resource_id = #{resourceId,jdbcType=VARCHAR}
+  </update>
 </mapper>

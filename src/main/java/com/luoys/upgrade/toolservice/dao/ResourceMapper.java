@@ -39,6 +39,18 @@ public interface ResourceMapper {
     int update(ResourcePO resourcePO);
 
     /**
+     * 更换使用者
+     *
+     * @param resourceId 业务id
+     * @param userId 使用者id
+     * @param userName 使用者昵称
+     * @return 成功为1
+     */
+    int updateUser(@Param("resourceId") String resourceId,
+                   @Param("userId") String userId,
+                   @Param("userName") String userName);
+
+    /**
      * 根据业务id查询详情
      *
      * @param resourceId 业务id

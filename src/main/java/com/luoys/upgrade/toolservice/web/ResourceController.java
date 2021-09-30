@@ -38,6 +38,12 @@ public class ResourceController {
         return Result.message(resourceService.update(resourceVO));
     }
 
+    @RequestMapping(value = "/updateUser", method = RequestMethod.PUT)
+    public Result<String> updateUser(@RequestBody ResourceVO resourceVO) {
+        log.info("--->开始更换使用者：{}", resourceVO);
+        return Result.message(resourceService.updateUser(resourceVO));
+    }
+
     @RequestMapping(value = "/query", method = RequestMethod.GET)
     public Result<PageInfo<ResourceSimpleVO>> query(@RequestParam(value = "type", required = false) Integer type,
                                                     @RequestParam(value = "name", required = false) String name,
