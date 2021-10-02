@@ -36,13 +36,13 @@ public class Result<T> implements Serializable {
      */
     public static <T> Result message(T data, String successMessage, String errorMessage) {
         if (data instanceof Boolean && (Boolean) data) {
-            return new Result<>(ResultEnum.SUCCESS_FOR_MESSAGE.getCode(), true, successMessage, data);
+            return new Result<>(ResultEnum.SUCCESS_FOR_MESSAGE.getCode(), true, successMessage, (Boolean) data);
         } else if (data instanceof String) {
-            return new Result<>(ResultEnum.SUCCESS_FOR_MESSAGE.getCode(), true, successMessage, data);
+            return new Result<>(ResultEnum.SUCCESS_FOR_MESSAGE.getCode(), true, successMessage, (String) data);
         } else if (data instanceof Integer) {
-            return new Result<>(ResultEnum.SUCCESS_FOR_MESSAGE.getCode(), true, successMessage, data);
+            return new Result<>(ResultEnum.SUCCESS_FOR_MESSAGE.getCode(), true, successMessage, (Integer) data);
         } else {
-            return new Result<>(ResultEnum.ERROR_FOR_MESSAGE.getCode(), false, errorMessage, data);
+            return new Result<>(ResultEnum.ERROR_FOR_MESSAGE.getCode(), false, errorMessage, (Object) data);
         }
     }
 
