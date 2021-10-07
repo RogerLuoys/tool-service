@@ -4,6 +4,8 @@ import com.luoys.upgrade.toolservice.service.dto.DataSourceDTO;
 import com.luoys.upgrade.toolservice.service.dto.JdbcDTO;
 import com.luoys.upgrade.toolservice.service.dto.SqlDTO;
 import com.luoys.upgrade.toolservice.service.enums.SqlTypeEnum;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
@@ -35,7 +37,7 @@ public class DBClient {
             log.error("--->执行sql时参数异常");
             return "执行参数异常";
         }
-        init(jdbcDTO.getDataSource());
+        init2(jdbcDTO.getDataSource());
         List<SqlDTO> sqlDTOList = jdbcDTO.getSqlList();
         StringBuilder result = new StringBuilder();
         for (SqlDTO sqlDTO : sqlDTOList) {
@@ -56,6 +58,7 @@ public class DBClient {
                     result.append("不支持sql类型 ");
             }
         }
+        close();
         return result.toString();
     }
 
@@ -72,15 +75,20 @@ public class DBClient {
         jdbcTemplate.setDataSource(dataSource);
     }
 
-//    private void init2(DataSourceDTO dataSourceDTO) {
-//        HikariConfig config = new HikariConfig();
-//        config.setDriverClassName(dataSourceDTO.getDriver());
-//        config.setJdbcUrl(dataSourceDTO.getUrl());
-//        config.setUsername(dataSourceDTO.getUsername());
-//        config.setPassword(dataSourceDTO.getPassword());
-//        HikariDataSource dataSource = new HikariDataSource(config);
-//        jdbcTemplate.setDataSource(dataSource);
-//    }
+    private void init2(DataSourceDTO dataSourceDTO) {
+        HikariConfig config = new HikariConfig();
+        config.setDriverClassName(dataSourceDTO.getDriver());
+        config.setJdbcUrl(dataSourceDTO.getUrl());
+        config.setUsername(dataSourceDTO.getUsername());
+        config.setPassword(dataSourceDTO.getPassword());
+        HikariDataSource dataSource = new HikariDataSource(config);
+        jdbcTemplate.setDataSource(dataSource);
+    }
+
+    private void close() {
+        HikariDataSource dataSource = (HikariDataSource) jdbcTemplate.getDataSource();
+        dataSource.close();
+    }
 
     /**
      * 把更新sql转换为查询总行数的sql，查询sql以更新sql的条件为条件
