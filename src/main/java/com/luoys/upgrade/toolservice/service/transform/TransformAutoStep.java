@@ -130,14 +130,15 @@ public class TransformAutoStep {
         // 详细信息转换
         switch (AutoStepTypeEnum.fromCode(vo.getType())) {
             case STEP_SQL:
-                if (vo.getJdbc() == null || vo.getJdbc().getDataSource() == null || vo.getJdbc().getSqlList() == null) {
-                    break;
+                if (vo.getJdbc() != null && vo.getJdbc().getDataSource() != null) {
+                    po.setJdbcDriver(vo.getJdbc().getDataSource().getDriver());
+                    po.setJdbcUrl(vo.getJdbc().getDataSource().getUrl());
+                    po.setJdbcUsername(vo.getJdbc().getDataSource().getUsername());
+                    po.setJdbcPassword(vo.getJdbc().getDataSource().getPassword());
                 }
-                po.setJdbcDriver(vo.getJdbc().getDataSource().getDriver());
-                po.setJdbcUrl(vo.getJdbc().getDataSource().getUrl());
-                po.setJdbcUsername(vo.getJdbc().getDataSource().getUsername());
-                po.setJdbcPassword(vo.getJdbc().getDataSource().getPassword());
-                po.setJdbcSql(TransformCommon.toSql(vo.getJdbc().getSqlList()));
+                if (vo.getJdbc() != null && vo.getJdbc().getSqlList() != null) {
+                    po.setJdbcSql(TransformCommon.toSql(vo.getJdbc().getSqlList()));
+                }
                 break;
             case STEP_HTTP:
                 if (vo.getHttpRequest() == null) {

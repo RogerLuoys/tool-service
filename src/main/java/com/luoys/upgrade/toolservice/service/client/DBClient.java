@@ -72,6 +72,16 @@ public class DBClient {
         jdbcTemplate.setDataSource(dataSource);
     }
 
+//    private void init2(DataSourceDTO dataSourceDTO) {
+//        HikariConfig config = new HikariConfig();
+//        config.setDriverClassName(dataSourceDTO.getDriver());
+//        config.setJdbcUrl(dataSourceDTO.getUrl());
+//        config.setUsername(dataSourceDTO.getUsername());
+//        config.setPassword(dataSourceDTO.getPassword());
+//        HikariDataSource dataSource = new HikariDataSource(config);
+//        jdbcTemplate.setDataSource(dataSource);
+//    }
+
     /**
      * 把更新sql转换为查询总行数的sql，查询sql以更新sql的条件为条件
      *
