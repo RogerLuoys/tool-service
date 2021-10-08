@@ -21,6 +21,12 @@ public class AutoCaseController {
     private CaseService caseService;
 
 
+    @RequestMapping(value = "/test", method = RequestMethod.GET)
+    public Result<String> test(@RequestParam("caseId") String caseId) {
+        log.info("--->开始测试连接：caseId={}", caseId);
+        return Result.success("测试连接从服务器成功: " + caseId);
+    }
+
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     public Result<Boolean> create(@RequestHeader("userId") String userId, @RequestBody AutoCaseVO autoCaseVO) {
         autoCaseVO.setOwnerId(userId);
