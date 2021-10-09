@@ -23,8 +23,9 @@ import java.util.Map;
 @Component
 public class DBClient {
 
-    private final DriverManagerDataSource dataSource = new DriverManagerDataSource();
+//    private final DriverManagerDataSource dataSource = new DriverManagerDataSource();
     private final JdbcTemplate jdbcTemplate = new JdbcTemplate();
+    private HikariDataSource dataSource;
 
     /**
      * 执行sql，有同步锁
@@ -37,7 +38,7 @@ public class DBClient {
             log.error("--->执行sql时参数异常");
             return "执行参数异常";
         }
-        init2(jdbcDTO.getDataSource());
+        init(jdbcDTO.getDataSource());
         List<SqlDTO> sqlDTOList = jdbcDTO.getSqlList();
         StringBuilder result = new StringBuilder();
         for (SqlDTO sqlDTO : sqlDTOList) {
@@ -62,31 +63,39 @@ public class DBClient {
         return result.toString();
     }
 
+//    /**
+//     * 初始化数据源
+//     *
+//     * @param dataSourceDTO 数据源对象
+//     */
+//    private void init(DataSourceDTO dataSourceDTO) {
+//        dataSource.setDriverClassName(dataSourceDTO.getDriver());
+//        dataSource.setUrl(dataSourceDTO.getUrl());
+//        dataSource.setUsername(dataSourceDTO.getUsername());
+//        dataSource.setPassword(dataSourceDTO.getPassword());
+//        jdbcTemplate.setDataSource(dataSource);
+//    }
+
     /**
-     * 初始化数据源
+     * 初始化数据源，使用HikariDataSource
      *
      * @param dataSourceDTO 数据源对象
      */
     private void init(DataSourceDTO dataSourceDTO) {
-        dataSource.setDriverClassName(dataSourceDTO.getDriver());
-        dataSource.setUrl(dataSourceDTO.getUrl());
-        dataSource.setUsername(dataSourceDTO.getUsername());
-        dataSource.setPassword(dataSourceDTO.getPassword());
-        jdbcTemplate.setDataSource(dataSource);
-    }
-
-    private void init2(DataSourceDTO dataSourceDTO) {
         HikariConfig config = new HikariConfig();
         config.setDriverClassName(dataSourceDTO.getDriver());
         config.setJdbcUrl(dataSourceDTO.getUrl());
         config.setUsername(dataSourceDTO.getUsername());
         config.setPassword(dataSourceDTO.getPassword());
-        HikariDataSource dataSource = new HikariDataSource(config);
+        dataSource = new HikariDataSource(config);
         jdbcTemplate.setDataSource(dataSource);
     }
 
+    /**
+     * 关闭HikariDataSource连接
+     */
     private void close() {
-        HikariDataSource dataSource = (HikariDataSource) jdbcTemplate.getDataSource();
+//        HikariDataSource dataSource = (HikariDataSource) jdbcTemplate.getDataSource();
         dataSource.close();
     }
 
@@ -122,7 +131,7 @@ public class DBClient {
      * @param sql 要执行的sql
      * @return 执行结果
      */
-    public String update(String sql) {
+    private String update(String sql) {
         int effectRow = count(transformUpdate2Select(sql));
         if (effectRow > 200) {
             return "一次更新超过200行，请确认sql条件是否正确";
@@ -138,7 +147,7 @@ public class DBClient {
      * @param sql 要执行的sql
      * @return 执行结果
      */
-    public String insert(String sql) {
+    private String insert(String sql) {
         return String.valueOf(jdbcTemplate.update(sql));
     }
 
@@ -148,7 +157,7 @@ public class DBClient {
      * @param sql 要执行的sql
      * @return 执行结果
      */
-    public String select(String sql) {
+    private String select(String sql) {
         return jdbcTemplate.queryForList(sql).toString();
     }
 
@@ -158,7 +167,7 @@ public class DBClient {
      * @param sql 要执行的sql
      * @return 执行结果
      */
-    public String delete(String sql) {
+    private String delete(String sql) {
         int effectRow = count(transformDelete2Select(sql));
         if (effectRow > 50) {
             return "一次删除超过50行，请确认sql条件是否正确";
@@ -174,7 +183,7 @@ public class DBClient {
      * @param sql 查询语句
      * @return 总条数
      */
-    public Integer count(String sql) {
+    private Integer count(String sql) {
         Map<String, Object> result = jdbcTemplate.queryForMap(sql);
         String COUNT = "count(1)";
         return Integer.valueOf(result.get(COUNT).toString());

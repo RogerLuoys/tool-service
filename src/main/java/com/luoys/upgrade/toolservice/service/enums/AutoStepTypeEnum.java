@@ -16,7 +16,8 @@ public enum AutoStepTypeEnum {
     STEP_SQL(1, "sql类型步骤"),
     STEP_HTTP(2, "http请求类型步骤"),
     STEP_RPC(3, "rpc请求类型步骤"),
-    STEP_UI(4, "ui操作类型步骤");
+    STEP_UI(4, "ui操作类型步骤"),
+    STEP_MULTIPLE(5, "多个子步骤聚合");
 
 
     private final Integer code;

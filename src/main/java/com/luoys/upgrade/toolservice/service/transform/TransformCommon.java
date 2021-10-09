@@ -127,4 +127,35 @@ public class TransformCommon {
         return JSON.toJSONString(commonList);
     }
 
+    public static List<StepDTO> toMultipleStep(String step) {
+        if (StringUtil.isBlank(step)) {
+            return null;
+        }
+        List<CommonDTO> commonList = JSON.parseArray(step, CommonDTO.class);
+        List<StepDTO> stepList = new ArrayList<>();
+        for (CommonDTO commonDTO: commonList) {
+            StepDTO stepDTO = new StepDTO();
+            stepDTO.setStepId(commonDTO.getValue());
+            stepDTO.setArea(commonDTO.getTitle());
+            stepDTO.setSequence(commonDTO.getIdx());
+            stepList.add(stepDTO);
+        }
+        return stepList;
+    }
+
+    public static String toMultipleStep(List<StepDTO> stepList) {
+        if (stepList == null || stepList.size() == 0) {
+            return null;
+        }
+        List<CommonDTO> commonList = new ArrayList<>();
+        for (StepDTO step: stepList) {
+            CommonDTO commonDTO = new CommonDTO();
+            commonDTO.setValue(step.getStepId());
+            commonDTO.setIdx(step.getSequence());
+            commonDTO.setTitle(step.getArea());
+            commonList.add(commonDTO);
+        }
+        return JSON.toJSONString(commonList);
+    }
+
 }

@@ -18,6 +18,11 @@ import java.util.List;
  */
 public class TransformAutoStep {
 
+    /**
+     * 基本信息转换
+     * @param po -
+     * @return -
+     */
     public static AutoStepSimpleVO transformPO2SimpleVO(AutoStepPO po) {
         if (po == null)
             return null;
@@ -45,6 +50,11 @@ public class TransformAutoStep {
         return voList;
     }
 
+    /**
+     * 详细信息转换
+     * @param po -
+     * @return -
+     */
     public static AutoStepVO transformPO2VO(AutoStepPO po) {
         if (po == null) {
             return null;
@@ -104,6 +114,9 @@ public class TransformAutoStep {
                 uiDTO.setElementId(po.getUiElementId());
                 uiDTO.setKey(po.getUiKey());
                 vo.setUi(uiDTO);
+                break;
+            case STEP_MULTIPLE:
+                vo.setStepList(TransformCommon.toMultipleStep(po.getSteps()));
                 break;
         }
         return vo;
@@ -169,6 +182,8 @@ public class TransformAutoStep {
                 po.setUiUrl(vo.getUi().getUrl());
                 po.setUiKey(vo.getUi().getKey());
                 break;
+            case STEP_MULTIPLE:
+                po.setSteps(TransformCommon.toMultipleStep(vo.getStepList()));
         }
 
         return po;

@@ -8,9 +8,7 @@ import com.luoys.upgrade.toolservice.service.client.DBClient;
 import com.luoys.upgrade.toolservice.service.client.HTTPClient;
 import com.luoys.upgrade.toolservice.service.client.RPCClient;
 import com.luoys.upgrade.toolservice.service.client.UIClient;
-import com.luoys.upgrade.toolservice.service.enums.AssertTypeEnum;
-import com.luoys.upgrade.toolservice.service.enums.AutoStepTypeEnum;
-import com.luoys.upgrade.toolservice.service.enums.KeywordEnum;
+import com.luoys.upgrade.toolservice.service.enums.*;
 import com.luoys.upgrade.toolservice.service.transform.TransformAutoStep;
 import com.luoys.upgrade.toolservice.web.vo.AutoStepSimpleVO;
 import com.luoys.upgrade.toolservice.web.vo.AutoStepVO;
@@ -18,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.RejectedExecutionException;
@@ -30,6 +29,8 @@ import java.util.concurrent.RejectedExecutionException;
 @Slf4j
 @Service
 public class StepService {
+
+    private static final int MULTIPLE_LIMIT = 20;
 
     @Autowired
     private AutoStepMapper autoStepMapper;
@@ -183,27 +184,73 @@ public class StepService {
         return true;
     }
 
+    public Boolean use(AutoStepVO autoStepVO) {
+        List<AutoStepVO> ifSteps = new ArrayList<>();
+        List<AutoStepVO> thenSteps = new ArrayList<>();
+        List<AutoStepVO> elseSteps = new ArrayList<>();
+
+        // 如果是聚合步骤类型，则把子步骤全取出，并分别放入对于的列表中,否则直接方法elseSteps中
+        if (autoStepVO.getType().equals(AutoStepTypeEnum.STEP_MULTIPLE.getCode())) {
+            if (autoStepVO.getStepList().size() > MULTIPLE_LIMIT) {
+                log.warn("--->聚合步骤个数超过上限");
+                return null;
+            }
+            for (int i = 0; i < autoStepVO.getStepList().size(); i++) {
+                switch (AreaEnum.fromValue(autoStepVO.getStepList().get(i).getArea())) {
+                    case IF:
+                        ifSteps.add(queryDetail(autoStepVO.getStepList().get(i).getStepId()));
+                        break;
+                    case THEN:
+                        thenSteps.add(queryDetail(autoStepVO.getStepList().get(i).getStepId()));
+                        break;
+                    case ELSE:
+                        elseSteps.add(queryDetail(autoStepVO.getStepList().get(i).getStepId()));
+                        break;
+                }
+            }
+        } else {
+            elseSteps.add(autoStepVO);
+        }
+
+        // 当ifSteps列表有数据，且执行结果为true时，执行thenSteps列表，否则执行elseSteps列表
+        if (ifSteps.size() > 0 && executeAll(ifSteps)) {
+            return executeAll(thenSteps);
+        } else {
+            return executeAll(elseSteps);
+        }
+    }
+
     /**
-     * 使用单个步骤
+     * 使用步骤列表
+     * 大多数情况下列表中只会有一条数据，上限不会超过 MULTIPLE_LIMIT
      *
-     * @param autoStepVO 步骤对象
+     * @param stepList 步骤对象
      * @return 使用结果，执行成功且验证通过为true，失败或异常为false
      */
-    public Boolean use(AutoStepVO autoStepVO) {
-        try {
-            // 执行步骤并设置实际结果
-            autoStepVO.setAssertActual(execute(autoStepVO));
-            if (autoStepVO.getType().equals(AutoStepTypeEnum.STEP_UI.getCode()) && autoStepVO.getAfterSleep() > 0) {
-                Thread.sleep(autoStepVO.getAfterSleep() * 1000);
+    public Boolean executeAll(List<AutoStepVO> stepList) {
+        boolean result = true;
+        for (AutoStepVO autoStepVO : stepList) {
+            try {
+
+                // 执行步骤并设置实际结果
+                autoStepVO.setAssertActual(execute(autoStepVO));
+                if (autoStepVO.getType().equals(AutoStepTypeEnum.STEP_UI.getCode()) && autoStepVO.getAfterSleep() > 0) {
+                    Thread.sleep(autoStepVO.getAfterSleep() * 1000);
+                }
+
+            } catch (Exception e) {
+                log.error("--->步骤执行异常：stepId={}", stepList.get(0).getStepId(), e);
+//            if (stepList.get(0).getType().equals(AutoStepTypeEnum.STEP_UI.getCode())) {
+//                uiClient.quit();
+//            }
+                return false;
             }
-        } catch (Exception e) {
-            log.error("--->步骤执行异常：stepId={}", autoStepVO.getStepId(), e);
-            if (autoStepVO.getType().equals(AutoStepTypeEnum.STEP_UI.getCode())) {
-                uiClient.quit();
+            // 只要有其中一个步骤验证结果为false，则整个步骤列表执行结果为false
+            if (!verify(autoStepVO)) {
+                result = false;
             }
-            return false;
         }
-        return verify(autoStepVO);
+        return result;
     }
 
     private String execute(AutoStepVO autoStepVO) {
@@ -223,6 +270,9 @@ public class StepService {
                 TransformAutoStep.mergeParam(autoStepVO);
                 //通过selenium实现
                 return uiClient.execute(autoStepVO.getUi());
+            case STEP_MULTIPLE:
+                log.error("--->执行步骤异常，聚合类型步骤不能直接执行：stepId={}", autoStepVO.getStepId());
+                return null;
             default:
                 return null;
         }

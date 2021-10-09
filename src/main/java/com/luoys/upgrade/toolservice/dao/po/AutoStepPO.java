@@ -31,9 +31,14 @@ public class AutoStepPO {
     private String description;
 
     /**
-     * 步骤类型：1 SQL，2 HTTP，3 RPC，4 UI
+     * 步骤类型：1 SQL，2 HTTP，3 RPC，4 UI，5 STEPS
      */
     private Integer type;
+
+    /**
+     * 当type为4时使用，聚合步骤
+     */
+    private String steps;
 
     /**
      * sql语句列表，List<CommonDTO>类型

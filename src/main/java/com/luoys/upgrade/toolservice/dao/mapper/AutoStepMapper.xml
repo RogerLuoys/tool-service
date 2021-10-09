@@ -7,6 +7,7 @@
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="description" jdbcType="VARCHAR" property="description" />
     <result column="type" jdbcType="TINYINT" property="type" />
+    <result column="steps" jdbcType="VARCHAR" property="steps" />
     <result column="jdbc_sql" jdbcType="VARCHAR" property="jdbcSql" />
     <result column="jdbc_url" jdbcType="VARCHAR" property="jdbcUrl" />
     <result column="jdbc_driver" jdbcType="VARCHAR" property="jdbcDriver" />
@@ -36,7 +37,7 @@
     <result column="is_public" jdbcType="TINYINT" property="isPublic" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, step_id, `name`, description, `type`, jdbc_sql, jdbc_url, jdbc_driver, jdbc_username,
+    id, step_id, `name`, description, `type`, steps, jdbc_sql, jdbc_url, jdbc_driver, jdbc_username,
     jdbc_password, http_url, http_type, http_header, http_body, rpc_url, rpc_interface, rpc_method, rpc_parameter_type,
     rpc_parameter, ui_type, ui_url, ui_element, ui_element_id, ui_key, after_sleep, assert_type, assert_actual,
     assert_expect, assert_result, owner_id, owner_name, is_public
@@ -86,7 +87,7 @@
   </update>
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.luoys.upgrade.toolservice.dao.po.AutoStepPO" useGeneratedKeys="true">
     insert into auto_step (step_id, `name`, description, `type`,
-      jdbc_sql, jdbc_url, jdbc_driver,
+      steps, jdbc_sql, jdbc_url, jdbc_driver,
       jdbc_username, jdbc_password, http_url, http_type,
       http_header, http_body, rpc_url,
       rpc_interface, rpc_method, rpc_parameter_type, rpc_parameter,
@@ -96,7 +97,7 @@
       is_public, is_delete, gmt_create,
       gmt_modified)
     values (#{stepId,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{type,jdbcType=TINYINT},
-      #{jdbcSql,jdbcType=VARCHAR}, #{jdbcUrl,jdbcType=VARCHAR}, #{jdbcDriver,jdbcType=VARCHAR},
+      #{steps,jdbcType=VARCHAR}, #{jdbcSql,jdbcType=VARCHAR}, #{jdbcUrl,jdbcType=VARCHAR}, #{jdbcDriver,jdbcType=VARCHAR},
       #{jdbcUsername,jdbcType=VARCHAR}, #{jdbcPassword,jdbcType=VARCHAR}, #{httpUrl,jdbcType=VARCHAR}, #{httpType,jdbcType=VARCHAR},
       #{httpHeader,jdbcType=VARCHAR}, #{httpBody,jdbcType=VARCHAR}, #{rpcUrl,jdbcType=VARCHAR},
       #{rpcInterface,jdbcType=VARCHAR}, #{rpcMethod,jdbcType=VARCHAR}, #{rpcParameterType,jdbcType=VARCHAR}, #{rpcParameter,jdbcType=VARCHAR},
@@ -116,6 +117,9 @@
       </if>
       <if test="type != null">
         `type` = #{type,jdbcType=TINYINT},
+      </if>
+      <if test="steps != null">
+        steps = #{steps,jdbcType=VARCHAR},
       </if>
       <if test="jdbcSql != null">
         jdbc_sql = #{jdbcSql,jdbcType=VARCHAR},

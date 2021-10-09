@@ -3,6 +3,8 @@ package com.luoys.upgrade.toolservice.web.vo;
 import com.luoys.upgrade.toolservice.service.dto.*;
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * 全量的步骤类
  *
@@ -32,6 +34,11 @@ public class AutoStepVO {
     private Integer type;
 
     /**
+     * 聚合工具
+     */
+    private List<StepDTO> stepList;
+
+    /**
      * 数据库操作类
      */
     private JdbcDTO jdbc;
@@ -52,7 +59,7 @@ public class AutoStepVO {
     private UiDTO ui;
 
     /**
-     * 实际结果取到后的等待时间
+     * 等待时间，在实际结果取到后、断言之前等待
      */
     private Integer afterSleep;
 
