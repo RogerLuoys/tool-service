@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.concurrent.RejectedExecutionException;
 
-@CrossOrigin
+@CrossOrigin(maxAge = 1800L)
 @Slf4j
 @RestController
 @RequestMapping("/autoCase")

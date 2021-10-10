@@ -33,10 +33,25 @@ public class AutoStepVO {
      */
     private Integer type;
 
+//    /**
+//     * 聚合工具
+//     */
+//    private List<StepDTO> stepList;
+
     /**
-     * 聚合工具
+     * 聚合工具-IF区域
      */
-    private List<StepDTO> stepList;
+    private List<StepDTO> ifStepList;
+
+    /**
+     * 聚合工具-THEN区域
+     */
+    private List<StepDTO> thenStepList;
+
+    /**
+     * 聚合工具-ELSE区域
+     */
+    private List<StepDTO> elseStepList;
 
     /**
      * 数据库操作类

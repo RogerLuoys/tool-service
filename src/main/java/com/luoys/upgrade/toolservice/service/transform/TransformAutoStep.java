@@ -3,6 +3,7 @@ package com.luoys.upgrade.toolservice.service.transform;
 import com.luoys.upgrade.toolservice.common.StringUtil;
 import com.luoys.upgrade.toolservice.dao.po.AutoStepPO;
 import com.luoys.upgrade.toolservice.service.dto.*;
+import com.luoys.upgrade.toolservice.service.enums.AreaEnum;
 import com.luoys.upgrade.toolservice.service.enums.AutoStepTypeEnum;
 import com.luoys.upgrade.toolservice.service.enums.KeywordEnum;
 import com.luoys.upgrade.toolservice.web.vo.AutoStepSimpleVO;
@@ -10,6 +11,7 @@ import com.luoys.upgrade.toolservice.web.vo.AutoStepVO;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 自动化步骤数据转换
@@ -116,7 +118,10 @@ public class TransformAutoStep {
                 vo.setUi(uiDTO);
                 break;
             case STEP_MULTIPLE:
-                vo.setStepList(TransformCommon.toMultipleStep(po.getSteps()));
+                Map<String, List<StepDTO>> stepMap = TransformCommon.toMultipleStep(po.getSteps());
+                vo.setIfStepList(stepMap.get(AreaEnum.IF.getValue()));
+                vo.setElseStepList(stepMap.get(AreaEnum.ELSE.getValue()));
+                vo.setThenStepList(stepMap.get(AreaEnum.THEN.getValue()));
                 break;
         }
         return vo;
@@ -183,7 +188,12 @@ public class TransformAutoStep {
                 po.setUiKey(vo.getUi().getKey());
                 break;
             case STEP_MULTIPLE:
-                po.setSteps(TransformCommon.toMultipleStep(vo.getStepList()));
+                List<StepDTO> stepList = new ArrayList<>();
+                stepList.addAll(vo.getIfStepList());
+                stepList.addAll(vo.getElseStepList());
+                stepList.addAll(vo.getThenStepList());
+                po.setSteps(TransformCommon.toMultipleStep(stepList));
+                break;
         }
 
         return po;

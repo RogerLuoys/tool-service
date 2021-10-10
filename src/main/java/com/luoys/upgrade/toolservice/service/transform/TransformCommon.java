@@ -3,10 +3,13 @@ package com.luoys.upgrade.toolservice.service.transform;
 import com.alibaba.fastjson.JSON;
 import com.luoys.upgrade.toolservice.common.StringUtil;
 import com.luoys.upgrade.toolservice.service.dto.*;
+import com.luoys.upgrade.toolservice.service.enums.AreaEnum;
 import com.luoys.upgrade.toolservice.service.enums.SqlTypeEnum;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 公共参数数据转换
@@ -127,20 +130,32 @@ public class TransformCommon {
         return JSON.toJSONString(commonList);
     }
 
-    public static List<StepDTO> toMultipleStep(String step) {
+    public static Map<String, List<StepDTO>> toMultipleStep(String step) {
+        Map<String, List<StepDTO>> stepMap = new HashMap<>();
+        List<StepDTO> ifStepList = new ArrayList<>();
+        List<StepDTO> thenStepList = new ArrayList<>();
+        List<StepDTO> elseStepList = new ArrayList<>();
+        stepMap.put(AreaEnum.IF.getValue(), ifStepList);
+        stepMap.put(AreaEnum.THEN.getValue(), thenStepList);
+        stepMap.put(AreaEnum.ELSE.getValue(), elseStepList);
         if (StringUtil.isBlank(step)) {
-            return null;
+            return stepMap;
         }
         List<CommonDTO> commonList = JSON.parseArray(step, CommonDTO.class);
-        List<StepDTO> stepList = new ArrayList<>();
         for (CommonDTO commonDTO: commonList) {
             StepDTO stepDTO = new StepDTO();
             stepDTO.setStepId(commonDTO.getValue());
             stepDTO.setArea(commonDTO.getTitle());
             stepDTO.setSequence(commonDTO.getIdx());
-            stepList.add(stepDTO);
+            if (stepDTO.getArea().equals(AreaEnum.IF.getValue())) {
+                ifStepList.add(stepDTO);
+            } else if (stepDTO.getArea().equals(AreaEnum.THEN.getValue())) {
+                thenStepList.add(stepDTO);
+            } else if (stepDTO.getArea().equals(AreaEnum.ELSE.getValue())) {
+                elseStepList.add(stepDTO);
+            }
         }
-        return stepList;
+        return stepMap;
     }
 
     public static String toMultipleStep(List<StepDTO> stepList) {

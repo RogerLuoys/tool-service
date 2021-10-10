@@ -30,7 +30,7 @@ import java.util.concurrent.RejectedExecutionException;
 @Service
 public class StepService {
 
-    private static final int MULTIPLE_LIMIT = 20;
+    private static final int MULTIPLE_LIMIT = 30;
 
     @Autowired
     private AutoStepMapper autoStepMapper;
@@ -185,72 +185,71 @@ public class StepService {
     }
 
     public Boolean use(AutoStepVO autoStepVO) {
-        List<AutoStepVO> ifSteps = new ArrayList<>();
-        List<AutoStepVO> thenSteps = new ArrayList<>();
-        List<AutoStepVO> elseSteps = new ArrayList<>();
 
         // 如果是聚合步骤类型，则把子步骤全取出，并分别放入对于的列表中,否则直接方法elseSteps中
         if (autoStepVO.getType().equals(AutoStepTypeEnum.STEP_MULTIPLE.getCode())) {
-            if (autoStepVO.getStepList().size() > MULTIPLE_LIMIT) {
+            if (autoStepVO.getIfStepList().size() + autoStepVO.getThenStepList().size() + autoStepVO.getElseStepList().size() > MULTIPLE_LIMIT) {
                 log.warn("--->聚合步骤个数超过上限");
                 return null;
             }
-            for (int i = 0; i < autoStepVO.getStepList().size(); i++) {
-                switch (AreaEnum.fromValue(autoStepVO.getStepList().get(i).getArea())) {
-                    case IF:
-                        ifSteps.add(queryDetail(autoStepVO.getStepList().get(i).getStepId()));
-                        break;
-                    case THEN:
-                        thenSteps.add(queryDetail(autoStepVO.getStepList().get(i).getStepId()));
-                        break;
-                    case ELSE:
-                        elseSteps.add(queryDetail(autoStepVO.getStepList().get(i).getStepId()));
-                        break;
-                }
+            List<AutoStepVO> ifSteps = new ArrayList<>();
+            List<AutoStepVO> thenSteps = new ArrayList<>();
+            List<AutoStepVO> elseSteps = new ArrayList<>();
+            for (int i = 0; i < autoStepVO.getIfStepList().size(); i++) {
+                ifSteps.add(queryDetail(autoStepVO.getIfStepList().get(i).getStepId()));
             }
-        } else {
-            elseSteps.add(autoStepVO);
+            for (int i = 0; i < autoStepVO.getThenStepList().size(); i++) {
+                thenSteps.add(queryDetail(autoStepVO.getThenStepList().get(i).getStepId()));
+            }
+            for (int i = 0; i < autoStepVO.getElseStepList().size(); i++) {
+                elseSteps.add(queryDetail(autoStepVO.getElseStepList().get(i).getStepId()));
+            }
+            // 当ifSteps列表有数据，且执行结果为true时，执行thenSteps列表，否则执行elseSteps列表
+            if (ifSteps.size() > 0 && executeList(ifSteps)) {
+                return executeList(thenSteps);
+            } else {
+                return executeList(elseSteps);
+            }
         }
 
-        // 当ifSteps列表有数据，且执行结果为true时，执行thenSteps列表，否则执行elseSteps列表
-        if (ifSteps.size() > 0 && executeAll(ifSteps)) {
-            return executeAll(thenSteps);
-        } else {
-            return executeAll(elseSteps);
-        }
+        // 非聚合类型步骤，直接执行
+        return executeOne(autoStepVO);
     }
 
     /**
      * 使用步骤列表
-     * 大多数情况下列表中只会有一条数据，上限不会超过 MULTIPLE_LIMIT
      *
      * @param stepList 步骤对象
-     * @return 使用结果，执行成功且验证通过为true，失败或异常为false
+     * @return 全部执行成功且验证通过为true，只要有一个失败或异常为false
      */
-    public Boolean executeAll(List<AutoStepVO> stepList) {
+    private Boolean executeList(List<AutoStepVO> stepList) {
         boolean result = true;
         for (AutoStepVO autoStepVO : stepList) {
-            try {
-
-                // 执行步骤并设置实际结果
-                autoStepVO.setAssertActual(execute(autoStepVO));
-                if (autoStepVO.getType().equals(AutoStepTypeEnum.STEP_UI.getCode()) && autoStepVO.getAfterSleep() > 0) {
-                    Thread.sleep(autoStepVO.getAfterSleep() * 1000);
-                }
-
-            } catch (Exception e) {
-                log.error("--->步骤执行异常：stepId={}", stepList.get(0).getStepId(), e);
-//            if (stepList.get(0).getType().equals(AutoStepTypeEnum.STEP_UI.getCode())) {
-//                uiClient.quit();
-//            }
-                return false;
-            }
             // 只要有其中一个步骤验证结果为false，则整个步骤列表执行结果为false
-            if (!verify(autoStepVO)) {
+            if (!executeOne(autoStepVO)) {
                 result = false;
             }
         }
         return result;
+    }
+
+    /**
+     * 执行一个步骤，并验证结果
+     * @param autoStepVO 步骤对象
+     * @return 验证成功为true，验证失败为false
+     */
+    private Boolean executeOne(AutoStepVO autoStepVO) {
+        try {
+            // 执行步骤并设置实际结果
+            autoStepVO.setAssertActual(execute(autoStepVO));
+            if (autoStepVO.getType().equals(AutoStepTypeEnum.STEP_UI.getCode()) && autoStepVO.getAfterSleep() > 0) {
+                Thread.sleep(autoStepVO.getAfterSleep() * 1000);
+            }
+        } catch (Exception e) {
+            log.error("--->步骤执行异常：stepId={}", autoStepVO.getStepId(), e);
+            return false;
+        }
+        return verify(autoStepVO);
     }
 
     private String execute(AutoStepVO autoStepVO) {
@@ -285,7 +284,7 @@ public class StepService {
      * @param autoStepVO 步骤对象
      * @return 如果无需校验或校验通过，则返回true；否则返回false
      */
-    public Boolean verify(AutoStepVO autoStepVO) {
+    private Boolean verify(AutoStepVO autoStepVO) {
         boolean result;
         switch (AssertTypeEnum.fromCode(autoStepVO.getAssertType())) {
             case NO_ASSERT:
