@@ -93,24 +93,24 @@ public class AutoCaseController {
         return Result.success(caseService.queryDetail(caseId));
     }
 
-    @RequestMapping(value = "/use", method = RequestMethod.POST)
-    public Result<Boolean> use(@RequestBody String autoCase) {
-        log.info("--->开始执行用例：{}", autoCase);
-        try {
-            AutoCaseVO autoCaseVO = JSON.parseObject(autoCase, AutoCaseVO.class);
-            return Result.message(caseService.useAsync(autoCaseVO), "执行异常，请检查步骤");
-        } catch (RejectedExecutionException e) {
-            return Result.errorMessage("执行队列已满，请稍后再试");
-        }
-    }
-
 //    @RequestMapping(value = "/use", method = RequestMethod.POST)
-//    public Result<Boolean> use(@RequestBody AutoCaseVO autoCaseVO) {
-//        log.info("--->开始执行用例：caseId={}", autoCaseVO.getCaseId());
+//    public Result<Boolean> use(@RequestBody String autoCase) {
+//        log.info("--->开始执行用例：{}", autoCase);
 //        try {
+//            AutoCaseVO autoCaseVO = JSON.parseObject(autoCase, AutoCaseVO.class);
 //            return Result.message(caseService.useAsync(autoCaseVO), "执行异常，请检查步骤");
 //        } catch (RejectedExecutionException e) {
 //            return Result.errorMessage("执行队列已满，请稍后再试");
 //        }
 //    }
+
+    @RequestMapping(value = "/use", method = RequestMethod.POST)
+    public Result<Boolean> use(@RequestBody AutoCaseVO autoCaseVO) {
+        log.info("--->开始执行用例：caseId={}", autoCaseVO.getCaseId());
+        try {
+            return Result.message(caseService.useAsync(autoCaseVO), "执行异常，请检查步骤");
+        } catch (RejectedExecutionException e) {
+            return Result.errorMessage("执行队列已满，请稍后再试");
+        }
+    }
 }
