@@ -184,11 +184,12 @@ public class CaseService {
     public AutoCaseVO queryDetail(String caseId) {
         // 查基本信息
         AutoCaseVO autoCaseVO = TransformAutoCase.transformPO2VO(autoCaseMapper.selectByUUID(caseId));
-        // 查关联的步骤，并区分类型
+        // 查关联的步骤
         List<CaseStepVO> caseStepList = TransformCaseStepRelation.transformPO2VO(caseStepRelationMapper.listStepByCaseId(caseId));
         List<CaseStepVO> preList = new ArrayList<>();
         List<CaseStepVO> mainList = new ArrayList<>();
         List<CaseStepVO> afterList = new ArrayList<>();
+        // 区分步骤类型
         for (CaseStepVO vo : caseStepList) {
             switch (RelatedStepTypeEnum.fromCode(vo.getType())) {
                 case PRE_STEP:

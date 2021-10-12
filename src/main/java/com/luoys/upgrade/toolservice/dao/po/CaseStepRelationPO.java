@@ -43,6 +43,11 @@ public class CaseStepRelationPO {
     private Integer stepType;
 
     /**
+     * 聚合步骤列表
+     */
+    private String steps;
+
+    /**
      * sql语句列表，List<CommonDTO>类型
      */
     private String jdbcSql;

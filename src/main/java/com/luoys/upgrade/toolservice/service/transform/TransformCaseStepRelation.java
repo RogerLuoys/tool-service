@@ -2,12 +2,14 @@ package com.luoys.upgrade.toolservice.service.transform;
 
 import com.luoys.upgrade.toolservice.dao.po.CaseStepRelationPO;
 import com.luoys.upgrade.toolservice.service.dto.*;
+import com.luoys.upgrade.toolservice.service.enums.AreaEnum;
 import com.luoys.upgrade.toolservice.service.enums.AutoStepTypeEnum;
 import com.luoys.upgrade.toolservice.web.vo.AutoStepVO;
 import com.luoys.upgrade.toolservice.web.vo.CaseStepVO;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 用例步骤关联关系数据转换
@@ -81,6 +83,12 @@ public class TransformCaseStepRelation {
                 uiDTO.setElementId(po.getUiElementId());
                 uiDTO.setKey(po.getUiKey());
                 vo.getAutoStep().setUi(uiDTO);
+                break;
+            case STEP_MULTIPLE:
+                Map<String, List<StepDTO>> stepMap = TransformCommon.toMultipleStep(po.getSteps());
+                vo.getAutoStep().setIfStepList(stepMap.get(AreaEnum.IF.getValue()));
+                vo.getAutoStep().setElseStepList(stepMap.get(AreaEnum.ELSE.getValue()));
+                vo.getAutoStep().setThenStepList(stepMap.get(AreaEnum.THEN.getValue()));
                 break;
         }
         return vo;

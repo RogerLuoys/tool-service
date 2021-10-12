@@ -38,20 +38,21 @@
     <result column="is_public" jdbcType="TINYINT" property="isPublic" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, case_id, `sequence`, `type`, step_id, step_name, step_type, jdbc_sql, jdbc_url, jdbc_driver, jdbc_username,
+    id, case_id, `sequence`, `type`, step_id, step_name, step_type, steps, jdbc_sql, jdbc_url, jdbc_driver, jdbc_username,
     jdbc_password, http_url, http_type, http_header, http_body, rpc_url, rpc_interface, rpc_method, rpc_parameter_type,
     rpc_parameter, ui_type, ui_url, ui_element, ui_element_id, ui_key, after_sleep, assert_type, assert_actual,
     assert_expect, assert_result, owner_id, owner_name, is_public
   </sql>
   <select id="listStepByCaseId" resultMap="BaseResultMap">
     select
-      csr.case_id, csr.`sequence`, csr.`type`, s.step_id, s.name as step_name, s.type as step_type, s.jdbc_sql, s.jdbc_url, s.jdbc_driver, s.jdbc_username,
+      csr.case_id, csr.`sequence`, csr.`type`, s.step_id, s.name as step_name, s.type as step_type, s.steps, s.jdbc_sql, s.jdbc_url, s.jdbc_driver, s.jdbc_username,
       s.jdbc_password, s.http_url, s.http_type, s.http_header, s.http_body, s.rpc_url, s.rpc_interface, s.rpc_method, s.rpc_parameter_type,
       s.rpc_parameter, s.ui_type, s.ui_url, s.ui_element, s.ui_element_id, s.ui_key, s.after_sleep, s.assert_type, s.assert_actual,
       s.assert_expect, s.assert_result, s.owner_id, s.owner_name, s.is_public
     from case_step_relation csr
     inner join auto_step s on csr.step_id = s.step_id
     where csr.case_id = #{caseId,jdbcType=VARCHAR} and csr.is_delete = 0
+    order by csr.`sequence`
   </select>
   <update id="removeByCaseId">
     update case_step_relation
