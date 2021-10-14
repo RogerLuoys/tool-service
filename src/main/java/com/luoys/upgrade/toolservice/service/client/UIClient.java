@@ -13,6 +13,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+
 import java.util.List;
 
 /**
@@ -30,28 +31,27 @@ public class UIClient {
 
     /**
      * 执行ui步骤，有同步锁
+     *
      * @param uiDTO -
      * @return 执行结果
      */
     public synchronized String execute(UiDTO uiDTO) {
         switch (UiTypeEnum.fromCode(uiDTO.getType())) {
             case OPEN_URL:
-                openUrl(uiDTO.getUrl());
-                return "true";
+                return openUrl(uiDTO.getUrl());
             case CLICK:
-                click(uiDTO.getElement());
-                return "true";
+//                click(uiDTO.getElement());
+                return click(uiDTO.getElement(), uiDTO.getElementId());
             case SEND_KEY:
-                sendKey(uiDTO.getElement(), uiDTO.getKey());
-                return "true";
+//                sendKey(uiDTO.getElement(), uiDTO.getKey());
+                return sendKey(uiDTO.getElement(), uiDTO.getElementId(), uiDTO.getKey());
             case IS_EXIST:
                 return isElementExist(uiDTO.getElement()).toString();
             case SWITCH_FRAME:
-                switchToFrame(uiDTO.getElement());
-                return "true";
+                return switchToFrame(uiDTO.getElement());
             case HOVER:
-                hover(uiDTO.getElement());
-                return "true";
+//                moveToElement(uiDTO.getElement());
+                return moveToElement(uiDTO.getElement(), uiDTO.getElementId());
             default:
                 return "false";
         }
@@ -77,17 +77,21 @@ public class UIClient {
 
     /**
      * 访问指定url
+     *
      * @param url 要访问的url
+     * @return 成功为true
      */
-    private void openUrl(String url) {
+    private String openUrl(String url) {
         this.driver.get(url);
         this.driver.manage().window().maximize();
         forceWait(5);
+        return "true";
     }
 
     /**
      * 强制等待
-     * @param second
+     *
+     * @param second 单位秒
      */
     private void forceWait(int second) {
         try {
@@ -99,47 +103,106 @@ public class UIClient {
 
     /**
      * 获取元素列表
-     * @param locator 元素位置
+     *
+     * @param xpath 元素xpath
      * @return 元素列表
      */
-    private List<WebElement> getElements(By locator) {
+    private List<WebElement> getElements(String xpath) {
         forceWait(forceTimeOut);
-        return driver.findElements(locator);
+        return driver.findElements(By.xpath(xpath));
     }
+
+    /**
+     * 先获取元素列表，再根据序号获取对应元素，并等待元素可点击
+     *
+     * @param xpath 元素xpath
+     * @param index 元素在列表的序号，从1开始
+     * @return 元素列表
+     */
+    private WebElement getElement(String xpath, int index) {
+        forceWait(forceTimeOut);
+        List<WebElement> webElement = driver.findElements(By.xpath(xpath));
+        if (webElement.size() < index) {
+            log.error("--->未找到对应自动化元素：xpath={}, index={}", xpath, index);
+            return null;
+        }
+        WebDriverWait webDriverWait = new WebDriverWait(driver, DEFAULT_WAIT_TIME);
+        webDriverWait.until(ExpectedConditions.elementToBeClickable(webElement.get(index - 1)));
+        return webElement.get(index - 1);
+    }
+
+//    /**
+//     * 先根据xpath找到所有符合条件的元素，再点击对应序号的元素
+//     *
+//     * @param xpath 元素的xpath
+//     */
+//    private void click(String xpath) {
+//        forceWait(forceTimeOut);
+//        WebElement webElement = driver.findElement(By.xpath(xpath));
+//        WebDriverWait webDriverWait = new WebDriverWait(driver, DEFAULT_WAIT_TIME);
+//        webDriverWait.until(ExpectedConditions.elementToBeClickable(webElement));
+//        Actions actions = new Actions(driver);
+//        actions.click(webElement).perform();
+//    }
 
     /**
      * 先根据xpath找到所有符合条件的元素，再点击对应序号的元素
+     *
      * @param xpath 元素的xpath
+     * @param index 元素序号，从1开始
      */
-    private void click(String xpath) {
-        forceWait(forceTimeOut);
-        WebElement webElement = driver.findElement(By.xpath(xpath));
-        WebDriverWait webDriverWait = new WebDriverWait(driver, DEFAULT_WAIT_TIME);
-        webDriverWait.until(ExpectedConditions.elementToBeClickable(webElement));
+    private String click(String xpath, int index) {
+        WebElement webElement = getElement(xpath, index);
+        if (webElement == null) {
+            return "false";
+        }
         Actions actions = new Actions(driver);
         actions.click(webElement).perform();
+        return "true";
     }
+
+//    /**
+//     * 在元素中输入执行字符
+//     *
+//     * @param xpath 元素的xpath
+//     * @param key   要输入的字符
+//     */
+//    private void sendKey(String xpath, CharSequence key) {
+//        forceWait(forceTimeOut);
+//        WebElement webElement = driver.findElement(By.xpath(xpath));
+//        WebDriverWait webDriverWait = new WebDriverWait(driver, DEFAULT_WAIT_TIME);
+//        webDriverWait.until(ExpectedConditions.visibilityOf(webElement));
+//        webElement.clear();
+//        Actions actions = new Actions(driver);
+//        actions.sendKeys(webElement, key).perform();
+//    }
 
     /**
      * 在元素中输入执行字符
+     *
      * @param xpath 元素的xpath
-     * @param key 要输入的字符
+     * @param index 元素的序号
+     * @param key   要输入的字符
+     * @return 成功为true
      */
-    private void sendKey(String xpath, CharSequence key) {
-        forceWait(forceTimeOut);
-        WebElement webElement = driver.findElement(By.xpath(xpath));
-        WebDriverWait webDriverWait = new WebDriverWait(driver, DEFAULT_WAIT_TIME);
-        webDriverWait.until(ExpectedConditions.visibilityOf(webElement));
+    private String sendKey(String xpath, int index, CharSequence key) {
+        WebElement webElement = getElement(xpath, index);
+        if (webElement == null) {
+            return "false";
+        }
         webElement.clear();
         Actions actions = new Actions(driver);
         actions.sendKeys(webElement, key).perform();
+        return "true";
     }
 
     /**
      * 切换至对应的frame中
+     *
      * @param frame iframe的id、name或xpath
+     * @return 成功返回true
      */
-    private void switchToFrame(String frame) {
+    private String switchToFrame(String frame) {
         forceWait(forceTimeOut);
         if (frame.startsWith("\\\\")) {
             WebElement iFrameElement = driver.findElement(By.xpath(frame));
@@ -147,13 +210,15 @@ public class UIClient {
         } else {
             driver.switchTo().frame(frame);
         }
+        return "true";
     }
 
     /**
      * 鼠标悬停对应元素上
+     *
      * @param xpath 元素的xpath
      */
-    private void hover(String xpath) {
+    private void moveToElement(String xpath) {
         forceWait(forceTimeOut);
         WebElement webElement = driver.findElement(By.xpath(xpath));
         WebDriverWait webDriverWait = new WebDriverWait(driver, DEFAULT_WAIT_TIME);
@@ -162,19 +227,23 @@ public class UIClient {
         actions.moveToElement(webElement).perform();
     }
 
-//    private void moveToElement(String xpath) {
-//        forceWait(forceTimeOut);
-//        WebElement webElement = driver.findElement(By.xpath(xpath));
-//        WebDriverWait webDriverWait = new WebDriverWait(driver, DEFAULT_WAIT_TIME);
-//        webDriverWait.until(ExpectedConditions.visibilityOf(webElement));
-//        Actions actions = new Actions(driver);
-//        actions.moveToElement(webElement);
-//        actions.perform();
-//    }
+    /**
+     * 鼠标悬停对应元素上
+     *
+     * @param xpath 元素的xpath
+     * @param index 元素的序号
+     * @return 成功为true
+     */
+    private String moveToElement(String xpath, int index) {
+        WebElement webElement = getElement(xpath, index);
+        Actions actions = new Actions(driver);
+        actions.moveToElement(webElement).perform();
+        return "true";
+    }
 
-    private void moveAndClick(By locator) {
+    private void moveAndClick(String xpath) {
         forceWait(forceTimeOut);
-        WebElement webElement = driver.findElement(locator);
+        WebElement webElement = driver.findElement(By.xpath(xpath));
         WebDriverWait webDriverWait = new WebDriverWait(driver, DEFAULT_WAIT_TIME);
         webDriverWait.until(ExpectedConditions.elementToBeClickable(webElement));
         Actions actions = new Actions(driver);
@@ -182,17 +251,14 @@ public class UIClient {
         actions.perform();
     }
 
-    private void moveAndClick(String xpath) {
-        moveAndClick(By.xpath(xpath));
-    }
-
-    private Boolean isElementExist(By locator) {
-        List<WebElement> webElementList = getElements(locator);
-        return webElementList.size() > 0;
-    }
-
+    /**
+     * 判断对应元素是否存在
+     * @param xpath 元素xpath
+     * @return 存在返回true
+     */
     private Boolean isElementExist(String xpath) {
-        return isElementExist(By.xpath(xpath));
+        List<WebElement> webElementList = getElements(xpath);
+        return webElementList.size() > 0;
     }
 
 }
