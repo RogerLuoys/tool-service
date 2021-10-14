@@ -1,5 +1,6 @@
 package com.luoys.upgrade.toolservice.web.vo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.util.Date;
@@ -51,6 +52,7 @@ public class AutoCaseVO {
     /**
      * 用例计划完成时间
      */
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date finishTime;
 
     /**

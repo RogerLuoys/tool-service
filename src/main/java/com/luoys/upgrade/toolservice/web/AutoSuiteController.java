@@ -43,10 +43,10 @@ public class AutoSuiteController {
 
     @RequestMapping(value = "/batchRelatedCase", method = RequestMethod.GET)
     public Result<Boolean> batchRelatedCase(@RequestParam("suiteId") String suiteId,
-                                            @RequestParam("caseId") String caseId,
+                                            @RequestHeader("userId") String userId,
                                             @RequestParam("caseName") String caseName) {
         log.info("--->开始批量关联的用例");
-        return Result.message(suiteService.createRelatedCase(suiteId, caseId, caseName));
+        return Result.message(suiteService.createRelatedCase(suiteId, userId, caseName));
     }
 
     @RequestMapping(value = "/remove", method = RequestMethod.DELETE)

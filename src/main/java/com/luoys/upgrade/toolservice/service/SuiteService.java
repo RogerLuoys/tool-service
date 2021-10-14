@@ -126,6 +126,10 @@ public class SuiteService {
             po.setSuiteId(suiteId);
             relateCase.add(po);
         }
+        if (relateCase.size() == 0) {
+            log.error("--->关联用例时，列表不能为空：suiteId={}", suiteId);
+            return false;
+        }
         int result = suiteCaseRelationMapper.batchInsert(relateCase);
         return result == 1;
     }
