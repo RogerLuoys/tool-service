@@ -265,7 +265,7 @@ public class SuiteService {
         AutoSuiteVO autoSuiteVO = TransformAutoSuite.transformPO2VO(autoSuiteMapper.selectByUUID(suiteId));
         // 查询用例列表
         List<SuiteCaseVO> caseList = TransformSuiteCaseRelation.transformPO2SimpleVO(
-                suiteCaseRelationMapper.listCaseBySuiteId(suiteId, startIndex == null ? null : startIndex - 1, retry));
+                suiteCaseRelationMapper.listCaseBySuiteId(suiteId, startIndex == null ? null : ((startIndex - 1) * KeywordEnum.DEFAULT_PAGE_SIZE.getCode()), retry));
         PageInfo<SuiteCaseVO> pageInfo = new PageInfo<>();
         pageInfo.setList(caseList);
         pageInfo.setTotal(suiteCaseRelationMapper.countBySuiteId(suiteId, null));
