@@ -213,12 +213,16 @@ public class SuiteService {
      * @return 用例列表
      */
     public List<AutoCaseSimpleVO> queryAll(String suiteId, String userId, String name) {
-        List<AutoCasePO> allCase = autoCaseMapper.list(AutoCaseStatusEnum.SUCCESS.getCode(), name, userId, null);
+        List<AutoCasePO> allCase = autoCaseMapper.list(null, name, userId, null);
         List<SuiteCaseRelationPO> selectedCase = suiteCaseRelationMapper.listCaseBySuiteId(suiteId, null, null);
         List<AutoCasePO> selectableCase = new ArrayList<>();
         // 筛选出未添加过的用例
         boolean isExist;
         for (AutoCasePO po : allCase) {
+            // 计划中的用例不添加
+            if (po.getStatus().equals(AutoCaseStatusEnum.PLANNING.getCode())) {
+                continue;
+            }
             // 先判断用例是否已被关联，如果关联过，则标记为true
             isExist = false;
             for (SuiteCaseRelationPO selectedPO : selectedCase) {

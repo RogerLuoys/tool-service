@@ -81,7 +81,7 @@
     <if test="retry != null">
       and scr.status != 3
     </if>
-    order by scr.sequence
+    order by scr.sequence asc
     <if test="startIndex != null">
       limit ${startIndex}, 10
     </if>
