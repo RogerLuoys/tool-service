@@ -31,7 +31,7 @@ public class AutoSuitePO {
     private String description;
 
     /**
-     * 测试集状态：1 空闲，2 执行中
+     * 套件状态：1 空闲，2 执行中
      */
     private Integer status;
 

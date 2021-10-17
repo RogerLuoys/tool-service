@@ -29,7 +29,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
 
 /**
- * 测试集服务，包含自动化测试集相关的所有业务逻辑
+ * 套件服务，包含自动化套件相关的所有业务逻辑
  *
  * @author luoys
  */
@@ -53,14 +53,14 @@ public class SuiteService {
     private CaseService caseService;
 
     /**
-     * 新增单个测试集
+     * 新增单个套件
      *
-     * @param autoSuiteVO 测试集对象
+     * @param autoSuiteVO 套件对象
      * @return 成功为true，失败为false
      */
     public Boolean create(AutoSuiteVO autoSuiteVO) {
         if (StringUtil.isBlank(autoSuiteVO.getName())) {
-            log.error("--->测试集名字必填：{}", autoSuiteVO);
+            log.error("--->套件名字必填：{}", autoSuiteVO);
             return false;
         }
         if (autoSuiteVO.getOwnerId().equals(KeywordEnum.DEFAULT_USER.getCode().toString())) {
@@ -75,14 +75,14 @@ public class SuiteService {
     }
 
     /**
-     * 快速新增测试集，必填项自动填入默认值
+     * 快速新增套件，必填项自动填入默认值
      *
-     * @param autoSuiteVO 测试集对象
+     * @param autoSuiteVO 套件对象
      * @return 成功为suiteId，失败为null
      */
     public String quickCreate(AutoSuiteVO autoSuiteVO) {
         if (StringUtil.isBlank(autoSuiteVO.getName())) {
-            log.error("--->测试集名字必填：{}", autoSuiteVO);
+            log.error("--->套件名字必填：{}", autoSuiteVO);
             return null;
         }
         autoSuiteVO.setSuiteId(NumberSender.createSuiteId());
@@ -92,7 +92,7 @@ public class SuiteService {
     }
 
     /**
-     * 测试集关联单个用例
+     * 套件关联单个用例
      *
      * @param suiteCaseVO 用例对象
      * @return 成功为true，失败为false
@@ -114,9 +114,9 @@ public class SuiteService {
     }
 
     /**
-     * 测试集关联批量用例
+     * 套件关联批量用例
      *
-     * @param suiteId 测试集业务id
+     * @param suiteId 套件业务id
      * @param userId  用例所属人
      * @param name    用例名称
      * @return 成功为true
@@ -137,42 +137,48 @@ public class SuiteService {
         }
         int result = suiteCaseRelationMapper.batchInsert(relateCase);
         // 更新关联的总用例数
-        if (result >= 1) {
+        if (result > 0) {
             int total = suiteCaseRelationMapper.countBySuiteId(suiteId, null);
             autoSuiteMapper.updateTotal(suiteId, total);
         }
-        return result >= 1;
+        return result > 0;
     }
 
     /**
-     * 删除单个测试集
+     * 删除单个套件
      *
-     * @param suiteId 测试集业务id
+     * @param suiteId 套件业务id
      * @return 成功为true，失败为false
      */
     public Boolean remove(String suiteId) {
         // 删除关联的用例
         suiteCaseRelationMapper.removeBySuiteId(suiteId);
-        // 删除测试集
+        // 删除套件
         int result = autoSuiteMapper.remove(suiteId);
         return result == 1;
     }
 
     /**
-     * 删除测试集关联的用例
+     * 删除套件关联的用例
      *
-     * @param suiteCaseVO 用例对象
+     * @param suiteId 套件id
+     * @param caseId 用例id
      * @return 成功为true，失败为false
      */
-    public Boolean removeRelatedCase(SuiteCaseVO suiteCaseVO) {
-        int result = suiteCaseRelationMapper.remove(TransformSuiteCaseRelation.transformVO2SimplePO(suiteCaseVO));
-        return result == 1;
+    public Boolean removeRelatedCase(String suiteId, String caseId) {
+        int result = suiteCaseRelationMapper.remove(suiteId, caseId);
+        // 删除后更新总条数
+        if (result > 0) {
+            int total = suiteCaseRelationMapper.countBySuiteId(suiteId, null);
+            autoSuiteMapper.updateTotal(suiteId, total);
+        }
+        return result > 1;
     }
 
     /**
-     * 更新单个测试集的基本信息
+     * 更新单个套件的基本信息
      *
-     * @param autoSuiteVO 测试集对象
+     * @param autoSuiteVO 套件对象
      * @return 成功为true，失败为false
      */
     public Boolean update(AutoSuiteVO autoSuiteVO) {
@@ -181,7 +187,7 @@ public class SuiteService {
     }
 
     /**
-     * 更新测试集关联的用例
+     * 更新套件关联的用例
      *
      * @param suiteCaseVO 用例对象
      * @return 成功为true，失败为false
@@ -192,11 +198,23 @@ public class SuiteService {
     }
 
     /**
-     * 查询测试集列表
+     * 重置测试套件的执行状态和执行结果
+     * @param suiteId 套件id
+     * @return 重置成功为true
+     */
+    public Boolean reset(String suiteId) {
+        autoSuiteMapper.updateResult(suiteId, 0, 0);
+        autoSuiteMapper.updateStatus(suiteId, AutoSuiteStatusEnum.SUITE_FREE.getCode());
+        suiteCaseRelationMapper.resetStatusBySuiteId(suiteId);
+        return true;
+    }
+
+    /**
+     * 查询套件列表
      *
      * @param name      名字，可空
      * @param pageIndex 页码
-     * @return 测试集列表
+     * @return 套件列表
      */
     public List<AutoSuiteSimpleVO> query(String name, String ownerId, Integer pageIndex) {
         int startIndex = (pageIndex - 1) * KeywordEnum.DEFAULT_PAGE_SIZE.getCode();
@@ -204,20 +222,20 @@ public class SuiteService {
     }
 
     /**
-     * 查询测试集总条数
+     * 查询套件总条数
      *
      * @param name    名字，可空
      * @param ownerId 用户名
-     * @return 测试集列表
+     * @return 套件列表
      */
     public Integer count(String name, String ownerId) {
         return autoSuiteMapper.count(name, ownerId);
     }
 
     /**
-     * 查询符合条件且尚未被测试集添加过的所有用例
+     * 查询符合条件且尚未被套件添加过的所有用例
      *
-     * @param suiteId 测试集业务id
+     * @param suiteId 套件业务id
      * @param userId  用例所属人
      * @param name    用例名称
      * @return 用例列表
@@ -250,23 +268,23 @@ public class SuiteService {
     }
 
     /**
-     * 查询测试集详情，
-     * 分页查询测试集关联的用例
+     * 查询套件详情，
+     * 分页查询套件关联的用例
      *
-     * @param suiteId    测试集业务id
-     * @param startIndex 测试集业务id
-     * @return 测试集对象
+     * @param suiteId    套件业务id
+     * @param startIndex 套件业务id
+     * @return 套件对象
      */
     public AutoSuiteVO queryDetail(String suiteId, Integer startIndex) {
         return queryDetail(suiteId, startIndex, null);
     }
 
     /**
-     * 查询测试集详情
+     * 查询套件详情
      * 只查询到了用例基本信息，用例关联的步骤详情未查询
      *
-     * @param suiteId 测试集业务id
-     * @return 测试集对象
+     * @param suiteId 套件业务id
+     * @return 套件对象
      */
     private AutoSuiteVO queryDetail(String suiteId, Integer startIndex, Boolean retry) {
         if (retry == null || !retry) {
@@ -285,27 +303,27 @@ public class SuiteService {
     }
 
     /**
-     * 执行测试集中的批量用例（异步模式）
+     * 执行套件中的批量用例（异步模式）
      *
-     * @param suiteId 测试集业务id
+     * @param suiteId 套件业务id
      * @param retry 重试，true只执行不通过部分用例，false或null执行全部
      * @return true只代表唤起执行操作成功
      */
     public Boolean useAsync(String suiteId, Boolean retry) throws RejectedExecutionException {
-        // 全量查询测试集详情，如果重试则只查询其中未通过用例
+        // 全量查询套件详情，如果重试则只查询其中未通过用例
         AutoSuiteVO autoSuiteVO = queryDetail(suiteId, null, retry);
-        // 测试集只能同时执行一个，如果状态已是执行中，则直接退出
+        // 套件只能同时执行一个，如果状态已是执行中，则直接退出
         if (autoSuiteVO.getStatus().equals(AutoSuiteStatusEnum.SUITE_RUNNING.getCode())) {
-            log.error("--->测试集内正在执行中：suiteId={}", suiteId);
+            log.error("--->套件内正在执行中：suiteId={}", suiteId);
             return false;
         }
         // 获取关联的所有用例
         List<SuiteCaseVO> caseList = autoSuiteVO.getRelatedCase().getList();
         if (caseList.size() == 0) {
-            log.error("--->测试集内未找到关联的用例：suiteId={}", suiteId);
+            log.error("--->套件内未找到关联的用例：suiteId={}", suiteId);
             return false;
         }
-        // 将测试集上次的所有执行结果重置，并将状态设置成执行中
+        // 将套件上次的所有执行结果重置，并将状态设置成执行中
         autoSuiteMapper.updateResult(suiteId, 0, 0);
         autoSuiteMapper.updateStatus(suiteId, AutoSuiteStatusEnum.SUITE_RUNNING.getCode());
         suiteCaseRelationMapper.resetStatusBySuiteId(suiteId);
@@ -325,7 +343,7 @@ public class SuiteService {
                             suiteCaseRelationMapper.countBySuiteId(autoSuiteVO.getSuiteId(), AutoCaseStatusEnum.FAIL.getCode()));
                 } finally {
                     autoSuiteMapper.updateExecuteStatus(suiteId, true, null);
-                    // api用例执行完成后，如果ui用例也执行完成，则将测试集状态变更为空闲
+                    // api用例执行完成后，如果ui用例也执行完成，则将套件状态变更为空闲
                     if (autoSuiteMapper.selectByUUID(suiteId).getIsUiCompleted()) {
                         autoSuiteMapper.updateStatus(suiteId, AutoSuiteStatusEnum.SUITE_FREE.getCode());
                     }
@@ -337,7 +355,7 @@ public class SuiteService {
             // 使用ui线程池执行ui用例，并更新结果
             ThreadPoolUtil.executeUI(() -> {
                 try {
-                    // 先测试集ui用例的执行状态更新
+                    // 先套件ui用例的执行状态更新
                     autoSuiteMapper.updateExecuteStatus(suiteId, null, false);
                     // 执行所有用例，后更新结果
                     execute(uiCaseList, autoSuiteVO.getEnvironment());
@@ -346,7 +364,7 @@ public class SuiteService {
                             suiteCaseRelationMapper.countBySuiteId(autoSuiteVO.getSuiteId(), AutoCaseStatusEnum.FAIL.getCode()));
                 } finally {
                     autoSuiteMapper.updateExecuteStatus(suiteId, null, true);
-                    // ui用例执行完成后，如果api用例也执行完成，则将测试集状态变更为空闲
+                    // ui用例执行完成后，如果api用例也执行完成，则将套件状态变更为空闲
                     if (autoSuiteMapper.selectByUUID(suiteId).getIsApiCompleted()) {
                         autoSuiteMapper.updateStatus(suiteId, AutoSuiteStatusEnum.SUITE_FREE.getCode());
                     }
@@ -357,34 +375,35 @@ public class SuiteService {
     }
 
     /**
-     * 执行测试集中的单个用例（异步模式）
+     * 执行套件中的单个用例（异步模式）
      *
-     * @param autoSuiteVO 测试集对象，只能有一个关联用例
+     * @param suiteCaseVO 套件关联用例对象，需要suiteId，caseId
      * @return true只代表唤起执行操作成功
      */
-    public Boolean useAsync(AutoSuiteVO autoSuiteVO) throws RejectedExecutionException {
-        if (autoSuiteVO.getRelatedCase().getList().size() != 1) {
-            log.error("--->此方法只能执行单个用例");
+    public Boolean useAsync(SuiteCaseVO suiteCaseVO) throws RejectedExecutionException {
+        if (suiteCaseVO.getSuiteId() == null || suiteCaseVO.getAutoCase().getCaseId() == null) {
+            log.error("--->执行套件中单个用例时，缺少关键数据");
             return false;
         }
-        List<SuiteCaseVO> caseList = autoSuiteVO.getRelatedCase().getList();
+        List<SuiteCaseVO> caseList = new ArrayList<>();
+        caseList.add(suiteCaseVO);
         if (caseList.get(0).getAutoCase().getType().equals(AutoCaseTypeEnum.UI_CASE.getCode())) {
             // 使用ui线程池执行ui用例，并更新结果
             ThreadPoolUtil.executeUI(() -> {
                 // 执行所有用例，后更新结果
-                execute(caseList, autoSuiteVO.getEnvironment());
-                autoSuiteMapper.updateResult(autoSuiteVO.getSuiteId(),
-                        suiteCaseRelationMapper.countBySuiteId(autoSuiteVO.getSuiteId(), AutoCaseStatusEnum.SUCCESS.getCode()),
-                        suiteCaseRelationMapper.countBySuiteId(autoSuiteVO.getSuiteId(), AutoCaseStatusEnum.FAIL.getCode()));
+                execute(caseList, suiteCaseVO.getAutoCase().getEnvironment());
+                autoSuiteMapper.updateResult(suiteCaseVO.getSuiteId(),
+                        suiteCaseRelationMapper.countBySuiteId(suiteCaseVO.getSuiteId(), AutoCaseStatusEnum.SUCCESS.getCode()),
+                        suiteCaseRelationMapper.countBySuiteId(suiteCaseVO.getSuiteId(), AutoCaseStatusEnum.FAIL.getCode()));
             });
         } else {
             // 使用api线程池执行api用例，并更新结果
             ThreadPoolUtil.executeAPI(() -> {
                 // 先执行，后更新结果
-                execute(caseList, autoSuiteVO.getEnvironment());
-                autoSuiteMapper.updateResult(autoSuiteVO.getSuiteId(),
-                        suiteCaseRelationMapper.countBySuiteId(autoSuiteVO.getSuiteId(), AutoCaseStatusEnum.SUCCESS.getCode()),
-                        suiteCaseRelationMapper.countBySuiteId(autoSuiteVO.getSuiteId(), AutoCaseStatusEnum.FAIL.getCode()));
+                execute(caseList, suiteCaseVO.getAutoCase().getEnvironment());
+                autoSuiteMapper.updateResult(suiteCaseVO.getSuiteId(),
+                        suiteCaseRelationMapper.countBySuiteId(suiteCaseVO.getSuiteId(), AutoCaseStatusEnum.SUCCESS.getCode()),
+                        suiteCaseRelationMapper.countBySuiteId(suiteCaseVO.getSuiteId(), AutoCaseStatusEnum.FAIL.getCode()));
             });
         }
         return true;
@@ -407,7 +426,7 @@ public class SuiteService {
             } else if (suiteCaseVO.getAutoCase().getType().equals(AutoCaseTypeEnum.UI_CASE.getCode())) {
                 uiCaseList.add(suiteCaseVO);
             } else {
-                log.error("--->测试集中的未知用例类型：caseId={}", suiteCaseVO.getAutoCase().getCaseId());
+                log.error("--->套件中的未知用例类型：caseId={}", suiteCaseVO.getAutoCase().getCaseId());
             }
         }
         casesMap.put(AutoCaseTypeEnum.UI_CASE.getCode(), uiCaseList);
@@ -465,7 +484,7 @@ public class SuiteService {
                 log.error("--->批量执行用例异常：caseId={}", vo.getAutoCase().getCaseId(), e);
                 result = false;
             } finally {
-                // 更新测试集中关联用例的执行状态
+                // 更新套件中关联用例的执行状态
                 suiteCaseRelationMapper.updateStatus(vo.getSuiteId(), vo.getCaseId(),
                         result ? AutoCaseStatusEnum.SUCCESS.getCode() : AutoCaseStatusEnum.FAIL.getCode());
             }

@@ -25,7 +25,7 @@
     set is_delete = 1, gmt_modified = now()
     where suite_id = #{suiteId,jdbcType=VARCHAR}
   </update>
-  <update id="remove" parameterType="com.luoys.upgrade.toolservice.dao.po.SuiteCaseRelationPO">
+  <update id="remove">
     update suite_case_relation
     set is_delete = 1, gmt_modified = now()
     where suite_id = #{suiteId,jdbcType=VARCHAR} and case_id = #{caseId,jdbcType=VARCHAR}
@@ -54,6 +54,9 @@
     <set>
       <if test="sequence != null">
         `sequence` = #{sequence,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
       </if>
       gmt_modified = now()
     </set>

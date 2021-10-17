@@ -3,7 +3,7 @@ package com.luoys.upgrade.toolservice.web.vo;
 import lombok.Data;
 
 /**
- * 简单的测试集类，用于列表展示
+ * 简单的套件类，用于列表展示
  *
  * @author luoys
  */
@@ -26,7 +26,7 @@ public class AutoSuiteSimpleVO {
     private String description;
 
     /**
-     * 测试集状态：1 空闲，2 执行中
+     * 套件状态：1 空闲，2 执行中
      */
     private Integer status;
 

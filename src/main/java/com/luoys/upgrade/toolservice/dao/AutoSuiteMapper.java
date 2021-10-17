@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 /**
- * 自动化测试集dao层接口
+ * 自动化套件dao层接口
  *
  * @author luoys
  */
@@ -39,7 +39,7 @@ public interface AutoSuiteMapper {
     int update(AutoSuitePO autoSuitePO);
 
     /**
-     * 更新测试集执行结果
+     * 更新套件执行结果
      *
      * @param suiteId 业务id
      * @param passed 成功数
@@ -51,7 +51,7 @@ public interface AutoSuiteMapper {
                      @Param("failed") Integer failed);
 
     /**
-     * 更新测试集状态
+     * 更新套件状态
      *
      * @param suiteId 业务id
      * @param status 状态
@@ -61,7 +61,7 @@ public interface AutoSuiteMapper {
                      @Param("status") Integer status);
 
     /**
-     * 更新测试集关联的用例总数
+     * 更新套件关联的用例总数
      *
      * @param suiteId 业务id
      * @param total 关联的用例总数
@@ -71,11 +71,11 @@ public interface AutoSuiteMapper {
                      @Param("total") Integer total);
 
     /**
-     * 同步测试集执行状态
+     * 同步套件执行状态
      *
      * @param suiteId 业务id
-     * @param isApiCompleted 测试集中的api用例是否执行完成
-     * @param isUiCompleted 测试集中的ui用例是否执行完成
+     * @param isApiCompleted 套件中的api用例是否执行完成
+     * @param isUiCompleted 套件中的ui用例是否执行完成
      * @return 成功为1
      */
     int updateExecuteStatus(@Param("suiteId") String suiteId,

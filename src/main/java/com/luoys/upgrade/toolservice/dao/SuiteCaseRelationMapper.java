@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 /**
- * 测试集用例关联关系dao层接口
+ * 套件用例关联关系dao层接口
  *
  * @author luoys
  */
@@ -17,7 +17,7 @@ public interface SuiteCaseRelationMapper {
     /**
      * 按测试suiteId，批量逻辑删除关联的用例
      *
-     * @param suiteId 测试集业务id
+     * @param suiteId 套件业务id
      * @return 影响行数
      */
     int removeBySuiteId(@Param("suiteId") String suiteId);
@@ -25,10 +25,12 @@ public interface SuiteCaseRelationMapper {
     /**
      * 按suiteId和caseId，逻辑删除单个用例
      *
-     * @param record 测试集用例关联关系对象
+     * @param suiteId 套件id
+     * @param caseId 用例id
      * @return 成功为1
      */
-    int remove(SuiteCaseRelationPO record);
+    int remove(@Param("suiteId") String suiteId,
+               @Param("caseId") String caseId);
 
     /**
      * 插入数据
@@ -65,7 +67,7 @@ public interface SuiteCaseRelationMapper {
     /**
      * 按suiteId和caseId，更新数据
      *
-     * @param suiteId 测试集业务id
+     * @param suiteId 套件业务id
      * @param caseId  用例业务id
      * @param status  要更新的状态
      * @return 成功为1
@@ -77,7 +79,7 @@ public interface SuiteCaseRelationMapper {
     /**
      * 根据suiteId重置关联的用例状态
      *
-     * @param suiteId 测试集业务id
+     * @param suiteId 套件业务id
      * @return 影响行数
      */
     int resetStatusBySuiteId(@Param("suiteId") String suiteId);
@@ -85,7 +87,7 @@ public interface SuiteCaseRelationMapper {
     /**
      * 按条件查询用例列表
      *
-     * @param suiteId    测试集id
+     * @param suiteId    套件id
      * @param startIndex 分页，为空则查全部
      * @param retry      true查询状态不通过的用例
      * @return 关联用例列表
@@ -97,7 +99,7 @@ public interface SuiteCaseRelationMapper {
     /**
      * 查询总数
      *
-     * @param suiteId 测试集id
+     * @param suiteId 套件id
      * @param status  用例状态，为空则查询所有状态
      * @return 总数
      */

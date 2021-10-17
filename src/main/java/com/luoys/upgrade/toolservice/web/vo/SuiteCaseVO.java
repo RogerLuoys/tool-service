@@ -3,7 +3,7 @@ package com.luoys.upgrade.toolservice.web.vo;
 import lombok.Data;
 
 /**
- * 测试集关联的用例类
+ * 套件关联的用例类
  *
  * @author luoys
  */
@@ -11,7 +11,7 @@ import lombok.Data;
 public class SuiteCaseVO {
 
     /**
-     * 测试集业务id
+     * 套件业务id
      */
     private String suiteId;
 
@@ -21,7 +21,7 @@ public class SuiteCaseVO {
     private String caseId;
 
     /**
-     * 测试集关联用例的执行状态：1 未执行，2 失败，3成功
+     * 套件关联用例的执行状态：1 未执行，2 失败，3成功
      */
     private Integer status;
 
@@ -31,7 +31,7 @@ public class SuiteCaseVO {
     private Integer sequence;
 
     /**
-     * 测试集关联的用例
+     * 套件关联的用例
      */
     private AutoCaseSimpleVO autoCase;
 
