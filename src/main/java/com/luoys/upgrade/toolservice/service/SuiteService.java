@@ -105,6 +105,11 @@ public class SuiteService {
             suiteCaseVO.setStatus(AutoCaseStatusEnum.PLANNING.getCode());
         }
         int result = suiteCaseRelationMapper.insert(TransformSuiteCaseRelation.transformVO2SimplePO(suiteCaseVO));
+        // 更新关联的总用例数
+        if (result == 1) {
+            int total = suiteCaseRelationMapper.countBySuiteId(suiteCaseVO.getSuiteId(), null);
+            autoSuiteMapper.updateTotal(suiteCaseVO.getSuiteId(), total);
+        }
         return result == 1;
     }
 
@@ -131,7 +136,12 @@ public class SuiteService {
             return false;
         }
         int result = suiteCaseRelationMapper.batchInsert(relateCase);
-        return result == 1;
+        // 更新关联的总用例数
+        if (result >= 1) {
+            int total = suiteCaseRelationMapper.countBySuiteId(suiteId, null);
+            autoSuiteMapper.updateTotal(suiteId, total);
+        }
+        return result >= 1;
     }
 
     /**
@@ -253,6 +263,7 @@ public class SuiteService {
 
     /**
      * 查询测试集详情
+     * 只查询到了用例基本信息，用例关联的步骤详情未查询
      *
      * @param suiteId 测试集业务id
      * @return 测试集对象
@@ -274,9 +285,10 @@ public class SuiteService {
     }
 
     /**
-     * 执行测试集（异步模式）
+     * 执行测试集中的批量用例（异步模式）
      *
      * @param suiteId 测试集业务id
+     * @param retry 重试，true只执行不通过部分用例，false或null执行全部
      * @return true只代表唤起执行操作成功
      */
     public Boolean useAsync(String suiteId, Boolean retry) throws RejectedExecutionException {
@@ -301,48 +313,6 @@ public class SuiteService {
         Map<Integer, List<SuiteCaseVO>> casesMap = orderAndSort(caseList);
         List<SuiteCaseVO> uiCaseList = casesMap.get(AutoCaseTypeEnum.UI_CASE.getCode());
         List<SuiteCaseVO> apiCaseList = casesMap.get(AutoCaseTypeEnum.INTERFACE_CASE.getCode());
-
-//        Future futureUI = null;
-//        Future futureAPI = null;
-//        if (apiCaseList.size() != 0) {
-//            // 使用api线程池执行api用例，并更新结果
-//            futureUI = ThreadPoolUtil.submitUI(() -> {
-//                try {
-//                    // 先执行，后更新结果
-//                    execute(apiCaseList, autoSuiteVO.getEnvironment());
-//                    autoSuiteMapper.updateResult(suiteId,
-//                            suiteCaseRelationMapper.countBySuiteId(autoSuiteVO.getSuiteId(), AutoCaseStatusEnum.SUCCESS.getCode()),
-//                            suiteCaseRelationMapper.countBySuiteId(autoSuiteVO.getSuiteId(), AutoCaseStatusEnum.FAIL.getCode()));
-//                } finally {
-//                    // api用例执行完成后，如果ui用例也执行完成，则将测试集状态变更为空闲
-//                    if (futureAPI == null || futureAPI.isDone()) {
-//                        autoSuiteMapper.updateStatus(suiteId, AutoSuiteStatusEnum.SUITE_FREE.getCode());
-//                    }
-//                }
-//
-//            });
-//
-//        }
-//        if (uiCaseList.size() != 0) {
-//            // 使用ui线程池执行ui用例，并更新结果
-//            futureAPI = ThreadPoolUtil.submitAPI(() -> {
-//                try {
-//                    // 先测试集ui用例的执行状态更新
-//                    autoSuiteMapper.updateExecuteStatus(suiteId, null, false);
-//                    // 执行所有用例，后更新结果
-//                    execute(uiCaseList, autoSuiteVO.getEnvironment());
-//                    autoSuiteMapper.updateResult(suiteId,
-//                            suiteCaseRelationMapper.countBySuiteId(autoSuiteVO.getSuiteId(), AutoCaseStatusEnum.SUCCESS.getCode()),
-//                            suiteCaseRelationMapper.countBySuiteId(autoSuiteVO.getSuiteId(), AutoCaseStatusEnum.FAIL.getCode()));
-//                } finally {
-//                    // ui用例执行完成后，如果api用例也执行完成，则将测试集状态变更为空闲
-//                    if (futureUI == null || futureUI.isDone()) {
-//                        autoSuiteMapper.updateStatus(suiteId, AutoSuiteStatusEnum.SUITE_FREE.getCode());
-//                    }
-//                }
-//            });
-//        }
-
 
         if (apiCaseList.size() != 0) {
             // 使用api线程池执行api用例，并更新结果
@@ -381,6 +351,40 @@ public class SuiteService {
                         autoSuiteMapper.updateStatus(suiteId, AutoSuiteStatusEnum.SUITE_FREE.getCode());
                     }
                 }
+            });
+        }
+        return true;
+    }
+
+    /**
+     * 执行测试集中的单个用例（异步模式）
+     *
+     * @param autoSuiteVO 测试集对象，只能有一个关联用例
+     * @return true只代表唤起执行操作成功
+     */
+    public Boolean useAsync(AutoSuiteVO autoSuiteVO) throws RejectedExecutionException {
+        if (autoSuiteVO.getRelatedCase().getList().size() != 1) {
+            log.error("--->此方法只能执行单个用例");
+            return false;
+        }
+        List<SuiteCaseVO> caseList = autoSuiteVO.getRelatedCase().getList();
+        if (caseList.get(0).getAutoCase().getType().equals(AutoCaseTypeEnum.UI_CASE.getCode())) {
+            // 使用ui线程池执行ui用例，并更新结果
+            ThreadPoolUtil.executeUI(() -> {
+                // 执行所有用例，后更新结果
+                execute(caseList, autoSuiteVO.getEnvironment());
+                autoSuiteMapper.updateResult(autoSuiteVO.getSuiteId(),
+                        suiteCaseRelationMapper.countBySuiteId(autoSuiteVO.getSuiteId(), AutoCaseStatusEnum.SUCCESS.getCode()),
+                        suiteCaseRelationMapper.countBySuiteId(autoSuiteVO.getSuiteId(), AutoCaseStatusEnum.FAIL.getCode()));
+            });
+        } else {
+            // 使用api线程池执行api用例，并更新结果
+            ThreadPoolUtil.executeAPI(() -> {
+                // 先执行，后更新结果
+                execute(caseList, autoSuiteVO.getEnvironment());
+                autoSuiteMapper.updateResult(autoSuiteVO.getSuiteId(),
+                        suiteCaseRelationMapper.countBySuiteId(autoSuiteVO.getSuiteId(), AutoCaseStatusEnum.SUCCESS.getCode()),
+                        suiteCaseRelationMapper.countBySuiteId(autoSuiteVO.getSuiteId(), AutoCaseStatusEnum.FAIL.getCode()));
             });
         }
         return true;
@@ -446,7 +450,7 @@ public class SuiteService {
     /**
      * 执行用例
      *
-     * @param caseList 用例列表
+     * @param caseList 用例列表，列表对象中需要有caseId和suiteId
      * @return 返回所执行用例的成功数和失败数
      */
     private void execute(List<SuiteCaseVO> caseList, String environment) {

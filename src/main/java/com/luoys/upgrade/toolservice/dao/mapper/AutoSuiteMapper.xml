@@ -115,6 +115,11 @@
     set status = #{status,jdbcType=TINYINT}
     where suite_id = #{suiteId,jdbcType=VARCHAR}
   </update>
+  <update id="updateTotal">
+    update auto_suite
+    set total = #{total,jdbcType=INTEGER}
+    where suite_id = #{suiteId,jdbcType=VARCHAR}
+  </update>
   <update id="updateExecuteStatus">
     update auto_suite
     <set>

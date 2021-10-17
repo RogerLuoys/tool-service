@@ -61,6 +61,16 @@ public interface AutoSuiteMapper {
                      @Param("status") Integer status);
 
     /**
+     * 更新测试集关联的用例总数
+     *
+     * @param suiteId 业务id
+     * @param total 关联的用例总数
+     * @return 成功为1
+     */
+    int updateTotal(@Param("suiteId") String suiteId,
+                     @Param("total") Integer total);
+
+    /**
      * 同步测试集执行状态
      *
      * @param suiteId 业务id

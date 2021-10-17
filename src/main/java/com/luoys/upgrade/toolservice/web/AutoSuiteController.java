@@ -102,4 +102,14 @@ public class AutoSuiteController {
         }
     }
 
+    @RequestMapping(value = "/useSingle", method = RequestMethod.POST)
+    public Result<String> useSingle(@RequestBody AutoSuiteVO autoSuiteVO) {
+        log.info("--->开始执行测试集的单个用例：{}", autoSuiteVO);
+        try {
+            return Result.message(suiteService.useAsync(autoSuiteVO), "套件未执行，请检查状态");
+        } catch (RejectedExecutionException e) {
+            return Result.errorMessage("执行队列已满，请稍后再试");
+        }
+    }
+
 }
