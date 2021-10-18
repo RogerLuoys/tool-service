@@ -42,8 +42,8 @@ public interface AutoSuiteMapper {
      * 更新套件执行结果
      *
      * @param suiteId 业务id
-     * @param passed 成功数
-     * @param failed 失败数
+     * @param passed  成功数
+     * @param failed  失败数
      * @return 成功为1
      */
     int updateResult(@Param("suiteId") String suiteId,
@@ -54,7 +54,7 @@ public interface AutoSuiteMapper {
      * 更新套件状态
      *
      * @param suiteId 业务id
-     * @param status 状态
+     * @param status  状态
      * @return 成功为1
      */
     int updateStatus(@Param("suiteId") String suiteId,
@@ -64,23 +64,23 @@ public interface AutoSuiteMapper {
      * 更新套件关联的用例总数
      *
      * @param suiteId 业务id
-     * @param total 关联的用例总数
+     * @param total   关联的用例总数
      * @return 成功为1
      */
     int updateTotal(@Param("suiteId") String suiteId,
-                     @Param("total") Integer total);
+                    @Param("total") Integer total);
 
     /**
      * 同步套件执行状态
      *
-     * @param suiteId 业务id
+     * @param suiteId        业务id
      * @param isApiCompleted 套件中的api用例是否执行完成
-     * @param isUiCompleted 套件中的ui用例是否执行完成
+     * @param isUiCompleted  套件中的ui用例是否执行完成
      * @return 成功为1
      */
     int updateExecuteStatus(@Param("suiteId") String suiteId,
-                     @Param("isApiCompleted") Boolean isApiCompleted,
-                     @Param("isUiCompleted") Boolean isUiCompleted);
+                            @Param("isApiCompleted") Boolean isApiCompleted,
+                            @Param("isUiCompleted") Boolean isUiCompleted);
 
     /**
      * 根据id查询详情
@@ -105,11 +105,11 @@ public interface AutoSuiteMapper {
     /**
      * 按条件查询总条数
      *
-     * @param name       名字
-     * @param ownerId    所属人id
+     * @param name    名字
+     * @param ownerId 所属人id
      * @return 总数
      */
     int count(@Param("name") String name,
-                           @Param("ownerId") String ownerId);
+              @Param("ownerId") String ownerId);
 
 }
