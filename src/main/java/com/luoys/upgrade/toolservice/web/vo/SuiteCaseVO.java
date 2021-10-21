@@ -31,7 +31,7 @@ public class SuiteCaseVO {
     private Integer sequence;
 
     /**
-     * 套件关联的用例
+     * 套件关联用例的基本信息
      */
     private AutoCaseSimpleVO autoCase;
 

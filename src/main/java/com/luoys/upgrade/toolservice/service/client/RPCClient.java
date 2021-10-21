@@ -87,6 +87,7 @@ public class RPCClient {
      */
     private String invoke(String url, String interfaceName, String methodName, String[] paramTypeList, Object[] paramList) {
         try {
+//            Thread.sleep(1000L);
             reference = new ReferenceConfig<>();
             // 弱类型接口名
             reference.setInterface(interfaceName);

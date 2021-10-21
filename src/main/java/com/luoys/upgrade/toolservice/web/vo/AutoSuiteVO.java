@@ -48,7 +48,7 @@ public class AutoSuiteVO {
     private Integer caseMaxTime;
 
     /**
-     * 用例列表，PageInfo类型
+     * 用例列表，PageInfo类型，通过getList取列表
      */
 //    private List<SuiteCaseVO> caseList;
     private PageInfo<SuiteCaseVO> relatedCase;

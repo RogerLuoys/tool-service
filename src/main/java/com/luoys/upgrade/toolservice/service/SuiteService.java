@@ -336,11 +336,10 @@ public class SuiteService {
             // 使用api线程池执行api用例，并更新结果
             ThreadPoolUtil.executeAPI(() -> {
                 try {
+                    // 把套件的api状态改为执行中
+                    autoSuiteMapper.updateExecuteStatus(suiteId, false, null);
                     // 先执行，后更新结果
-                    execute(apiCaseList, autoSuiteVO.getEnvironment());
-                    autoSuiteMapper.updateResult(suiteId,
-                            suiteCaseRelationMapper.countBySuiteId(autoSuiteVO.getSuiteId(), AutoCaseStatusEnum.SUCCESS.getCode()),
-                            suiteCaseRelationMapper.countBySuiteId(autoSuiteVO.getSuiteId(), AutoCaseStatusEnum.FAIL.getCode()));
+                    execute(apiCaseList, autoSuiteVO.getEnvironment(), suiteId);
                 } finally {
                     autoSuiteMapper.updateExecuteStatus(suiteId, true, null);
                     // api用例执行完成后，如果ui用例也执行完成，则将套件状态变更为空闲
@@ -348,7 +347,6 @@ public class SuiteService {
                         autoSuiteMapper.updateStatus(suiteId, AutoSuiteStatusEnum.SUITE_FREE.getCode());
                     }
                 }
-
             });
         }
         if (uiCaseList.size() != 0) {
@@ -358,10 +356,7 @@ public class SuiteService {
                     // 先套件ui用例的执行状态更新
                     autoSuiteMapper.updateExecuteStatus(suiteId, null, false);
                     // 执行所有用例，后更新结果
-                    execute(uiCaseList, autoSuiteVO.getEnvironment());
-                    autoSuiteMapper.updateResult(suiteId,
-                            suiteCaseRelationMapper.countBySuiteId(autoSuiteVO.getSuiteId(), AutoCaseStatusEnum.SUCCESS.getCode()),
-                            suiteCaseRelationMapper.countBySuiteId(autoSuiteVO.getSuiteId(), AutoCaseStatusEnum.FAIL.getCode()));
+                    execute(uiCaseList, autoSuiteVO.getEnvironment(), suiteId);
                 } finally {
                     autoSuiteMapper.updateExecuteStatus(suiteId, null, true);
                     // ui用例执行完成后，如果api用例也执行完成，则将套件状态变更为空闲
@@ -391,19 +386,13 @@ public class SuiteService {
             // 使用ui线程池执行ui用例，并更新结果
             ThreadPoolUtil.executeUI(() -> {
                 // 执行所有用例，后更新结果
-                execute(caseList, suiteCaseVO.getAutoCase().getEnvironment());
-                autoSuiteMapper.updateResult(suiteCaseVO.getSuiteId(),
-                        suiteCaseRelationMapper.countBySuiteId(suiteCaseVO.getSuiteId(), AutoCaseStatusEnum.SUCCESS.getCode()),
-                        suiteCaseRelationMapper.countBySuiteId(suiteCaseVO.getSuiteId(), AutoCaseStatusEnum.FAIL.getCode()));
+                execute(caseList, suiteCaseVO.getAutoCase().getEnvironment(), suiteCaseVO.getSuiteId());
             });
         } else {
             // 使用api线程池执行api用例，并更新结果
             ThreadPoolUtil.executeAPI(() -> {
                 // 先执行，后更新结果
-                execute(caseList, suiteCaseVO.getAutoCase().getEnvironment());
-                autoSuiteMapper.updateResult(suiteCaseVO.getSuiteId(),
-                        suiteCaseRelationMapper.countBySuiteId(suiteCaseVO.getSuiteId(), AutoCaseStatusEnum.SUCCESS.getCode()),
-                        suiteCaseRelationMapper.countBySuiteId(suiteCaseVO.getSuiteId(), AutoCaseStatusEnum.FAIL.getCode()));
+                execute(caseList, suiteCaseVO.getAutoCase().getEnvironment(), suiteCaseVO.getSuiteId());
             });
         }
         return true;
@@ -467,12 +456,12 @@ public class SuiteService {
     }
 
     /**
-     * 执行用例
+     * 执行用例，并更新套件中的用例状态
      *
      * @param caseList 用例列表，列表对象中需要有caseId和suiteId
      * @return 返回所执行用例的成功数和失败数
      */
-    private void execute(List<SuiteCaseVO> caseList, String environment) {
+    private void execute(List<SuiteCaseVO> caseList, String environment, String suiteId) {
         boolean result = false;
         for (SuiteCaseVO vo : caseList) {
             try {
@@ -487,6 +476,10 @@ public class SuiteService {
                 // 更新套件中关联用例的执行状态
                 suiteCaseRelationMapper.updateStatus(vo.getSuiteId(), vo.getCaseId(),
                         result ? AutoCaseStatusEnum.SUCCESS.getCode() : AutoCaseStatusEnum.FAIL.getCode());
+                // 全量更新套件执行结果
+                autoSuiteMapper.updateResult(suiteId,
+                        suiteCaseRelationMapper.countBySuiteId(suiteId, AutoCaseStatusEnum.SUCCESS.getCode()),
+                        suiteCaseRelationMapper.countBySuiteId(suiteId, AutoCaseStatusEnum.FAIL.getCode()));
             }
         }
     }
