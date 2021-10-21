@@ -18,11 +18,17 @@ import java.util.Map;
  */
 public class TransformCaseStepRelation {
 
+    /**
+     * 同时转换完整的关联信息和步骤信息
+     * @param po 带有关联表和步骤表的完整信息
+     * @return 带有关联表和步骤表的完整信息
+     */
     public static CaseStepVO transformPO2VO(CaseStepRelationPO po) {
         if (po == null) {
             return null;
         }
         CaseStepVO vo = new CaseStepVO();
+        // 设置用例步骤关联信息
         vo.setCaseId(po.getCaseId());
         vo.setStepId(po.getStepId());
         vo.setSequence(po.getSequence());
@@ -94,6 +100,11 @@ public class TransformCaseStepRelation {
         return vo;
     }
 
+    /**
+     * 同时转换完整的关联信息和步骤信息(列表模式)
+     * @param poList 带有关联表和步骤表的完整信息
+     * @return 带有关联表和步骤表的完整信息
+     */
     public static List<CaseStepVO> transformPO2VO(List<CaseStepRelationPO> poList) {
         List<CaseStepVO> voList = new ArrayList<>();
         for (CaseStepRelationPO po : poList) {
@@ -102,6 +113,11 @@ public class TransformCaseStepRelation {
         return voList;
     }
 
+    /**
+     * 只转换用例步骤的关联信息
+     * @param vo -
+     * @return 只含关联信息
+     */
     public static CaseStepRelationPO transformVO2PO(CaseStepVO vo) {
         if (vo == null) {
             return null;
@@ -113,6 +129,19 @@ public class TransformCaseStepRelation {
         po.setType(vo.getType());
         po.setCaseId(vo.getCaseId());
         return po;
+    }
+
+    /**
+     * 只转换用例步骤的关联信息(列表模式)
+     * @param voList -
+     * @return 只含关联信息
+     */
+    public static List<CaseStepRelationPO> transformVO2PO(List<CaseStepVO> voList) {
+        List<CaseStepRelationPO> poList = new ArrayList<>();
+        for (CaseStepVO vo : voList) {
+            poList.add(transformVO2PO(vo));
+        }
+        return poList;
     }
 
 }

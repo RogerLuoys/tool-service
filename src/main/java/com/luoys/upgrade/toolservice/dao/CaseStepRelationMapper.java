@@ -1,6 +1,7 @@
 package com.luoys.upgrade.toolservice.dao;
 
 import com.luoys.upgrade.toolservice.dao.po.CaseStepRelationPO;
+import com.luoys.upgrade.toolservice.dao.po.SuiteCaseRelationPO;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -37,6 +38,14 @@ public interface CaseStepRelationMapper {
      * @return 成功为1
      */
     int insert(CaseStepRelationPO record);
+
+    /**
+     * 批量插入
+     *
+     * @param recordList 对象列表
+     * @return 插入行数
+     */
+    int batchInsert(@Param("list") List<CaseStepRelationPO> recordList);
 
     /**
      * 根据caseId查询关联的步骤列表

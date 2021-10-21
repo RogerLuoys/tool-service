@@ -71,6 +71,16 @@
     values (#{caseId,jdbcType=VARCHAR}, #{stepId,jdbcType=VARCHAR}, #{sequence,jdbcType=INTEGER},
       #{type,jdbcType=TINYINT}, 0, now(), now())
   </insert>
+  <insert id="batchInsert" keyColumn="id" keyProperty="id" parameterType="java.util.List" useGeneratedKeys="true">
+    insert into case_step_relation (case_id, step_id, `sequence`,
+    `type`, is_delete, gmt_create,
+    gmt_modified)
+    values
+    <foreach collection="list" item="item" index="index" separator=",">
+      (#{item.caseId,jdbcType=VARCHAR}, #{item.stepId,jdbcType=VARCHAR}, #{item.sequence,jdbcType=INTEGER},
+      #{item.type,jdbcType=TINYINT}, 0, now(), now())
+    </foreach>
+  </insert>
   <update id="update" parameterType="com.luoys.upgrade.toolservice.dao.po.CaseStepRelationPO">
     update case_step_relation
     <set>

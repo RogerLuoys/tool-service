@@ -24,6 +24,13 @@ public class AutoCaseController {
     @RequestMapping(value = "/test", method = RequestMethod.GET)
     public Result<String> test(@RequestParam("caseId") String caseId) {
         log.info("--->开始测试连接：caseId={}", caseId);
+        AutoCaseVO autoCaseVO = caseService.queryDetail(caseId);
+        autoCaseVO.setName(autoCaseVO.getName() + "copy");
+        autoCaseVO.setDescription("copy来的用例");
+        caseService.copyCase(autoCaseVO);
+//        for (int i = 0; i < 1000; i++) {
+//            caseService.copyCase(autoCaseVO);
+//        }
         return Result.success("测试连接从服务器成功: " + caseId);
     }
 

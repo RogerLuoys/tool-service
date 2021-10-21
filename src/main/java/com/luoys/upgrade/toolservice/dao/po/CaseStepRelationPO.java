@@ -5,7 +5,7 @@ import java.util.Date;
 import lombok.Data;
 
 /**
- * case_step_relation，case-step关联类，包含step的所有信息
+ * case_step_relation，case-step关联类，包含step表的所有信息
  * @author luoys
  */
 @Data

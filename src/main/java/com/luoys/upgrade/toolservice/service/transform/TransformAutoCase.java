@@ -41,6 +41,11 @@ public class TransformAutoCase {
         return voList;
     }
 
+    /**
+     * 转换用例的基本信息
+     * @param po -
+     * @return -
+     */
     public static AutoCaseVO transformPO2VO(AutoCasePO po) {
         if (po == null) {
             return null;
@@ -60,6 +65,11 @@ public class TransformAutoCase {
         return vo;
     }
 
+    /**
+     * 转换用例的基本信息
+     * @param vo -
+     * @return -
+     */
     public static AutoCasePO transformVO2PO(AutoCaseVO vo) {
         if (vo == null) {
             return null;
