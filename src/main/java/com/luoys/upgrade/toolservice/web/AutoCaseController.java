@@ -24,11 +24,11 @@ public class AutoCaseController {
     @RequestMapping(value = "/test", method = RequestMethod.GET)
     public Result<String> test(@RequestParam("caseId") String caseId) {
         log.info("--->开始测试连接：caseId={}", caseId);
-        AutoCaseVO autoCaseVO = caseService.queryDetail(caseId);
+        // http:36336920834783  rpc:36334448520507
+        AutoCaseVO autoCaseVO = caseService.queryDetail("36334448520507");
         autoCaseVO.setDescription("copy来的用例");
-//        caseService.copyCase(autoCaseVO);
-        for (int i = 0; i < 1000; i++) {
-            autoCaseVO.setName("ui自动化批量copy"+(i+1));
+        for (int i = 1000; i < 10000; i++) {
+            autoCaseVO.setName("rpc自动化批量1万copy"+(i+1));
             caseService.copyCase(autoCaseVO);
         }
         return Result.success("测试连接从服务器成功: " + caseId);
