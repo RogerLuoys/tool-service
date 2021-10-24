@@ -332,23 +332,6 @@ public class SuiteService {
         List<SuiteCaseVO> uiCaseList = casesMap.get(AutoCaseTypeEnum.UI_CASE.getCode());
         List<SuiteCaseVO> apiCaseList = casesMap.get(AutoCaseTypeEnum.INTERFACE_CASE.getCode());
 
-        if (apiCaseList.size() != 0) {
-            // 使用api线程池执行api用例，并更新结果
-            ThreadPoolUtil.executeAPI(() -> {
-                try {
-                    // 把套件的api状态改为执行中
-                    autoSuiteMapper.updateExecuteStatus(suiteId, false, null);
-                    // 先执行，后更新结果
-                    execute(apiCaseList, autoSuiteVO.getEnvironment(), suiteId);
-                } finally {
-                    autoSuiteMapper.updateExecuteStatus(suiteId, true, null);
-                    // api用例执行完成后，如果ui用例也执行完成，则将套件状态变更为空闲
-                    if (autoSuiteMapper.selectByUUID(suiteId).getIsUiCompleted()) {
-                        autoSuiteMapper.updateStatus(suiteId, AutoSuiteStatusEnum.SUITE_FREE.getCode());
-                    }
-                }
-            });
-        }
         if (uiCaseList.size() != 0) {
             // 使用ui线程池执行ui用例，并更新结果
             ThreadPoolUtil.executeUI(() -> {
@@ -361,6 +344,23 @@ public class SuiteService {
                     autoSuiteMapper.updateExecuteStatus(suiteId, null, true);
                     // ui用例执行完成后，如果api用例也执行完成，则将套件状态变更为空闲
                     if (autoSuiteMapper.selectByUUID(suiteId).getIsApiCompleted()) {
+                        autoSuiteMapper.updateStatus(suiteId, AutoSuiteStatusEnum.SUITE_FREE.getCode());
+                    }
+                }
+            });
+        }
+        if (apiCaseList.size() != 0) {
+            // 使用api线程池执行api用例，并更新结果
+            ThreadPoolUtil.executeAPI(() -> {
+                try {
+                    // 把套件的api状态改为执行中
+                    autoSuiteMapper.updateExecuteStatus(suiteId, false, null);
+                    // 先执行，后更新结果
+                    execute(apiCaseList, autoSuiteVO.getEnvironment(), suiteId);
+                } finally {
+                    autoSuiteMapper.updateExecuteStatus(suiteId, true, null);
+                    // api用例执行完成后，如果ui用例也执行完成，则将套件状态变更为空闲
+                    if (autoSuiteMapper.selectByUUID(suiteId).getIsUiCompleted()) {
                         autoSuiteMapper.updateStatus(suiteId, AutoSuiteStatusEnum.SUITE_FREE.getCode());
                     }
                 }
