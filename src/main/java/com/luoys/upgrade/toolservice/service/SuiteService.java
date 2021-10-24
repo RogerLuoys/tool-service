@@ -162,7 +162,7 @@ public class SuiteService {
      * 删除套件关联的用例
      *
      * @param suiteId 套件id
-     * @param caseId 用例id
+     * @param caseId  用例id
      * @return 成功为true，失败为false
      */
     public Boolean removeRelatedCase(String suiteId, String caseId) {
@@ -199,6 +199,7 @@ public class SuiteService {
 
     /**
      * 重置测试套件的执行状态和执行结果
+     *
      * @param suiteId 套件id
      * @return 重置成功为true
      */
@@ -306,7 +307,7 @@ public class SuiteService {
      * 执行套件中的批量用例（异步模式）
      *
      * @param suiteId 套件业务id
-     * @param retry 重试，true只执行不通过部分用例，false或null执行全部
+     * @param retry   重试，true只执行不通过部分用例，false或null执行全部
      * @return true只代表唤起执行操作成功
      */
     public Boolean useAsync(String suiteId, Boolean retry) throws RejectedExecutionException {
@@ -323,10 +324,12 @@ public class SuiteService {
             log.error("--->套件内未找到关联的用例：suiteId={}", suiteId);
             return false;
         }
-        // 将套件上次的所有执行结果重置，并将状态设置成执行中
-        autoSuiteMapper.updateResult(suiteId, 0, 0);
+        // 如果非重试，则将套件上次的所有执行结果重置
+        if (!retry) {
+            autoSuiteMapper.updateResult(suiteId, 0, 0);
+            suiteCaseRelationMapper.resetStatusBySuiteId(suiteId);
+        }
         autoSuiteMapper.updateStatus(suiteId, AutoSuiteStatusEnum.SUITE_RUNNING.getCode());
-        suiteCaseRelationMapper.resetStatusBySuiteId(suiteId);
         // 根据优先级排序，并将ui和api用例分开
         Map<Integer, List<SuiteCaseVO>> casesMap = orderAndSort(caseList);
         List<SuiteCaseVO> uiCaseList = casesMap.get(AutoCaseTypeEnum.UI_CASE.getCode());
