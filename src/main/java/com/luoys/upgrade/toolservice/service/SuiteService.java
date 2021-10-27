@@ -198,15 +198,15 @@ public class SuiteService {
     }
 
     /**
-     * 重置测试套件的执行状态和执行结果
+     * 重置测试套件的执行状态
      *
      * @param suiteId 套件id
      * @return 重置成功为true
      */
     public Boolean reset(String suiteId) {
-        autoSuiteMapper.updateResult(suiteId, 0, 0);
+//        autoSuiteMapper.updateResult(suiteId, 0, 0);
         autoSuiteMapper.updateStatus(suiteId, AutoSuiteStatusEnum.SUITE_FREE.getCode());
-        suiteCaseRelationMapper.resetStatusBySuiteId(suiteId);
+//        suiteCaseRelationMapper.resetStatusBySuiteId(suiteId);
         return true;
     }
 
