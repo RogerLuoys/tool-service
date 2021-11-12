@@ -5,6 +5,8 @@ import com.luoys.upgrade.toolservice.common.StringUtil;
 import com.luoys.upgrade.toolservice.service.dto.*;
 import com.luoys.upgrade.toolservice.service.enums.AreaEnum;
 import com.luoys.upgrade.toolservice.service.enums.SqlTypeEnum;
+import com.luoys.upgrade.toolservice.web.vo.ToolVO;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,7 +18,12 @@ import java.util.Map;
  *
  * @author luoys
  */
+@Slf4j
 public class TransformCommon {
+
+    // 变量格式 ${name}, 1<=name长度<=20
+    private static final String PARAM_REGEX = ".*\\$\\{[A-Za-z0-9]{1,20}}.*";
+
 
     /**
      * 参数值转换成参数对象列表
@@ -171,6 +178,109 @@ public class TransformCommon {
             commonList.add(commonDTO);
         }
         return JSON.toJSONString(commonList);
+    }
+
+    /**
+     * 将参数合并入sql列表中-新
+     * @param parameterList -
+     * @param jdbcDTO -
+     */
+    public static void mergeSql(List<ParameterDTO> parameterList, JdbcDTO jdbcDTO) {
+        // 无变量
+        if (parameterList == null || parameterList.size() == 0) {
+            log.info("---->无参数需要合并");
+            return;
+        }
+        log.info("---->合并前sql列表：{}", jdbcDTO.getSqlList());
+        List<SqlDTO> actualSqlList = new ArrayList<>();
+        String oneSql, fullParamSymbol;
+
+        for (SqlDTO sqlDTO : jdbcDTO.getSqlList()) {
+            oneSql = sqlDTO.getSql();
+            //先判断指定sql模板中是否有参数占位符，有则进入替换逻辑
+            if (oneSql.matches(PARAM_REGEX)) {
+                //将所有实际参数与其中一条sql模板的占位符替换
+                for (ParameterDTO parameterDTO : parameterList) {
+                    fullParamSymbol = "${"+parameterDTO.getName()+"}";
+                    if (oneSql.contains(fullParamSymbol)) {
+                        sqlDTO.setSql(oneSql.replace(fullParamSymbol, parameterDTO.getValue()));
+                    }
+                }
+            }
+            actualSqlList.add(sqlDTO);
+        }
+        jdbcDTO.setSqlList(actualSqlList);
+        log.info("---->合并后sql列表：{}", jdbcDTO.getSqlList());
+    }
+
+    /**
+     * 将参数合并入http请求中
+     * @param parameterList -
+     * @param httpRequestDTO 工具对象
+     */
+    public static void mergeHttp(List<ParameterDTO> parameterList, HttpRequestDTO httpRequestDTO) {
+        // 无变量
+        if (parameterList == null || parameterList.size() == 0) {
+            return;
+        }
+        log.info("---->合并前http请求：{}", httpRequestDTO);
+        String fullParamSymbol;
+        String url = httpRequestDTO.getHttpURL();
+        String body = httpRequestDTO.getHttpBody();
+        //将参数一个个替换入url和body中
+        for (ParameterDTO parameterDTO : parameterList) {
+            fullParamSymbol = "${"+parameterDTO.getName()+"}";
+            if (url.contains(fullParamSymbol)) {
+                url = url.replace(fullParamSymbol, parameterDTO.getValue());
+            }
+            if (body != null && body.contains(fullParamSymbol)) {
+                body = body.replace(fullParamSymbol, parameterDTO.getValue());
+            }
+        }
+        httpRequestDTO.setHttpURL(url);
+        httpRequestDTO.setHttpBody(body);
+        log.info("---->合并后http请求：{}", httpRequestDTO);
+    }
+
+    /**
+     * 将参数合并入rpc请求中
+     * @param parameterList -
+     * @param rpcDTO 工具对象
+     */
+    public static void mergeRpc(List<ParameterDTO> parameterList, RpcDTO rpcDTO) {
+        // 无变量
+        if (parameterList == null || parameterList.size() == 0) {
+            return;
+        }
+        log.info("---->合并前rpc请求：{}", rpcDTO);
+        String fullParamSymbol;
+        List<ParameterDTO> rpcParamList = new ArrayList<>();
+        // 替换url字段中的变量
+        if (rpcDTO.getUrl().matches(PARAM_REGEX)) {
+            for (ParameterDTO parameterDTO : parameterList) {
+                fullParamSymbol = "${" + parameterDTO.getName() + "}";
+                if (rpcDTO.getUrl().contains(fullParamSymbol)) {
+                    rpcDTO.setUrl(rpcDTO.getUrl().replace(fullParamSymbol, parameterDTO.getValue()));
+                }
+            }
+        }
+        //遍历目标，替换rpc入参
+        for (ParameterDTO rpcParam : rpcDTO.getParameterList()) {
+            String oneValue = rpcParam.getValue();
+            //判断入参中是否有指定占位符，无则不用替换直接插入
+            if (oneValue.matches(PARAM_REGEX)) {
+                //将所有实际参数与其中一个rpc入参值中的占位符替换
+                for (ParameterDTO parameterDTO : parameterList) {
+                    fullParamSymbol = "${" + parameterDTO.getName() + "}";
+                    if (oneValue.contains(fullParamSymbol)) {
+                        rpcParam.setValue(oneValue.replace(fullParamSymbol, parameterDTO.getValue()));
+                    }
+                }
+            }
+            rpcParamList.add(rpcParam);
+        }
+        rpcDTO.setParameterList(rpcParamList);
+        log.info("---->合并后rpc请求：{}", rpcDTO);
     }
 
 }
