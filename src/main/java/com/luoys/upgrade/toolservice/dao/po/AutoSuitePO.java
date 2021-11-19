@@ -41,6 +41,11 @@ public class AutoSuitePO {
     private String environment;
 
     /**
+     * 入参列表，List<CommonDTO>类型
+     */
+    private String parameter;
+
+    /**
      * 步骤间的等待时间
      */
     private Integer stepSleep;

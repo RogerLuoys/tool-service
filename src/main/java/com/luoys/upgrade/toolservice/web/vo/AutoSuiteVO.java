@@ -1,5 +1,6 @@
 package com.luoys.upgrade.toolservice.web.vo;
 
+import com.luoys.upgrade.toolservice.service.dto.ParameterDTO;
 import lombok.Data;
 
 import java.util.List;
@@ -36,6 +37,11 @@ public class AutoSuiteVO {
      * 用例执行的环境
      */
     private String environment;
+
+    /**
+     * 入参列表，List<CommonDTO>类型
+     */
+    private List<ParameterDTO> parameterList;
 
     /**
      * 步骤间的等待时间

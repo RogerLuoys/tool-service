@@ -1,6 +1,7 @@
 package com.luoys.upgrade.toolservice.web.vo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.luoys.upgrade.toolservice.service.dto.ParameterDTO;
 import lombok.Data;
 
 import java.util.Date;
@@ -48,6 +49,11 @@ public class AutoCaseVO {
      * 用例执行环境（参数）
      */
     private String environment;
+
+    /**
+     * 入参列表，List<CommonDTO>类型
+     */
+    private List<ParameterDTO> parameterList;
 
     /**
      * 用例计划完成时间

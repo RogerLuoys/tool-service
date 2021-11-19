@@ -62,6 +62,8 @@ public class TransformAutoCase {
         vo.setEnvironment(po.getEnvironment());
         vo.setFinishTime(po.getFinishTime());
         vo.setMaxTime(po.getMaxTime());
+        // 参数列表转换
+        vo.setParameterList(TransformCommon.toParameter(po.getParameter()));
         return vo;
     }
 
@@ -86,6 +88,8 @@ public class TransformAutoCase {
         po.setMaxTime(vo.getMaxTime());
         po.setEnvironment(vo.getEnvironment());
         po.setFinishTime(vo.getFinishTime());
+        // 参数列表转换
+        po.setParameter(TransformCommon.toParameter(vo.getParameterList()));
         return po;
     }
 

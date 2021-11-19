@@ -51,6 +51,11 @@ public class AutoCasePO {
     private String environment;
 
     /**
+     * 入参列表，List<CommonDTO>类型
+     */
+    private String parameter;
+
+    /**
      * 用例计划完成时间
      */
     private Date finishTime;

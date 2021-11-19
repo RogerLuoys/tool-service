@@ -67,8 +67,8 @@ public class TransformAutoSuite {
         vo.setStepSleep(po.getStepSleep());
         vo.setIsUiCompleted(po.getIsUiCompleted());
         vo.setIsApiCompleted(po.getIsApiCompleted());
-        // 设置用例信息
-//        vo.setCaseList(TransformCommon.toCase(po.getTestCase()));
+        // 参数列表转换
+        vo.setParameterList(TransformCommon.toParameter(po.getParameter()));
         return vo;
     }
 
@@ -92,8 +92,8 @@ public class TransformAutoSuite {
         po.setStepSleep(vo.getStepSleep());
         po.setIsApiCompleted(vo.getIsApiCompleted());
         po.setIsUiCompleted(vo.getIsUiCompleted());
-        // 设置用例信息
-//        po.setTestCase(TransformCommon.toCase(vo.getCaseList()));
+        // 参数列表转换
+        po.setParameter(TransformCommon.toParameter(vo.getParameterList()));
         return po;
     }
 
