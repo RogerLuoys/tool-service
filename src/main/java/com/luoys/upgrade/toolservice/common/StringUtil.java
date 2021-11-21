@@ -15,6 +15,11 @@ import java.util.regex.Pattern;
  */
 public class StringUtil {
 
+
+    // 变量格式 ${name}, 1<=name长度<=20
+    public static final String PARAM_REGEX = ".*\\$\\{[A-Za-z0-9]{1,20}}.*";
+
+
     /**
      * 判断字符串是否为空(org.apache.dubbo.common.utils的方法)
      * @param cs 目标字符串
