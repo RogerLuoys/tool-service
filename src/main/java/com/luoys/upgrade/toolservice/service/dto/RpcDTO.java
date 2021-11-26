@@ -47,20 +47,19 @@ public class RpcDTO {
      * 将参数合并入rpc请求中，处理url和参数列表中的值
      * @param parameterList -
      */
-    public void replace(List<ParameterDTO> parameterList) {
+    public void merge(List<ParameterDTO> parameterList) {
         // 无变量
         if (parameterList == null || parameterList.size() == 0) {
             return;
         }
-//        log.info("---->合并前rpc请求：{}", rpcDTO);
-        String fullParamSymbol, oneValue;
-        List<ParameterDTO> rpcParamList = new ArrayList<>();
+        StringBuilder fullParamSymbol = new StringBuilder();
+        String oneValue;
         // 替换url字段中的变量
         if (url.matches(StringUtil.PARAM_REGEX)) {
             for (ParameterDTO parameterDTO : parameterList) {
-                fullParamSymbol = "${" + parameterDTO.getName() + "}";
+                fullParamSymbol.delete(0, fullParamSymbol.length());
+                fullParamSymbol.append("${").append(parameterDTO.getName()).append("}");
                 if (url.contains(fullParamSymbol)) {
-//                    rpcDTO.setUrl(rpcDTO.getUrl().replace(fullParamSymbol, parameterDTO.getValue()));
                     url = url.replace(fullParamSymbol, parameterDTO.getValue());
                 }
             }
@@ -75,7 +74,8 @@ public class RpcDTO {
             }
             //将所有实际参数与其中一个rpc入参值中的占位符替换
             for (ParameterDTO parameterDTO : parameterList) {
-                fullParamSymbol = "${" + parameterDTO.getName() + "}";
+                fullParamSymbol.delete(0, fullParamSymbol.length());
+                fullParamSymbol.append("${").append(parameterDTO.getName()).append("}");
                 if (oneValue.contains(fullParamSymbol)) {
                     this.parameterList.get(i).setValue(oneValue.replace(fullParamSymbol, parameterDTO.getValue()));
                 }

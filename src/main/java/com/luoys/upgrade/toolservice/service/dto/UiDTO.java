@@ -1,6 +1,9 @@
 package com.luoys.upgrade.toolservice.service.dto;
 
+import com.luoys.upgrade.toolservice.common.StringUtil;
 import lombok.Data;
+
+import java.util.List;
 
 /**
  * ui类
@@ -34,5 +37,26 @@ public class UiDTO {
      * 键盘输入的值
      */
     private String key;
+
+    /**
+     * 用实际值替换参数占位符，只处理url、key
+     * @param parameterList
+     */
+    public void merge(List<ParameterDTO> parameterList) {
+        if (parameterList == null || parameterList.size() == 0) {
+            return;
+        }
+        StringBuilder fullParamSymbol = new StringBuilder();
+        // 替换url字段中的变量
+        if (url.matches(StringUtil.PARAM_REGEX)) {
+            for (ParameterDTO parameterDTO : parameterList) {
+                fullParamSymbol.delete(0, fullParamSymbol.length());
+                fullParamSymbol.append("${").append(parameterDTO.getName()).append("}");
+                if (url.contains(fullParamSymbol)) {
+                    url = url.replace(fullParamSymbol, parameterDTO.getValue());
+                }
+            }
+        }
+    }
 
 }

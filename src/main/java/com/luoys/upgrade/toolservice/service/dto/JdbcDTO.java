@@ -23,16 +23,13 @@ public class JdbcDTO {
      * 用真实参数替换参数占位符，只处理sql，不处理数据源
      * @param parameterList -
      */
-    public void replace(List<ParameterDTO> parameterList) {
+    public void merge(List<ParameterDTO> parameterList) {
         // 无变量
         if (parameterList == null || parameterList.size() == 0) {
-//            log.info("---->无参数需要合并");
             return;
         }
-//        log.info("---->合并前sql列表：{}", jdbcDTO.getSqlList());
-        List<SqlDTO> actualSqlList = new ArrayList<>();
-        String oneSql, fullParamSymbol;
-
+        String oneSql;
+        StringBuilder fullParamSymbol = new StringBuilder();
         for (int i = 0; i < sqlList.size(); i++) {
             oneSql = sqlList.get(i).getSql();
             //先判断指定sql模板中是否有参数占位符，有则进入替换逻辑
@@ -41,7 +38,8 @@ public class JdbcDTO {
             }
             //将所有实际参数与其中一条sql模板的占位符替换
             for (ParameterDTO parameterDTO : parameterList) {
-                fullParamSymbol = "${"+parameterDTO.getName()+"}";
+                fullParamSymbol.delete(0, fullParamSymbol.length());
+                fullParamSymbol.append("${").append(parameterDTO.getName()).append("}");
                 if (oneSql.contains(fullParamSymbol)) {
                     // 设置最终sql
                     sqlList.get(i).setSql(oneSql.replace(fullParamSymbol, parameterDTO.getValue()));

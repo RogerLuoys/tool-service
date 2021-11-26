@@ -10,12 +10,13 @@
     <result column="status" jdbcType="TINYINT" property="status" />
     <result column="max_time" jdbcType="INTEGER" property="maxTime" />
     <result column="environment" jdbcType="VARCHAR" property="environment" />
+    <result column="parameter" jdbcType="VARCHAR" property="parameter" />
     <result column="finish_time" jdbcType="TIMESTAMP" property="finishTime" />
     <result column="owner_id" jdbcType="VARCHAR" property="ownerId" />
     <result column="owner_name" jdbcType="VARCHAR" property="ownerName" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, case_id, `name`, description, max_time, `type`, `status`, environment, finish_time, owner_id,
+    id, case_id, `name`, description, max_time, `type`, `status`, environment, `parameter`, finish_time, owner_id,
     owner_name
   </sql>
   <select id="selectByUUID" parameterType="java.lang.String" resultMap="BaseResultMap">
@@ -60,11 +61,11 @@
   </update>
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.luoys.upgrade.toolservice.dao.po.AutoCasePO" useGeneratedKeys="true">
     insert into auto_case (case_id, `name`, description, max_time,
-      `type`, `status`, environment, finish_time, owner_id, owner_name,
+      `type`, `status`, environment, `parameter`, finish_time, owner_id, owner_name,
       is_delete, gmt_create, gmt_modified
       )
     values (#{caseId,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{maxTime,jdbcType=INTEGER},
-      #{type,jdbcType=TINYINT}, #{status,jdbcType=TINYINT}, #{environment,jdbcType=VARCHAR}, #{finishTime,jdbcType=TIMESTAMP},
+      #{type,jdbcType=TINYINT}, #{status,jdbcType=TINYINT}, #{environment,jdbcType=VARCHAR}, #{parameter,jdbcType=VARCHAR}, #{finishTime,jdbcType=TIMESTAMP},
       #{ownerId,jdbcType=VARCHAR}, #{ownerName,jdbcType=VARCHAR}, 0, now(), now()
       )
   </insert>
@@ -88,6 +89,9 @@
       </if>
       <if test="environment != null">
         environment = #{environment,jdbcType=VARCHAR},
+      </if>
+      <if test="parameter != null">
+        `parameter` = #{parameter,jdbcType=VARCHAR},
       </if>
       <if test="finishTime != null">
         finish_time = #{finishTime,jdbcType=TIMESTAMP},
