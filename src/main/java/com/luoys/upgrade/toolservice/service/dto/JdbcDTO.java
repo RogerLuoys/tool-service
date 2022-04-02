@@ -18,6 +18,9 @@ public class JdbcDTO {
 
     private List<SqlDTO> sqlList;
 
+    private String sqlType;
+
+    private String sql;
 
     /**
      * 用真实参数替换参数占位符，只处理sql，不处理数据源
@@ -46,22 +49,6 @@ public class JdbcDTO {
                 }
             }
         }
-//        for (SqlDTO sqlDTO : sqlList) {
-//            oneSql = sqlDTO.getSql();
-//            //先判断指定sql模板中是否有参数占位符，有则进入替换逻辑
-//            if (oneSql.matches(".*\\$\\{[A-Za-z0-9]{1,20}}.*")) {
-//                //将所有实际参数与其中一条sql模板的占位符替换
-//                for (ParameterDTO parameterDTO : parameterList) {
-//                    fullParamSymbol = "${"+parameterDTO.getName()+"}";
-//                    if (oneSql.contains(fullParamSymbol)) {
-//                        sqlDTO.setSql(oneSql.replace(fullParamSymbol, parameterDTO.getValue()));
-//                    }
-//                }
-//            }
-//            actualSqlList.add(sqlDTO);
-//        }
-//        jdbcDTO.setSqlList(actualSqlList);
-//        log.info("---->合并后sql列表：{}", jdbcDTO.getSqlList());
     }
 
 }

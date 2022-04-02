@@ -11,6 +11,11 @@ import lombok.Data;
 public class DataSourceDTO {
 
     /**
+     * 数据库名
+     */
+    private String dbName;
+
+    /**
      * 数据源地址
      */
     private String url;

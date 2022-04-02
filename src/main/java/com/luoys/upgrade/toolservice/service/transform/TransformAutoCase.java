@@ -3,6 +3,7 @@ package com.luoys.upgrade.toolservice.service.transform;
 import com.luoys.upgrade.toolservice.dao.po.AutoCasePO;
 import com.luoys.upgrade.toolservice.web.vo.AutoCaseSimpleVO;
 import com.luoys.upgrade.toolservice.web.vo.AutoCaseVO;
+import com.luoys.upgrade.toolservice.web.vo.CaseStepVO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -91,6 +92,35 @@ public class TransformAutoCase {
         // 参数列表转换
         po.setParameter(TransformCommon.toParameter(vo.getParameterList()));
         return po;
+    }
+
+    public static AutoCaseVO transform2ScriptMode(AutoCaseVO vo) {
+        if (vo == null) {
+            return null;
+        }
+        StringBuilder steps = new StringBuilder();
+        for (CaseStepVO stepVO : vo.getPreStepList()) {
+            steps.append(TransformAutoStep.transform2ScriptMode(stepVO.getAutoStep()).getScript());
+        }
+        vo.setPreSteps(steps.toString());
+        steps.delete(0, steps.length());
+
+        for (CaseStepVO stepVO : vo.getMainStepList()) {
+            steps.append(TransformAutoStep.transform2ScriptMode(stepVO.getAutoStep()).getScript());
+        }
+        vo.setMainSteps(steps.toString());
+        steps.delete(0, steps.length());
+
+        for (CaseStepVO stepVO : vo.getAfterStepList()) {
+            steps.append(TransformAutoStep.transform2ScriptMode(stepVO.getAutoStep()).getScript());
+        }
+        vo.setAfterSteps(steps.toString());
+
+        return vo;
+    }
+
+    public static AutoCaseVO transform2UiMode(AutoCaseVO vo) {
+        return null;
     }
 
 }

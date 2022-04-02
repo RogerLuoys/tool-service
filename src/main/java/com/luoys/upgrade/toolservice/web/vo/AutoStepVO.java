@@ -74,6 +74,11 @@ public class AutoStepVO {
     private UiDTO ui;
 
     /**
+     * 步骤的脚本模式
+     */
+    private String script;
+
+    /**
      * 等待时间，在实际结果取到后、断言之前等待
      */
     private Integer afterSleep;
