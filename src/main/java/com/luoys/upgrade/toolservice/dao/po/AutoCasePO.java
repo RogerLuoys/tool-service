@@ -61,6 +61,11 @@ public class AutoCasePO {
     private Date finishTime;
 
     /**
+     * 用例的脚本模式
+     */
+    private String mainSteps;
+
+    /**
      * 所属人id
      */
     private String ownerId;

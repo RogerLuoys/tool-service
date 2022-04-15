@@ -60,6 +60,7 @@ public class TransformAutoCase {
         vo.setOwnerName(po.getOwnerName());
         vo.setCaseId(po.getCaseId());
         vo.setStatus(po.getStatus());
+        vo.setMainSteps(po.getMainSteps());
         vo.setEnvironment(po.getEnvironment());
         vo.setFinishTime(po.getFinishTime());
         vo.setMaxTime(po.getMaxTime());
@@ -84,6 +85,7 @@ public class TransformAutoCase {
         po.setOwnerId(vo.getOwnerId());
         po.setOwnerName(vo.getOwnerName());
         po.setCaseId(vo.getCaseId());
+        po.setMainSteps(vo.getMainSteps());
         po.setType(vo.getType());
         po.setStatus(vo.getStatus());
         po.setMaxTime(vo.getMaxTime());
@@ -92,35 +94,6 @@ public class TransformAutoCase {
         // 参数列表转换
         po.setParameter(TransformCommon.toParameter(vo.getParameterList()));
         return po;
-    }
-
-    public static AutoCaseVO transform2ScriptMode(AutoCaseVO vo) {
-        if (vo == null) {
-            return null;
-        }
-        StringBuilder steps = new StringBuilder();
-        for (CaseStepVO stepVO : vo.getPreStepList()) {
-            steps.append(TransformAutoStep.transform2ScriptMode(stepVO.getAutoStep()).getScript());
-        }
-        vo.setPreSteps(steps.toString());
-        steps.delete(0, steps.length());
-
-        for (CaseStepVO stepVO : vo.getMainStepList()) {
-            steps.append(TransformAutoStep.transform2ScriptMode(stepVO.getAutoStep()).getScript());
-        }
-        vo.setMainSteps(steps.toString());
-        steps.delete(0, steps.length());
-
-        for (CaseStepVO stepVO : vo.getAfterStepList()) {
-            steps.append(TransformAutoStep.transform2ScriptMode(stepVO.getAutoStep()).getScript());
-        }
-        vo.setAfterSteps(steps.toString());
-
-        return vo;
-    }
-
-    public static AutoCaseVO transform2UiMode(AutoCaseVO vo) {
-        return null;
     }
 
 }

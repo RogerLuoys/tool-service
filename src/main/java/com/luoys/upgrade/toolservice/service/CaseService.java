@@ -11,6 +11,7 @@ import com.luoys.upgrade.toolservice.service.enums.AutoCaseStatusEnum;
 import com.luoys.upgrade.toolservice.service.enums.AutoCaseTypeEnum;
 import com.luoys.upgrade.toolservice.service.enums.KeywordEnum;
 import com.luoys.upgrade.toolservice.service.enums.RelatedStepTypeEnum;
+import com.luoys.upgrade.toolservice.service.transform.TransformAutoStep;
 import com.luoys.upgrade.toolservice.service.transform.TransformCaseStepRelation;
 import com.luoys.upgrade.toolservice.web.vo.AutoCaseSimpleVO;
 import com.luoys.upgrade.toolservice.web.vo.AutoCaseVO;
@@ -241,6 +242,98 @@ public class CaseService {
         return autoCaseVO;
     }
 
+
+    /**
+     * 转换用例模式，将结构化用例转换成脚本
+     *
+     * @param
+     */
+    public AutoCaseVO change2ScriptMode(AutoCaseVO autoCaseVO) {
+        if (autoCaseVO == null) {
+            return null;
+        }
+        StringBuilder steps = new StringBuilder();
+
+//        // 转换前置步骤
+//        for (CaseStepVO stepVO : vo.getPreStepList()) {
+//            steps.append(TransformAutoStep.transform2ScriptMode(stepVO.getAutoStep()).getScript());
+//        }
+//        vo.setPreSteps(steps.toString());
+//        steps.delete(0, steps.length());
+
+        // 转换主要步骤
+        for (CaseStepVO stepVO : autoCaseVO.getMainStepList()) {
+            steps.append(TransformAutoStep.transform2ScriptMode(stepVO.getAutoStep()).getScript());
+        }
+        autoCaseVO.setMainSteps(steps.toString());
+        steps.delete(0, steps.length());
+
+//        // 转换后置步骤
+//        for (CaseStepVO stepVO : vo.getAfterStepList()) {
+//            steps.append(TransformAutoStep.transform2ScriptMode(stepVO.getAutoStep()).getScript());
+//        }
+//        vo.setAfterSteps(steps.toString());
+
+        return autoCaseVO;
+    }
+
+    /**
+     * 转换用例模式，将结构化用例转换成脚本，例
+     * auto.ui.click("xpath");
+     * auto.ui.sendKey("xpath","key");
+     * auto.db.mysql("sql");
+     * auto.assert.isContains("expect");
+     * @param autoCaseVO -
+     */
+    public AutoCaseVO change2UiMode(AutoCaseVO autoCaseVO) {
+//        // 根据分号截取字符串，用例截取成步骤
+//        String[] preSteps = vo.getPreSteps().split("\\s+;[\\n\\s\\r]+");
+//        for (String step : preSteps) {
+//            vo.getPreStepList().get(0).getAutoStep().setScript(step.toLowerCase().substring(step.indexOf("auto.")));
+//            TransformAutoStep.transform2UiMode(vo.getPreStepList().get(0).getAutoStep());
+//            step.toLowerCase().substring(step.indexOf("auto."));
+//        }
+//        String oneStep;
+
+//        for (int i = 0; i < preSteps.length; i++) {
+//            oneStep = preSteps[i].toLowerCase().substring(preSteps[i].indexOf("auto.")) + ";";
+//            if (oneStep.matches("^auto\\.(ui|http|db|rpc|util|steps)\\.\\d+\\(.*\\);$")) {
+//
+//            }
+//        }
+
+        List<String> mainSteps = StringUtil.getMatch("^auto\\\\.(ui|http|db|rpc|util|steps)\\\\.\\\\d+\\\\(.*\\\\);$", autoCaseVO.getMainSteps());
+
+        // 完全新增脚本，或脚本内步骤有新增，需要创建对应数量的关联步骤
+        while (mainSteps.size() - autoCaseVO.getPreStepList().size() > 0) {
+            CaseStepVO caseStepVO = new CaseStepVO();
+            caseStepVO.setCaseId(autoCaseVO.getCaseId());
+            // 先创建步骤，再将stepId关联上
+            caseStepVO.setStepId(stepService.quickCreate());
+            caseStepVO.setType(RelatedStepTypeEnum.PRE_STEP.getCode());
+            // 步骤顺序需要设置好
+            caseStepVO.setSequence(autoCaseVO.getPreStepList().size() + 1);
+            autoCaseVO.getPreStepList().add(caseStepVO);
+        }
+
+
+        // todo 这里先假设mainSteps中全是合规的步骤脚本
+        for (int i = 0; i< mainSteps.size(); i++) {
+            // 将脚本塞入对应的步骤中
+            autoCaseVO.getPreStepList().get(i).getAutoStep().setScript(mainSteps.get(i));
+            // 基于脚本，将步骤转换为ui模式(会覆盖原数据)
+            TransformAutoStep.transform2UiMode(autoCaseVO.getPreStepList().get(i).getAutoStep());
+        }
+
+        // 脚本中的步骤有删减，需要删除不需要的关联步骤
+        while (mainSteps.size() - autoCaseVO.getPreStepList().size() < 0) {
+            // 在数据库中删除多余的关联步骤
+            removeRelatedStep(autoCaseVO.getPreStepList().get(autoCaseVO.getPreStepList().size() - 1));
+            // 在当前对象中也删除
+            autoCaseVO.getPreStepList().remove(autoCaseVO.getPreStepList().size() - 1);
+        }
+        return autoCaseVO;
+    }
 
 
     /**
