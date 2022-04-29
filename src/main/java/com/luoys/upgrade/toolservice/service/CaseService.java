@@ -254,25 +254,12 @@ public class CaseService {
         }
         StringBuilder steps = new StringBuilder();
 
-//        // 转换前置步骤
-//        for (CaseStepVO stepVO : vo.getPreStepList()) {
-//            steps.append(TransformAutoStep.transform2ScriptMode(stepVO.getAutoStep()).getScript());
-//        }
-//        vo.setPreSteps(steps.toString());
-//        steps.delete(0, steps.length());
-
         // 转换主要步骤
         for (CaseStepVO stepVO : autoCaseVO.getMainStepList()) {
             steps.append(TransformAutoStep.transform2ScriptMode(stepVO.getAutoStep()).getScript());
         }
         autoCaseVO.setMainSteps(steps.toString());
         steps.delete(0, steps.length());
-
-//        // 转换后置步骤
-//        for (CaseStepVO stepVO : vo.getAfterStepList()) {
-//            steps.append(TransformAutoStep.transform2ScriptMode(stepVO.getAutoStep()).getScript());
-//        }
-//        vo.setAfterSteps(steps.toString());
 
         return autoCaseVO;
     }
@@ -302,7 +289,7 @@ public class CaseService {
 //            }
 //        }
 
-        List<String> mainSteps = StringUtil.getMatch("^auto\\\\.(ui|http|db|rpc|util|steps)\\\\.\\\\d+\\\\(.*\\\\);$", autoCaseVO.getMainSteps());
+        List<String> mainSteps = StringUtil.getMatch("auto\\.(ui|http|db|rpc|util|steps)\\.\\w+\\(.*\\);", autoCaseVO.getMainSteps());
 
         // 完全新增脚本，或脚本内步骤有新增，需要创建对应数量的关联步骤
         while (mainSteps.size() - autoCaseVO.getPreStepList().size() > 0) {

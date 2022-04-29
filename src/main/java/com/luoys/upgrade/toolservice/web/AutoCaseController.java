@@ -79,6 +79,18 @@ public class AutoCaseController {
         return Result.message(caseService.updateRelatedStep(caseStepVO));
     }
 
+    @RequestMapping(value = "/changeUiMode", method = RequestMethod.PUT)
+    public Result<Boolean> changeUiMode(@RequestBody AutoCaseVO autoCaseVO) {
+        log.info("--->开始将脚本步骤转换为可视化步骤：{}", autoCaseVO);
+        return Result.message(caseService.change2UiMode(autoCaseVO));
+    }
+
+    @RequestMapping(value = "/changeScriptMode", method = RequestMethod.PUT)
+    public Result<Boolean> changeScriptMode(@RequestBody AutoCaseVO autoCaseVO) {
+        log.info("--->开始将可视化步骤转换为脚本步骤：{}", autoCaseVO);
+        return Result.message(caseService.change2ScriptMode(autoCaseVO));
+    }
+
     @RequestMapping(value = "/query", method = RequestMethod.GET)
     public Result<PageInfo<AutoCaseSimpleVO>> query(@RequestHeader("userId") String userId,
                                                     @RequestParam(value = "isOnlyOwner", required = false) Boolean isOnlyOwner,

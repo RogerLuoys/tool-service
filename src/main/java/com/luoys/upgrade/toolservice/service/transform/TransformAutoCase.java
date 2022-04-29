@@ -85,7 +85,6 @@ public class TransformAutoCase {
         po.setOwnerId(vo.getOwnerId());
         po.setOwnerName(vo.getOwnerName());
         po.setCaseId(vo.getCaseId());
-        po.setMainSteps(vo.getMainSteps());
         po.setType(vo.getType());
         po.setStatus(vo.getStatus());
         po.setMaxTime(vo.getMaxTime());
@@ -93,6 +92,8 @@ public class TransformAutoCase {
         po.setFinishTime(vo.getFinishTime());
         // 参数列表转换
         po.setParameter(TransformCommon.toParameter(vo.getParameterList()));
+        // 转换步骤脚本
+        po.setMainSteps(vo.getMainSteps());
         return po;
     }
 
