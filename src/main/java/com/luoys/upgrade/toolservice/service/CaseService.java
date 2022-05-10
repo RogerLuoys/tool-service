@@ -16,6 +16,7 @@ import com.luoys.upgrade.toolservice.service.transform.TransformCaseStepRelation
 import com.luoys.upgrade.toolservice.web.vo.AutoCaseSimpleVO;
 import com.luoys.upgrade.toolservice.web.vo.AutoCaseVO;
 import com.luoys.upgrade.toolservice.service.transform.TransformAutoCase;
+import com.luoys.upgrade.toolservice.web.vo.AutoStepVO;
 import com.luoys.upgrade.toolservice.web.vo.CaseStepVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -256,7 +257,7 @@ public class CaseService {
 
         // 转换主要步骤
         for (CaseStepVO stepVO : autoCaseVO.getMainStepList()) {
-            steps.append(TransformAutoStep.transform2ScriptMode(stepVO.getAutoStep()).getScript());
+            steps.append(stepService.change2ScriptMode(stepVO.getAutoStep()).getScript());
         }
         autoCaseVO.setMainSteps(steps.toString());
         steps.delete(0, steps.length());
@@ -273,52 +274,50 @@ public class CaseService {
      * @param autoCaseVO -
      */
     public AutoCaseVO change2UiMode(AutoCaseVO autoCaseVO) {
-//        // 根据分号截取字符串，用例截取成步骤
-//        String[] preSteps = vo.getPreSteps().split("\\s+;[\\n\\s\\r]+");
-//        for (String step : preSteps) {
-//            vo.getPreStepList().get(0).getAutoStep().setScript(step.toLowerCase().substring(step.indexOf("auto.")));
-//            TransformAutoStep.transform2UiMode(vo.getPreStepList().get(0).getAutoStep());
-//            step.toLowerCase().substring(step.indexOf("auto."));
-//        }
-//        String oneStep;
 
-//        for (int i = 0; i < preSteps.length; i++) {
-//            oneStep = preSteps[i].toLowerCase().substring(preSteps[i].indexOf("auto.")) + ";";
-//            if (oneStep.matches("^auto\\.(ui|http|db|rpc|util|steps)\\.\\d+\\(.*\\);$")) {
-//
-//            }
-//        }
-
+        // 通过正则解析脚本，把整段脚本解析成行
         List<String> mainSteps = StringUtil.getMatch("auto\\.(ui|http|db|rpc|util|steps)\\.\\w+\\(.*\\);", autoCaseVO.getMainSteps());
 
         // 完全新增脚本，或脚本内步骤有新增，需要创建对应数量的关联步骤
-        while (mainSteps.size() - autoCaseVO.getPreStepList().size() > 0) {
+        while (mainSteps.size() - autoCaseVO.getMainStepList().size() > 0) {
             CaseStepVO caseStepVO = new CaseStepVO();
             caseStepVO.setCaseId(autoCaseVO.getCaseId());
             // 先创建步骤，再将stepId关联上
             caseStepVO.setStepId(stepService.quickCreate());
-            caseStepVO.setType(RelatedStepTypeEnum.PRE_STEP.getCode());
+            caseStepVO.setType(RelatedStepTypeEnum.MAIN_STEP.getCode());
             // 步骤顺序需要设置好
-            caseStepVO.setSequence(autoCaseVO.getPreStepList().size() + 1);
-            autoCaseVO.getPreStepList().add(caseStepVO);
+            caseStepVO.setSequence(autoCaseVO.getMainStepList().size() + 1);
+            // 将关系存入数据库
+            createRelatedStep(caseStepVO);
+            // 最后在对象中也添加该步骤
+            caseStepVO.setAutoStep(new AutoStepVO());
+            autoCaseVO.getMainStepList().add(caseStepVO);
         }
 
+        // 脚本中删除了一些步骤，需要删除对应的关联关系
+        while (mainSteps.size() - autoCaseVO.getMainStepList().size() < 0) {
+            // 数据库中删最后一个步骤的关联关系
+            removeRelatedStep(autoCaseVO.getMainStepList().get(autoCaseVO.getMainStepList().size() - 1));
+            // 然后将最后一个步骤从对象中删除
+            autoCaseVO.getMainStepList().remove(autoCaseVO.getMainStepList().size() - 1);
+        }
 
-        // todo 这里先假设mainSteps中全是合规的步骤脚本
+        // 基于脚本，对脚本内的步骤做全量更新
         for (int i = 0; i< mainSteps.size(); i++) {
             // 将脚本塞入对应的步骤中
-            autoCaseVO.getPreStepList().get(i).getAutoStep().setScript(mainSteps.get(i));
+            autoCaseVO.getMainStepList().get(i).getAutoStep().setScript(mainSteps.get(i));
             // 基于脚本，将步骤转换为ui模式(会覆盖原数据)
-            TransformAutoStep.transform2UiMode(autoCaseVO.getPreStepList().get(i).getAutoStep());
+            AutoStepVO autoStepVO = stepService.change2UiMode(autoCaseVO.getMainStepList().get(i).getAutoStep());
+            stepService.update(autoStepVO);
         }
 
-        // 脚本中的步骤有删减，需要删除不需要的关联步骤
-        while (mainSteps.size() - autoCaseVO.getPreStepList().size() < 0) {
-            // 在数据库中删除多余的关联步骤
-            removeRelatedStep(autoCaseVO.getPreStepList().get(autoCaseVO.getPreStepList().size() - 1));
-            // 在当前对象中也删除
-            autoCaseVO.getPreStepList().remove(autoCaseVO.getPreStepList().size() - 1);
-        }
+//        // 脚本中的步骤有删减，需要删除不需要的关联步骤
+//        while (mainSteps.size() - autoCaseVO.getMainStepList().size() < 0) {
+//            // 在数据库中删除多余的关联步骤
+//            removeRelatedStep(autoCaseVO.getMainStepList().get(autoCaseVO.getMainStepList().size() - 1));
+//            // 在当前对象中也删除
+//            autoCaseVO.getMainStepList().remove(autoCaseVO.getMainStepList().size() - 1);
+//        }
         return autoCaseVO;
     }
 

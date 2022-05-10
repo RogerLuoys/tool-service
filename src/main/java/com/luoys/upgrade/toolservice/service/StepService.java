@@ -8,6 +8,9 @@ import com.luoys.upgrade.toolservice.service.client.DBClient;
 import com.luoys.upgrade.toolservice.service.client.HTTPClient;
 import com.luoys.upgrade.toolservice.service.client.RPCClient;
 import com.luoys.upgrade.toolservice.service.client.UIClient;
+import com.luoys.upgrade.toolservice.service.dto.HttpRequestDTO;
+import com.luoys.upgrade.toolservice.service.dto.JdbcDTO;
+import com.luoys.upgrade.toolservice.service.dto.UiDTO;
 import com.luoys.upgrade.toolservice.service.enums.*;
 import com.luoys.upgrade.toolservice.service.transform.TransformAutoStep;
 import com.luoys.upgrade.toolservice.web.vo.AutoStepSimpleVO;
@@ -167,6 +170,137 @@ public class StepService {
      */
     public AutoStepVO queryDetail(String stepId) {
         return TransformAutoStep.transformPO2VO(autoStepMapper.selectByUUID(stepId));
+    }
+
+
+    /**
+     * 转换步骤模式，将结构化步骤转换成脚本
+     *
+     * @param autoStepVO -
+     */
+    public AutoStepVO change2ScriptMode(AutoStepVO autoStepVO) {
+        if (autoStepVO == null) {
+            return null;
+        }
+        switch (AutoStepTypeEnum.fromCode(autoStepVO.getType())) {
+            case STEP_UI:
+                switch (UiTypeEnum.fromCode(autoStepVO.getUi().getType())) {
+                    case CLICK:
+                        autoStepVO.setScript(UiTypeEnum.CLICK.getScriptTemplate() + "(\"" + autoStepVO.getUi().getElement() + "\");");
+                    case OPEN_URL:
+                        autoStepVO.setScript(UiTypeEnum.OPEN_URL.getScriptTemplate() + "(\"" + autoStepVO.getUi().getUrl() + "\");");
+                    case HOVER:
+                        autoStepVO.setScript(UiTypeEnum.HOVER.getScriptTemplate() + "(\"" + autoStepVO.getUi().getElement() + "\");");
+                    case SEND_KEY:
+                        autoStepVO.setScript(UiTypeEnum.SEND_KEY.getScriptTemplate() + "(\"" + autoStepVO.getUi().getElement() + "\", \"" + autoStepVO.getUi().getKey() + "\");");
+                    case SWITCH_FRAME:
+                        autoStepVO.setScript(UiTypeEnum.SWITCH_FRAME.getScriptTemplate() + "(\"" + autoStepVO.getUi().getElement() + "\");");
+                }
+            case STEP_SQL:
+                autoStepVO.setScript("auto.db.execute(\"" + autoStepVO.getJdbc().getSqlList().get(0).getSql() + "\");");
+            case STEP_HTTP:
+                switch (HttpTypeEnum.fromValue(autoStepVO.getHttpRequest().getHttpType())) {
+                    case GET:
+                        autoStepVO.setScript(HttpTypeEnum.GET.getScriptTemplate() + "(\"" + autoStepVO.getHttpRequest().getHttpURL() + "\");");
+                    case POST:
+                        autoStepVO.setScript(HttpTypeEnum.POST.getScriptTemplate() + "(\"" + autoStepVO.getHttpRequest().getHttpURL() + "\", \"" + autoStepVO.getHttpRequest().getHttpBody() + "\");");
+                    case PUT:
+                        autoStepVO.setScript(HttpTypeEnum.PUT.getScriptTemplate() + "(\"" + autoStepVO.getHttpRequest().getHttpURL() + "\", \"" + autoStepVO.getHttpRequest().getHttpBody() + "\");");
+                    case DELETE:
+                        autoStepVO.setScript(HttpTypeEnum.DELETE.getScriptTemplate() + "(\"" + autoStepVO.getHttpRequest().getHttpURL() + "\", \"" + autoStepVO.getHttpRequest().getHttpBody() + "\");");
+                }
+        }
+        return autoStepVO;
+    }
+
+    /**
+     * 转换步骤模式，将结构化步骤转换成脚本
+     *
+     * @param autoStepVO -
+     */
+    public AutoStepVO change2UiMode(AutoStepVO autoStepVO) {
+        if (autoStepVO == null) {
+            return null;
+        }
+        // 脚本范例：auto.methodType.methodName(methodParam);
+        String script = autoStepVO.getScript();
+        // 截取步骤类型，如：auto.ui
+        String methodType = script.substring(0, script.indexOf(".", 5));
+        // 截取步骤方法，如：auto.ui.click
+        String methodName = script.substring(0, script.indexOf("("));
+        // 截取步骤入参，如：xpath (不一定使用)
+        String methodParam = script.substring(script.indexOf("(\"") + 2, script.lastIndexOf("\")"));
+        // 截取多个参数，如：[xpath,key] (不一定使用)
+        String[] params = methodParam.split("(\",\\s{0,4}\")");
+
+        switch (MethodTypeEnum.fromScriptTemplate(methodType)) {
+            case UI:    // 脚本范例：auto.ui.click("xpath")
+                if (autoStepVO.getUi() == null) {
+                    autoStepVO.setUi(new UiDTO());
+                }
+                autoStepVO.setType(AutoStepTypeEnum.STEP_UI.getCode());
+                switch (UiTypeEnum.fromScriptTemplate(methodName)) {
+                    case OPEN_URL:
+                        autoStepVO.getUi().setUrl(methodParam);
+                        autoStepVO.getUi().setType(UiTypeEnum.OPEN_URL.getCode());
+                        break;
+                    case CLICK:
+                        autoStepVO.getUi().setElement(methodParam);
+                        autoStepVO.getUi().setType(UiTypeEnum.CLICK.getCode());
+                        break;
+                    case SEND_KEY:
+                        autoStepVO.getUi().setElement(params[0]);
+                        autoStepVO.getUi().setKey(params[1]);
+                        autoStepVO.getUi().setType(UiTypeEnum.SEND_KEY.getCode());
+                        break;
+                    case SWITCH_FRAME:
+                        autoStepVO.getUi().setElement(methodParam);
+                        autoStepVO.getUi().setType(UiTypeEnum.SWITCH_FRAME.getCode());
+                        break;
+                    case HOVER:
+                        autoStepVO.getUi().setElement(methodParam);
+                        autoStepVO.getUi().setType(UiTypeEnum.HOVER.getCode());
+                        break;
+                }
+                break;
+            case SQL:   // 脚本范例：auto.db.onePiece("sql");
+                if (autoStepVO.getJdbc() == null) {
+                    autoStepVO.setJdbc(new JdbcDTO());
+                }
+                autoStepVO.setType(AutoStepTypeEnum.STEP_SQL.getCode());
+                // todo ?
+                autoStepVO.getJdbc().getDataSource().setDbName(params[0]);
+                autoStepVO.getJdbc().setSql(params[1]);
+                break;
+            case HTTP:  // 脚本范例：auto.http.doPost("url","body");
+                if (autoStepVO.getHttpRequest() == null) {
+                    autoStepVO.setHttpRequest(new HttpRequestDTO());
+                }
+                autoStepVO.setType(AutoStepTypeEnum.STEP_HTTP.getCode());
+                switch (HttpTypeEnum.fromScriptTemplate(methodName)) {
+                    case GET:
+                        autoStepVO.getHttpRequest().setHttpURL(methodParam);
+                        autoStepVO.getHttpRequest().setHttpType(HttpTypeEnum.GET.getValue());
+                        break;
+                    case POST:
+                        autoStepVO.getHttpRequest().setHttpURL(params[0]);
+                        autoStepVO.getHttpRequest().setHttpBody(params[1]);
+                        autoStepVO.getHttpRequest().setHttpType(HttpTypeEnum.POST.getValue());
+                        break;
+                    case PUT:
+                        autoStepVO.getHttpRequest().setHttpURL(params[0]);
+                        autoStepVO.getHttpRequest().setHttpBody(params[1]);
+                        autoStepVO.getHttpRequest().setHttpType(HttpTypeEnum.PUT.getValue());
+                        break;
+                    case DELETE:
+                        autoStepVO.getHttpRequest().setHttpURL(params[0]);
+                        autoStepVO.getHttpRequest().setHttpBody(params[1]);
+                        autoStepVO.getHttpRequest().setHttpType(HttpTypeEnum.DELETE.getValue());
+                        break;
+                }
+                break;
+        }
+        return autoStepVO;
     }
 
     /**

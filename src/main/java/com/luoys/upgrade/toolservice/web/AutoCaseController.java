@@ -82,7 +82,7 @@ public class AutoCaseController {
     @RequestMapping(value = "/changeUiMode", method = RequestMethod.PUT)
     public Result<Boolean> changeUiMode(@RequestBody AutoCaseVO autoCaseVO) {
         log.info("--->开始将脚本步骤转换为可视化步骤：{}", autoCaseVO);
-        return Result.message(caseService.change2UiMode(autoCaseVO));
+        return Result.success(caseService.change2UiMode(autoCaseVO));
     }
 
     @RequestMapping(value = "/changeScriptMode", method = RequestMethod.PUT)
