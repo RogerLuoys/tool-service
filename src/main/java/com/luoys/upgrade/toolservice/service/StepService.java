@@ -228,11 +228,12 @@ public class StepService {
         String methodType = script.substring(0, script.indexOf(".", 5));
         // 截取步骤方法，如：auto.ui.click
         String methodName = script.substring(0, script.indexOf("("));
-        // 截取步骤入参，如：xpath (不一定使用)
+        // 截取步骤入参，如：xpath (根据实际情况使用)
         String methodParam = script.substring(script.indexOf("(\"") + 2, script.lastIndexOf("\")"));
-        // 截取多个参数，如：[xpath,key] (不一定使用)
+        // 截取多个参数，如：[xpath,key] (根据实际情况使用)
         String[] params = methodParam.split("(\",\\s{0,4}\")");
 
+        // 先根据步骤类型，再根据类型中的方法，进行步骤解析
         switch (MethodTypeEnum.fromScriptTemplate(methodType)) {
             case UI:    // 脚本范例：auto.ui.click("xpath")
                 if (autoStepVO.getUi() == null) {

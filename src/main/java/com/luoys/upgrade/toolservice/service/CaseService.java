@@ -152,7 +152,7 @@ public class CaseService {
     }
 
     /**
-     * 删除测试集关联的用例
+     * 删除用例中关联的步骤
      *
      * @param caseStepVO 步骤对象
      * @return 成功为true，失败为false
@@ -289,8 +289,11 @@ public class CaseService {
             caseStepVO.setSequence(autoCaseVO.getMainStepList().size() + 1);
             // 将关系存入数据库
             createRelatedStep(caseStepVO);
-            // 最后在对象中也添加该步骤
+            // 创建步骤实例
             caseStepVO.setAutoStep(new AutoStepVO());
+            // 填充步骤的stepId
+            caseStepVO.getAutoStep().setStepId(caseStepVO.getStepId());
+            // 将关联步骤的实例添加至用例对象中
             autoCaseVO.getMainStepList().add(caseStepVO);
         }
 
