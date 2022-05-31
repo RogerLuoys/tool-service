@@ -13,10 +13,10 @@ import java.util.Map;
 @Getter
 public enum HttpTypeEnum {
 
-    GET(1, "GET", "auto.http.doGet", "get请求"),
-    POST(2, "POST", "auto.http.doPost", "post请求"),
-    PUT(3, "PUT", "auto.http.doPut", "put请求"),
-    DELETE(4, "DELETE", "auto.http.doDelete", "delete请求");
+    GET(1, "GET", "auto.http.get", "get请求"),
+    POST(2, "POST", "auto.http.post", "post请求"),
+    PUT(3, "PUT", "auto.http.put", "put请求"),
+    DELETE(4, "DELETE", "auto.http.delete", "delete请求");
 
     private final Integer code;
     private final String value;

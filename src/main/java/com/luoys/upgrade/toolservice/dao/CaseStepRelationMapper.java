@@ -56,7 +56,7 @@ public interface CaseStepRelationMapper {
     List<CaseStepRelationPO> listStepByCaseId(@Param("caseId") String caseId);
 
     /**
-     * 根据caseId和stepId更新数据
+     * 根据caseId和stepId更新数据，更新顺序
      *
      * @param record 对象
      * @return 成功为1

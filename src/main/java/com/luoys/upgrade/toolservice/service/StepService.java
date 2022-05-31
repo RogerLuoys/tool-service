@@ -242,23 +242,28 @@ public class StepService {
                 autoStepVO.setType(AutoStepTypeEnum.STEP_UI.getCode());
                 switch (UiTypeEnum.fromScriptTemplate(methodName)) {
                     case OPEN_URL:
+                        autoStepVO.setName(UiTypeEnum.OPEN_URL.getDescription());
                         autoStepVO.getUi().setUrl(methodParam);
                         autoStepVO.getUi().setType(UiTypeEnum.OPEN_URL.getCode());
                         break;
                     case CLICK:
+                        autoStepVO.setName(UiTypeEnum.CLICK.getDescription());
                         autoStepVO.getUi().setElement(methodParam);
                         autoStepVO.getUi().setType(UiTypeEnum.CLICK.getCode());
                         break;
                     case SEND_KEY:
+                        autoStepVO.setName(UiTypeEnum.SEND_KEY.getDescription());
                         autoStepVO.getUi().setElement(params[0]);
                         autoStepVO.getUi().setKey(params[1]);
                         autoStepVO.getUi().setType(UiTypeEnum.SEND_KEY.getCode());
                         break;
                     case SWITCH_FRAME:
+                        autoStepVO.setName(UiTypeEnum.SWITCH_FRAME.getDescription());
                         autoStepVO.getUi().setElement(methodParam);
                         autoStepVO.getUi().setType(UiTypeEnum.SWITCH_FRAME.getCode());
                         break;
                     case HOVER:
+                        autoStepVO.setName(UiTypeEnum.HOVER.getDescription());
                         autoStepVO.getUi().setElement(methodParam);
                         autoStepVO.getUi().setType(UiTypeEnum.HOVER.getCode());
                         break;
@@ -280,22 +285,32 @@ public class StepService {
                 autoStepVO.setType(AutoStepTypeEnum.STEP_HTTP.getCode());
                 switch (HttpTypeEnum.fromScriptTemplate(methodName)) {
                     case GET:
+                        autoStepVO.setName(HttpTypeEnum.GET.getDescription());
                         autoStepVO.getHttpRequest().setHttpURL(methodParam);
                         autoStepVO.getHttpRequest().setHttpType(HttpTypeEnum.GET.getValue());
                         break;
                     case POST:
+                        autoStepVO.setName(HttpTypeEnum.POST.getDescription());
                         autoStepVO.getHttpRequest().setHttpURL(params[0]);
-                        autoStepVO.getHttpRequest().setHttpBody(params[1]);
+                        if (params.length == 2) {
+                            autoStepVO.getHttpRequest().setHttpBody(params[1]);
+                        }
                         autoStepVO.getHttpRequest().setHttpType(HttpTypeEnum.POST.getValue());
                         break;
                     case PUT:
+                        autoStepVO.setName(HttpTypeEnum.PUT.getDescription());
                         autoStepVO.getHttpRequest().setHttpURL(params[0]);
-                        autoStepVO.getHttpRequest().setHttpBody(params[1]);
+                        if (params.length == 2) {
+                            autoStepVO.getHttpRequest().setHttpBody(params[1]);
+                        }
                         autoStepVO.getHttpRequest().setHttpType(HttpTypeEnum.PUT.getValue());
                         break;
                     case DELETE:
+                        autoStepVO.setName(HttpTypeEnum.DELETE.getDescription());
                         autoStepVO.getHttpRequest().setHttpURL(params[0]);
-                        autoStepVO.getHttpRequest().setHttpBody(params[1]);
+                        if (params.length == 2) {
+                            autoStepVO.getHttpRequest().setHttpBody(params[1]);
+                        }
                         autoStepVO.getHttpRequest().setHttpType(HttpTypeEnum.DELETE.getValue());
                         break;
                 }

@@ -174,7 +174,7 @@ public class CaseService {
     }
 
     /**
-     * 更新用例关联的步骤
+     * 更新用例关联步骤的顺序
      *
      * @param caseStepVO 步骤对象
      * @return 成功为true，失败为false
@@ -182,6 +182,22 @@ public class CaseService {
     public Boolean updateRelatedStep(CaseStepVO caseStepVO) {
         int result = caseStepRelationMapper.update(TransformCaseStepRelation.transformVO2PO(caseStepVO));
         return result == 1;
+    }
+
+    /**
+     * 更新用例关联步骤的顺序
+     *
+     * @param caseId 用例ID
+     * @param stepId 步骤ID
+     * @param sequence 顺序，从1开始
+     * @return 成功为true，失败为false
+     */
+    public Boolean updateRelatedStep(String caseId, String stepId, int sequence) {
+        CaseStepVO caseStepVO = new CaseStepVO();
+        caseStepVO.setCaseId(caseId);
+        caseStepVO.setStepId(stepId);
+        caseStepVO.setSequence(sequence);
+        return updateRelatedStep(caseStepVO);
     }
 
     /**
@@ -311,16 +327,11 @@ public class CaseService {
             autoCaseVO.getMainStepList().get(i).getAutoStep().setScript(mainSteps.get(i));
             // 基于脚本，将步骤转换为ui模式(会覆盖原数据)
             AutoStepVO autoStepVO = stepService.change2UiMode(autoCaseVO.getMainStepList().get(i).getAutoStep());
+            // 重新设置步骤执行顺序
+            updateRelatedStep(autoCaseVO.getCaseId(), autoStepVO.getStepId(), i + 1);
             stepService.update(autoStepVO);
         }
 
-//        // 脚本中的步骤有删减，需要删除不需要的关联步骤
-//        while (mainSteps.size() - autoCaseVO.getMainStepList().size() < 0) {
-//            // 在数据库中删除多余的关联步骤
-//            removeRelatedStep(autoCaseVO.getMainStepList().get(autoCaseVO.getMainStepList().size() - 1));
-//            // 在当前对象中也删除
-//            autoCaseVO.getMainStepList().remove(autoCaseVO.getMainStepList().size() - 1);
-//        }
         return autoCaseVO;
     }
 
