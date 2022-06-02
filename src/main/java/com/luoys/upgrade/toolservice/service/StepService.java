@@ -228,7 +228,7 @@ public class StepService {
         String methodType = script.substring(0, script.indexOf(".", 5));
         // 截取步骤方法，如：auto.ui.click
         String methodName = script.substring(0, script.indexOf("("));
-        // 截取步骤入参，如：xpath (根据实际情况使用)
+        // 截取步骤入参，如：xpath (根据实际情况使用) todo 要兼容不带”“的参数
         String methodParam = script.substring(script.indexOf("(\"") + 2, script.lastIndexOf("\")"));
         // 截取多个参数，如：[xpath,key] (根据实际情况使用)
         String[] params = methodParam.split("(\",\\s{0,4}\")");
