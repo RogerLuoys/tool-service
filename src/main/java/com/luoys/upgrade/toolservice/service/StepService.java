@@ -224,14 +224,21 @@ public class StepService {
         }
         // 脚本范例：auto.methodType.methodName(methodParam);
         String script = autoStepVO.getScript();
-        // 截取步骤类型，如：auto.ui
-        String methodType = script.substring(0, script.indexOf(".", 5));
         // 截取步骤方法，如：auto.ui.click
         String methodName = script.substring(0, script.indexOf("("));
+        // 截取步骤类型，如：auto.ui (执行sql的方法比较特别，第二层名字不确定)
+        String methodType = methodName.matches("auto.\\w+.execute") ? "auto.dbName" : script.substring(0, script.indexOf(".", 5));
+        String dbName = "";
+        // 如果是执行sql的脚本，则要取数据库名
+        if (methodName.matches("auto.\\w+.execute")) {
+            methodType = "auto.dbName";
+            dbName = methodName.substring(5, script.indexOf(".", 5));
+        }
         // 截取步骤入参，如：xpath (根据实际情况使用) todo 要兼容不带”“的参数
-        String methodParam = script.substring(script.indexOf("(\"") + 2, script.lastIndexOf("\")"));
+        String methodParamString = script.substring(script.indexOf("(\"") + 2, script.lastIndexOf("\")"));
+        String methodParamNoString = script.substring(script.indexOf("(") + 1, script.lastIndexOf(");"));
         // 截取多个参数，如：[xpath,key] (根据实际情况使用)
-        String[] params = methodParam.split("(\",\\s{0,4}\")");
+        String[] params = methodParamString.split("(\",\\s{0,4}\")");
 
         // 先根据步骤类型，再根据类型中的方法，进行步骤解析
         switch (MethodTypeEnum.fromScriptTemplate(methodType)) {
@@ -243,12 +250,12 @@ public class StepService {
                 switch (UiTypeEnum.fromScriptTemplate(methodName)) {
                     case OPEN_URL:
                         autoStepVO.setName(UiTypeEnum.OPEN_URL.getDescription());
-                        autoStepVO.getUi().setUrl(methodParam);
+                        autoStepVO.getUi().setUrl(methodParamString);
                         autoStepVO.getUi().setType(UiTypeEnum.OPEN_URL.getCode());
                         break;
                     case CLICK:
                         autoStepVO.setName(UiTypeEnum.CLICK.getDescription());
-                        autoStepVO.getUi().setElement(methodParam);
+                        autoStepVO.getUi().setElement(methodParamString);
                         autoStepVO.getUi().setType(UiTypeEnum.CLICK.getCode());
                         break;
                     case SEND_KEY:
@@ -259,12 +266,12 @@ public class StepService {
                         break;
                     case SWITCH_FRAME:
                         autoStepVO.setName(UiTypeEnum.SWITCH_FRAME.getDescription());
-                        autoStepVO.getUi().setElement(methodParam);
+                        autoStepVO.getUi().setElement(methodParamString);
                         autoStepVO.getUi().setType(UiTypeEnum.SWITCH_FRAME.getCode());
                         break;
                     case HOVER:
                         autoStepVO.setName(UiTypeEnum.HOVER.getDescription());
-                        autoStepVO.getUi().setElement(methodParam);
+                        autoStepVO.getUi().setElement(methodParamString);
                         autoStepVO.getUi().setType(UiTypeEnum.HOVER.getCode());
                         break;
                 }
@@ -274,9 +281,9 @@ public class StepService {
                     autoStepVO.setJdbc(new JdbcDTO());
                 }
                 autoStepVO.setType(AutoStepTypeEnum.STEP_SQL.getCode());
-                // todo ?
-                autoStepVO.getJdbc().getDataSource().setDbName(params[0]);
-                autoStepVO.getJdbc().setSql(params[1]);
+                // todo 类结构还要改，调用也需要
+                autoStepVO.getJdbc().setDbName(dbName);
+                autoStepVO.getJdbc().setSql(methodParamString);
                 break;
             case HTTP:  // 脚本范例：auto.http.doPost("url","body");
                 if (autoStepVO.getHttpRequest() == null) {
@@ -286,7 +293,7 @@ public class StepService {
                 switch (HttpTypeEnum.fromScriptTemplate(methodName)) {
                     case GET:
                         autoStepVO.setName(HttpTypeEnum.GET.getDescription());
-                        autoStepVO.getHttpRequest().setHttpURL(methodParam);
+                        autoStepVO.getHttpRequest().setHttpURL(methodParamString);
                         autoStepVO.getHttpRequest().setHttpType(HttpTypeEnum.GET.getValue());
                         break;
                     case POST:

@@ -13,9 +13,10 @@ public enum MethodTypeEnum {
 
     UTIL(1, "auto.util", "工具相关的方法"),
     UI(2, "auto.ui", "UI相关的方法"),
-    SQL(3, "auto.sql", "执行sql相关的方法"),
+    SQL(3, "auto.dbName", "执行sql相关的方法"),
     HTTP(4, "auto.http", "调用http接口相关的方法"),
-    RPC(5, "auto.rpc", "调用rpc接口相关的方法");
+    RPC(5, "auto.rpc", "调用rpc接口相关的方法"),
+    TASK(6, "auto.task", "封装步骤");
 
 
     private final Integer code;
