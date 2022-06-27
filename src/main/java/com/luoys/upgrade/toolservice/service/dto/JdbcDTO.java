@@ -20,7 +20,12 @@ public class JdbcDTO {
 
     private String sqlType;
 
+
+    // 新加的
     private String sql;
+
+    // 新加的
+    private String dbName;
 
     /**
      * 用真实参数替换参数占位符，只处理sql，不处理数据源
