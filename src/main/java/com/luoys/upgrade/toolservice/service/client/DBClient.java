@@ -1,17 +1,13 @@
 package com.luoys.upgrade.toolservice.service.client;
 
-import com.luoys.upgrade.toolservice.service.dto.DataSourceDTO;
 import com.luoys.upgrade.toolservice.service.dto.JdbcDTO;
-import com.luoys.upgrade.toolservice.service.dto.SqlDTO;
 import com.luoys.upgrade.toolservice.service.enums.SqlTypeEnum;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -34,59 +30,46 @@ public class DBClient {
      * @return 全部执行成功则为true
      */
     public synchronized String execute(JdbcDTO jdbcDTO) {
-        if (jdbcDTO == null || jdbcDTO.getDataSource() == null || jdbcDTO.getSqlList() == null) {
+        if (jdbcDTO == null || jdbcDTO.getSql() == null) {
             log.error("--->执行sql时参数异常");
             return "执行参数异常";
         }
-        init(jdbcDTO.getDataSource());
-        List<SqlDTO> sqlDTOList = jdbcDTO.getSqlList();
-        StringBuilder result = new StringBuilder();
-        for (SqlDTO sqlDTO : sqlDTOList) {
-            switch (SqlTypeEnum.fromValue(sqlDTO.getType())) {
-                case INSERT:
-                    result.append(insert(sqlDTO.getSql())).append(" ");
-                    break;
-                case DELETE:
-                    result.append(delete(sqlDTO.getSql())).append(" ");
-                    break;
-                case UPDATE:
-                    result.append(update(sqlDTO.getSql())).append(" ");
-                    break;
-                case SELECT:
-                    result.append(select(sqlDTO.getSql())).append(" ");
-                    break;
-                default:
-                    result.append("不支持sql类型 ");
-            }
+        // 初始化数据库链接
+        init(jdbcDTO);
+        String result;
+        // 根据sql类型选择不同的执行方法
+        switch (SqlTypeEnum.fromValue(jdbcDTO.getSqlType())) {
+            case INSERT:
+                result = insert(jdbcDTO.getSql());
+                break;
+            case DELETE:
+                result = delete(jdbcDTO.getSql());
+                break;
+            case UPDATE:
+                result = update(jdbcDTO.getSql());
+                break;
+            case SELECT:
+                result = select(jdbcDTO.getSql());
+                break;
+            default:
+                result = "不支持sql类型 ";
         }
+        // 关闭数据库链接
         close();
-        return result.toString();
+        return result;
     }
-
-//    /**
-//     * 初始化数据源
-//     *
-//     * @param dataSourceDTO 数据源对象
-//     */
-//    private void init(DataSourceDTO dataSourceDTO) {
-//        dataSource.setDriverClassName(dataSourceDTO.getDriver());
-//        dataSource.setUrl(dataSourceDTO.getUrl());
-//        dataSource.setUsername(dataSourceDTO.getUsername());
-//        dataSource.setPassword(dataSourceDTO.getPassword());
-//        jdbcTemplate.setDataSource(dataSource);
-//    }
 
     /**
      * 初始化数据源，使用HikariDataSource
      *
-     * @param dataSourceDTO 数据源对象
+     * @param jdbcDTO 数据源
      */
-    private void init(DataSourceDTO dataSourceDTO) {
+    private void init(JdbcDTO jdbcDTO) {
         HikariConfig config = new HikariConfig();
-        config.setDriverClassName(dataSourceDTO.getDriver());
-        config.setJdbcUrl(dataSourceDTO.getUrl());
-        config.setUsername(dataSourceDTO.getUsername());
-        config.setPassword(dataSourceDTO.getPassword());
+        config.setDriverClassName(jdbcDTO.getDriver());
+        config.setJdbcUrl(jdbcDTO.getUrl());
+        config.setUsername(jdbcDTO.getUsername());
+        config.setPassword(jdbcDTO.getPassword());
         dataSource = new HikariDataSource(config);
         jdbcTemplate.setDataSource(dataSource);
     }
@@ -96,7 +79,9 @@ public class DBClient {
      */
     private void close() {
 //        HikariDataSource dataSource = (HikariDataSource) jdbcTemplate.getDataSource();
-        dataSource.close();
+        if (dataSource != null) {
+            dataSource.close();
+        }
     }
 
     /**

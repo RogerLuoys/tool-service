@@ -80,14 +80,18 @@ public class TransformAutoStep {
             case STEP_SQL:
                 JdbcDTO jdbcDTO = new JdbcDTO();
                 //设置sql对象
-                jdbcDTO.setSqlList(TransformCommon.toSql(po.getJdbcSql()));
+                jdbcDTO.setSql(po.getJdbcSql());
                 //设置数据源对象
-                DataSourceDTO dataSourceDTO = new DataSourceDTO();
-                dataSourceDTO.setDriver(po.getJdbcDriver());
-                dataSourceDTO.setUrl(po.getJdbcUrl());
-                dataSourceDTO.setUsername(po.getJdbcUsername());
-                dataSourceDTO.setPassword(po.getJdbcPassword());
-                jdbcDTO.setDataSource(dataSourceDTO);
+//                DataSourceDTO dataSourceDTO = new DataSourceDTO();
+//                dataSourceDTO.setDriver(po.getJdbcDriver());
+//                dataSourceDTO.setUrl(po.getJdbcUrl());
+//                dataSourceDTO.setUsername(po.getJdbcUsername());
+//                dataSourceDTO.setPassword(po.getJdbcPassword());
+//                jdbcDTO.setDataSource(dataSourceDTO);
+                jdbcDTO.setDriver(po.getJdbcDriver());
+                jdbcDTO.setUrl(po.getJdbcUrl());
+                jdbcDTO.setUsername(po.getJdbcUsername());
+                jdbcDTO.setPassword(po.getJdbcPassword());
                 //设置数据库对象
                 vo.setJdbc(jdbcDTO);
                 break;
@@ -148,15 +152,14 @@ public class TransformAutoStep {
         // 详细信息转换
         switch (AutoStepTypeEnum.fromCode(vo.getType())) {
             case STEP_SQL:
-                if (vo.getJdbc() != null && vo.getJdbc().getDataSource() != null) {
-                    po.setJdbcDriver(vo.getJdbc().getDataSource().getDriver());
-                    po.setJdbcUrl(vo.getJdbc().getDataSource().getUrl());
-                    po.setJdbcUsername(vo.getJdbc().getDataSource().getUsername());
-                    po.setJdbcPassword(vo.getJdbc().getDataSource().getPassword());
+                if (vo.getJdbc() == null) {
+                    break;
                 }
-                if (vo.getJdbc() != null && vo.getJdbc().getSqlList() != null) {
-                    po.setJdbcSql(TransformCommon.toSql(vo.getJdbc().getSqlList()));
-                }
+                po.setJdbcDriver(vo.getJdbc().getDriver());
+                po.setJdbcUrl(vo.getJdbc().getUrl());
+                po.setJdbcUsername(vo.getJdbc().getUsername());
+                po.setJdbcPassword(vo.getJdbc().getPassword());
+                po.setJdbcSql(vo.getJdbc().getSql());
                 break;
             case STEP_HTTP:
                 if (vo.getHttpRequest() == null) {

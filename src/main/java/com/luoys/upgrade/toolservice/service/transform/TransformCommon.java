@@ -191,26 +191,19 @@ public class TransformCommon {
             log.info("---->无参数需要合并");
             return;
         }
-        log.info("---->合并前sql列表：{}", jdbcDTO.getSqlList());
-        List<SqlDTO> actualSqlList = new ArrayList<>();
-        String oneSql, fullParamSymbol;
-
-        for (SqlDTO sqlDTO : jdbcDTO.getSqlList()) {
-            oneSql = sqlDTO.getSql();
-            //先判断指定sql模板中是否有参数占位符，有则进入替换逻辑
-            if (oneSql.matches(PARAM_REGEX)) {
-                //将所有实际参数与其中一条sql模板的占位符替换
-                for (ParameterDTO parameterDTO : parameterList) {
-                    fullParamSymbol = "${"+parameterDTO.getName()+"}";
-                    if (oneSql.contains(fullParamSymbol)) {
-                        sqlDTO.setSql(oneSql.replace(fullParamSymbol, parameterDTO.getValue()));
-                    }
+        log.info("---->合并前sql列表：{}", jdbcDTO.getSql());
+        String fullParamSymbol;
+        //先判断指定sql模板中是否有参数占位符，有则进入替换逻辑
+        if (jdbcDTO.getSql().matches(PARAM_REGEX)) {
+            //将所有实际参数与其中一条sql模板的占位符替换
+            for (ParameterDTO parameterDTO : parameterList) {
+                fullParamSymbol = "${"+parameterDTO.getName()+"}";
+                if (jdbcDTO.getSql().contains(fullParamSymbol)) {
+                    jdbcDTO.setSql(jdbcDTO.getSql().replace(fullParamSymbol, parameterDTO.getValue()));
                 }
             }
-            actualSqlList.add(sqlDTO);
         }
-        jdbcDTO.setSqlList(actualSqlList);
-        log.info("---->合并后sql列表：{}", jdbcDTO.getSqlList());
+        log.info("---->合并后sql列表：{}", jdbcDTO.getSql());
     }
 
     /**

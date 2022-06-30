@@ -8,6 +8,7 @@ import com.luoys.upgrade.toolservice.service.client.DBClient;
 import com.luoys.upgrade.toolservice.service.client.HTTPClient;
 import com.luoys.upgrade.toolservice.service.client.RPCClient;
 import com.luoys.upgrade.toolservice.service.client.UIClient;
+import com.luoys.upgrade.toolservice.service.dto.DataSourceDTO;
 import com.luoys.upgrade.toolservice.service.dto.HttpRequestDTO;
 import com.luoys.upgrade.toolservice.service.dto.JdbcDTO;
 import com.luoys.upgrade.toolservice.service.dto.UiDTO;
@@ -15,6 +16,7 @@ import com.luoys.upgrade.toolservice.service.enums.*;
 import com.luoys.upgrade.toolservice.service.transform.TransformAutoStep;
 import com.luoys.upgrade.toolservice.web.vo.AutoStepSimpleVO;
 import com.luoys.upgrade.toolservice.web.vo.AutoStepVO;
+import com.luoys.upgrade.toolservice.web.vo.ResourceVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -52,6 +54,9 @@ public class StepService {
 
     @Autowired
     private UIClient uiClient;
+
+    @Autowired
+    private ResourceService resourceService;
 
 //    @DubboReference
 //    private UserService userService;
@@ -197,7 +202,7 @@ public class StepService {
                         autoStepVO.setScript(UiTypeEnum.SWITCH_FRAME.getScriptTemplate() + "(\"" + autoStepVO.getUi().getElement() + "\");");
                 }
             case STEP_SQL:
-                autoStepVO.setScript("auto.db.execute(\"" + autoStepVO.getJdbc().getSqlList().get(0).getSql() + "\");");
+                autoStepVO.setScript("auto.db.execute(\"" + autoStepVO.getJdbc().getSql() + "\");");
             case STEP_HTTP:
                 switch (HttpTypeEnum.fromValue(autoStepVO.getHttpRequest().getHttpType())) {
                     case GET:
@@ -216,7 +221,7 @@ public class StepService {
     /**
      * 转换步骤模式，将结构化步骤转换成脚本
      *
-     * @param autoStepVO -
+     * @param autoStepVO - 带脚本的完整步骤对象
      */
     public AutoStepVO change2UiMode(AutoStepVO autoStepVO) {
         if (autoStepVO == null) {
@@ -281,8 +286,14 @@ public class StepService {
                     autoStepVO.setJdbc(new JdbcDTO());
                 }
                 autoStepVO.setType(AutoStepTypeEnum.STEP_SQL.getCode());
-                // todo 类结构还要改，调用也需要
+                // 数据源的连接信息固化，执行时不关联查询，在关联数据源或修改数据源时，要批量更新步骤里的数据源信息
                 autoStepVO.getJdbc().setDbName(dbName);
+                // 通过名称，在资源表中查询到数据库连接信息
+                DataSourceDTO dataSource = resourceService.queryDetailByName(dbName).getDataSource();
+                autoStepVO.getJdbc().setDriver(dataSource.getDriver());
+                autoStepVO.getJdbc().setUrl(dataSource.getUrl());
+                autoStepVO.getJdbc().setUsername(dataSource.getUsername());
+                autoStepVO.getJdbc().setPassword(dataSource.getPassword());
                 autoStepVO.getJdbc().setSql(methodParamString);
                 break;
             case HTTP:  // 脚本范例：auto.http.doPost("url","body");
@@ -321,6 +332,9 @@ public class StepService {
                         autoStepVO.getHttpRequest().setHttpType(HttpTypeEnum.DELETE.getValue());
                         break;
                 }
+                break;
+            case RPC:
+                // todo rpc??
                 break;
         }
         return autoStepVO;

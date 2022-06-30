@@ -58,6 +58,15 @@ public interface ResourceMapper {
      */
     ResourcePO selectByUUID(@Param("resourceId") String resourceId);
 
+
+    /**
+     * 根据名称查询详情
+     *
+     * @param name 业务id
+     * @return 表对应的pojo对象
+     */
+    ResourcePO selectByName(@Param("name") String name);
+
     /**
      * 按条件分页查询，默认10条数据一页
      *

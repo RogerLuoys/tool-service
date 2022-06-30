@@ -53,26 +53,21 @@ public class TransformTool {
             log.info("---->无参数需要合并");
             return;
         }
-        log.info("---->合并前sql列表：{}", toolVO.getJdbc().getSqlList());
-        List<SqlDTO> actualSqlList = new ArrayList<>();
+        log.info("---->合并前sql列表：{}", toolVO.getJdbc().getSql());
         String oneSql, fullParamSymbol;
-
-        for (SqlDTO sqlDTO : toolVO.getJdbc().getSqlList()) {
-            oneSql = sqlDTO.getSql();
-            //先判断指定sql模板中是否有参数占位符，有则进入替换逻辑
-            if (oneSql.matches(PARAM_REGEX)) {
-                //将所有实际参数与其中一条sql模板的占位符替换
-                for (ParameterDTO parameterDTO : toolVO.getParameterList()) {
-                    fullParamSymbol = "${"+parameterDTO.getName()+"}";
-                    if (oneSql.contains(fullParamSymbol)) {
-                        sqlDTO.setSql(oneSql.replace(fullParamSymbol, parameterDTO.getValue()));
-                    }
+        oneSql = toolVO.getJdbc().getSql();
+        //先判断指定sql模板中是否有参数占位符，有则进入替换逻辑
+        if (oneSql.matches(PARAM_REGEX)) {
+            //将所有实际参数与其中一条sql模板的占位符替换
+            for (ParameterDTO parameterDTO : toolVO.getParameterList()) {
+                fullParamSymbol = "${"+parameterDTO.getName()+"}";
+                if (oneSql.contains(fullParamSymbol)) {
+                    toolVO.getJdbc().setSql(oneSql.replace(fullParamSymbol, parameterDTO.getValue()));
                 }
             }
-            actualSqlList.add(sqlDTO);
         }
-        toolVO.getJdbc().setSqlList(actualSqlList);
-        log.info("---->合并后sql列表：{}", toolVO.getJdbc().getSqlList());
+
+        log.info("---->合并后sql列表：{}", toolVO.getJdbc().getSql());
     }
 
     /**
@@ -143,33 +138,6 @@ public class TransformTool {
         log.info("---->合并后rpc请求：{}", toolVO.getRpc());
     }
 
-//    public static void mergeRpc(ToolVO toolVO) {
-//        // 无变量
-//        if (toolVO.getParameterList() == null || toolVO.getParameterList().size() == 0) {
-//            return;
-//        }
-//        log.info("---->合并前rpc请求：{}", toolVO.getRpc());
-//        String fullParamSymbol;
-//        List<ParameterDTO> rpcParamList = new ArrayList<>();
-//        //先遍历目标，rpc入参
-//        for (ParameterDTO rpcParam : toolVO.getRpc().getParameterList()) {
-//            String oneValue = rpcParam.getValue();
-//            //判断入参中是否有指定占位符，无则不用替换直接插入
-//            if (oneValue.contains(PARAM_REGEX) {
-//                //将所有实际参数与其中一个rpc入参值中的占位符替换
-//                for (ParameterDTO parameterDTO : toolVO.getParameterList()) {
-//                    fullParamSymbol = KeywordEnum.PARAM_SYMBOL.getValue()+parameterDTO.getName()+"}";
-//                    if (oneValue.contains(fullParamSymbol)) {
-//                        rpcParam.setValue(oneValue.replace(fullParamSymbol, parameterDTO.getValue()));
-//                    }
-//                }
-//            }
-//            rpcParamList.add(rpcParam);
-//        }
-//        toolVO.getRpc().setParameterList(rpcParamList);
-//        log.info("---->合并后rpc请求：{}", toolVO.getRpc());
-//    }
-
     public static ToolVO transformPO2VO(ToolPO po) {
         if (po == null) {
             return null;
@@ -190,14 +158,12 @@ public class TransformTool {
             case SQL:
                 JdbcDTO jdbcDTO = new JdbcDTO();
                 //设置sql对象
-                jdbcDTO.setSqlList(TransformCommon.toSql(po.getJdbcSql()));
+                jdbcDTO.setSql(po.getJdbcSql());
                 //设置数据源对象
-                DataSourceDTO dataSourceDTO = new DataSourceDTO();
-                dataSourceDTO.setDriver(po.getJdbcDriver());
-                dataSourceDTO.setUrl(po.getJdbcUrl());
-                dataSourceDTO.setUsername(po.getJdbcUsername());
-                dataSourceDTO.setPassword(po.getJdbcPassword());
-                jdbcDTO.setDataSource(dataSourceDTO);
+                jdbcDTO.setDriver(po.getJdbcDriver());
+                jdbcDTO.setUrl(po.getJdbcUrl());
+                jdbcDTO.setUsername(po.getJdbcUsername());
+                jdbcDTO.setPassword(po.getJdbcPassword());
                 //设置数据库对象
                 vo.setJdbc(jdbcDTO);
                 break;
@@ -241,11 +207,11 @@ public class TransformTool {
         // 模板转换
         switch (ToolTypeEnum.fromCode(vo.getType())) {
             case SQL:
-                po.setJdbcDriver(vo.getJdbc().getDataSource().getDriver());
-                po.setJdbcUrl(vo.getJdbc().getDataSource().getUrl());
-                po.setJdbcUsername(vo.getJdbc().getDataSource().getUsername());
-                po.setJdbcPassword(vo.getJdbc().getDataSource().getPassword());
-                po.setJdbcSql(TransformCommon.toSql(vo.getJdbc().getSqlList()));
+                po.setJdbcDriver(vo.getJdbc().getDriver());
+                po.setJdbcUrl(vo.getJdbc().getUrl());
+                po.setJdbcUsername(vo.getJdbc().getUsername());
+                po.setJdbcPassword(vo.getJdbc().getPassword());
+                po.setJdbcSql(vo.getJdbc().getSql());
                 break;
             case HTTP:
                 po.setHttpUrl(vo.getHttpRequest().getHttpURL());

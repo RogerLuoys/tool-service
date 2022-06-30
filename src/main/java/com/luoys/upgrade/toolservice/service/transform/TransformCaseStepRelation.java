@@ -53,14 +53,12 @@ public class TransformCaseStepRelation {
             case STEP_SQL:
                 JdbcDTO jdbcDTO = new JdbcDTO();
                 //设置sql对象
-                jdbcDTO.setSqlList(TransformCommon.toSql(po.getJdbcSql()));
+                jdbcDTO.setSql(po.getJdbcSql());
                 //设置数据源对象
-                DataSourceDTO dataSourceDTO = new DataSourceDTO();
-                dataSourceDTO.setDriver(po.getJdbcDriver());
-                dataSourceDTO.setUrl(po.getJdbcUrl());
-                dataSourceDTO.setUsername(po.getJdbcUsername());
-                dataSourceDTO.setPassword(po.getJdbcPassword());
-                jdbcDTO.setDataSource(dataSourceDTO);
+                jdbcDTO.setDriver(po.getJdbcDriver());
+                jdbcDTO.setUrl(po.getJdbcUrl());
+                jdbcDTO.setUsername(po.getJdbcUsername());
+                jdbcDTO.setPassword(po.getJdbcPassword());
                 //设置数据库对象
                 vo.getAutoStep().setJdbc(jdbcDTO);
                 break;
