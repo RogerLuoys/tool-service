@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 import java.util.Map;
 
 /**
- * 数据库客户端
+ * 数据库客户端，用于自动化步骤数据库类型的实现
  *
  * @author luoys
  */

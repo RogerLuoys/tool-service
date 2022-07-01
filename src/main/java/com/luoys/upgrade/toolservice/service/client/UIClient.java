@@ -17,7 +17,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.util.List;
 
 /**
- * ui操作客户端
+ * ui操作客户端，用于自动化步骤的UI类型实现
  *
  * @author luoys
  */

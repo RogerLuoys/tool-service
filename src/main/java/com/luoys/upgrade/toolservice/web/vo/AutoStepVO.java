@@ -84,6 +84,17 @@ public class AutoStepVO {
     private Integer afterSleep;
 
     /**
+     * 工具类
+     */
+    private UtilDTO util;
+
+    /**
+     * 断言操作类
+     */
+    private AssertionDTO assertion;
+
+
+    /**
      * 断言类型：1 完全匹配，2 模糊匹配，-1 不校验
      */
     private Integer assertType;

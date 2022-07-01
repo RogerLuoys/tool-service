@@ -11,12 +11,13 @@ import java.util.Map;
 @Getter
 public enum MethodTypeEnum {
 
+    TASK(-1, "auto.task", "封装好的方法，包含多个步骤"),
     UTIL(1, "auto.util", "工具相关的方法"),
     UI(2, "auto.ui", "UI相关的方法"),
     SQL(3, "auto.dbName", "执行sql相关的方法"),
     HTTP(4, "auto.http", "调用http接口相关的方法"),
     RPC(5, "auto.rpc", "调用rpc接口相关的方法"),
-    TASK(6, "auto.task", "封装步骤");
+    ASSERT(6, "auto.assertion", "断言");
 
 
     private final Integer code;

@@ -8,10 +8,7 @@ import com.luoys.upgrade.toolservice.service.client.DBClient;
 import com.luoys.upgrade.toolservice.service.client.HTTPClient;
 import com.luoys.upgrade.toolservice.service.client.RPCClient;
 import com.luoys.upgrade.toolservice.service.client.UIClient;
-import com.luoys.upgrade.toolservice.service.dto.DataSourceDTO;
-import com.luoys.upgrade.toolservice.service.dto.HttpRequestDTO;
-import com.luoys.upgrade.toolservice.service.dto.JdbcDTO;
-import com.luoys.upgrade.toolservice.service.dto.UiDTO;
+import com.luoys.upgrade.toolservice.service.dto.*;
 import com.luoys.upgrade.toolservice.service.enums.*;
 import com.luoys.upgrade.toolservice.service.transform.TransformAutoStep;
 import com.luoys.upgrade.toolservice.web.vo.AutoStepSimpleVO;
@@ -239,7 +236,7 @@ public class StepService {
             methodType = "auto.dbName";
             dbName = methodName.substring(5, script.indexOf(".", 5));
         }
-        // 截取步骤入参，如：xpath (根据实际情况使用) todo 要兼容不带”“的参数
+        // 截取步骤入参，如：xpath (根据实际情况使用)
         String methodParamString = script.substring(script.indexOf("(\"") + 2, script.lastIndexOf("\")"));
         String methodParamNoString = script.substring(script.indexOf("(") + 1, script.lastIndexOf(");"));
         // 截取多个参数，如：[xpath,key] (根据实际情况使用)
@@ -247,41 +244,41 @@ public class StepService {
 
         // 先根据步骤类型，再根据类型中的方法，进行步骤解析
         switch (MethodTypeEnum.fromScriptTemplate(methodType)) {
-            case UI:    // 脚本范例：auto.ui.click("xpath")
+            case UI:    // ui类型的步骤
                 if (autoStepVO.getUi() == null) {
                     autoStepVO.setUi(new UiDTO());
                 }
                 autoStepVO.setType(AutoStepTypeEnum.STEP_UI.getCode());
                 switch (UiTypeEnum.fromScriptTemplate(methodName)) {
-                    case OPEN_URL:
+                    case OPEN_URL:  // 脚本范例：auto.ui.openUrl("url")
                         autoStepVO.setName(UiTypeEnum.OPEN_URL.getDescription());
                         autoStepVO.getUi().setUrl(methodParamString);
                         autoStepVO.getUi().setType(UiTypeEnum.OPEN_URL.getCode());
                         break;
-                    case CLICK:
+                    case CLICK: // 脚本范例：auto.ui.click("xpath")
                         autoStepVO.setName(UiTypeEnum.CLICK.getDescription());
                         autoStepVO.getUi().setElement(methodParamString);
                         autoStepVO.getUi().setType(UiTypeEnum.CLICK.getCode());
                         break;
-                    case SEND_KEY:
+                    case SEND_KEY:  // 脚本范例：auto.ui.sendKey("xpath","key")
                         autoStepVO.setName(UiTypeEnum.SEND_KEY.getDescription());
                         autoStepVO.getUi().setElement(params[0]);
                         autoStepVO.getUi().setKey(params[1]);
                         autoStepVO.getUi().setType(UiTypeEnum.SEND_KEY.getCode());
                         break;
-                    case SWITCH_FRAME:
+                    case SWITCH_FRAME:  // 脚本范例：auto.ui.switchFrame("xpath")
                         autoStepVO.setName(UiTypeEnum.SWITCH_FRAME.getDescription());
                         autoStepVO.getUi().setElement(methodParamString);
                         autoStepVO.getUi().setType(UiTypeEnum.SWITCH_FRAME.getCode());
                         break;
-                    case HOVER:
+                    case HOVER: // 脚本范例：auto.ui.hover("xpath")
                         autoStepVO.setName(UiTypeEnum.HOVER.getDescription());
                         autoStepVO.getUi().setElement(methodParamString);
                         autoStepVO.getUi().setType(UiTypeEnum.HOVER.getCode());
                         break;
                 }
                 break;
-            case SQL:   // 脚本范例：auto.db.onePiece("sql");
+            case SQL:   // 执行sql类型的步骤，脚本范例：auto.onePiece.execute("sql");
                 if (autoStepVO.getJdbc() == null) {
                     autoStepVO.setJdbc(new JdbcDTO());
                 }
@@ -296,18 +293,18 @@ public class StepService {
                 autoStepVO.getJdbc().setPassword(dataSource.getPassword());
                 autoStepVO.getJdbc().setSql(methodParamString);
                 break;
-            case HTTP:  // 脚本范例：auto.http.doPost("url","body");
+            case HTTP:  // http类型的步骤
                 if (autoStepVO.getHttpRequest() == null) {
                     autoStepVO.setHttpRequest(new HttpRequestDTO());
                 }
                 autoStepVO.setType(AutoStepTypeEnum.STEP_HTTP.getCode());
                 switch (HttpTypeEnum.fromScriptTemplate(methodName)) {
-                    case GET:
+                    case GET:   // 脚本范例：auto.http.get("url")
                         autoStepVO.setName(HttpTypeEnum.GET.getDescription());
                         autoStepVO.getHttpRequest().setHttpURL(methodParamString);
                         autoStepVO.getHttpRequest().setHttpType(HttpTypeEnum.GET.getValue());
                         break;
-                    case POST:
+                    case POST:  // 脚本范例：auto.http.post("url","body")
                         autoStepVO.setName(HttpTypeEnum.POST.getDescription());
                         autoStepVO.getHttpRequest().setHttpURL(params[0]);
                         if (params.length == 2) {
@@ -315,7 +312,7 @@ public class StepService {
                         }
                         autoStepVO.getHttpRequest().setHttpType(HttpTypeEnum.POST.getValue());
                         break;
-                    case PUT:
+                    case PUT:   // 脚本范例：auto.http.put("url","body")
                         autoStepVO.setName(HttpTypeEnum.PUT.getDescription());
                         autoStepVO.getHttpRequest().setHttpURL(params[0]);
                         if (params.length == 2) {
@@ -323,7 +320,7 @@ public class StepService {
                         }
                         autoStepVO.getHttpRequest().setHttpType(HttpTypeEnum.PUT.getValue());
                         break;
-                    case DELETE:
+                    case DELETE:    // 脚本范例：auto.http.delete("url","body")
                         autoStepVO.setName(HttpTypeEnum.DELETE.getDescription());
                         autoStepVO.getHttpRequest().setHttpURL(params[0]);
                         if (params.length == 2) {
@@ -333,8 +330,22 @@ public class StepService {
                         break;
                 }
                 break;
-            case RPC:
+            case RPC:   // rpc类型的步骤，脚本范例：auto.rpc.invoke("location","json")
                 // todo rpc??
+                break;
+            case UTIL:  // 工具类型的步骤
+                if (autoStepVO.getUtil() == null) {
+                    autoStepVO.setUtil(new UtilDTO());
+                }
+                switch (UtilEnum.fromScriptTemplate(methodName)) {
+                    case SLEEP:
+                        autoStepVO.getUtil().setType(UtilEnum.SLEEP.getCode());
+                        autoStepVO.getUtil().setParam1(methodParamNoString);
+                        break;
+                }
+                break;
+            case TASK:  // 被封装的方法
+                // todo task??
                 break;
         }
         return autoStepVO;

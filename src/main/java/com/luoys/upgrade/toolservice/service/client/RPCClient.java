@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * rpc调用客户端
+ * rpc调用客户端，用于自动化步骤rpc类型的实现
  *
  * @author luoys
  */

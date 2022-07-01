@@ -8,12 +8,5 @@ import lombok.Data;
  * @author luoys
  */
 @Data
-public class AssertDTO {
-    private Integer type;
-
-    private String actual;
-
-    private String expect;
-
-    private Boolean result;
+public class AssertionDTO {
 }
