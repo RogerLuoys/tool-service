@@ -13,8 +13,14 @@ import java.util.Map;
 @Getter
 public enum UtilEnum {
 
-    // auto.ui.openUrl(url);
-    SLEEP(1, "auto.task.sleep", "强制睡眠");
+    SLEEP(1, "auto.task.sleep", "强制睡眠"),
+    GET_JSON_VALUE(2, "auto.task.getJsonValue", "根据json key 取对应的值"),
+    GET_TIME(3, "auto.task.getTime", "获取当前linux时间"),
+    GET_RANDOM_NUMBER(1, "auto.task.getRandomNumber", "获取随机数");
+//    SLEEP(1, "auto.task.sleep", "强制睡眠"),
+//    SLEEP(1, "auto.task.sleep", "强制睡眠"),
+//    SLEEP(1, "auto.task.sleep", "强制睡眠"),
+//    SLEEP(1, "auto.task.sleep", "强制睡眠");
 
     private final Integer code;
     /**

@@ -11,4 +11,20 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 public class UtilClient {
+
+
+    private void sleep(int sec) {
+        try {
+            Thread.sleep(sec * 1000L);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // "":"","":[],"":null,"":{}
+    private String getJsonValue(String key, String json) {
+//        String mode = "\"\\w+\":(\"\\S*\"|[\\S*]|\\)|{\\S*}";
+        String strMode = "\"\\w+\":\"\\S*\",|";
+        return null;
+    }
 }
