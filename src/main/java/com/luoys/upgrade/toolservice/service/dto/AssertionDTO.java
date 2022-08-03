@@ -9,4 +9,10 @@ import lombok.Data;
  */
 @Data
 public class AssertionDTO {
+
+    Integer type;
+
+    String actual;
+
+    String expect;
 }

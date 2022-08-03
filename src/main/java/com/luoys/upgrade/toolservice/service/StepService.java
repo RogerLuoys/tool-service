@@ -13,13 +13,11 @@ import com.luoys.upgrade.toolservice.service.enums.*;
 import com.luoys.upgrade.toolservice.service.transform.TransformAutoStep;
 import com.luoys.upgrade.toolservice.web.vo.AutoStepSimpleVO;
 import com.luoys.upgrade.toolservice.web.vo.AutoStepVO;
-import com.luoys.upgrade.toolservice.web.vo.ResourceVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.RejectedExecutionException;
 
@@ -337,11 +335,20 @@ public class StepService {
                 if (autoStepVO.getUtil() == null) {
                     autoStepVO.setUtil(new UtilDTO());
                 }
-                switch (UtilEnum.fromScriptTemplate(methodName)) {
+                switch (UtilTypeEnum.fromScriptTemplate(methodName)) {
                     case SLEEP:
-                        autoStepVO.getUtil().setType(UtilEnum.SLEEP.getCode());
+                        autoStepVO.getUtil().setType(UtilTypeEnum.SLEEP.getCode());
                         autoStepVO.getUtil().setParam1(methodParamNoString);
                         break;
+                    case GET_JSON_VALUE:
+                        autoStepVO.getUtil().setType(UtilTypeEnum.GET_JSON_VALUE.getCode());
+                        autoStepVO.getUtil().setParam1(params[0]);
+                        autoStepVO.getUtil().setParam2(params[1]);
+                    case GET_TIME:
+                        autoStepVO.getUtil().setType(UtilTypeEnum.GET_TIME.getCode());
+                        autoStepVO.getUtil().setParam1(methodParamNoString);
+                    case GET_RANDOM_NUMBER:
+                        autoStepVO.getUtil().setType(UtilTypeEnum.GET_RANDOM_NUMBER.getCode());
                 }
                 break;
             case TASK:  // 被封装的方法
