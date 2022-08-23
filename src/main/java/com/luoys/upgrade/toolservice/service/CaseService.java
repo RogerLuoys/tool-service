@@ -410,16 +410,16 @@ public class CaseService {
     private Boolean executeUI(AutoCaseVO autoCaseVO) {
         boolean result;
         try {
-            // 打开webDrive，默认chrome
-            uiClient.init();
+            // 打开webDrive，默认chrome(20220822，不用了，放在execute中)
+//            uiClient.init();
             // 执行包含ui步骤的用例
             result = execute(autoCaseVO);
         } catch (Exception e) {
             log.error("--->执行ui用例异常：caseId={}", autoCaseVO.getCaseId(), e);
             return false;
         } finally {
-            // 退出webDrive
-            uiClient.quit();
+            // 退出webDrive（20220822，不用了）
+//            uiClient.quit();
         }
         return result;
     }

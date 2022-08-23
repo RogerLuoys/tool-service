@@ -18,7 +18,7 @@ public class AutomationBase {
     private static JdbcTemplate jdbcTemplate = null;
 
 
-    public static WebDriver getDriver() {
+    public static WebDriver getChromeDriver() {
         if (driver == null) {
             // 设置启动参数
             ChromeOptions chromeOptions = new ChromeOptions();

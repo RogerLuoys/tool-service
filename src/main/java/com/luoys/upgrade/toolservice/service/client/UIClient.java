@@ -36,44 +36,46 @@ public class UIClient {
      * @return 执行结果
      */
     public synchronized String execute(UiDTO uiDTO) {
+
         switch (UiTypeEnum.fromCode(uiDTO.getType())) {
             case OPEN_URL:
                 return openUrl(uiDTO.getUrl());
             case CLICK:
-//                click(uiDTO.getElement());
                 return click(uiDTO.getElement(), uiDTO.getElementId());
             case SEND_KEY:
-//                sendKey(uiDTO.getElement(), uiDTO.getKey());
                 return sendKey(uiDTO.getElement(), uiDTO.getElementId(), uiDTO.getKey());
             case IS_EXIST:
                 return isElementExist(uiDTO.getElement()).toString();
             case SWITCH_FRAME:
                 return switchToFrame(uiDTO.getElement());
             case HOVER:
-//                moveToElement(uiDTO.getElement());
                 return moveToElement(uiDTO.getElement(), uiDTO.getElementId());
             default:
                 return "false";
         }
     }
 
-    /**
-     * 退出webdriver
-     */
-    public synchronized void quit() {
-        if (driver == null) {
-            return;
-        }
-        driver.quit();
-        forceWait(3);
-    }
-
-    /**
-     * webdriver初始化，默认chrome
-     */
-    public void init() {
-        this.driver = new ChromeDriver();
-    }
+//    /**
+//     * 退出webdriver
+//     */
+//    public synchronized void quit() {
+//        if (driver == null) {
+//            return;
+//        }
+//        driver.quit();
+//        forceWait(3);
+//    }
+//
+//    /**
+//     * webdriver初始化，默认chrome
+//     */
+//    public void init() {
+//        this.driver = new ChromeDriver();
+//    }
+//
+//    public void initChromeDriver() {
+//        this.driver = AutomationBase.getChromeDriver();
+//    }
 
     /**
      * 访问指定url

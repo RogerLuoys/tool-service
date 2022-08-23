@@ -20,7 +20,7 @@ import java.util.Map;
 public class DBClient {
 
 //    private final DriverManagerDataSource dataSource = new DriverManagerDataSource();
-    private final JdbcTemplate jdbcTemplate = new JdbcTemplate();
+    private JdbcTemplate jdbcTemplate;
     private HikariDataSource dataSource;
 
     /**
@@ -65,6 +65,7 @@ public class DBClient {
      * @param jdbcDTO 数据源
      */
     private void init(JdbcDTO jdbcDTO) {
+        jdbcTemplate = AutomationBase.getJdbcTemplate();
         HikariConfig config = new HikariConfig();
         config.setDriverClassName(jdbcDTO.getDriver());
         config.setJdbcUrl(jdbcDTO.getUrl());
@@ -78,7 +79,6 @@ public class DBClient {
      * 关闭HikariDataSource连接
      */
     private void close() {
-//        HikariDataSource dataSource = (HikariDataSource) jdbcTemplate.getDataSource();
         if (dataSource != null) {
             dataSource.close();
         }
