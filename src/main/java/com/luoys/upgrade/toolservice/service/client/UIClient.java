@@ -3,18 +3,16 @@ package com.luoys.upgrade.toolservice.service.client;
 import com.luoys.upgrade.toolservice.service.dto.UiDTO;
 import com.luoys.upgrade.toolservice.service.enums.UiTypeEnum;
 import lombok.extern.slf4j.Slf4j;
-import org.openqa.selenium.Keys;
+import org.openqa.selenium.*;
 import org.springframework.stereotype.Component;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * ui操作客户端，用于自动化步骤的UI类型实现
@@ -219,20 +217,6 @@ public class UIClient {
      * 鼠标悬停对应元素上
      *
      * @param xpath 元素的xpath
-     */
-    private void moveToElement(String xpath) {
-        forceWait(forceTimeOut);
-        WebElement webElement = driver.findElement(By.xpath(xpath));
-        WebDriverWait webDriverWait = new WebDriverWait(driver, DEFAULT_WAIT_TIME);
-        webDriverWait.until(ExpectedConditions.elementToBeClickable(webElement));
-        Actions actions = new Actions(driver);
-        actions.moveToElement(webElement).perform();
-    }
-
-    /**
-     * 鼠标悬停对应元素上
-     *
-     * @param xpath 元素的xpath
      * @param index 元素的序号
      * @return 成功为true
      */
@@ -241,16 +225,6 @@ public class UIClient {
         Actions actions = new Actions(driver);
         actions.moveToElement(webElement).perform();
         return "true";
-    }
-
-    private void moveAndClick(String xpath) {
-        forceWait(forceTimeOut);
-        WebElement webElement = driver.findElement(By.xpath(xpath));
-        WebDriverWait webDriverWait = new WebDriverWait(driver, DEFAULT_WAIT_TIME);
-        webDriverWait.until(ExpectedConditions.elementToBeClickable(webElement));
-        Actions actions = new Actions(driver);
-        actions.moveToElement(webElement).click();
-        actions.perform();
     }
 
     /**
@@ -262,5 +236,40 @@ public class UIClient {
         List<WebElement> webElementList = getElements(xpath);
         return webElementList.size() > 0;
     }
+
+
+    /**
+     * 切换到指定标签页
+     * @param index 数组下标，0是初始页，1是新标签页
+     */
+    public void switchToWindow(Integer index) {
+        Set<String> windows = driver.getWindowHandles();
+        driver.switchTo().window(windows.toArray()[index].toString());
+    }
+
+    /**
+     * 删除其他标签页，并切换到第0个标签页
+     */
+    public void closeOtherWindow() {
+        Set<String> windows = driver.getWindowHandles();
+        for (int i = 1; i < windows.size(); i++) {
+            switchToWindow(i);
+            driver.close();
+        }
+        switchToWindow(0);
+    }
+
+    /**
+     * 删除浏览器cookies
+     */
+    public void deleteCookies() {
+        driver.manage().deleteAllCookies();
+    }
+
+
+    public void execJs(String jsExecString) {
+        ((JavascriptExecutor)driver).executeScript(jsExecString, new Object[0]);
+    }
+
 
 }
