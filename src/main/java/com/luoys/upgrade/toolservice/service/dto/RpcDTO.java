@@ -1,9 +1,7 @@
 package com.luoys.upgrade.toolservice.service.dto;
 
-import com.luoys.upgrade.toolservice.common.StringUtil;
 import lombok.Data;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -43,44 +41,44 @@ public class RpcDTO {
     private List<ParameterDTO> parameterList;
 
 
-    /**
-     * 将参数合并入rpc请求中，处理url和参数列表中的值
-     * @param parameterList -
-     */
-    public void merge(List<ParameterDTO> parameterList) {
-        // 无变量
-        if (parameterList == null || parameterList.size() == 0) {
-            return;
-        }
-        StringBuilder fullParamSymbol = new StringBuilder();
-        String oneValue;
-        // 替换url字段中的变量
-        if (url.matches(StringUtil.PARAM_REGEX)) {
-            for (ParameterDTO parameterDTO : parameterList) {
-                fullParamSymbol.delete(0, fullParamSymbol.length());
-                fullParamSymbol.append("${").append(parameterDTO.getName()).append("}");
-                if (url.contains(fullParamSymbol)) {
-                    url = url.replace(fullParamSymbol, parameterDTO.getValue());
-                }
-            }
-        }
-
-        //遍历目标，替换rpc入参
-        for (int i = 0; i < this.parameterList.size(); i++) {
-            oneValue = this.parameterList.get(i).getValue();
-            //判断入参中是否有指定占位符，无则不用替换直接插入
-            if (!oneValue.matches(StringUtil.PARAM_REGEX)) {
-                continue;
-            }
-            //将所有实际参数与其中一个rpc入参值中的占位符替换
-            for (ParameterDTO parameterDTO : parameterList) {
-                fullParamSymbol.delete(0, fullParamSymbol.length());
-                fullParamSymbol.append("${").append(parameterDTO.getName()).append("}");
-                if (oneValue.contains(fullParamSymbol)) {
-                    this.parameterList.get(i).setValue(oneValue.replace(fullParamSymbol, parameterDTO.getValue()));
-                }
-            }
-        }
+//    /**
+//     * 将参数合并入rpc请求中，处理url和参数列表中的值
+//     * @param parameterList -
+//     */
+//    public void merge(List<ParameterDTO> parameterList) {
+//        // 无变量
+//        if (parameterList == null || parameterList.size() == 0) {
+//            return;
+//        }
+//        StringBuilder fullParamSymbol = new StringBuilder();
+//        String oneValue;
+//        // 替换url字段中的变量
+//        if (url.matches(StringUtil.PARAM_REGEX)) {
+//            for (ParameterDTO parameterDTO : parameterList) {
+//                fullParamSymbol.delete(0, fullParamSymbol.length());
+//                fullParamSymbol.append("${").append(parameterDTO.getName()).append("}");
+//                if (url.contains(fullParamSymbol)) {
+//                    url = url.replace(fullParamSymbol, parameterDTO.getValue());
+//                }
+//            }
+//        }
+//
+//        //遍历目标，替换rpc入参
+//        for (int i = 0; i < this.parameterList.size(); i++) {
+//            oneValue = this.parameterList.get(i).getValue();
+//            //判断入参中是否有指定占位符，无则不用替换直接插入
+//            if (!oneValue.matches(StringUtil.PARAM_REGEX)) {
+//                continue;
+//            }
+//            //将所有实际参数与其中一个rpc入参值中的占位符替换
+//            for (ParameterDTO parameterDTO : parameterList) {
+//                fullParamSymbol.delete(0, fullParamSymbol.length());
+//                fullParamSymbol.append("${").append(parameterDTO.getName()).append("}");
+//                if (oneValue.contains(fullParamSymbol)) {
+//                    this.parameterList.get(i).setValue(oneValue.replace(fullParamSymbol, parameterDTO.getValue()));
+//                }
+//            }
+//        }
 
 //        //遍历目标，替换rpc入参
 //        for (ParameterDTO rpcParam : this.parameterList) {
@@ -99,6 +97,6 @@ public class RpcDTO {
 //        }
 //        rpcDTO.setParameterList(rpcParamList);
 //        log.info("---->合并后rpc请求：{}", rpcDTO);
-    }
+//    }
 
 }
