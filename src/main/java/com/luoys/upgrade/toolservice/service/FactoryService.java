@@ -25,6 +25,7 @@ import java.util.List;
  */
 @Slf4j
 @Service
+@Deprecated
 public class FactoryService {
 
     private final static Integer MULTIPLE_LIMIT = 10;

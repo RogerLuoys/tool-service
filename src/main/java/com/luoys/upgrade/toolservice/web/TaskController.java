@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Date;
 import java.util.List;
 
+@Deprecated
 @CrossOrigin
 @Slf4j
 @RestController

@@ -226,18 +226,20 @@ public class StepService {
         String script = autoStepVO.getScript();
         // 截取步骤方法，如：auto.ui.click
         String methodName = script.substring(0, script.indexOf("("));
-        // 截取步骤类型，如：auto.ui (执行sql的方法比较特别，第二层名字不确定)
-        String methodType = methodName.matches("auto.\\w+.execute") ? "auto.dbName" : script.substring(0, script.indexOf(".", 5));
-        String dbName = "";
-        // 如果是执行sql的脚本，则要取数据库名
-        if (methodName.matches("auto.\\w+.execute")) {
-            methodType = "auto.dbName";
-            dbName = methodName.substring(5, script.indexOf(".", 5));
-        }
+        // 截取步骤类型，如：auto.ui
+        String methodType = script.substring(0, script.indexOf(".", 5));
+//        String dbName = "";
+//        // 如果是执行sql的脚本，则要取数据库名
+//        if (methodName.matches("auto.\\w+.execute")) {
+//            methodType = "auto.dbName";
+//            dbName = methodName.substring(5, script.indexOf(".", 5));
+//        }
+        // 则要取数据库名(执行sql的方法需要)
+        String dbName = script.substring(9, script.indexOf("("));
         // 截取步骤入参，如：xpath (根据实际情况使用)
         String methodParamString = script.substring(script.indexOf("(\"") + 2, script.lastIndexOf("\")"));
         String methodParamNoString = script.substring(script.indexOf("(") + 1, script.lastIndexOf(");"));
-        // 截取多个参数，如：[xpath,key] (根据实际情况使用)
+        // 截取多个参数，如：("xpath","key") (根据实际情况使用)
         String[] params = methodParamString.split("(\",\\s{0,4}\")");
 
         // 先根据步骤类型，再根据类型中的方法，进行步骤解析
@@ -351,7 +353,7 @@ public class StepService {
                         autoStepVO.getUtil().setType(UtilTypeEnum.GET_RANDOM_NUMBER.getCode());
                 }
                 break;
-            case TASK:  // 被封装的方法
+            case PO:  // 被封装的方法
                 // todo task??
                 break;
         }

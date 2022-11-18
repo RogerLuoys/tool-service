@@ -7,6 +7,7 @@ import java.util.Random;
  *
  * @author luoys
  */
+@Deprecated
 public class NumberSender {
     private static final long SUITE_PREFIX = 10000000000000L;
     private static final long CASE_PREFIX = 20000000000000L;

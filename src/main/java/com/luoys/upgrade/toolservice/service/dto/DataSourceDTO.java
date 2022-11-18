@@ -11,7 +11,12 @@ import lombok.Data;
 public class DataSourceDTO {
 
     /**
-     * 数据库名
+     * 数据源id
+     */
+    private String sourceId;
+
+    /**
+     * 数据库名(调用名)
      */
     private String dbName;
 

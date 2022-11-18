@@ -11,7 +11,7 @@ import java.util.Map;
 @Getter
 public enum MethodTypeEnum {
 
-    TASK(-1, "auto.task", "封装好的方法，包含多个步骤"),
+    PO(-1, "auto.task", "封装好的方法，包含多个步骤"),
     UTIL(1, "auto.util", "工具相关的方法"),
     UI(2, "auto.ui", "UI相关的方法"),
     SQL(3, "auto.dbName", "执行sql相关的方法"),

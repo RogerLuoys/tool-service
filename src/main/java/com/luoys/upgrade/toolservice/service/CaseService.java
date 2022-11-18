@@ -284,19 +284,20 @@ public class CaseService {
     /**
      * 转换用例模式，将结构化用例转换成脚本，例
      * auto.ui.sendKey("xpath","key");
-     * auto.dbName.execute("sql");
-     * auto.assert.isContains("expect");
+     * auto.sql.dbName("sql");
+     * auto.assert.isContains("actual","expect");
      * auto.http.post("url", "body");
-     * auto.rpc.invoke("json");
-     * auto.task.taskName("param1","param2");
-     * auto.util.sleep("param1")
+     * auto.rpc.invoke("url","paramClassName","paramValueForJson");
+     * auto.po.login("username","password");
+     * auto.util.sleep("param1");
+     * String param = auto.methodType.method(param);
      *
      * @param autoCaseVO -
      */
     public AutoCaseVO change2UiMode(AutoCaseVO autoCaseVO) {
 
-        // 通过正则解析脚本，把整段脚本解析成行
-        List<String> mainSteps = StringUtil.getMatch("auto\\.(ui|http|db|rpc|util|steps)\\.\\w+\\(.*\\);|auto\\.\\w+\\.execute\\(.*\\);", autoCaseVO.getMainSteps());
+        // 通过正则解析脚本，把整段脚本解析成行('\w':任意字符，'.':0到无限次)
+        List<String> mainSteps = StringUtil.getMatch("auto\\.(ui|http|sql|rpc|util|po|assertion)\\.\\w+\\(.*\\);", autoCaseVO.getMainSteps());
 
         // 完全新增脚本，或脚本内步骤有新增，需要创建对应数量的关联步骤
         while (mainSteps.size() - autoCaseVO.getMainStepList().size() > 0) {
