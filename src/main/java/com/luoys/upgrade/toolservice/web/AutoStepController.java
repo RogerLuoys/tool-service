@@ -1,6 +1,6 @@
 package com.luoys.upgrade.toolservice.web;
 
-import com.luoys.upgrade.toolservice.common.Result;
+import com.luoys.upgrade.toolservice.service.common.Result;
 import com.luoys.upgrade.toolservice.service.StepService;
 import com.luoys.upgrade.toolservice.service.enums.AutoStepTypeEnum;
 import com.luoys.upgrade.toolservice.web.vo.*;

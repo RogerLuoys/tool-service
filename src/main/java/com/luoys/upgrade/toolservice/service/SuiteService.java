@@ -1,8 +1,8 @@
 package com.luoys.upgrade.toolservice.service;
 
-import com.luoys.upgrade.toolservice.common.NumberSender;
-import com.luoys.upgrade.toolservice.common.StringUtil;
-import com.luoys.upgrade.toolservice.common.ThreadPoolUtil;
+import com.luoys.upgrade.toolservice.service.common.NumberSender;
+import com.luoys.upgrade.toolservice.service.common.StringUtil;
+import com.luoys.upgrade.toolservice.service.common.ThreadPoolUtil;
 import com.luoys.upgrade.toolservice.dao.AutoCaseMapper;
 import com.luoys.upgrade.toolservice.dao.AutoSuiteMapper;
 import com.luoys.upgrade.toolservice.dao.SuiteCaseRelationMapper;
@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
 
 /**

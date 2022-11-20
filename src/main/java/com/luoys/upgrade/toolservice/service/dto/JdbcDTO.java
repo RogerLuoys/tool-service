@@ -1,10 +1,6 @@
 package com.luoys.upgrade.toolservice.service.dto;
 
-import com.luoys.upgrade.toolservice.common.StringUtil;
 import lombok.Data;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * sql执行类，包含数据源和执行的sql

@@ -1,8 +1,8 @@
 package com.luoys.upgrade.toolservice.service;
 
-import com.luoys.upgrade.toolservice.common.NumberSender;
-import com.luoys.upgrade.toolservice.common.StringUtil;
-import com.luoys.upgrade.toolservice.common.ThreadPoolUtil;
+import com.luoys.upgrade.toolservice.service.common.NumberSender;
+import com.luoys.upgrade.toolservice.service.common.StringUtil;
+import com.luoys.upgrade.toolservice.service.common.ThreadPoolUtil;
 import com.luoys.upgrade.toolservice.dao.AutoCaseMapper;
 import com.luoys.upgrade.toolservice.dao.CaseStepRelationMapper;
 import com.luoys.upgrade.toolservice.dao.UserMapper;
@@ -11,7 +11,6 @@ import com.luoys.upgrade.toolservice.service.enums.AutoCaseStatusEnum;
 import com.luoys.upgrade.toolservice.service.enums.AutoCaseTypeEnum;
 import com.luoys.upgrade.toolservice.service.enums.KeywordEnum;
 import com.luoys.upgrade.toolservice.service.enums.RelatedStepTypeEnum;
-import com.luoys.upgrade.toolservice.service.transform.TransformAutoStep;
 import com.luoys.upgrade.toolservice.service.transform.TransformCaseStepRelation;
 import com.luoys.upgrade.toolservice.web.vo.AutoCaseSimpleVO;
 import com.luoys.upgrade.toolservice.web.vo.AutoCaseVO;

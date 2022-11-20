@@ -1,6 +1,6 @@
 package com.luoys.upgrade.toolservice.service.transform;
 
-import com.luoys.upgrade.toolservice.common.StringUtil;
+import com.luoys.upgrade.toolservice.service.common.StringUtil;
 import com.luoys.upgrade.toolservice.dao.po.AutoStepPO;
 import com.luoys.upgrade.toolservice.service.dto.*;
 import com.luoys.upgrade.toolservice.service.enums.*;

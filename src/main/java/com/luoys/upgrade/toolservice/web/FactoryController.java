@@ -1,7 +1,7 @@
 package com.luoys.upgrade.toolservice.web;
 
 
-import com.luoys.upgrade.toolservice.common.Result;
+import com.luoys.upgrade.toolservice.service.common.Result;
 import com.luoys.upgrade.toolservice.service.FactoryService;
 import com.luoys.upgrade.toolservice.web.vo.PageInfo;
 import com.luoys.upgrade.toolservice.web.vo.ToolSimpleVO;

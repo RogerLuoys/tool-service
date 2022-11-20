@@ -2,8 +2,8 @@ package com.luoys.upgrade.toolservice.web;
 
 
 import com.alibaba.fastjson.JSON;
-import com.luoys.upgrade.toolservice.common.Result;
-import com.luoys.upgrade.toolservice.common.TimeUtil;
+import com.luoys.upgrade.toolservice.service.common.Result;
+import com.luoys.upgrade.toolservice.service.common.TimeUtil;
 import com.luoys.upgrade.toolservice.service.TaskService;
 import com.luoys.upgrade.toolservice.web.vo.TaskVO;
 import com.luoys.upgrade.toolservice.web.vo.TaskWeeklyVO;

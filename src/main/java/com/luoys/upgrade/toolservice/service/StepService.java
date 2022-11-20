@@ -1,7 +1,7 @@
 package com.luoys.upgrade.toolservice.service;
 
-import com.luoys.upgrade.toolservice.common.NumberSender;
-import com.luoys.upgrade.toolservice.common.ThreadPoolUtil;
+import com.luoys.upgrade.toolservice.service.common.NumberSender;
+import com.luoys.upgrade.toolservice.service.common.ThreadPoolUtil;
 import com.luoys.upgrade.toolservice.dao.AutoStepMapper;
 import com.luoys.upgrade.toolservice.dao.UserMapper;
 import com.luoys.upgrade.toolservice.service.client.DBClient;

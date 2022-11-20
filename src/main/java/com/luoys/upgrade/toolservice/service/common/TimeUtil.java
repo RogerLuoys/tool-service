@@ -1,4 +1,4 @@
-package com.luoys.upgrade.toolservice.common;
+package com.luoys.upgrade.toolservice.service.common;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;

@@ -1,6 +1,5 @@
-package com.luoys.upgrade.toolservice.common;
+package com.luoys.upgrade.toolservice.service.common;
 
-import com.luoys.upgrade.toolservice.service.enums.KeywordEnum;
 import com.luoys.upgrade.toolservice.service.enums.ResultEnum;
 import lombok.Data;
 
