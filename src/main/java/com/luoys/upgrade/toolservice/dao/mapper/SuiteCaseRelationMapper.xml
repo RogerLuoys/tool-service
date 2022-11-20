@@ -3,8 +3,8 @@
 <mapper namespace="com.luoys.upgrade.toolservice.dao.SuiteCaseRelationMapper">
   <resultMap id="BaseResultMap" type="com.luoys.upgrade.toolservice.dao.po.SuiteCaseRelationPO">
     <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="suite_id" jdbcType="VARCHAR" property="suiteId" />
-    <result column="case_id" jdbcType="VARCHAR" property="caseId" />
+    <result column="suite_id" jdbcType="INTEGER" property="suiteId" />
+    <result column="case_id" jdbcType="INTEGER" property="caseId" />
     <result column="status" jdbcType="TINYINT" property="status" />
     <result column="sequence" jdbcType="INTEGER" property="sequence" />
     <result column="case_name" jdbcType="VARCHAR" property="caseName" />
@@ -23,18 +23,18 @@
   <update id="removeBySuiteId">
     update suite_case_relation
     set is_delete = 1, gmt_modified = now()
-    where suite_id = #{suiteId,jdbcType=VARCHAR}
+    where suite_id = #{suiteId,jdbcType=INTEGER}
   </update>
   <update id="remove">
     update suite_case_relation
     set is_delete = 1, gmt_modified = now()
-    where suite_id = #{suiteId,jdbcType=VARCHAR} and case_id = #{caseId,jdbcType=VARCHAR}
+    where suite_id = #{suiteId,jdbcType=INTEGER} and case_id = #{caseId,jdbcType=INTEGER}
   </update>
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.luoys.upgrade.toolservice.dao.po.SuiteCaseRelationPO" useGeneratedKeys="true">
     insert into suite_case_relation (suite_id, case_id, status, `sequence`,
       is_delete, gmt_create, gmt_modified
       )
-    values (#{suiteId,jdbcType=VARCHAR}, #{caseId,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, #{sequence,jdbcType=INTEGER},
+    values (#{suiteId,jdbcType=INTEGER}, #{caseId,jdbcType=INTEGER}, #{status,jdbcType=INTEGER}, #{sequence,jdbcType=INTEGER},
       0, now(), now()
       )
   </insert>
@@ -44,7 +44,7 @@
     )
     values
     <foreach collection="list" item="item" index="index" separator=",">
-      (#{item.suiteId,jdbcType=VARCHAR}, #{item.caseId,jdbcType=VARCHAR}, #{item.status,jdbcType=INTEGER}, #{item.sequence,jdbcType=INTEGER},
+      (#{item.suiteId,jdbcType=INTEGER}, #{item.caseId,jdbcType=INTEGER}, #{item.status,jdbcType=INTEGER}, #{item.sequence,jdbcType=INTEGER},
       0, now(), now()
       )
     </foreach>
@@ -60,19 +60,19 @@
       </if>
       gmt_modified = now()
     </set>
-    where suite_id = #{suiteId,jdbcType=VARCHAR} and case_id = #{caseId,jdbcType=VARCHAR} and is_delete = 0
+    where suite_id = #{suiteId,jdbcType=INTEGER} and case_id = #{caseId,jdbcType=INTEGER} and is_delete = 0
   </update>
   <update id="updateStatus">
     update suite_case_relation
     set status = #{status,jdbcType=INTEGER}, gmt_modified = now()
-    where suite_id = #{suiteId,jdbcType=VARCHAR}
-    and case_id = #{caseId,jdbcType=VARCHAR}
+    where suite_id = #{suiteId,jdbcType=INTEGER}
+    and case_id = #{caseId,jdbcType=INTEGER}
     and is_delete = 0
   </update>
   <update id="resetStatusBySuiteId">
     update suite_case_relation
     set status = 1, gmt_modified = now()
-    where suite_id = #{suiteId,jdbcType=VARCHAR} and is_delete = 0
+    where suite_id = #{suiteId,jdbcType=INTEGER} and is_delete = 0
   </update>
   <select id="listCaseBySuiteId" resultMap="BaseResultMap">
     select
@@ -80,7 +80,7 @@
     from auto_case ac
     inner join suite_case_relation scr on ac.case_id = scr.case_id
     where scr.is_delete = 0 and ac.is_delete = 0
-    and scr.suite_id = #{suiteId,jdbcType=VARCHAR}
+    and scr.suite_id = #{suiteId,jdbcType=INTEGER}
     <if test="retry != null">
       and scr.status != 3
     </if>
@@ -95,7 +95,7 @@
     from auto_case ac
     inner join suite_case_relation scr on ac.case_id = scr.case_id
     where scr.is_delete = 0 and ac.is_delete = 0
-    and scr.suite_id = #{suiteId,jdbcType=VARCHAR}
+    and scr.suite_id = #{suiteId,jdbcType=INTEGER}
     <if test="status != null">
       and scr.status = #{status,jdbcType=INTEGER}
     </if>

@@ -3,39 +3,43 @@
 <mapper namespace="com.luoys.upgrade.toolservice.dao.AutoSuiteMapper">
   <resultMap id="BaseResultMap" type="com.luoys.upgrade.toolservice.dao.po.AutoSuitePO">
     <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="suite_id" jdbcType="VARCHAR" property="suiteId" />
+<!--    <result column="suite_id" jdbcType="VARCHAR" property="suiteId" />-->
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="description" jdbcType="VARCHAR" property="description" />
     <result column="status" jdbcType="TINYINT" property="status" />
-    <result column="environment" jdbcType="VARCHAR" property="environment" />
-    <result column="parameter" jdbcType="VARCHAR" property="parameter" />
-    <result column="step_sleep" jdbcType="INTEGER" property="stepSleep" />
-    <result column="case_max_time" jdbcType="INTEGER" property="caseMaxTime" />
+    <result column="resource" jdbcType="VARCHAR" property="resource" />
+<!--    <result column="parameter" jdbcType="VARCHAR" property="parameter" />-->
+    <result column="time_out" jdbcType="INTEGER" property="timeOut" />
+    <result column="case_time_out" jdbcType="INTEGER" property="caseTimeOut" />
     <result column="total" jdbcType="INTEGER" property="total" />
     <result column="passed" jdbcType="INTEGER" property="passed" />
     <result column="failed" jdbcType="INTEGER" property="failed" />
-    <result column="owner_id" jdbcType="VARCHAR" property="ownerId" />
+    <result column="project_id" jdbcType="INTEGER" property="projectId" />
+    <result column="owner_id" jdbcType="INTEGER" property="ownerId" />
     <result column="owner_name" jdbcType="VARCHAR" property="ownerName" />
-    <result column="is_api_completed" jdbcType="TINYINT" property="isApiCompleted" />
-    <result column="is_ui_completed" jdbcType="TINYINT" property="isUiCompleted" />
+<!--    <result column="is_api_completed" jdbcType="TINYINT" property="isApiCompleted" />-->
+<!--    <result column="is_ui_completed" jdbcType="TINYINT" property="isUiCompleted" />-->
   </resultMap>
   <sql id="Base_Column_List">
-    id, suite_id, `name`, description, status, environment, `parameter`, step_sleep, case_max_time, total,
-    passed, failed, owner_id, owner_name, is_api_completed, is_ui_completed
+    id, `name`, description, status, resource, time_out, case_time_out, total,
+    passed, failed, project_id, owner_id, owner_name
   </sql>
   <select id="selectByUUID" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from auto_suite
-    where suite_id = #{suiteId,jdbcType=VARCHAR}
+    where id = #{suiteId,jdbcType=INTEGER}
   </select>
   <select id="list" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from auto_suite
     where is_delete = 0
+    <if test="projectId != null">
+      and project_id = #{projectId,jdbcType=INTEGER}
+    </if>
     <if test="ownerId != null">
-      and owner_id = #{ownerId,jdbcType=VARCHAR}
+      and owner_id = #{ownerId,jdbcType=INTEGER}
     </if>
     <if test="name != null">
       and `name` like concat('%', #{name,jdbcType=VARCHAR}, '%')
@@ -46,8 +50,11 @@
     select count(1)
     from auto_suite
     where is_delete = 0
+    <if test="projectId != null">
+      and project_id = #{projectId,jdbcType=INTEGER}
+    </if>
     <if test="ownerId != null">
-      and owner_id = #{ownerId,jdbcType=VARCHAR}
+      and owner_id = #{ownerId,jdbcType=INTEGER}
     </if>
     <if test="name != null">
       and `name` like concat('%', #{name,jdbcType=VARCHAR}, '%')
@@ -56,18 +63,18 @@
   <update id="remove">
     update auto_suite
     set is_delete = 1, gmt_modified = now()
-    where suite_id = #{suiteId,jdbcType=VARCHAR}
+    where id = #{suiteId,jdbcType=INTEGER}
   </update>
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.luoys.upgrade.toolservice.dao.po.AutoSuitePO" useGeneratedKeys="true">
-    insert into auto_suite (suite_id, `name`, description, status, environment,
-      `parameter`, step_sleep, case_max_time,
-      total, passed, failed,
-      owner_id, owner_name, is_api_completed, is_ui_completed, is_delete,
+    insert into auto_suite (`name`, description, status, resource,
+      time_out, case_time_out,
+      total, passed, failed, project_id
+      owner_id, owner_name, is_delete,
       gmt_create, gmt_modified)
-    values (#{suiteId,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT},
-      #{environment,jdbcType=VARCHAR}, #{parameter,jdbcType=VARCHAR}, #{stepSleep,jdbcType=INTEGER}, #{caseMaxTime,jdbcType=INTEGER},
-      #{total,jdbcType=INTEGER}, #{passed,jdbcType=INTEGER}, #{failed,jdbcType=INTEGER},
-      #{ownerId,jdbcType=VARCHAR}, #{ownerName,jdbcType=VARCHAR}, true, true, 0, now(), now())
+    values (#{suiteId,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT},
+      #{resource,jdbcType=VARCHAR}, #{timeOut,jdbcType=INTEGER}, #{caseTimeOut,jdbcType=INTEGER},
+      #{total,jdbcType=INTEGER}, #{passed,jdbcType=INTEGER}, #{failed,jdbcType=INTEGER}, #{projectId,jdbcType=INTEGER},
+      #{ownerId,jdbcType=INTEGER}, #{ownerName,jdbcType=VARCHAR}, 0, now(), now())
   </insert>
   <update id="update" parameterType="com.luoys.upgrade.toolservice.dao.po.AutoSuitePO">
     update auto_suite
@@ -78,17 +85,14 @@
       <if test="description != null">
         description = #{description,jdbcType=VARCHAR},
       </if>
-      <if test="environment != null">
-        environment = #{environment,jdbcType=VARCHAR},
+      <if test="resource != null">
+        resource = #{resource,jdbcType=VARCHAR},
       </if>
-      <if test="parameter != null">
-        `parameter` = #{parameter,jdbcType=VARCHAR},
+      <if test="timeOut != null">
+        time_out = #{timeOut,jdbcType=INTEGER},
       </if>
-      <if test="stepSleep != null">
-        step_sleep = #{stepSleep,jdbcType=INTEGER},
-      </if>
-      <if test="caseMaxTime != null">
-        case_max_time = #{caseMaxTime,jdbcType=INTEGER},
+      <if test="caseTimeOut != null">
+        case_time_out = #{caseTimeOut,jdbcType=INTEGER},
       </if>
       <if test="total != null">
         total = #{total,jdbcType=INTEGER},
@@ -96,45 +100,45 @@
 <!--      <if test="passed != null">-->
 <!--        passed = #{passed,jdbcType=INTEGER},-->
 <!--      </if>-->
-<!--      <if test="failed != null">-->
-<!--        failed = #{failed,jdbcType=INTEGER},-->
-<!--      </if>-->
+      <if test="projectId != null">
+        project_id = #{projectId,jdbcType=INTEGER},
+      </if>
       <if test="ownerId != null">
-        owner_id = #{ownerId,jdbcType=VARCHAR},
+        owner_id = #{ownerId,jdbcType=INTEGER},
       </if>
       <if test="ownerName != null">
         owner_name = #{ownerName,jdbcType=VARCHAR},
       </if>
       gmt_modified = now()
     </set>
-    where suite_id = #{suiteId,jdbcType=VARCHAR}
+    where id = #{suiteId,jdbcType=INTEGER}
   </update>
   <update id="updateResult">
     update auto_suite
     set passed = #{passed,jdbcType=INTEGER}, failed = #{failed,jdbcType=INTEGER}
-    where suite_id = #{suiteId,jdbcType=VARCHAR}
+    where id = #{suiteId,jdbcType=INTEGER}
   </update>
   <update id="updateStatus">
     update auto_suite
     set status = #{status,jdbcType=TINYINT}
-    where suite_id = #{suiteId,jdbcType=VARCHAR}
+    where id = #{suiteId,jdbcType=INTEGER}
   </update>
   <update id="updateTotal">
     update auto_suite
     set total = #{total,jdbcType=INTEGER}
-    where suite_id = #{suiteId,jdbcType=VARCHAR}
+    where id = #{suiteId,jdbcType=INTEGER}
   </update>
-  <update id="updateExecuteStatus">
-    update auto_suite
-    <set>
-      <if test="isApiCompleted != null">
-        is_api_completed = #{isApiCompleted,jdbcType=TINYINT},
-      </if>
-      <if test="isUiCompleted != null">
-        is_ui_completed = #{isUiCompleted,jdbcType=TINYINT},
-      </if>
-      gmt_modified = now()
-    </set>
-    where suite_id = #{suiteId,jdbcType=VARCHAR}
-  </update>
+<!--  <update id="updateExecuteStatus">-->
+<!--    update auto_suite-->
+<!--    <set>-->
+<!--      <if test="isApiCompleted != null">-->
+<!--        is_api_completed = #{isApiCompleted,jdbcType=TINYINT},-->
+<!--      </if>-->
+<!--      <if test="isUiCompleted != null">-->
+<!--        is_ui_completed = #{isUiCompleted,jdbcType=TINYINT},-->
+<!--      </if>-->
+<!--      gmt_modified = now()-->
+<!--    </set>-->
+<!--    where id = #{suiteId,jdbcType=INTEGER}-->
+<!--  </update>-->
 </mapper>

@@ -13,14 +13,14 @@ public class SuiteCaseRelationPO {
     private Integer id;
 
     /**
-     * 业务id
+     * 套件主键id
      */
-    private String suiteId;
+    private Integer suiteId;
 
     /**
-     * 业务id
+     * 用例主键id
      */
-    private String caseId;
+    private Integer caseId;
 
     /**
      * 测试集关联用例的执行状态：1 未执行，2 失败，3成功

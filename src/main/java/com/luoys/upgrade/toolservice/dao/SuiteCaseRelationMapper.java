@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 /**
- * 套件用例关联关系dao层接口
+ * 套件用例关联关系dao层接口 updated
  *
  * @author luoys
  */
@@ -17,10 +17,10 @@ public interface SuiteCaseRelationMapper {
     /**
      * 按测试suiteId，批量逻辑删除关联的用例
      *
-     * @param suiteId 套件业务id
+     * @param suiteId 套件主键id
      * @return 影响行数
      */
-    int removeBySuiteId(@Param("suiteId") String suiteId);
+    int removeBySuiteId(@Param("suiteId") Integer suiteId);
 
     /**
      * 按suiteId和caseId，逻辑删除单个用例
@@ -29,8 +29,8 @@ public interface SuiteCaseRelationMapper {
      * @param caseId 用例id
      * @return 成功为1
      */
-    int remove(@Param("suiteId") String suiteId,
-               @Param("caseId") String caseId);
+    int remove(@Param("suiteId") Integer suiteId,
+               @Param("caseId") Integer caseId);
 
     /**
      * 插入数据
@@ -72,8 +72,8 @@ public interface SuiteCaseRelationMapper {
      * @param status  要更新的状态
      * @return 成功为1
      */
-    int updateStatus(@Param("suiteId") String suiteId,
-                     @Param("caseId") String caseId,
+    int updateStatus(@Param("suiteId") Integer suiteId,
+                     @Param("caseId") Integer caseId,
                      @Param("status") Integer status);
 
     /**
@@ -82,7 +82,7 @@ public interface SuiteCaseRelationMapper {
      * @param suiteId 套件业务id
      * @return 影响行数
      */
-    int resetStatusBySuiteId(@Param("suiteId") String suiteId);
+    int resetStatusBySuiteId(@Param("suiteId") Integer suiteId);
 
     /**
      * 按条件查询用例列表
@@ -92,7 +92,7 @@ public interface SuiteCaseRelationMapper {
      * @param retry      true查询状态不通过的用例
      * @return 关联用例列表
      */
-    List<SuiteCaseRelationPO> listCaseBySuiteId(@Param("suiteId") String suiteId,
+    List<SuiteCaseRelationPO> listCaseBySuiteId(@Param("suiteId") Integer suiteId,
                                                 @Param("startIndex") Integer startIndex,
                                                 @Param("retry") Boolean retry);
 
@@ -103,7 +103,7 @@ public interface SuiteCaseRelationMapper {
      * @param status  用例状态，为空则查询所有状态
      * @return 总数
      */
-    int countBySuiteId(@Param("suiteId") String suiteId,
+    int countBySuiteId(@Param("suiteId") Integer suiteId,
                        @Param("status") Integer status);
 
 }

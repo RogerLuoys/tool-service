@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 /**
- * 自动化套件dao层接口
+ * 自动化套件dao层接口 updated
  *
  * @author luoys
  */
@@ -25,10 +25,10 @@ public interface AutoSuiteMapper {
     /**
      * 逻辑删除数据
      *
-     * @param suiteId 业务id
+     * @param suiteId 主键id
      * @return 删除成功为1
      */
-    int remove(@Param("suiteId") String suiteId);
+    int remove(@Param("suiteId") Integer suiteId);
 
     /**
      * 更新数据
@@ -41,12 +41,12 @@ public interface AutoSuiteMapper {
     /**
      * 更新套件执行结果
      *
-     * @param suiteId 业务id
+     * @param suiteId 主键id
      * @param passed  成功数
      * @param failed  失败数
      * @return 成功为1
      */
-    int updateResult(@Param("suiteId") String suiteId,
+    int updateResult(@Param("suiteId") Integer suiteId,
                      @Param("passed") Integer passed,
                      @Param("failed") Integer failed);
 
@@ -57,38 +57,38 @@ public interface AutoSuiteMapper {
      * @param status  状态
      * @return 成功为1
      */
-    int updateStatus(@Param("suiteId") String suiteId,
+    int updateStatus(@Param("suiteId") Integer suiteId,
                      @Param("status") Integer status);
 
     /**
      * 更新套件关联的用例总数
      *
-     * @param suiteId 业务id
+     * @param suiteId 主键id
      * @param total   关联的用例总数
      * @return 成功为1
      */
-    int updateTotal(@Param("suiteId") String suiteId,
+    int updateTotal(@Param("suiteId") Integer suiteId,
                     @Param("total") Integer total);
 
-    /**
-     * 同步套件执行状态
-     *
-     * @param suiteId        业务id
-     * @param isApiCompleted 套件中的api用例是否执行完成
-     * @param isUiCompleted  套件中的ui用例是否执行完成
-     * @return 成功为1
-     */
-    int updateExecuteStatus(@Param("suiteId") String suiteId,
-                            @Param("isApiCompleted") Boolean isApiCompleted,
-                            @Param("isUiCompleted") Boolean isUiCompleted);
+//    /**
+//     * 同步套件执行状态
+//     *
+//     * @param suiteId        主键id
+//     * @param isApiCompleted 套件中的api用例是否执行完成
+//     * @param isUiCompleted  套件中的ui用例是否执行完成
+//     * @return 成功为1
+//     */
+//    int updateExecuteStatus(@Param("suiteId") Integer suiteId,
+//                            @Param("isApiCompleted") Boolean isApiCompleted,
+//                            @Param("isUiCompleted") Boolean isUiCompleted);
 
     /**
      * 根据id查询详情
      *
-     * @param suiteId 业务id
+     * @param suiteId 业务id(即主键id)
      * @return 表对应的pojo对象
      */
-    AutoSuitePO selectByUUID(@Param("suiteId") String suiteId);
+    AutoSuitePO selectByUUID(@Param("suiteId") Integer suiteId);
 
     /**
      * 按条件分页查询，默认10条数据一页

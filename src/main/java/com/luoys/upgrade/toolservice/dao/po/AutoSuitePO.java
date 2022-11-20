@@ -13,12 +13,15 @@ import lombok.Data;
 @Data
 public class AutoSuitePO {
 
-    private Integer id;
-
     /**
      * 业务id
      */
-    private String suiteId;
+    private Integer id;
+
+//    /**
+//     * 业务id
+//     */
+//    private String suiteId;
 
     /**
      * 名称
@@ -31,29 +34,29 @@ public class AutoSuitePO {
     private String description;
 
     /**
-     * 套件状态：1 空闲，2 执行中
+     * 套件状态：1 空闲，2 执行中，3 排队中
      */
     private Integer status;
 
     /**
      * 用例执行的环境
      */
-    private String environment;
+    private String resource;
+
+//    /**
+//     * 入参列表，List<CommonDTO>类型
+//     */
+//    private String parameter;
 
     /**
-     * 入参列表，List<CommonDTO>类型
+     * 套件执行超时时间
      */
-    private String parameter;
+    private Integer timeOut;
 
     /**
-     * 步骤间的等待时间
+     * 用例执行超时时间
      */
-    private Integer stepSleep;
-
-    /**
-     * 用例执行的最长时间
-     */
-    private Integer caseMaxTime;
+    private Integer caseTimeOut;
 
     /**
      * 用例总数
@@ -71,23 +74,28 @@ public class AutoSuitePO {
     private Integer failed;
 
     /**
-     * 所属人id
+     * 所属项目id
+     */
+    private String projectId;
+
+    /**
+     * 所属责任人id
      */
     private String ownerId;
 
     /**
-     * 所属人
+     * 所属人昵称
      */
     private String ownerName;
 
-    /**
-     * ui用例是否执行完成
-     */
-    private Boolean isUiCompleted;
-
-    /**
-     * api用例是否执行完成
-     */
-    private Boolean isApiCompleted;
+//    /**
+//     * ui用例是否执行完成
+//     */
+//    private Boolean isUiCompleted;
+//
+//    /**
+//     * api用例是否执行完成
+//     */
+//    private Boolean isApiCompleted;
 
 }
