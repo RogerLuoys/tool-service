@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 /**
- * 自动化用例dao层接口
+ * 自动化用例dao层接口 update
  *
  * @author luoys
  */
@@ -25,10 +25,10 @@ public interface AutoCaseMapper {
     /**
      * 逻辑删除数据
      *
-     * @param caseId id
+     * @param caseId 主键id
      * @return 删除成功为1
      */
-    int remove(@Param("caseId") String caseId);
+    int remove(@Param("caseId") Integer caseId);
 
     /**
      * 更新数据
@@ -41,20 +41,20 @@ public interface AutoCaseMapper {
     /**
      * 更新用例状态
      *
-     * @param caseId 用例业务id
+     * @param caseId 用例主键id
      * @param status 用例业务状态
      * @return 成功为1
      */
-    int updateStatus(@Param("caseId") String caseId,
+    int updateStatus(@Param("caseId") Integer caseId,
                      @Param("status") Integer status);
 
     /**
      * 根据id查询详情
      *
-     * @param caseId id
+     * @param caseId 主键id
      * @return 表对应的pojo对象
      */
-    AutoCasePO selectByUUID(@Param("caseId") String caseId);
+    AutoCasePO selectByUUID(@Param("caseId") Integer caseId);
 
     /**
      * 按条件分页查询，默认10条数据一页
@@ -67,7 +67,7 @@ public interface AutoCaseMapper {
      */
     List<AutoCasePO> list(@Param("status") Integer status,
                           @Param("name") String name,
-                          @Param("ownerId") String ownerId,
+                          @Param("ownerId") Integer ownerId,
                           @Param("startIndex") Integer startIndex);
 
     /**
@@ -80,6 +80,6 @@ public interface AutoCaseMapper {
      */
     int count(@Param("status") Integer status,
               @Param("name") String name,
-              @Param("ownerId") String ownerId);
+              @Param("ownerId") Integer ownerId);
 
 }

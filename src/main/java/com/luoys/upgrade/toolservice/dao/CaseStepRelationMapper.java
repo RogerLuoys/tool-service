@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 /**
- * 用例步骤关联关系dao层接口
+ * 用例步骤关联关系dao层接口 update
  *
  * @author luoys
  */
@@ -21,7 +21,7 @@ public interface CaseStepRelationMapper {
      * @param caseId 用例业务id
      * @return 影响行数
      */
-    int removeByCaseId(@Param("caseId") String caseId);
+    int removeByCaseId(@Param("caseId") Integer caseId);
 
     /**
      * 根据caseId和stepId逻辑删除关联的步骤
@@ -53,7 +53,7 @@ public interface CaseStepRelationMapper {
      * @param caseId 用例业务id
      * @return 对象列表
      */
-    List<CaseStepRelationPO> listStepByCaseId(@Param("caseId") String caseId);
+    List<CaseStepRelationPO> listStepByCaseId(@Param("caseId") Integer caseId);
 
     /**
      * 根据caseId和stepId更新数据，更新顺序

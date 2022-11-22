@@ -13,12 +13,20 @@ import lombok.Data;
 @Data
 public class AutoCasePO {
 
+    /**
+     * 业务id
+     */
     private Integer id;
 
     /**
      * 业务id
      */
-    private String caseId;
+    private Integer supperCaseId;
+
+//    /**
+//     * 业务id
+//     */
+//    private String caseId;
 
     /**
      * 名称
@@ -43,32 +51,37 @@ public class AutoCasePO {
     /**
      * 用例执行的最长时间
      */
-    private Integer maxTime;
+    private Integer timeOut;
 
-    /**
-     * 用例执行环境（参数）
-     */
-    private String environment;
+//    /**
+//     * 用例执行环境（参数）
+//     */
+//    private String environment;
 
-    /**
-     * 入参列表，List<CommonDTO>类型
-     */
-    private String parameter;
+//    /**
+//     * 入参列表，List<CommonDTO>类型
+//     */
+//    private String parameter;
 
     /**
      * 用例计划完成时间
      */
     private Date finishTime;
 
-    /**
-     * 用例的脚本模式
-     */
-    private String mainSteps;
+//    /**
+//     * 用例的脚本模式
+//     */
+//    private String mainSteps;
 
     /**
      * 所属人id
      */
-    private String ownerId;
+    private Integer projectId;
+
+    /**
+     * 所属人id
+     */
+    private Integer ownerId;
 
     /**
      * 所属人
