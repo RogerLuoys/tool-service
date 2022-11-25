@@ -33,10 +33,6 @@ public enum UiTypeEnum {
 
 
     private final Integer code;
-
-    /**
-     * UI相关步骤，脚本模式的调用模板
-     */
     private final String scriptTemplate;
     private final String description;
 

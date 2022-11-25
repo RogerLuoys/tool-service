@@ -17,7 +17,7 @@ import java.util.Map;
  */
 @Slf4j
 @Component
-public class DBClient {
+public class DBClient implements Client<JdbcDTO>{
 
 //    private final DriverManagerDataSource dataSource = new DriverManagerDataSource();
     private JdbcTemplate jdbcTemplate;

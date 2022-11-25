@@ -8,6 +8,7 @@ import lombok.Data;
  * @author luoys
  */
 @Data
+@Deprecated
 public class ParameterDTO {
     private String name;
     private String value;
