@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.luoys.upgrade.toolservice.dao.UserProjectRelationMapper">
+  <resultMap id="BaseResultMap" type="com.luoys.upgrade.toolservice.dao.po.UserProjectRelationPO">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="project_id" jdbcType="INTEGER" property="projectId" />
+    <result column="type" jdbcType="TINYINT" property="type" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, user_id, project_id, `type`
+  </sql>
+  <select id="select" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from user_project_relation
+    where user_id = #{userId,jdbcType=INTEGER}
+  </select>
+  <delete id="remove" parameterType="java.lang.Integer">
+    delete from user_project_relation
+    where user_id = #{userId,jdbcType=INTEGER} and project_id = #{projectId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.luoys.upgrade.toolservice.dao.po.UserProjectRelationPO" useGeneratedKeys="true">
+    insert into user_project_relation (user_id, project_id, `type`, 
+      is_delete, gmt_create, gmt_modified
+      )
+    values (#{userId,jdbcType=INTEGER}, #{projectId,jdbcType=INTEGER}, #{type,jdbcType=TINYINT}, 
+      0, now(), now()
+      )
+  </insert>
+  <update id="update" parameterType="com.luoys.upgrade.toolservice.dao.po.UserProjectRelationPO">
+    update user_project_relation
+    <set>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="projectId != null">
+        project_id = #{projectId,jdbcType=INTEGER},
+      </if>
+      <if test="type != null">
+        `type` = #{type,jdbcType=TINYINT},
+      </if>
+      gmt_modified = now()
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

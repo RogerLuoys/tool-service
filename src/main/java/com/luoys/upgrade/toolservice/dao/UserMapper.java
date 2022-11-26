@@ -26,7 +26,7 @@ public interface UserMapper {
      * @param userId 业务id
      * @return 删除成功为1
      */
-    int remove(@Param("userId") String userId);
+    int remove(@Param("userId") Integer userId);
 
     /**
      * 更新数据
@@ -39,22 +39,22 @@ public interface UserMapper {
     /**
      * 用户登录
      *
-     * @param loginName 登录账号
+     * @param username 登录账号
      * @param phone     手机号
      * @param passWord  登录密码
      * @return 账号信息
      */
-    UserPO selectByLoginInfo(@Param("loginName") String loginName,
+    UserPO selectByLoginInfo(@Param("username") String username,
                              @Param("phone") String phone,
                              @Param("passWord") String passWord);
 
     /**
      * 通过登录账号查询
      *
-     * @param loginName 登录账号
+     * @param username 登录账号
      * @return 账号信息
      */
-    UserPO selectByLoginName(String loginName);
+    UserPO selectByLoginName(String username);
 
     /**
      * 通过业务id查询
@@ -62,7 +62,7 @@ public interface UserMapper {
      * @param userId 业务id
      * @return 账号信息
      */
-    UserPO selectByUUId(String userId);
+    UserPO selectByUUId(Integer userId);
 
     /**
      * 通过其它条件查询
