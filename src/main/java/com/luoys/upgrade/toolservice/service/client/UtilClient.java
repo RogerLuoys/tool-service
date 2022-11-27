@@ -3,7 +3,7 @@ package com.luoys.upgrade.toolservice.service.client;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.luoys.upgrade.toolservice.service.dto.UtilDTO;
-import com.luoys.upgrade.toolservice.service.enums.UtilTypeEnum;
+import com.luoys.upgrade.toolservice.service.enums.method.UtilTypeEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 

@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.List;
 
 @Repository
+@Deprecated
 public interface TaskMapper {
 
     /**

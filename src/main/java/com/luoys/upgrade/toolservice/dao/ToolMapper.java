@@ -12,6 +12,7 @@ import java.util.List;
  * @author luoys
  */
 @Repository
+@Deprecated
 public interface ToolMapper {
 
     /**

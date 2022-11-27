@@ -1,8 +1,5 @@
 package com.luoys.upgrade.toolservice.dao.po;
 
-import java.io.Serializable;
-import java.util.Date;
-
 import lombok.Data;
 
 /**
@@ -15,10 +12,10 @@ public class ResourcePO {
 
     private Integer id;
 
-    /**
-     * 业务id
-     */
-    private String resourceId;
+//    /**
+//     * 业务id
+//     */
+//    private String resourceId;
 
     /**
      * 名称
@@ -63,51 +60,31 @@ public class ResourcePO {
     /**
      * 设备型号
      */
-    private String deviceModel;
-
-    /**
-     * 屏幕尺寸
-     */
-    private String deviceSize;
+    private String slaveIp;
 
     /**
      * 分辨率
      */
-    private String deviceDpi;
+    private String slavePort;
 
     /**
-     * 设备操作系统
+     * 屏幕尺寸
      */
-    private String deviceOs;
+    private Integer slaveThread;
 
     /**
-     * 容器域名或虚拟机ip port
+     * 使用人id
      */
-    private String envUrl;
-
-    /**
-     * 从节点ip port
-     */
-    private String slaveUrl;
+    private Integer projectId;
 
     /**
      * 所属人id
      */
-    private String ownerId;
+    private Integer ownerId;
 
     /**
      * 所属人昵称
      */
     private String ownerName;
-
-    /**
-     * 使用人id
-     */
-    private String userId;
-
-    /**
-     * 使用人昵称
-     */
-    private String userName;
 
 }

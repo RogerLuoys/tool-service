@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.luoys.upgrade.toolservice.dao.ResourceSuiteRelationMapper">
+  <resultMap id="BaseResultMap" type="com.luoys.upgrade.toolservice.dao.po.ResourceSuiteRelationPO">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="resource_id" jdbcType="INTEGER" property="resourceId" />
+    <result column="suite_id" jdbcType="INTEGER" property="suiteId" />
+    <result column="type" jdbcType="TINYINT" property="type" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, resource_id, suite_id, `type`
+  </sql>
+  <select id="selectByResourceId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from resource_suite_relation
+    where resource_id = #{resourceId,jdbcType=INTEGER}
+  </select>
+  <select id="selectBySuiteId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from resource_suite_relation
+    where suite_id = #{suiteId,jdbcType=INTEGER}
+  </select>
+  <delete id="remove">
+    update resource_suite_relation set is_delete=1
+    where resource_id = #{resourceId,jdbcType=INTEGER}
+        and suite_id = #{suiteId,jdbcType=INTEGER}
+        and `type` = #{type,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.luoys.upgrade.toolservice.dao.po.ResourceSuiteRelationPO" useGeneratedKeys="true">
+    insert into resource_suite_relation (resource_id, suite_id, `type`, 
+      is_delete, gmt_create, gmt_modified
+      )
+    values (#{resourceId,jdbcType=INTEGER}, #{suiteId,jdbcType=INTEGER}, #{type,jdbcType=TINYINT}, 
+      0, now(), now()
+      )
+  </insert>
+  <update id="update" parameterType="com.luoys.upgrade.toolservice.dao.po.ResourceSuiteRelationPO">
+    update resource_suite_relation
+    <set>
+      <if test="resourceId != null">
+        resource_id = #{resourceId,jdbcType=INTEGER},
+      </if>
+      <if test="suiteId != null">
+        suite_id = #{suiteId,jdbcType=INTEGER},
+      </if>
+      <if test="type != null">
+        `type` = #{type,jdbcType=TINYINT},
+      </if>
+      gmt_modified = now()
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

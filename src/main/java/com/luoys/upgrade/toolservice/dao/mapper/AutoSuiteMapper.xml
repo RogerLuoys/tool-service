@@ -7,7 +7,7 @@
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="description" jdbcType="VARCHAR" property="description" />
     <result column="status" jdbcType="TINYINT" property="status" />
-    <result column="resource" jdbcType="VARCHAR" property="resource" />
+<!--    <result column="resource" jdbcType="VARCHAR" property="resource" />-->
 <!--    <result column="parameter" jdbcType="VARCHAR" property="parameter" />-->
     <result column="time_out" jdbcType="INTEGER" property="timeOut" />
     <result column="case_time_out" jdbcType="INTEGER" property="caseTimeOut" />
@@ -21,7 +21,7 @@
 <!--    <result column="is_ui_completed" jdbcType="TINYINT" property="isUiCompleted" />-->
   </resultMap>
   <sql id="Base_Column_List">
-    id, `name`, description, status, resource, time_out, case_time_out, total,
+    id, `name`, description, status, time_out, case_time_out, total,
     passed, failed, project_id, owner_id, owner_name
   </sql>
   <select id="selectByUUID" resultMap="BaseResultMap">
@@ -66,13 +66,13 @@
     where id = #{suiteId,jdbcType=INTEGER}
   </update>
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.luoys.upgrade.toolservice.dao.po.AutoSuitePO" useGeneratedKeys="true">
-    insert into auto_suite (`name`, description, status, resource,
+    insert into auto_suite (`name`, description, status,
       time_out, case_time_out,
       total, passed, failed, project_id
       owner_id, owner_name, is_delete,
       gmt_create, gmt_modified)
     values (#{suiteId,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT},
-      #{resource,jdbcType=VARCHAR}, #{timeOut,jdbcType=INTEGER}, #{caseTimeOut,jdbcType=INTEGER},
+      #{timeOut,jdbcType=INTEGER}, #{caseTimeOut,jdbcType=INTEGER},
       #{total,jdbcType=INTEGER}, #{passed,jdbcType=INTEGER}, #{failed,jdbcType=INTEGER}, #{projectId,jdbcType=INTEGER},
       #{ownerId,jdbcType=INTEGER}, #{ownerName,jdbcType=VARCHAR}, 0, now(), now())
   </insert>
@@ -84,9 +84,6 @@
       </if>
       <if test="description != null">
         description = #{description,jdbcType=VARCHAR},
-      </if>
-      <if test="resource != null">
-        resource = #{resource,jdbcType=VARCHAR},
       </if>
       <if test="timeOut != null">
         time_out = #{timeOut,jdbcType=INTEGER},

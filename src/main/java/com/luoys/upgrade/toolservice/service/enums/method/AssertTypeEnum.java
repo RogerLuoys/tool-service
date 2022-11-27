@@ -1,4 +1,4 @@
-package com.luoys.upgrade.toolservice.service.enums;
+package com.luoys.upgrade.toolservice.service.enums.method;
 
 import lombok.Getter;
 

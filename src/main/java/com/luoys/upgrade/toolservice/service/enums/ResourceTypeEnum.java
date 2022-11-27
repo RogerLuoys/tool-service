@@ -11,6 +11,7 @@ import java.util.Map;
  * @author luoys
  */
 @Getter
+@Deprecated
 public enum ResourceTypeEnum {
 
     DATA_SOURCE(1, "数据库"),

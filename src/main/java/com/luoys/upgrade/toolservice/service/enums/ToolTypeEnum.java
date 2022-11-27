@@ -11,6 +11,7 @@ import java.util.Map;
  * @author luoys
  */
 @Getter
+@Deprecated
 public enum ToolTypeEnum {
 
     SQL(1, "sql类型工具"),

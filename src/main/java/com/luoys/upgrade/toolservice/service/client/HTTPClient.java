@@ -2,7 +2,7 @@ package com.luoys.upgrade.toolservice.service.client;
 
 import com.luoys.upgrade.toolservice.service.dto.HttpRequestDTO;
 import com.luoys.upgrade.toolservice.service.dto.ParameterDTO;
-import com.luoys.upgrade.toolservice.service.enums.HttpTypeEnum;
+import com.luoys.upgrade.toolservice.service.enums.method.HttpTypeEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;

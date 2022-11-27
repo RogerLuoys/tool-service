@@ -1,12 +1,11 @@
 package com.luoys.upgrade.toolservice.service.client;
 
 import com.luoys.upgrade.toolservice.service.dto.UiDTO;
-import com.luoys.upgrade.toolservice.service.enums.UiTypeEnum;
+import com.luoys.upgrade.toolservice.service.enums.method.UiTypeEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.*;
 import org.springframework.stereotype.Component;
 
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;

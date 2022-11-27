@@ -3,7 +3,7 @@
 <mapper namespace="com.luoys.upgrade.toolservice.dao.ResourceMapper">
   <resultMap id="BaseResultMap" type="com.luoys.upgrade.toolservice.dao.po.ResourcePO">
     <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="resource_id" jdbcType="VARCHAR" property="resourceId" />
+<!--    <result column="resource_id" jdbcType="VARCHAR" property="resourceId" />-->
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="description" jdbcType="VARCHAR" property="description" />
     <result column="type" jdbcType="TINYINT" property="type" />
@@ -12,27 +12,27 @@
     <result column="jdbc_driver" jdbcType="VARCHAR" property="jdbcDriver" />
     <result column="jdbc_username" jdbcType="VARCHAR" property="jdbcUsername" />
     <result column="jdbc_password" jdbcType="VARCHAR" property="jdbcPassword" />
-    <result column="device_model" jdbcType="VARCHAR" property="deviceModel" />
-    <result column="device_size" jdbcType="VARCHAR" property="deviceSize" />
-    <result column="device_dpi" jdbcType="VARCHAR" property="deviceDpi" />
-    <result column="device_os" jdbcType="VARCHAR" property="deviceOs" />
-    <result column="env_url" jdbcType="VARCHAR" property="envUrl" />
-    <result column="slave_url" jdbcType="VARCHAR" property="slaveUrl" />
-    <result column="owner_id" jdbcType="VARCHAR" property="ownerId" />
+<!--    <result column="device_model" jdbcType="VARCHAR" property="deviceModel" />-->
+<!--    <result column="device_size" jdbcType="VARCHAR" property="deviceSize" />-->
+<!--    <result column="device_dpi" jdbcType="VARCHAR" property="deviceDpi" />-->
+<!--    <result column="device_os" jdbcType="VARCHAR" property="deviceOs" />-->
+    <result column="slave_ip" jdbcType="VARCHAR" property="slaveIp" />
+    <result column="slave_port" jdbcType="VARCHAR" property="slavePort" />
+    <result column="project_id" jdbcType="INTEGER" property="projectId" />
+    <result column="owner_id" jdbcType="INTEGER" property="ownerId" />
     <result column="owner_name" jdbcType="VARCHAR" property="ownerName" />
-    <result column="user_id" jdbcType="VARCHAR" property="userId" />
-    <result column="user_name" jdbcType="VARCHAR" property="userName" />
+<!--    <result column="user_name" jdbcType="VARCHAR" property="userName" />-->
   </resultMap>
   <sql id="Base_Column_List">
-    id, resource_id, `name`, description, `type`, permission, jdbc_url, jdbc_driver, jdbc_username,
-    jdbc_password, device_model, device_size, device_dpi, device_os, env_url, slave_url,
-    owner_id, owner_name, user_id, user_name
+    id, `name`, description, `type`, permission, jdbc_url, jdbc_driver, jdbc_username,
+    jdbc_password, slave_ip, slave_port,
+    project_id, owner_id, owner_name
   </sql>
   <select id="selectByUUID" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from resource
-    where resource_id = #{resourceId,jdbcType=VARCHAR}
+    where id = #{resourceId,jdbcType=INTEGER}
   </select>
   <select id="selectByName" resultMap="BaseResultMap">
     select
@@ -45,7 +45,7 @@
     <include refid="Base_Column_List" />
     from resource
     where is_delete = 0
-    and (owner_id = #{ownerId,jdbcType=VARCHAR} or permission = 1)
+    and (owner_id = #{ownerId,jdbcType=INTEGER} or permission = 1)
     <if test="type != null">
       and type = #{type,jdbcType=TINYINT}
     </if>
@@ -58,7 +58,7 @@
     select count(1)
     from resource
     where is_delete = 0
-    and (owner_id = #{ownerId,jdbcType=VARCHAR} or permission = 1)
+    and (owner_id = #{ownerId,jdbcType=INTEGER} or permission = 1)
     <if test="type != null">
       and type = #{type,jdbcType=TINYINT}
     </if>
@@ -69,23 +69,21 @@
   <update id="remove">
     update resource
     set is_delete = 1, gmt_modified = now()
-    where resource_id = #{resourceId,jdbcType=VARCHAR}
+    where id = #{resourceId,jdbcType=INTEGER}
   </update>
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.luoys.upgrade.toolservice.dao.po.ResourcePO" useGeneratedKeys="true">
-    insert into resource (resource_id, `name`, description, `type`,
+    insert into resource (`name`, description, `type`,
       permission, jdbc_url, jdbc_driver,
-      jdbc_username, jdbc_password, device_model,
-      device_size, device_dpi, device_os,
-      env_url, slave_url, owner_id,
-      owner_name, user_id, user_name,
+      jdbc_username, jdbc_password,
+      slave_ip, slave_port, owner_id,
+      owner_name, project_id,
       is_delete, gmt_create, gmt_modified
       )
-    values (#{resourceId,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{type,jdbcType=TINYINT},
+    values (#{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{type,jdbcType=TINYINT},
       #{permission,jdbcType=TINYINT}, #{jdbcUrl,jdbcType=VARCHAR}, #{jdbcDriver,jdbcType=VARCHAR},
-      #{jdbcUsername,jdbcType=VARCHAR}, #{jdbcPassword,jdbcType=VARCHAR}, #{deviceModel,jdbcType=VARCHAR},
-      #{deviceSize,jdbcType=VARCHAR}, #{deviceDpi,jdbcType=VARCHAR}, #{deviceOs,jdbcType=VARCHAR},
-      #{envUrl,jdbcType=VARCHAR}, #{slaveUrl,jdbcType=VARCHAR}, #{ownerId,jdbcType=VARCHAR},
-      #{ownerName,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR},
+      #{jdbcUsername,jdbcType=VARCHAR}, #{jdbcPassword,jdbcType=VARCHAR},
+      #{slaveIp,jdbcType=VARCHAR}, #{slavePort,jdbcType=VARCHAR}, #{ownerId,jdbcType=INTEGER},
+      #{ownerName,jdbcType=VARCHAR}, #{projectId,jdbcType=INTEGER},
       0, now(), now()
       )
   </insert>
@@ -116,34 +114,21 @@
       <if test="jdbcPassword != null">
         jdbc_password = #{jdbcPassword,jdbcType=VARCHAR},
       </if>
-      <if test="deviceModel != null">
-        device_model = #{deviceModel,jdbcType=VARCHAR},
+      <if test="slaveIp != null">
+        slave_ip = #{slaveIp,jdbcType=VARCHAR},
       </if>
-      <if test="deviceSize != null">
-        device_size = #{deviceSize,jdbcType=VARCHAR},
-      </if>
-      <if test="deviceDpi != null">
-        device_dpi = #{deviceDpi,jdbcType=VARCHAR},
-      </if>
-      <if test="deviceOs != null">
-        device_os = #{deviceOs,jdbcType=VARCHAR},
-      </if>
-      <if test="envUrl != null">
-        env_url = #{envUrl,jdbcType=VARCHAR},
-      </if>
-      <if test="slaveUrl != null">
-        slave_url = #{slaveUrl,jdbcType=VARCHAR},
+      <if test="slavePort != null">
+        slave_port = #{slavePort,jdbcType=VARCHAR},
       </if>
       gmt_modified = now()
     </set>
-    where resource_id = #{resourceId,jdbcType=VARCHAR}
+    where id = #{resourceId,jdbcType=INTEGER}
   </update>
   <update id="updateUser">
     update resource
     set
-        user_id = #{userId,jdbcType=VARCHAR},
-        user_name = #{userName,jdbcType=VARCHAR},
+        project_id = #{projectId,jdbcType=INTEGER},
         gmt_modified = now()
-    where resource_id = #{resourceId,jdbcType=VARCHAR}
+    where id = #{resourceId,jdbcType=INTEGER}
   </update>
 </mapper>

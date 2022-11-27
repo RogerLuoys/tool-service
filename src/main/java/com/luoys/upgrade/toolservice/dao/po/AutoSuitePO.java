@@ -38,10 +38,10 @@ public class AutoSuitePO {
      */
     private Integer status;
 
-    /**
-     * 用例执行的环境
-     */
-    private String resource;
+//    /**
+//     * 用例执行的环境
+//     */
+//    private String resource;
 
 //    /**
 //     * 入参列表，List<CommonDTO>类型

@@ -11,6 +11,7 @@ import java.util.Map;
  * @author luoys
  */
 @Getter
+@Deprecated
 public enum SqlTypeEnum {
 
     //匹配sql语句中第1-6个字符

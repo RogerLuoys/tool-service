@@ -1,7 +1,7 @@
 package com.luoys.upgrade.toolservice.service.client;
 
 import com.luoys.upgrade.toolservice.service.dto.AssertionDTO;
-import com.luoys.upgrade.toolservice.service.enums.AssertTypeEnum;
+import com.luoys.upgrade.toolservice.service.enums.method.AssertTypeEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
