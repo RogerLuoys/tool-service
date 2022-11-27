@@ -19,7 +19,7 @@ import java.util.Set;
  * @author luoys
  */
 @Slf4j
-@Component
+//@Component
 public class UIClient {
 
     private final Long DEFAULT_WAIT_TIME = 30L;
@@ -51,6 +51,8 @@ public class UIClient {
                 return "false";
         }
     }
+
+    public WebDriver getDriver(){return this.driver;}
 
 //    /**
 //     * 退出webdriver

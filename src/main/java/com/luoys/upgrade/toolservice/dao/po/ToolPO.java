@@ -9,6 +9,7 @@ import lombok.Data;
  * @author luoys
  */
 @Data
+@Deprecated
 public class ToolPO {
 
     private Integer id;

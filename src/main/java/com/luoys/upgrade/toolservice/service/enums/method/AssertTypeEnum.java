@@ -13,20 +13,25 @@ import java.util.Map;
 @Getter
 public enum AssertTypeEnum {
 
-    NO_ASSERT(-1, "不断言"),
-    EQUALS(1, "完全匹配"),
-    CONTAINS(2, "模糊匹配"),
-    IS_TRUE(3, "判断是否为真"),
-    IS_FALSE(4, "判断是否为假"),
-    IS_ELEMENT_EXIST(5, "判断页面元素是否存在"),
-    IS_ELEMENT_NOT_EXIST(6, "判断页面元素是否不存在");
+//    NO_ASSERT(-1, "不断言"),
+    IS_EQUALS(1, "auto.assertion.isEquals", "完全匹配"),
+    IS_CONTAINS(2, "auto.assertion.isContains", "模糊匹配"),
+    IS_BE_CONTAINS(3, "auto.assertion.isBeContains", "判断是否为真"),
+    IS_DELETED(4, "auto.assertion.isDeleted", "判断是否为假"),
+    IS_NOT_DELETED(5, "auto.assertion.isNotDeleted", "判断是否为假"),
+    IS_GREATER(6, "auto.assertion.isGreater", "判断是否为假"),
+    IS_SMALLER(7, "auto.assertion.isSmaller", "判断是否为假"),
+    IS_XPATH_EXIST(8, "auto.assertion.isXpathExist", "判断页面元素是否存在"),
+    IS_XPATH_NOT_EXIST(8, "auto.assertion.isXpathNotExist", "判断页面元素是否存在");
 
 
     private final Integer code;
+    private final String scriptTemplate;
     private final String description;
 
-    AssertTypeEnum(Integer code, String description) {
+    AssertTypeEnum(Integer code, String scriptTemplate, String description) {
         this.code = code;
+        this.scriptTemplate = scriptTemplate;
         this.description = description;
     }
 

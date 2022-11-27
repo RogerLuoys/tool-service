@@ -14,13 +14,10 @@ import java.util.Map;
 public enum UtilTypeEnum {
 
     SLEEP(1, "auto.task.sleep", "强制睡眠"),
-    GET_JSON_VALUE(2, "auto.task.getJsonValue", "根据json key 取对应的值"),
-    GET_TIME(3, "auto.task.getTime", "获取当前linux时间"),
-    GET_RANDOM_NUMBER(4, "auto.task.getRandomNumber", "获取随机数");
-//    SLEEP(1, "auto.task.sleep", "强制睡眠"),
-//    SLEEP(1, "auto.task.sleep", "强制睡眠"),
-//    SLEEP(1, "auto.task.sleep", "强制睡眠"),
-//    SLEEP(1, "auto.task.sleep", "强制睡眠");
+    GET_JSON(2, "auto.task.getJson", "根据json key取对应的值"),
+    GET_JSON_ANY(3, "auto.task.getJsonAny", "根据json和子json第一个key取对应的值"),
+    GET_RANDOM(4, "auto.task.getRandom", "获取随机数"),
+    GET_TIME(5, "auto.task.getTime", "获取当前linux时间");
 
     private final Integer code;
     /**

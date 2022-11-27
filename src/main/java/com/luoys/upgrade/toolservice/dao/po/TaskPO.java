@@ -1,6 +1,5 @@
 package com.luoys.upgrade.toolservice.dao.po;
 
-import java.io.Serializable;
 import java.util.Date;
 import lombok.Data;
 
@@ -9,6 +8,7 @@ import lombok.Data;
  * @author luoys
  */
 @Data
+@Deprecated
 public class TaskPO {
     private Integer id;
 
