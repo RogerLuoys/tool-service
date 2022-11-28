@@ -8,6 +8,7 @@ import lombok.Data;
  * @author luoys
  */
 @Data
+@Deprecated
 public class UtilDTO {
 
     /**

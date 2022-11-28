@@ -5,8 +5,8 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-<!--        <version>3.0.0</version>-->
-        <version>2.5.5</version>
+        <version>3.0.0</version>
+<!--        <version>2.5.5</version>-->
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.luoys.upgrade</groupId>
@@ -52,17 +52,11 @@
 <!--            <version>4.5.5</version>-->
         </dependency>
 
-<!--        &lt;!&ndash;ui自动化&ndash;&gt;-->
-<!--        <dependency>-->
-<!--            <groupId>org.seleniumhq.selenium</groupId>-->
-<!--            <artifactId>selenium-java</artifactId>-->
-<!--        </dependency>-->
-
         <!--selenium自动化-->
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-java</artifactId>
-            <version>4.5.0</version>
+<!--            <version>4.5.0</version>-->
         </dependency>
         <!--selenium自动化-->
 
@@ -78,7 +72,7 @@
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
-            <version>1.2.71</version>
+            <version>2.0.16</version>
         </dependency>
 
         <!--jdbc template相关的包-->
@@ -97,6 +91,12 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>
+        </dependency>
+
+        <!--本地缓存-->
+        <dependency>
+            <groupId>com.github.ben-manes.caffeine</groupId>
+            <artifactId>caffeine</artifactId>
         </dependency>
 
         <dependency>

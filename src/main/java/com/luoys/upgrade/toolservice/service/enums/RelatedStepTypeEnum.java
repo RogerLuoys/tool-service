@@ -13,9 +13,9 @@ import java.util.Map;
 @Getter
 public enum RelatedStepTypeEnum {
 
-    PRE_STEP(1, "前置步骤"),
-    MAIN_STEP(2, "主要步骤"),
-    AFTER_STEP(3, "收尾步骤");
+    PRE_STEP(1, "前置步骤@BeforeTest"),
+    MAIN_STEP(2, "主要步骤@Test"),
+    AFTER_STEP(3, "收尾步骤@AfterTest");
 
 
     private final Integer code;

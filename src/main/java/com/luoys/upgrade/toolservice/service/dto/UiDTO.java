@@ -11,6 +11,7 @@ import java.util.List;
  * @author luoys
  */
 @Data
+@Deprecated
 public class UiDTO {
 
     /**

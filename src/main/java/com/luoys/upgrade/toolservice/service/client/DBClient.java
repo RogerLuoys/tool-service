@@ -1,6 +1,7 @@
 package com.luoys.upgrade.toolservice.service.client;
 
 import com.luoys.upgrade.toolservice.dao.po.AutoStepPO;
+import com.luoys.upgrade.toolservice.service.common.CacheUtil;
 import com.luoys.upgrade.toolservice.service.dto.JdbcDTO;
 import com.luoys.upgrade.toolservice.service.enums.SqlTypeEnum;
 import com.zaxxer.hikari.HikariConfig;
@@ -27,6 +28,40 @@ public class DBClient {
 //    private final DriverManagerDataSource dataSource = new DriverManagerDataSource();
     private JdbcTemplate jdbcTemplate;
     private HikariDataSource dataSource;
+
+    /**
+     * 执行sql
+     * 支持增删改查，删改查一定要带条件
+     *
+     * @param autoStepPO 要执行的sql
+     * @return -
+     */
+    public String execute(AutoStepPO autoStepPO) {
+        // 初始化数据库链接
+        init(CacheUtil.getJdbcById(autoStepPO.getMethodId()));
+        String result, sql;
+        sql = autoStepPO.getParameter1();
+        // 根据sql语句类型，选择不同的方法执行
+        if (sql.toUpperCase().matches("^INSERT INTO .+")) {
+            result = this.insert(sql);
+        } else if (sql.toUpperCase().matches("^DELETE FROM [A-Z0-9_]+ WHERE .+")) {
+            result = this.delete(sql);
+        } else if (sql.toUpperCase().matches("^UPDATE [A-Z0-9_]+ SET .+ WHERE .+")) {
+            result = this.update(sql);
+        } else if (sql.toUpperCase().matches("^SELECT .+ FROM [A-Z0-9_]+")) {//todo 还要改
+            // 查询单列
+            if (sql.toUpperCase().matches("^SELECT [^,*]+ FROM [A-Z0-9_]+ WHERE .+")) {
+                result = this.selectOneCell(sql);
+            } else {
+                result = this.select(sql);
+            }
+        } else {
+            result = "未识别sql类型";
+        }
+        // 关闭数据库链接
+        this.close();
+        return result;
+    }
 
 //    /**
 //     * 执行sql，有同步锁
@@ -87,40 +122,6 @@ public class DBClient {
         if (dataSource != null) {
             dataSource.close();
         }
-    }
-
-    /**
-     * 执行sql
-     * 支持增删改查，删改查一定要带条件
-     *
-     * @param autoStepPO 要执行的sql
-     * @return -
-     */
-    public String execute(AutoStepPO autoStepPO) {
-        // 初始化数据库链接 todo 怎么搞
-        init(null);
-        String result, sql;
-        sql = autoStepPO.getParameter1();
-        // 根据sql语句类型，选择不同的方法执行
-        if (sql.toUpperCase().matches("^INSERT INTO .+")) {
-            result = this.insert(sql);
-        } else if (sql.toUpperCase().matches("^DELETE FROM [A-Z0-9_]+ WHERE .+")) {
-            result = this.delete(sql);
-        } else if (sql.toUpperCase().matches("^UPDATE [A-Z0-9_]+ SET .+ WHERE .+")) {
-            result = this.update(sql);
-        } else if (sql.toUpperCase().matches("^SELECT .+ FROM [A-Z0-9_]+")) {//todo 还要改
-            // 查询单列
-            if (sql.toUpperCase().matches("^SELECT [^,*]+ FROM [A-Z0-9_]+ WHERE .+")) {
-                result = this.selectOneCell(sql);
-            } else {
-                result = this.select(sql);
-            }
-        } else {
-            result = "不支持sql类型 ";
-        }
-        // 关闭数据库链接
-        this.close();
-        return result;
     }
 
 

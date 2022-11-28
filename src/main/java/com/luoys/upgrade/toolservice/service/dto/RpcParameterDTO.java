@@ -10,6 +10,7 @@ import java.util.Map;
  * @author luoys
  */
 @Data
+@Deprecated
 public class RpcParameterDTO {
     private String type;
     private Map<String, Object> value;

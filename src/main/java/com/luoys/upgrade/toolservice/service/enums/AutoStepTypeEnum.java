@@ -11,13 +11,16 @@ import java.util.Map;
  * @author luoys
  */
 @Getter
+@Deprecated
 public enum AutoStepTypeEnum {
 
-    STEP_SQL(1, "sql类型步骤"),
-    STEP_HTTP(2, "http请求类型步骤"),
-    STEP_RPC(3, "rpc请求类型步骤"),
-    STEP_UI(4, "ui操作类型步骤"),
-    STEP_MULTIPLE(5, "多个子步骤聚合");
+    STEP_SQL(1, "sql模块"),
+    STEP_HTTP(2, "http模块"),
+    STEP_RPC(3, "rpc模块"),
+    STEP_UI(4, "ui模块"),
+    ASSERTION(5, "断言模块"),
+    UTIL(6, "util模块"),
+    PO(7, "po模块");
 
 
     private final Integer code;

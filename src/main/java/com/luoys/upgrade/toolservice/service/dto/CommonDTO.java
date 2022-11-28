@@ -7,6 +7,7 @@ import lombok.Data;
  * @author luoys
  */
 @Data
+@Deprecated
 public class CommonDTO {
     Integer idx;
     String title;

@@ -8,6 +8,7 @@ import lombok.Data;
  * @author luoys
  */
 @Data
+@Deprecated
 public class StepDTO {
     /**
      * 步骤所属区域，if、then、else

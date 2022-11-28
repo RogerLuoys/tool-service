@@ -8,6 +8,7 @@ import lombok.Getter;
  * @author luoys
  */
 @Getter
+@Deprecated
 public enum AutoCaseTypeEnum {
 
 

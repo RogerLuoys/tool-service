@@ -26,12 +26,14 @@ public class UtilClient {
                 return sleep(Integer.parseInt(autoStepPO.getParameter1()));
             case GET_JSON:
                 return getJson(autoStepPO.getParameter1(), autoStepPO.getParameter2());
+            case GET_JSON_ANY:
+                return getJsonAny(autoStepPO.getParameter1(), autoStepPO.getParameter2());
             case GET_TIME:
                 return getTime();
             case GET_RANDOM:
                 return getRandom(autoStepPO.getParameter1(), autoStepPO.getParameter2());
             default:
-                return "执行异常";
+                return "步骤失败";
         }
     }
 
