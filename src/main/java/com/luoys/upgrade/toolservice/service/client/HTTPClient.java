@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.luoys.upgrade.toolservice.dao.po.AutoStepPO;
 import com.luoys.upgrade.toolservice.service.common.StringUtil;
+import com.luoys.upgrade.toolservice.service.enums.autoStep.methodType.HttpEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
@@ -45,7 +46,7 @@ public class HTTPClient {
 //                headers.add(parameterDTO.getName(), parameterDTO.getValue());
 //            }
 //        }
-        switch (HttpTypeEnum.fromCode(autoStepPO.getMethodType())) {
+        switch (HttpEnum.fromCode(autoStepPO.getMethodType())) {
             case GET:
                 // 第二个入参不为空，表示有header
                 if (StringUtil.isBlank(autoStepPO.getParameter2())) {

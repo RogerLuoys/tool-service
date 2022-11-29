@@ -2,6 +2,7 @@ package com.luoys.upgrade.toolservice.service.client;
 
 import com.luoys.upgrade.toolservice.dao.po.AutoStepPO;
 import com.luoys.upgrade.toolservice.service.common.StringUtil;
+import com.luoys.upgrade.toolservice.service.enums.autoStep.methodType.UiEnum;
 import io.appium.java_client.android.AndroidDriver;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.*;
@@ -53,7 +54,7 @@ public class UIClient {
      */
     public String execute(AutoStepPO autoStepPO) {
         String result = "步骤成功";
-        switch (UiTypeEnum.fromCode(autoStepPO.getMethodType())) {
+        switch (UiEnum.fromCode(autoStepPO.getMethodType())) {
             case OPEN_URL:
                 this.openUrl(autoStepPO.getParameter1());
                 break;

@@ -18,7 +18,7 @@ public class AutoCaseVO {
     /**
      * 业务id
      */
-    private String caseId;
+    private Integer caseId;
 
     /**
      * 名称

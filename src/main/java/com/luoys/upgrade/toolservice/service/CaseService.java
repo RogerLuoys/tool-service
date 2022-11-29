@@ -46,8 +46,8 @@ public class CaseService {
     @Autowired
     private StepService stepService;
 
-    @Autowired
-    private UIClient uiClient;
+//    @Autowired
+//    private UIClient uiClient;
 
     /**
      * 新增单个用例

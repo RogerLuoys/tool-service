@@ -3,6 +3,7 @@ package com.luoys.upgrade.toolservice.service.client;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.luoys.upgrade.toolservice.dao.po.AutoStepPO;
+import com.luoys.upgrade.toolservice.service.enums.autoStep.methodType.UtilEnum;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Date;
@@ -18,7 +19,7 @@ import java.util.Random;
 public class UtilClient {
 
     public synchronized String execute(AutoStepPO autoStepPO) {
-        switch (UtilTypeEnum.fromCode(autoStepPO.getMethodType())) {
+        switch (UtilEnum.fromCode(autoStepPO.getMethodType())) {
             case SLEEP:
                 return sleep(Integer.parseInt(autoStepPO.getParameter1()));
             case GET_JSON:
