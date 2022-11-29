@@ -1,12 +1,9 @@
 package com.luoys.upgrade.toolservice.service.client;
 
 import com.luoys.upgrade.toolservice.dao.po.AutoStepPO;
-import com.luoys.upgrade.toolservice.service.dto.AssertionDTO;
-import com.luoys.upgrade.toolservice.service.enums.method.AssertTypeEnum;
+import com.luoys.upgrade.toolservice.service.enums.autoStep.methodType.AssertionEnum;
 import lombok.extern.slf4j.Slf4j;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 
@@ -32,7 +29,7 @@ public class AssertionClient {
      * @return 成功返回true，失败返回false
      */
     public Boolean execute(AutoStepPO autoStepPO) {
-        switch (AssertTypeEnum.fromCode(autoStepPO.getModuleType())) {
+        switch (AssertionEnum.fromCode(autoStepPO.getModuleType())) {
             case IS_EQUALS:
                 return isEquals(autoStepPO.getParameter1(), autoStepPO.getParameter2());
             case IS_CONTAINS:

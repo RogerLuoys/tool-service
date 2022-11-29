@@ -56,7 +56,7 @@ public interface AutoStepMapper {
      * @param stepId 业务id
      * @return 表对应的pojo对象
      */
-    AutoStepPO selectByUUID(@Param("stepId") Integer stepId);
+    AutoStepPO select(@Param("stepId") Integer stepId);
 
 //    /**
 //     * 按条件分页查询，默认10条数据一页

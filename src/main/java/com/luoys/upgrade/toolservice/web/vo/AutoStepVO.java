@@ -14,7 +14,7 @@ public class AutoStepVO {
     /**
      * 业务id
      */
-    private String stepId;
+    private Integer stepId;
 
     /**
      * 名称
@@ -46,6 +46,9 @@ public class AutoStepVO {
      */
     private Integer methodId;
 
+    /**
+     * 完整脚本
+     */
     private String script;
 
     /**

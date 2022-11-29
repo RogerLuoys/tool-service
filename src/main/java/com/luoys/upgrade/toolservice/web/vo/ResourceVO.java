@@ -15,7 +15,7 @@ public class ResourceVO {
     /**
      * 业务id
      */
-    private String resourceId;
+    private Integer resourceId;
 
     /**
      * 名称
