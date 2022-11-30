@@ -81,7 +81,7 @@ public class AutoSuitePO {
     /**
      * 所属责任人id
      */
-    private String ownerId;
+    private Integer ownerId;
 
     /**
      * 所属人昵称

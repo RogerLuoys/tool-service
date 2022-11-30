@@ -28,7 +28,7 @@ public interface ResourceMapper {
      * @param resourceId 业务id
      * @return 删除成功为1
      */
-    int remove(@Param("resourceId") String resourceId);
+    int remove(@Param("resourceId") Integer resourceId);
 
     /**
      * 更新数据
@@ -46,8 +46,8 @@ public interface ResourceMapper {
      * @param userName 使用者昵称
      * @return 成功为1
      */
-    int updateUser(@Param("resourceId") String resourceId,
-                   @Param("userId") String userId,
+    int updateUser(@Param("resourceId") Integer resourceId,
+                   @Param("userId") Integer userId,
                    @Param("userName") String userName);
 
     /**
@@ -56,7 +56,7 @@ public interface ResourceMapper {
      * @param resourceId 业务id
      * @return 表对应的pojo对象
      */
-    ResourcePO selectByUUID(@Param("resourceId") String resourceId);
+    ResourcePO selectByID(@Param("resourceId") Integer resourceId);
 
 
     /**
@@ -78,7 +78,7 @@ public interface ResourceMapper {
      */
     List<ResourcePO> list(@Param("type") Integer type,
                           @Param("name") String name,
-                          @Param("ownerId") String ownerId,
+                          @Param("ownerId") Integer ownerId,
                           @Param("startIndex") Integer startIndex);
 
     /**
@@ -91,6 +91,6 @@ public interface ResourceMapper {
      */
     Integer count(@Param("type") Integer type,
                   @Param("name") String name,
-                  @Param("ownerId") String ownerId);
+                  @Param("ownerId") Integer ownerId);
 
 }

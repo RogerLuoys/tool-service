@@ -1,5 +1,6 @@
 package com.luoys.upgrade.toolservice.service;
 
+import com.luoys.upgrade.toolservice.service.client.StepExecutor;
 import com.luoys.upgrade.toolservice.service.common.NumberSender;
 import com.luoys.upgrade.toolservice.service.common.StringUtil;
 import com.luoys.upgrade.toolservice.service.common.ThreadPoolUtil;
@@ -68,11 +69,11 @@ public class CaseService {
             log.error("--->用例名称不能为空：{}", autoCaseVO);
             return false;
         }
-        autoCaseVO.setCaseId(NumberSender.createCaseId());
+//        autoCaseVO.setCaseId(NumberSender.createCaseId());
         if (autoCaseVO.getOwnerId().equals(KeywordEnum.DEFAULT_USER.getCode().toString())) {
             autoCaseVO.setOwnerName(KeywordEnum.DEFAULT_USER.getValue());
         } else {
-            String userName = userMapper.selectByUUId(autoCaseVO.getOwnerId()).getUserName();
+            String userName = userMapper.selectById(autoCaseVO.getOwnerId()).getUsername();
             autoCaseVO.setOwnerName(userName);
         }
         int result = autoCaseMapper.insert(TransformAutoCase.transformVO2PO(autoCaseVO));
@@ -85,7 +86,7 @@ public class CaseService {
      * @param autoCaseVO 用例对象，需要有名称和类型
      * @return 新增成功为true，失败为false
      */
-    public String quickCreate(AutoCaseVO autoCaseVO) {
+    public Integer quickCreate(AutoCaseVO autoCaseVO) {
         if (autoCaseVO.getType() == null) {
             log.error("--->用例类型不能为空：{}", autoCaseVO);
             return null;
@@ -95,7 +96,7 @@ public class CaseService {
             return null;
         }
         autoCaseVO.setStatus(AutoCaseStatusEnum.PLANNING.getCode());
-        autoCaseVO.setCaseId(NumberSender.createCaseId());
+//        autoCaseVO.setCaseId(NumberSender.createCaseId());
         int result = autoCaseMapper.insert(TransformAutoCase.transformVO2PO(autoCaseVO));
         return result == 1 ? autoCaseVO.getCaseId() : null;
     }
@@ -108,35 +109,32 @@ public class CaseService {
      */
     public Boolean createRelatedStep(CaseStepVO caseStepVO) {
         // 如果关联步骤为空，则先快速创建一个步骤
-        if (StringUtil.isBlank(caseStepVO.getStepId())) {
+        if (null == caseStepVO.getStepId() || caseStepVO.getStepId() <= 0) {
             caseStepVO.setStepId(stepService.quickCreate());
         }
         int result = caseStepRelationMapper.insert(TransformCaseStepRelation.transformVO2PO(caseStepVO));
         return result == 1;
     }
 
-    /**
-     * 复制用例的基本信息和关联信息
-     * @param autoCaseVO 用例详情
-     * @return 执行无报错为true
-     */
-    public Boolean copyCase(AutoCaseVO autoCaseVO) {
-        // uuid不能copy，需要重新生成
-        String caseId = NumberSender.createCaseId();
-        autoCaseVO.setCaseId(caseId);
-        // copy基本信息
-        autoCaseMapper.insert(TransformAutoCase.transformVO2PO(autoCaseVO));
-        List<CaseStepVO> caseStepList = new ArrayList<>();
-        caseStepList.addAll(autoCaseVO.getPreStepList());
-        caseStepList.addAll(autoCaseVO.getMainStepList());
-        caseStepList.addAll(autoCaseVO.getAfterStepList());
-        // 更新关联对象中的caseId
-        for (int i = 0; i < caseStepList.size(); i++) {
-            caseStepList.get(i).setCaseId(caseId);
-        }
-        caseStepRelationMapper.batchInsert(TransformCaseStepRelation.transformVO2PO(caseStepList));
-        return true;
-    }
+//    /**
+//     * 复制用例的基本信息和关联信息
+//     * @param autoCaseVO 用例详情
+//     * @return 执行无报错为true
+//     */
+//    public Boolean copyCase(AutoCaseVO autoCaseVO) {
+//        // copy基本信息
+//        autoCaseMapper.insert(TransformAutoCase.transformVO2PO(autoCaseVO));
+//        List<CaseStepVO> caseStepList = new ArrayList<>();
+//        caseStepList.addAll(autoCaseVO.getPreStepList());
+//        caseStepList.addAll(autoCaseVO.getMainStepList());
+//        caseStepList.addAll(autoCaseVO.getAfterStepList());
+//        // 更新关联对象中的caseId
+//        for (int i = 0; i < caseStepList.size(); i++) {
+//            caseStepList.get(i).setCaseId(caseId);
+//        }
+//        caseStepRelationMapper.batchInsert(TransformCaseStepRelation.transformVO2PO(caseStepList));
+//        return true;
+//    }
 
     /**
      * 逻辑删除单个用例
@@ -144,7 +142,7 @@ public class CaseService {
      * @param caseId 用例业务id
      * @return 删除成功为true，失败为false
      */
-    public Boolean remove(String caseId) {
+    public Boolean remove(Integer caseId) {
         caseStepRelationMapper.removeByCaseId(caseId);
         int result = autoCaseMapper.remove(caseId);
         return result == 1;
@@ -191,7 +189,7 @@ public class CaseService {
      * @param sequence 顺序，从1开始
      * @return 成功为true，失败为false
      */
-    public Boolean updateRelatedStep(String caseId, String stepId, int sequence) {
+    public Boolean updateRelatedStep(Integer caseId, Integer stepId, int sequence) {
         CaseStepVO caseStepVO = new CaseStepVO();
         caseStepVO.setCaseId(caseId);
         caseStepVO.setStepId(stepId);
@@ -209,7 +207,7 @@ public class CaseService {
      * @param pageIndex   页码
      * @return 用例列表
      */
-    public List<AutoCaseSimpleVO> query(String userId, Boolean isOnlyOwner, Integer status, String name, Integer pageIndex) {
+    public List<AutoCaseSimpleVO> query(Integer userId, Boolean isOnlyOwner, Integer status, String name, Integer pageIndex) {
         if (!isOnlyOwner) {
             userId = null;
         }
@@ -217,7 +215,7 @@ public class CaseService {
         return TransformAutoCase.transformPO2SimpleVO(autoCaseMapper.list(status, name, userId, startIndex));
     }
 
-    public Integer count(String userId, Boolean isOnlyOwner, Integer status, String name) {
+    public Integer count(Integer userId, Boolean isOnlyOwner, Integer status, String name) {
         if (!isOnlyOwner) {
             userId = null;
         }
@@ -230,9 +228,9 @@ public class CaseService {
      * @param caseId 用例业务id
      * @return 用例对象
      */
-    public AutoCaseVO queryDetail(String caseId) {
+    public AutoCaseVO queryDetail(Integer caseId) {
         // 查基本信息
-        AutoCaseVO autoCaseVO = TransformAutoCase.transformPO2VO(autoCaseMapper.selectByUUID(caseId));
+        AutoCaseVO autoCaseVO = TransformAutoCase.transformPO2VO(autoCaseMapper.selectByID(caseId));
         // 查关联的步骤
         List<CaseStepVO> caseStepList = TransformCaseStepRelation.transformPO2VO(caseStepRelationMapper.listStepByCaseId(caseId));
         List<CaseStepVO> preList = new ArrayList<>();
@@ -260,7 +258,7 @@ public class CaseService {
 
 
     /**
-     * 转换用例模式，将结构化用例转换成脚本
+     * 转换用例模式，将结构化数据转换成脚本
      *
      * @param
      */
@@ -296,7 +294,8 @@ public class CaseService {
     public AutoCaseVO change2UiMode(AutoCaseVO autoCaseVO) {
 
         // 通过正则解析脚本，把整段脚本解析成行('\w':任意字符，'.':0到无限次)
-        List<String> mainSteps = StringUtil.getMatch("auto\\.(ui|http|sql|rpc|util|po|assertion)\\.\\w+\\(.*\\);", autoCaseVO.getMainSteps());
+//        List<String> mainSteps = StringUtil.getMatch("auto\\.(ui|http|sql|rpc|util|po|assertion)\\.\\w+\\(.*\\);", autoCaseVO.getMainSteps());
+        List<String> mainSteps = StringUtil.getMatch("\\(string[ ]{1,4}\\w{1,20}[ ]{1,4}=[ ]{1,4})?auto\\.(ui|http|sql|rpc|util|po|assertion)\\.\\w+\\(.*\\);[ ]{0,4}(\\n|\\r)\\i", autoCaseVO.getMainSteps());
 
         // 完全新增脚本，或脚本内步骤有新增，需要创建对应数量的关联步骤
         while (mainSteps.size() - autoCaseVO.getMainStepList().size() > 0) {
@@ -347,109 +346,129 @@ public class CaseService {
      * @return 主要步骤全部执行结果都为true才返回true
      */
     public Boolean useAsync(AutoCaseVO autoCaseVO) throws RejectedExecutionException {
-        // UI用例和API用例使用不同线程池，UI自动化只能单个子线程
-        if (autoCaseVO.getType().equals(AutoCaseTypeEnum.UI_CASE.getCode())) {
-            ThreadPoolUtil.executeUI(() -> {
-                log.info("--->执行ui用例的步骤：caseId={}", autoCaseVO.getCaseId());
-                boolean result = executeUI(autoCaseVO);
-                log.info("---->步骤执行完毕，更新用例结果：caseId={}, result={}", autoCaseVO.getCaseId(), result);
-                autoCaseMapper.updateStatus(autoCaseVO.getCaseId(),
-                        result ? AutoCaseStatusEnum.SUCCESS.getCode() : AutoCaseStatusEnum.FAIL.getCode());
-            });
-        } else {
-            ThreadPoolUtil.executeAPI(() -> {
-                log.info("--->执行api用例的步骤：caseId={}", autoCaseVO.getCaseId());
-                boolean result = executeAPI(autoCaseVO);
-                log.info("---->步骤执行完毕，更新用例结果：caseId={}, result={}", autoCaseVO.getCaseId(), result);
-                autoCaseMapper.updateStatus(autoCaseVO.getCaseId(),
-                        result ? AutoCaseStatusEnum.SUCCESS.getCode() : AutoCaseStatusEnum.FAIL.getCode());
-            });
-        }
+        ThreadPoolUtil.executeAuto(() -> {
+            log.info("--->执行单个用例：caseId={}", autoCaseVO.getCaseId());
+            StepExecutor executor = new StepExecutor();
+            boolean result = execute(autoCaseVO, executor);
+            log.info("---->执行完毕，更新用例结果：caseId={}, result={}", autoCaseVO.getCaseId(), result);
+            autoCaseMapper.updateStatus(autoCaseVO.getCaseId(),
+                    result ? AutoCaseStatusEnum.SUCCESS.getCode() : AutoCaseStatusEnum.FAIL.getCode());
+        });
         return true;
+
+//        // UI用例和API用例使用不同线程池，UI自动化只能单个子线程
+//        if (autoCaseVO.getType().equals(AutoCaseTypeEnum.UI_CASE.getCode())) {
+//            ThreadPoolUtil.executeUI(() -> {
+//                log.info("--->执行ui用例的步骤：caseId={}", autoCaseVO.getCaseId());
+//                boolean result = executeUI(autoCaseVO);
+//                log.info("---->步骤执行完毕，更新用例结果：caseId={}, result={}", autoCaseVO.getCaseId(), result);
+//                autoCaseMapper.updateStatus(autoCaseVO.getCaseId(),
+//                        result ? AutoCaseStatusEnum.SUCCESS.getCode() : AutoCaseStatusEnum.FAIL.getCode());
+//            });
+//        } else {
+//            ThreadPoolUtil.executeAPI(() -> {
+//                log.info("--->执行api用例的步骤：caseId={}", autoCaseVO.getCaseId());
+//                boolean result = executeAPI(autoCaseVO);
+//                log.info("---->步骤执行完毕，更新用例结果：caseId={}, result={}", autoCaseVO.getCaseId(), result);
+//                autoCaseMapper.updateStatus(autoCaseVO.getCaseId(),
+//                        result ? AutoCaseStatusEnum.SUCCESS.getCode() : AutoCaseStatusEnum.FAIL.getCode());
+//            });
+//        }
+//        return true;
     }
 
     /**
-     * 使用用例 (仅执行，不更新结果)
+     * 执行用例 (仅执行，不更新结果)
      *
      * @param autoCaseVO 用例对象
      * @return 主要步骤全部执行结果都为true才返回true
      */
-    public Boolean use(AutoCaseVO autoCaseVO) {
-        boolean result;
-        // UI和接口用例分开执行
-        if (autoCaseVO.getType().equals(AutoCaseTypeEnum.UI_CASE.getCode())) {
-            result = executeUI(autoCaseVO);
-        } else {
-            result = executeAPI(autoCaseVO);
-        }
+    public Boolean use(AutoCaseVO autoCaseVO, StepExecutor executor) {
+        boolean result = execute(autoCaseVO, executor);
         log.info("--->执行用例完成：caseId={}, caseName={}, result={}", autoCaseVO.getCaseId(), autoCaseVO.getName(), result);
         return result;
+
+//        boolean result;
+//        // UI和接口用例分开执行
+//        if (autoCaseVO.getType().equals(AutoCaseTypeEnum.UI_CASE.getCode())) {
+//            result = executeUI(autoCaseVO);
+//        } else {
+//            result = executeAPI(autoCaseVO);
+//        }
+//        log.info("--->执行用例完成：caseId={}, caseName={}, result={}", autoCaseVO.getCaseId(), autoCaseVO.getName(), result);
+//        return result;
     }
 
-    /**
-     * 执行接口自动化用例
-     *
-     * @param autoCaseVO 用例对象
-     * @return 主要步骤全部执行结果都为true才返回true
-     */
-    private Boolean executeAPI(AutoCaseVO autoCaseVO) {
-        try {
-            return execute(autoCaseVO);
-        } catch (Exception e) {
-            log.error("--->执行api用例异常：caseId={}", autoCaseVO.getCaseId(), e);
-            return false;
-        }
-    }
+//    /**
+//     * 执行接口自动化用例
+//     *
+//     * @param autoCaseVO 用例对象
+//     * @return 主要步骤全部执行结果都为true才返回true
+//     */
+//    private Boolean executeAPI(AutoCaseVO autoCaseVO) {
+//        try {
+//            return execute(autoCaseVO);
+//        } catch (Exception e) {
+//            log.error("--->执行api用例异常：caseId={}", autoCaseVO.getCaseId(), e);
+//            return false;
+//        }
+//    }
+//
+//    /**
+//     * 执行UI自动化用例
+//     *
+//     * @param autoCaseVO 用例对象
+//     * @return 主要步骤全部执行结果都为true才返回true
+//     */
+//    private Boolean executeUI(AutoCaseVO autoCaseVO) {
+//        boolean result;
+//        try {
+//            // 打开webDrive，默认chrome(20220822，不用了，放在execute中)
+////            uiClient.init();
+//            // 执行包含ui步骤的用例
+//            result = execute(autoCaseVO);
+//        } catch (Exception e) {
+//            log.error("--->执行ui用例异常：caseId={}", autoCaseVO.getCaseId(), e);
+//            return false;
+//        } finally {
+//            // 退出webDrive（20220822，不用了）
+////            uiClient.quit();
+//        }
+//        return result;
+//    }
 
-    /**
-     * 执行UI自动化用例
-     *
-     * @param autoCaseVO 用例对象
-     * @return 主要步骤全部执行结果都为true才返回true
-     */
-    private Boolean executeUI(AutoCaseVO autoCaseVO) {
-        boolean result;
-        try {
-            // 打开webDrive，默认chrome(20220822，不用了，放在execute中)
-//            uiClient.init();
-            // 执行包含ui步骤的用例
-            result = execute(autoCaseVO);
-        } catch (Exception e) {
-            log.error("--->执行ui用例异常：caseId={}", autoCaseVO.getCaseId(), e);
-            return false;
-        } finally {
-            // 退出webDrive（20220822，不用了）
-//            uiClient.quit();
-        }
-        return result;
-    }
-
-    private Boolean execute(AutoCaseVO autoCaseVO) {
+    private Boolean execute(AutoCaseVO autoCaseVO, StepExecutor executor) {
         boolean result = true;
+        if (autoCaseVO.getMainStepList() == null || autoCaseVO.getMainStepList().size() == 0) {
+            log.error("--->用例没有主步骤：caseId={}", autoCaseVO.getCaseId());
+            return false;
+        }
         // 执行前置步骤
         if (autoCaseVO.getPreStepList() != null && autoCaseVO.getPreStepList().size() != 0) {
             for (CaseStepVO vo : autoCaseVO.getPreStepList()) {
-                vo.getAutoStep().setEnvironment(StringUtil.isBlank(autoCaseVO.getEnvironment()) ? null : autoCaseVO.getEnvironment());
-                stepService.use(vo.getAutoStep());
+//                vo.getAutoStep().setEnvironment(StringUtil.isBlank(autoCaseVO.getEnvironment()) ? null : autoCaseVO.getEnvironment());
+                executor.execute(vo.getAutoStep());
             }
         }
         // 执行主要步骤，只要有一个步骤为false，则整个case结果为false
         if (autoCaseVO.getMainStepList() != null && autoCaseVO.getMainStepList().size() != 0) {
             for (CaseStepVO vo : autoCaseVO.getMainStepList()) {
-                vo.getAutoStep().setEnvironment(StringUtil.isBlank(autoCaseVO.getEnvironment()) ? null : autoCaseVO.getEnvironment());
-                if (!stepService.use(vo.getAutoStep())) {
+                if (executor.execute(vo.getAutoStep()).equalsIgnoreCase("false")) {
                     result = false;
+                    break;
                 }
+//                vo.getAutoStep().setEnvironment(StringUtil.isBlank(autoCaseVO.getEnvironment()) ? null : autoCaseVO.getEnvironment());
+//                if (!stepService.use(vo.getAutoStep())) {
+//                    result = false;
+//                }
             }
-        } else {
-            log.error("--->用例没有主步骤：caseId={}", autoCaseVO.getCaseId());
-            return false;
         }
         // 执行收尾步骤，如果执行结果为false，则不执行该步骤保留现场
         if (result && autoCaseVO.getAfterStepList() != null && autoCaseVO.getAfterStepList().size() != 0) {
             for (CaseStepVO vo : autoCaseVO.getAfterStepList()) {
-                vo.getAutoStep().setEnvironment(StringUtil.isBlank(autoCaseVO.getEnvironment()) ? null : autoCaseVO.getEnvironment());
-                stepService.use(vo.getAutoStep());
+                executor.execute(vo.getAutoStep());
+//                vo.getAutoStep().setEnvironment(StringUtil.isBlank(autoCaseVO.getEnvironment()) ? null : autoCaseVO.getEnvironment());
+//                stepService.use(vo.getAutoStep());
             }
         }
         return result;

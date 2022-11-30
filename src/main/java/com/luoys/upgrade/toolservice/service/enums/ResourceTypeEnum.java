@@ -11,13 +11,13 @@ import java.util.Map;
  * @author luoys
  */
 @Getter
-@Deprecated
 public enum ResourceTypeEnum {
 
     DATA_SOURCE(1, "数据库"),
-    DEVICE(2, "手机"),
-    TEST_ENV(3, "测试环境"),
-    SLAVE_NODE(4, "从节点");
+    SLAVE_SOURCE(2, "从节点");
+//    DEVICE(2, "手机"),
+//    TEST_ENV(3, "测试环境"),
+//    SLAVE_NODE(4, "从节点");
 
     private final Integer code;
     private final String description;

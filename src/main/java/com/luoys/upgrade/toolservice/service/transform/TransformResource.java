@@ -27,10 +27,10 @@ public class TransformResource {
         vo.setPermission(po.getPermission());
         vo.setName(po.getName());
         vo.setType(po.getType());
-        vo.setResourceId(po.getResourceId());
+        vo.setResourceId(po.getId());
         vo.setOwnerName(po.getOwnerName());
-        vo.setUserId(po.getUserId());
-        vo.setUserName(po.getUserName());
+//        vo.setUserId(po.getUserId());
+//        vo.setUserName(po.getUserName());
         return vo;
     }
 
@@ -50,13 +50,13 @@ public class TransformResource {
         ResourceVO vo = new ResourceVO();
         vo.setDescription(po.getDescription());
         vo.setType(po.getType());
-        vo.setResourceId(po.getResourceId());
+        vo.setResourceId(po.getId());
         vo.setName(po.getName());
         vo.setPermission(po.getPermission());
         vo.setOwnerId(po.getOwnerId());
         vo.setOwnerName(po.getOwnerName());
-        vo.setUserId(po.getUserId());
-        vo.setUserName(po.getUserName());
+//        vo.setUserId(po.getUserId());
+//        vo.setUserName(po.getUserName());
         //根据类型转换不同的对象
         switch (ResourceTypeEnum.fromCode(po.getType())) {
             case DATA_SOURCE:
@@ -67,19 +67,19 @@ public class TransformResource {
                 dataSourceDTO.setPassword(po.getJdbcPassword());
                 vo.setDataSource(dataSourceDTO);
                 break;
-            case DEVICE:
-                DeviceDTO deviceDTO = new DeviceDTO();
-                deviceDTO.setDpi(po.getDeviceDpi());
-                deviceDTO.setModel(po.getDeviceModel());
-                deviceDTO.setOs(po.getDeviceOs());
-                deviceDTO.setSize(po.getDeviceSize());
-                vo.setDevice(deviceDTO);
-                break;
-            case TEST_ENV:
-                vo.setEnvUrl(po.getEnvUrl());
-                break;
-            case SLAVE_NODE:
-                vo.setSlaveUrl(po.getSlaveUrl());
+//            case DEVICE:
+//                DeviceDTO deviceDTO = new DeviceDTO();
+//                deviceDTO.setDpi(po.getDeviceDpi());
+//                deviceDTO.setModel(po.getDeviceModel());
+//                deviceDTO.setOs(po.getDeviceOs());
+//                deviceDTO.setSize(po.getDeviceSize());
+//                vo.setDevice(deviceDTO);
+//                break;
+//            case TEST_ENV:
+//                vo.setEnvUrl(po.getEnvUrl());
+//                break;
+            case SLAVE_SOURCE:
+//                vo.setSlaveUrl(po.getSlaveUrl());
                 break;
 
         }
@@ -93,14 +93,14 @@ public class TransformResource {
         ResourcePO po = new ResourcePO();
         //转换基本信息
         po.setDescription(vo.getDescription());
-        po.setResourceId(vo.getResourceId());
+        po.setId(vo.getResourceId());
         po.setName(vo.getName());
         po.setPermission(vo.getPermission());
         po.setType(vo.getType());
         po.setOwnerId(vo.getOwnerId());
         po.setOwnerName(vo.getOwnerName());
-        po.setUserId(vo.getUserId());
-        po.setUserName(vo.getUserName());
+//        po.setUserId(vo.getUserId());
+//        po.setUserName(vo.getUserName());
         //根据类型转换不同的对象
         switch (ResourceTypeEnum.fromCode(vo.getType())) {
             case DATA_SOURCE:
@@ -109,17 +109,17 @@ public class TransformResource {
                 po.setJdbcUrl(vo.getDataSource().getUrl());
                 po.setJdbcUsername(vo.getDataSource().getUsername());
                 break;
-            case DEVICE:
-                po.setDeviceDpi(vo.getDevice().getDpi());
-                po.setDeviceModel(vo.getDevice().getModel());
-                po.setDeviceOs(vo.getDevice().getOs());
-                po.setDeviceSize(vo.getDevice().getSize());
-                break;
-            case TEST_ENV:
-                po.setEnvUrl(vo.getEnvUrl());
-                break;
-            case SLAVE_NODE:
-                po.setSlaveUrl(vo.getSlaveUrl());
+//            case DEVICE:
+//                po.setDeviceDpi(vo.getDevice().getDpi());
+//                po.setDeviceModel(vo.getDevice().getModel());
+//                po.setDeviceOs(vo.getDevice().getOs());
+//                po.setDeviceSize(vo.getDevice().getSize());
+//                break;
+//            case TEST_ENV:
+//                po.setEnvUrl(vo.getEnvUrl());
+//                break;
+            case SLAVE_SOURCE:
+//                po.setSlaveUrl(vo.getSlaveUrl());
                 break;
         }
         return po;

@@ -28,7 +28,7 @@
     jdbc_password, slave_ip, slave_port,
     project_id, owner_id, owner_name
   </sql>
-  <select id="selectByUUID" resultMap="BaseResultMap">
+  <select id="selectByID" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from resource

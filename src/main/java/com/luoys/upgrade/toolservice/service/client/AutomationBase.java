@@ -8,6 +8,7 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.client.RestTemplate;
 
+@Deprecated
 // 主要解决AssertionClient和UIClient要且必须要使用同一个webdriver的问题
 public class AutomationBase {
     // UiClient和AssertionClient使用

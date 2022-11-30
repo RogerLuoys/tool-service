@@ -62,7 +62,7 @@ public interface UserMapper {
      * @param userId 业务id
      * @return 账号信息
      */
-    UserPO selectByUUId(Integer userId);
+    UserPO selectById(Integer userId);
 
     /**
      * 通过其它条件查询

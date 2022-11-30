@@ -24,12 +24,12 @@ public class TransformAutoCase {
         vo.setDescription(po.getDescription());
         vo.setOwnerId(po.getOwnerId());
         vo.setName(po.getName());
-        vo.setCaseId(po.getCaseId());
+        vo.setCaseId(po.getId());
         vo.setType(po.getType());
         vo.setStatus(po.getStatus());
-        vo.setMaxTime(po.getMaxTime());
+//        vo.setMaxTime(po.getMaxTime());
         vo.setOwnerName(po.getOwnerName());
-        vo.setEnvironment(po.getEnvironment());
+//        vo.setEnvironment(po.getEnvironment());
         vo.setFinishTime(po.getFinishTime());
         return vo;
     }
@@ -58,14 +58,14 @@ public class TransformAutoCase {
         vo.setDescription(po.getDescription());
         vo.setOwnerId(po.getOwnerId());
         vo.setOwnerName(po.getOwnerName());
-        vo.setCaseId(po.getCaseId());
+        vo.setCaseId(po.getId());
         vo.setStatus(po.getStatus());
-        vo.setMainSteps(po.getMainSteps());
-        vo.setEnvironment(po.getEnvironment());
+//        vo.setMainSteps(po.getMainSteps());
+//        vo.setEnvironment(po.getEnvironment());
         vo.setFinishTime(po.getFinishTime());
-        vo.setMaxTime(po.getMaxTime());
-        // 参数列表转换
-        vo.setParameterList(TransformCommon.toParameter(po.getParameter()));
+//        vo.setMaxTime(po.getMaxTime());
+//        // 参数列表转换
+//        vo.setParameterList(TransformCommon.toParameter(po.getParameter()));
         return vo;
     }
 
@@ -84,16 +84,16 @@ public class TransformAutoCase {
         po.setDescription(vo.getDescription());
         po.setOwnerId(vo.getOwnerId());
         po.setOwnerName(vo.getOwnerName());
-        po.setCaseId(vo.getCaseId());
+        po.setId(vo.getCaseId());
         po.setType(vo.getType());
         po.setStatus(vo.getStatus());
-        po.setMaxTime(vo.getMaxTime());
-        po.setEnvironment(vo.getEnvironment());
+//        po.setMaxTime(vo.getMaxTime());
+//        po.setEnvironment(vo.getEnvironment());
         po.setFinishTime(vo.getFinishTime());
-        // 参数列表转换
-        po.setParameter(TransformCommon.toParameter(vo.getParameterList()));
-        // 转换步骤脚本
-        po.setMainSteps(vo.getMainSteps());
+//        // 参数列表转换
+//        po.setParameter(TransformCommon.toParameter(vo.getParameterList()));
+//        // 转换步骤脚本
+//        po.setMainSteps(vo.getMainSteps());
         return po;
     }
 

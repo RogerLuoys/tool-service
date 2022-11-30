@@ -16,7 +16,7 @@ public class AutoSuiteVO {
     /**
      * 业务id
      */
-    private String suiteId;
+    private Integer suiteId;
 
     /**
      * 名称
@@ -77,7 +77,7 @@ public class AutoSuiteVO {
     /**
      * 所属人id
      */
-    private String ownerId;
+    private Integer ownerId;
 
     /**
      * 所属人

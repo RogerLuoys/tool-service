@@ -13,7 +13,7 @@ public class AutoSuiteSimpleVO {
     /**
      * 业务id
      */
-    private String suiteId;
+    private Integer suiteId;
 
     /**
      * 名称
@@ -63,7 +63,7 @@ public class AutoSuiteSimpleVO {
     /**
      * 所属人id
      */
-    private String ownerId;
+    private Integer ownerId;
 
     /**
      * 所属人

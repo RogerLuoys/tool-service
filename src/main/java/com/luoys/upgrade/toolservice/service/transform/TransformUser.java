@@ -10,13 +10,13 @@ public class TransformUser {
             return null;
         }
         UserPO po = new UserPO();
-        po.setStatus(vo.getStatus());
-        po.setUserId(vo.getUserId());
-        po.setLoginName(vo.getLoginName());
+//        po.setStatus(vo.getStatus());
+        po.setId(vo.getUserId());
+        po.setUsername(vo.getUsername());
         po.setType(vo.getType());
         po.setPhone(vo.getPhone());
-        po.setUserName(vo.getUserName());
-        po.setPassWord(vo.getPassWord());
+        po.setNickname(vo.getNickname());
+        po.setPassword(vo.getPassword());
         return po;
     }
 
@@ -25,13 +25,13 @@ public class TransformUser {
             return null;
         }
         UserVO vo = new UserVO();
-        vo.setPassWord(po.getPassWord());
-        vo.setUserId(po.getUserId());
-        vo.setUserName(po.getUserName());
+        vo.setPassword(po.getPassword());
+        vo.setUserId(po.getId());
+        vo.setUsername(po.getUsername());
         vo.setPhone(po.getPhone());
-        vo.setStatus(po.getStatus());
+//        vo.setStatus(po.getStatus());
         vo.setType(po.getType());
-        vo.setLoginName(po.getLoginName());
+        vo.setNickname(po.getNickname());
         return vo;
     }
 }

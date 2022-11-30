@@ -22,7 +22,7 @@
     id, supper_case_id, `name`, description, time_out, `type`, `status`, finish_time, project_id, owner_id,
     owner_name
   </sql>
-  <select id="selectByUUID" parameterType="java.lang.String" resultMap="BaseResultMap">
+  <select id="selectByID" parameterType="java.lang.String" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from auto_case

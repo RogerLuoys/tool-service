@@ -1,6 +1,7 @@
 package com.luoys.upgrade.toolservice.service.client;
 
 import com.luoys.upgrade.toolservice.dao.po.AutoStepPO;
+import com.luoys.upgrade.toolservice.web.vo.AutoStepVO;
 
 /**
  * 步骤执行器，参考外观模式
@@ -25,5 +26,12 @@ public class StepExecutor {
     public String execute(AutoStepPO autoStepPO) {
         String varName;
         return sql.execute(autoStepPO);
+    }
+
+
+    public String execute(AutoStepVO autoStepVO) {
+        String varName;
+//        return sql.execute(autoStepPO);
+        return null;
     }
 }

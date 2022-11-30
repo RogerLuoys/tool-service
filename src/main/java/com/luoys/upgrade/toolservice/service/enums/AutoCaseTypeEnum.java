@@ -8,12 +8,15 @@ import lombok.Getter;
  * @author luoys
  */
 @Getter
-@Deprecated
 public enum AutoCaseTypeEnum {
 
 
-    INTERFACE_CASE(1, "接口测试用例"),
-    UI_CASE(2, "ui测试用例");
+    SCRIPT_CASE(1, "自动化脚本"),
+    SUPPER_CASE(1, "自动化超类"),
+    PO_CASE(1, "封装的PO方法"),
+    DATA_CASE(1, "数据工厂");
+//    INTERFACE_CASE(1, "接口测试用例"),
+//    UI_CASE(2, "ui测试用例");
 
 
     private final Integer code;

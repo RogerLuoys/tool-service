@@ -60,7 +60,7 @@ public class ResourceVO {
     /**
      * 所属人id
      */
-    private String ownerId;
+    private Integer ownerId;
 
     /**
      * 所属人昵称
@@ -70,7 +70,7 @@ public class ResourceVO {
     /**
      * 使用人id
      */
-    private String userId;
+    private Integer userId;
 
     /**
      * 使用人昵称

@@ -16,7 +16,7 @@ public class AutoCaseSimpleVO {
     /**
      * 业务id
      */
-    private String caseId;
+    private Integer caseId;
 
     /**
      * 名称
@@ -57,7 +57,7 @@ public class AutoCaseSimpleVO {
     /**
      * 所属人id
      */
-    private String ownerId;
+    private Integer ownerId;
 
     /**
      * 所属人

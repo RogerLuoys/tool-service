@@ -93,7 +93,7 @@ public class StepService {
 //        autoStepVO.setOwnerName(KeywordEnum.DEFAULT_USER.getValue());
 //        autoStepVO.setType(AutoStepTypeEnum.STEP_SQL.getCode());
 //        autoStepVO.setAssertType(AssertTypeEnum.NO_ASSERT.getCode());
-        autoStepVO.setModuleType(ModuleTypeEnum.UTIL.getCode());
+        autoStepVO.setModuleType(ModuleTypeEnum.UNDEFINED_MODULE.getCode());
         autoStepMapper.insert(TransformAutoStep.transformVO2PO(autoStepVO));
         return autoStepVO.getStepId();
     }

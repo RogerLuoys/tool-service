@@ -15,7 +15,7 @@ public class ResourceSimpleVO {
     /**
      * 业务id
      */
-    private String resourceId;
+    private Integer resourceId;
 
     /**
      * 名称
@@ -40,21 +40,21 @@ public class ResourceSimpleVO {
     /**
      * 所属人id
      */
-    private String ownerId;
+    private Integer ownerId;
 
     /**
      * 所属人昵称
      */
     private String ownerName;
 
-    /**
-     * 使用人id
-     */
-    private String userId;
-
-    /**
-     * 使用人昵称
-     */
-    private String userName;
+//    /**
+//     * 使用人id
+//     */
+//    private Integer userId;
+//
+//    /**
+//     * 使用人昵称
+//     */
+//    private String userName;
 
 }

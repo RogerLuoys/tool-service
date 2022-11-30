@@ -11,6 +11,7 @@ import java.util.List;
  *
  * @author luoys
  */
+@Deprecated
 public class TransformTask {
 
     public static TaskPO transformVO2PO(TaskVO vo) {

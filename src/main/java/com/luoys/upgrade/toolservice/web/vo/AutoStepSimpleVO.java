@@ -13,7 +13,7 @@ public class AutoStepSimpleVO {
     /**
      * 业务id
      */
-    private String stepId;
+    private Integer stepId;
 
     /**
      * 名称
@@ -28,7 +28,7 @@ public class AutoStepSimpleVO {
     /**
      * 步骤类型：1 SQL，2 HTTP，3 RPC，4 UI
      */
-    private Integer type;
+    private Integer moduleType;
 
     /**
      * 实际结果取到后的等待时间

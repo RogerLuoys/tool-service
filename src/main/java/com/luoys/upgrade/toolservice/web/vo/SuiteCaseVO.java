@@ -13,12 +13,12 @@ public class SuiteCaseVO {
     /**
      * 套件业务id
      */
-    private String suiteId;
+    private Integer suiteId;
 
     /**
      * 用例的业务id
      */
-    private String caseId;
+    private Integer caseId;
 
     /**
      * 套件关联用例的执行状态：1 未执行，2 失败，3成功

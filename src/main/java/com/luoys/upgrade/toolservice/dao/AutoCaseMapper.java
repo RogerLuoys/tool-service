@@ -54,7 +54,7 @@ public interface AutoCaseMapper {
      * @param caseId 主键id
      * @return 表对应的pojo对象
      */
-    AutoCasePO selectByUUID(@Param("caseId") Integer caseId);
+    AutoCasePO selectByID(@Param("caseId") Integer caseId);
 
     /**
      * 按条件分页查询，默认10条数据一页

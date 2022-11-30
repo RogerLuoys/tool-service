@@ -99,7 +99,7 @@ public interface AutoSuiteMapper {
      * @return 对象列表
      */
     List<AutoSuitePO> list(@Param("name") String name,
-                           @Param("ownerId") String ownerId,
+                           @Param("ownerId") Integer ownerId,
                            @Param("startIndex") Integer startIndex);
 
     /**
@@ -110,6 +110,6 @@ public interface AutoSuiteMapper {
      * @return 总数
      */
     int count(@Param("name") String name,
-              @Param("ownerId") String ownerId);
+              @Param("ownerId") Integer ownerId);
 
 }

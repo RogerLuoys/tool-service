@@ -12,6 +12,7 @@ import java.util.Map;
  * @author luoys
  */
 @Getter
+@Deprecated
 public enum AreaEnum {
 
     IF(1, "IF", "if 判断区域"),

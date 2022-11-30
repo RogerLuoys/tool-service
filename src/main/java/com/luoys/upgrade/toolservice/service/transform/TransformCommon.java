@@ -18,6 +18,7 @@ import java.util.Map;
  * @author luoys
  */
 @Slf4j
+@Deprecated
 public class TransformCommon {
 
     // 变量格式 ${name}, 1<=name长度<=20

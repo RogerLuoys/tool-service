@@ -5,32 +5,30 @@ import lombok.Data;
 @Data
 public class UserVO {
 
-    private Integer id;
-
     /**
      * uuid，即owner_id
      */
-    private String userId;
+    private Integer userId;
 
     /**
      * 登录名
      */
-    private String loginName;
+    private String username;
 
     /**
      * 登录密码
      */
-    private String passWord;
+    private String password;
 
     /**
      * 手机号码
      */
     private String phone;
 
-    /**
-     * 用户昵称
-     */
-    private String userName;
+//    /**
+//     * 用户昵称
+//     */
+//    private String userName;
 
     /**
      * 1--管理员；2--普通账号
@@ -38,8 +36,13 @@ public class UserVO {
     private Integer type;
 
     /**
-     * 1-正常；
+     * 用户昵称
      */
-    private Integer status;
+    private String nickname;
+
+//    /**
+//     * 1-正常；
+//     */
+//    private Integer status;
 
 }

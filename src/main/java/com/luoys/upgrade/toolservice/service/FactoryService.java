@@ -36,14 +36,14 @@ public class FactoryService {
     @Autowired
     private UserMapper userMapper;
 
-    @Autowired
-    private HTTPClient httpClient;
-
-    @Autowired
-    private RPCClient rpcClient;
-
-    @Autowired
-    private DBClient dbClient;
+//    @Autowired
+//    private HTTPClient httpClient;
+//
+//    @Autowired
+//    private RPCClient rpcClient;
+//
+//    @Autowired
+//    private DBClient dbClient;
 
     /**
      * 创建单个工具
@@ -56,8 +56,8 @@ public class FactoryService {
         if (toolVO.getOwnerId().equals(KeywordEnum.DEFAULT_USER.getCode().toString())) {
             toolVO.setOwnerName(KeywordEnum.DEFAULT_USER.getValue());
         } else {
-            String userName = userMapper.selectByUUId(toolVO.getOwnerId()).getUserName();
-            toolVO.setOwnerName(userName);
+//            String userName = userMapper.selectById(toolVO.getOwnerId()).getUserName();
+//            toolVO.setOwnerName(userName);
         }
         int result = toolMapper.insert(TransformTool.transformVO2PO(toolVO));
         return result == 1;
@@ -182,23 +182,23 @@ public class FactoryService {
      * @return 执行结果
      */
     private String execute(ToolVO toolVO) {
-        switch (ToolTypeEnum.fromCode(toolVO.getType())) {
-            case MULTIPLE:
-                log.warn("--->不执行聚合工具类型");
-                return null;
-            case SQL:
-                TransformTool.mergeSql(toolVO);
-                //通过JdbcTemplate实现
-                return dbClient.execute(toolVO.getJdbc());
-            case HTTP:
-                TransformTool.mergeHttp(toolVO);
-                //通过restTemplate实现
-                return httpClient.execute(toolVO.getHttpRequest());
-            case RPC:
-                TransformTool.mergeRpc(toolVO);
-                //通过json格式的泛化调用实现
-                return rpcClient.execute(toolVO.getRpc());
-        }
+//        switch (ToolTypeEnum.fromCode(toolVO.getType())) {
+//            case MULTIPLE:
+//                log.warn("--->不执行聚合工具类型");
+//                return null;
+//            case SQL:
+//                TransformTool.mergeSql(toolVO);
+//                //通过JdbcTemplate实现
+//                return dbClient.execute(toolVO.getJdbc());
+//            case HTTP:
+//                TransformTool.mergeHttp(toolVO);
+//                //通过restTemplate实现
+//                return httpClient.execute(toolVO.getHttpRequest());
+//            case RPC:
+//                TransformTool.mergeRpc(toolVO);
+//                //通过json格式的泛化调用实现
+//                return rpcClient.execute(toolVO.getRpc());
+//        }
         return null;
     }
 

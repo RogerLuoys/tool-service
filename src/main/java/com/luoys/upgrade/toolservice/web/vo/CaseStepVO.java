@@ -13,12 +13,12 @@ public class CaseStepVO {
     /**
      * 用例的业务id
      */
-    private String caseId;
+    private Integer caseId;
 
     /**
      * 步骤的业务id
      */
-    private String stepId;
+    private Integer stepId;
 
     /**
      * 步骤执行顺序

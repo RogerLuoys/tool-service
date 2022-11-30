@@ -12,26 +12,37 @@ import java.util.concurrent.TimeUnit;
  */
 public class ThreadPoolUtil {
 
-    private static ThreadPoolExecutor apiExecutor = new ThreadPoolExecutor(0, 3, 0, TimeUnit.SECONDS,
+    private static ThreadPoolExecutor autoExecutor = new ThreadPoolExecutor(0, 3, 0, TimeUnit.SECONDS,
             new LinkedBlockingQueue<Runnable>(1), new ThreadPoolExecutor.AbortPolicy());
 
-    private static ThreadPoolExecutor uiExecutor = new ThreadPoolExecutor(0, 1, 0, TimeUnit.SECONDS,
-            new LinkedBlockingQueue<Runnable>(1), new ThreadPoolExecutor.AbortPolicy());
-
-    public static void executeAPI(Runnable task) {
-        apiExecutor.execute(task);
+    /**
+     * 异步执行自动化
+     * @param task -
+     */
+    public static void executeAuto(Runnable task) {
+        autoExecutor.execute(task);
     }
 
-    public static void executeUI(Runnable task) {
-        uiExecutor.execute(task);
-    }
-
-    public static Future submitUI(Runnable task) {
-        return uiExecutor.submit(task);
-    }
-
-    public static Future submitAPI(Runnable task) {
-        return apiExecutor.submit(task);
-    }
+//    private static ThreadPoolExecutor apiExecutor = new ThreadPoolExecutor(0, 3, 0, TimeUnit.SECONDS,
+//            new LinkedBlockingQueue<Runnable>(1), new ThreadPoolExecutor.AbortPolicy());
+//
+//    private static ThreadPoolExecutor uiExecutor = new ThreadPoolExecutor(0, 1, 0, TimeUnit.SECONDS,
+//            new LinkedBlockingQueue<Runnable>(1), new ThreadPoolExecutor.AbortPolicy());
+//
+//    public static void executeAPI(Runnable task) {
+//        apiExecutor.execute(task);
+//    }
+//
+//    public static void executeUI(Runnable task) {
+//        uiExecutor.execute(task);
+//    }
+//
+//    public static Future submitUI(Runnable task) {
+//        return uiExecutor.submit(task);
+//    }
+//
+//    public static Future submitAPI(Runnable task) {
+//        return apiExecutor.submit(task);
+//    }
 
 }

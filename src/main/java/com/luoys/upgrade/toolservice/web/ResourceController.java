@@ -20,14 +20,14 @@ public class ResourceController {
     private ResourceService resourceService;
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public Result<String> create(@RequestHeader("userId") String userId, @RequestBody ResourceVO resourceVO) {
+    public Result<String> create(@RequestHeader("userId") Integer userId, @RequestBody ResourceVO resourceVO) {
         resourceVO.setOwnerId(userId);
         log.info("--->开始新增资源：{}", resourceVO);
         return Result.message(resourceService.create(resourceVO));
     }
 
     @RequestMapping(value = "/remove", method = RequestMethod.DELETE)
-    public Result<String> remove(@RequestParam("resourceId") String resourceId) {
+    public Result<String> remove(@RequestParam("resourceId") Integer resourceId) {
         log.info("--->开始删除资源：{}", resourceId);
         return Result.message(resourceService.remove(resourceId));
     }
@@ -47,7 +47,7 @@ public class ResourceController {
     @RequestMapping(value = "/query", method = RequestMethod.GET)
     public Result<PageInfo<ResourceSimpleVO>> query(@RequestParam(value = "type", required = false) Integer type,
                                                     @RequestParam(value = "name", required = false) String name,
-                                                    @RequestHeader("userId") String userId,
+                                                    @RequestHeader("userId") Integer userId,
                                                     @RequestParam("pageIndex") Integer pageIndex) {
         log.info("--->开始查询资源列表：");
         PageInfo<ResourceSimpleVO> pageInfo = new PageInfo<>();
@@ -57,7 +57,7 @@ public class ResourceController {
     }
 
     @RequestMapping(value = "/queryDetail", method = RequestMethod.GET)
-    public Result<ResourceVO> queryDetail(@RequestParam("resourceId") String resourceId) {
+    public Result<ResourceVO> queryDetail(@RequestParam("resourceId") Integer resourceId) {
         log.info("--->开始查询资源详情：resourceId={}", resourceId);
         return Result.success(resourceService.queryDetail(resourceId));
     }

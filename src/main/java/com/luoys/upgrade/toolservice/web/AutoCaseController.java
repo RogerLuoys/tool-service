@@ -24,7 +24,7 @@ public class AutoCaseController {
     public Result<String> test(@RequestParam("caseId") String caseId) {
         log.info("--->开始测试连接：caseId={}", caseId);
         // http:36336920834783  rpc:36334448520507
-        AutoCaseVO autoCaseVO = caseService.queryDetail("36336920834783");
+        AutoCaseVO autoCaseVO = caseService.queryDetail(1);
 //        autoCaseVO.setDescription("copy来的用例");
 //        for (int i = 1000; i < 10000; i++) {
 //            autoCaseVO.setName("http自动化批量1万copy"+(i+1));
@@ -34,7 +34,7 @@ public class AutoCaseController {
     }
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public Result<Boolean> create(@RequestHeader("userId") String userId, @RequestBody AutoCaseVO autoCaseVO) {
+    public Result<Boolean> create(@RequestHeader("userId") Integer userId, @RequestBody AutoCaseVO autoCaseVO) {
         autoCaseVO.setOwnerId(userId);
         log.info("--->开始新增用例：{}", autoCaseVO);
         return Result.message(caseService.create(autoCaseVO));
@@ -42,7 +42,7 @@ public class AutoCaseController {
 
     @RequestMapping(value = "/quickCreate", method = RequestMethod.POST)
     public Result<String> quickCreate(@RequestBody AutoCaseVO autoCaseVO,
-                                       @RequestHeader(value = "userId") String userId) {
+                                       @RequestHeader(value = "userId") Integer userId) {
         log.info("--->开始快速新增用例");
         autoCaseVO.setOwnerId(userId);
         autoCaseVO.setOwnerName(KeywordEnum.DEFAULT_USER.getValue());
@@ -56,7 +56,7 @@ public class AutoCaseController {
     }
 
     @RequestMapping(value = "/remove", method = RequestMethod.DELETE)
-    public Result<Boolean> remove(@RequestParam("caseId") String caseId) {
+    public Result<Boolean> remove(@RequestParam("caseId") Integer caseId) {
         log.info("--->开始删除用例：{}", caseId);
         return Result.message(caseService.remove(caseId));
     }
@@ -92,7 +92,7 @@ public class AutoCaseController {
     }
 
     @RequestMapping(value = "/query", method = RequestMethod.GET)
-    public Result<PageInfo<AutoCaseSimpleVO>> query(@RequestHeader("userId") String userId,
+    public Result<PageInfo<AutoCaseSimpleVO>> query(@RequestHeader("userId") Integer userId,
                                                     @RequestParam(value = "isOnlyOwner", required = false) Boolean isOnlyOwner,
                                                     @RequestParam(value = "status", required = false) Integer status,
                                                     @RequestParam(value = "name", required = false) String name,
@@ -105,7 +105,7 @@ public class AutoCaseController {
     }
 
     @RequestMapping(value = "/queryDetail", method = RequestMethod.GET)
-    public Result<AutoCaseVO> queryDetail(@RequestParam("caseId") String caseId) {
+    public Result<AutoCaseVO> queryDetail(@RequestParam("caseId") Integer caseId) {
         log.info("--->开始查询用例详情：caseId={}", caseId);
         return Result.success(caseService.queryDetail(caseId));
     }

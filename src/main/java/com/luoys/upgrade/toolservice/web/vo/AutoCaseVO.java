@@ -21,6 +21,11 @@ public class AutoCaseVO {
     private Integer caseId;
 
     /**
+     * 业务id
+     */
+    private Integer supperCaseId;
+
+    /**
      * 名称
      */
     private String name;
@@ -43,17 +48,17 @@ public class AutoCaseVO {
     /**
      * 用例执行的最长时间
      */
-    private Integer maxTime;
+    private Integer timeOut;
 
-    /**
-     * 用例执行环境（参数）
-     */
-    private String environment;
+//    /**
+//     * 用例执行环境（参数）
+//     */
+//    private String environment;
 
-    /**
-     * 入参列表，List<CommonDTO>类型
-     */
-    private List<ParameterDTO> parameterList;
+//    /**
+//     * 入参列表，List<CommonDTO>类型
+//     */
+//    private List<ParameterDTO> parameterList;
 
     /**
      * 用例计划完成时间
@@ -62,14 +67,14 @@ public class AutoCaseVO {
     private Date finishTime;
 
     /**
-     * 前置步骤(UI模式)
+     * 前置步骤(UI模式)，即@BeforeTest
      */
     private List<CaseStepVO> preStepList;
 
-    /**
-     * 前置步骤(脚本模式)，即@BeforeTest
-     */
-    private String preSteps;
+//    /**
+//     * 前置步骤(脚本模式)，即@BeforeTest
+//     */
+//    private String preSteps;
 
     /**
      * 主要步骤(UI模式)
@@ -82,19 +87,24 @@ public class AutoCaseVO {
     private String mainSteps;
 
     /**
-     * 收尾步骤(UI模式)
+     * 收尾步骤(UI模式)，即@AfterTest
      */
     private List<CaseStepVO> afterStepList;
 
+//    /**
+//     * 收尾步骤(脚本模式)，即@AfterTest
+//     */
+//    private String afterSteps;
+
     /**
-     * 收尾步骤(脚本模式)，即@AfterTest
+     * 所属项目id
      */
-    private String afterSteps;
+    private Integer projectId;
 
     /**
      * 所属人id
      */
-    private String ownerId;
+    private Integer ownerId;
 
     /**
      * 所属人

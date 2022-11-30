@@ -28,12 +28,12 @@ public class TransformAutoSuite {
         vo.setName(po.getName());
         vo.setFailed(po.getFailed());
         vo.setPassed(po.getPassed());
-        vo.setSuiteId(po.getSuiteId());
+        vo.setSuiteId(po.getId());
         vo.setOwnerId(po.getOwnerId());
         vo.setOwnerName(po.getOwnerName());
-        vo.setEnvironment(po.getEnvironment());
-        vo.setCaseMaxTime(po.getCaseMaxTime());
-        vo.setStepSleep(po.getStepSleep());
+//        vo.setEnvironment(po.getEnvironment());
+//        vo.setCaseMaxTime(po.getCaseMaxTime());
+//        vo.setStepSleep(po.getStepSleep());
         vo.setTotal(po.getTotal());
         vo.setStatus(po.getStatus());
         return vo;
@@ -59,16 +59,16 @@ public class TransformAutoSuite {
         vo.setName(po.getName());
         vo.setFailed(po.getFailed());
         vo.setPassed(po.getPassed());
-        vo.setSuiteId(po.getSuiteId());
+        vo.setSuiteId(po.getId());
         vo.setOwnerName(po.getOwnerName());
-        vo.setEnvironment(po.getEnvironment());
-        vo.setCaseMaxTime(po.getCaseMaxTime());
+//        vo.setEnvironment(po.getEnvironment());
+//        vo.setCaseMaxTime(po.getCaseMaxTime());
         vo.setStatus(po.getStatus());
-        vo.setStepSleep(po.getStepSleep());
-        vo.setIsUiCompleted(po.getIsUiCompleted());
-        vo.setIsApiCompleted(po.getIsApiCompleted());
-        // 参数列表转换
-        vo.setParameterList(TransformCommon.toParameter(po.getParameter()));
+//        vo.setStepSleep(po.getStepSleep());
+//        vo.setIsUiCompleted(po.getIsUiCompleted());
+//        vo.setIsApiCompleted(po.getIsApiCompleted());
+//        // 参数列表转换
+//        vo.setParameterList(TransformCommon.toParameter(po.getParameter()));
         return vo;
     }
 
@@ -82,18 +82,18 @@ public class TransformAutoSuite {
         po.setDescription(vo.getDescription());
         po.setTotal(vo.getTotal());
         po.setName(vo.getName());
-        po.setSuiteId(vo.getSuiteId());
+        po.setId(vo.getSuiteId());
         po.setFailed(vo.getFailed());
         po.setPassed(vo.getPassed());
         po.setOwnerName(vo.getOwnerName());
-        po.setEnvironment(vo.getEnvironment());
-        po.setCaseMaxTime(vo.getCaseMaxTime());
+//        po.setEnvironment(vo.getEnvironment());
+//        po.setCaseMaxTime(vo.getCaseMaxTime());
         po.setStatus(vo.getStatus());
-        po.setStepSleep(vo.getStepSleep());
-        po.setIsApiCompleted(vo.getIsApiCompleted());
-        po.setIsUiCompleted(vo.getIsUiCompleted());
-        // 参数列表转换
-        po.setParameter(TransformCommon.toParameter(vo.getParameterList()));
+//        po.setStepSleep(vo.getStepSleep());
+//        po.setIsApiCompleted(vo.getIsApiCompleted());
+//        po.setIsUiCompleted(vo.getIsUiCompleted());
+//        // 参数列表转换
+//        po.setParameter(TransformCommon.toParameter(vo.getParameterList()));
         return po;
     }
 

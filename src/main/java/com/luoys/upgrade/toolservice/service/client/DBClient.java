@@ -105,7 +105,7 @@ public class DBClient {
      * @param jdbcDTO 数据源
      */
     private void init(JdbcDTO jdbcDTO) {
-        jdbcTemplate = AutomationBase.getJdbcTemplate();
+        jdbcTemplate = new JdbcTemplate();
         HikariConfig config = new HikariConfig();
         config.setDriverClassName(jdbcDTO.getDriver());
         config.setJdbcUrl(jdbcDTO.getUrl());

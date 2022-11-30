@@ -33,12 +33,12 @@ public class ResourceService {
      * @return 成功为true，失败为false
      */
     public Boolean create(ResourceVO resourceVO) {
-        resourceVO.setResourceId(NumberSender.createResourceId());
+//        resourceVO.setResourceId(NumberSender.createResourceId());
         if (resourceVO.getOwnerId().equals(KeywordEnum.DEFAULT_USER.getCode().toString())) {
             resourceVO.setOwnerName(KeywordEnum.DEFAULT_USER.getValue());
         } else {
-            String userName = userMapper.selectByUUId(resourceVO.getOwnerId()).getUserName();
-            resourceVO.setOwnerName(userName);
+            String username = userMapper.selectById(resourceVO.getOwnerId()).getUsername();
+            resourceVO.setOwnerName(username);
         }
         int result = resourceMapper.insert(TransformResource.transformVO2PO(resourceVO));
         return result == 1;
@@ -50,7 +50,7 @@ public class ResourceService {
      * @param resourceId 资源业务id
      * @return 成功为true，失败为false
      */
-    public Boolean remove(String resourceId) {
+    public Boolean remove(Integer resourceId) {
         int result = resourceMapper.remove(resourceId);
         return result == 1;
     }
@@ -86,7 +86,7 @@ public class ResourceService {
      * @param pageIndex 页码
      * @return 资源列表
      */
-    public List<ResourceSimpleVO> query(Integer type, String name, String userId, Integer pageIndex) {
+    public List<ResourceSimpleVO> query(Integer type, String name, Integer userId, Integer pageIndex) {
         int startIndex = (pageIndex - 1) * KeywordEnum.DEFAULT_PAGE_SIZE.getCode();
         return TransformResource.transformPO2SimpleVO(resourceMapper.list(type, name, userId, startIndex));
     }
@@ -99,7 +99,7 @@ public class ResourceService {
      * @param userId 用户id
      * @return 资源列表
      */
-    public Integer count(Integer type, String name, String userId) {
+    public Integer count(Integer type, String name, Integer userId) {
         return resourceMapper.count(type, name, userId);
     }
 
@@ -109,8 +109,8 @@ public class ResourceService {
      * @param resourceId 资源业务id
      * @return 资源对象
      */
-    public ResourceVO queryDetail(String resourceId) {
-        return TransformResource.transformPO2VO(resourceMapper.selectByUUID(resourceId));
+    public ResourceVO queryDetail(Integer resourceId) {
+        return TransformResource.transformPO2VO(resourceMapper.selectByID(resourceId));
     }
 
     /**

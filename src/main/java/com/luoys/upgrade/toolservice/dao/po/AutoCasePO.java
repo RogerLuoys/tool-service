@@ -74,7 +74,7 @@ public class AutoCasePO {
 //    private String mainSteps;
 
     /**
-     * 所属人id
+     * 所属项目id
      */
     private Integer projectId;
 

@@ -69,11 +69,11 @@ public class UserService {
      * @param userId 业务id
      * @return 用户对象
      */
-    public UserVO queryByUserId(String userId) {
+    public UserVO queryByUserId(Integer userId) {
         if (null == userId) {
             return null;
         }
-        return TransformUser.transformPO2VO(userMapper.selectByUUId(userId));
+        return TransformUser.transformPO2VO(userMapper.selectById(userId));
     }
 
     /**
@@ -95,20 +95,20 @@ public class UserService {
      * @return 创建后的用户对象
      */
     public UserVO newUser(UserVO userVO) {
-        if (userVO == null || userVO.getLoginName() == null || userVO.getPassWord() == null) {
+        if (userVO == null || userVO.getUsername() == null || userVO.getPassword() == null) {
             log.error("--->注册入参为空");
             return null;
         }
-        if (userVO.getUserName() == null) {
-            userVO.setUserName(KeywordEnum.DEFAULT_USER.getValue());
+        if (userVO.getUsername() == null) {
+            userVO.setUsername(KeywordEnum.DEFAULT_USER.getValue());
         }
         if (userVO.getType() == null) {
             userVO.setType(UserTypeEnum.REGULAR.getCode());
         }
-        if (userVO.getStatus() == null) {
-            userVO.setStatus(DEFAULT_USER_STATUS);
-        }
-        userVO.setUserId(NumberSender.createUserId());
+//        if (userVO.getStatus() == null) {
+//            userVO.setStatus(DEFAULT_USER_STATUS);
+//        }
+//        userVO.setUserId(NumberSender.createUserId());
         int insertUserResult = userMapper.insert(TransformUser.transformVO2PO(userVO));
         return insertUserResult == 1 ? userVO : null;
     }

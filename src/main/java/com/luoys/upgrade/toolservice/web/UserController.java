@@ -23,7 +23,7 @@ public class UserController {
     }
 
     @RequestMapping(value = "/queryDetail", method = RequestMethod.GET)
-    public Result<UserVO> queryDetail(@RequestHeader("userId") String userId) {
+    public Result<UserVO> queryDetail(@RequestHeader("userId") Integer userId) {
         log.info("--->查询用户信息开始：userId={}", userId);
         return Result.success(userService.queryByUserId(userId));
     }
@@ -31,7 +31,7 @@ public class UserController {
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     public Result<Integer> register(@RequestBody UserVO userVO){
         log.info("--->注册用户开始：{}", userVO);
-        if (userService.checkUserExist(userVO.getLoginName())) {
+        if (userService.checkUserExist(userVO.getUsername())) {
             return Result.error("登录名已存在");
         }
         return Result.success(userService.newUser(userVO));

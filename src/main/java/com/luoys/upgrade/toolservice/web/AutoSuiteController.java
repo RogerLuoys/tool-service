@@ -28,7 +28,7 @@ public class AutoSuiteController {
 
     @RequestMapping(value = "/quickCreate", method = RequestMethod.POST)
     public Result<String> quickCreate(@RequestBody AutoSuiteVO autoSuiteVO,
-                                       @RequestHeader(value = "userId") String userId) {
+                                       @RequestHeader(value = "userId") Integer userId) {
         log.info("--->开始快速新增套件：{}", autoSuiteVO);
         autoSuiteVO.setOwnerId(userId);
         autoSuiteVO.setOwnerName(KeywordEnum.DEFAULT_USER.getValue());
@@ -42,22 +42,22 @@ public class AutoSuiteController {
     }
 
     @RequestMapping(value = "/batchRelatedCase", method = RequestMethod.GET)
-    public Result<Boolean> batchRelatedCase(@RequestParam("suiteId") String suiteId,
-                                            @RequestHeader("userId") String userId,
+    public Result<Boolean> batchRelatedCase(@RequestParam("suiteId") Integer suiteId,
+                                            @RequestHeader("userId") Integer userId,
                                             @RequestParam("caseName") String caseName) {
         log.info("--->开始批量关联的用例");
         return Result.message(suiteService.createRelatedCase(suiteId, userId, caseName));
     }
 
     @RequestMapping(value = "/remove", method = RequestMethod.DELETE)
-    public Result<Boolean> remove(@RequestParam("suiteId") String suiteId) {
+    public Result<Boolean> remove(@RequestParam("suiteId") Integer suiteId) {
         log.info("--->开始删除套件：suiteId={}", suiteId);
         return Result.message(suiteService.remove(suiteId));
     }
 
     @RequestMapping(value = "/removeRelatedCase", method = RequestMethod.DELETE)
-    public Result<Boolean> removeRelatedCase(@RequestParam("suiteId") String suiteId,
-                                             @RequestParam("caseId") String caseId) {
+    public Result<Boolean> removeRelatedCase(@RequestParam("suiteId") Integer suiteId,
+                                             @RequestParam("caseId") Integer caseId) {
         log.info("--->开始删除套件关联的用例：suiteId={}, caseId={}", suiteId, caseId);
         return Result.message(suiteService.removeRelatedCase(suiteId, caseId));
     }
@@ -75,14 +75,14 @@ public class AutoSuiteController {
     }
 
     @RequestMapping(value = "/reset", method = RequestMethod.PUT)
-    public Result<Boolean> reset(@RequestParam String suiteId) {
+    public Result<Boolean> reset(@RequestParam Integer suiteId) {
         log.info("--->开始重置套件：suiteId={}", suiteId);
         return Result.message(suiteService.reset(suiteId));
     }
 
     @RequestMapping(value = "/query", method = RequestMethod.GET)
     public Result<PageInfo<AutoSuiteSimpleVO>> query(@RequestParam(value = "name", required = false) String name,
-                                                     @RequestHeader(value = "userId") String userId,
+                                                     @RequestHeader(value = "userId") Integer userId,
                                                      @RequestParam("pageIndex") Integer pageIndex) {
         log.info("--->开始查询套件列表：");
         PageInfo<AutoSuiteSimpleVO> pageInfo = new PageInfo<>();
@@ -92,14 +92,14 @@ public class AutoSuiteController {
     }
 
     @RequestMapping(value = "/queryDetail", method = RequestMethod.GET)
-    public Result<AutoSuiteVO> queryDetail(@RequestParam("suiteId") String suiteId,
+    public Result<AutoSuiteVO> queryDetail(@RequestParam("suiteId") Integer suiteId,
                                            @RequestParam("startIndex") Integer startIndex) {
         log.info("--->开始查询套件详情：suiteId={}", suiteId);
         return Result.success(suiteService.queryDetail(suiteId, startIndex));
     }
 
     @RequestMapping(value = "/use", method = RequestMethod.GET)
-    public Result<String> use(@RequestParam("suiteId") String suiteId,
+    public Result<String> use(@RequestParam("suiteId") Integer suiteId,
                               @RequestParam(value = "retry", required = false) Boolean retry) {
         log.info("--->开始执行套件：suiteId={}, retry={}", suiteId, retry);
         try {

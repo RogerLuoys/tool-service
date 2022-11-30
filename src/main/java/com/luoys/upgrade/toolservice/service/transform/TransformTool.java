@@ -16,6 +16,7 @@ import java.util.List;
  * @author luoys
  */
 @Slf4j
+@Deprecated
 public class TransformTool {
 
     // 变量格式 ${name}, 1<=name长度<=20
