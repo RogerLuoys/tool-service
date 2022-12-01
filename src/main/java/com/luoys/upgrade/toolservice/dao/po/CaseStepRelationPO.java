@@ -38,148 +38,43 @@ public class CaseStepRelationPO {
     private String stepName;
 
     /**
-     * 步骤类型：1 SQL，2 HTTP，3 RPC，4 UI
+     * 模块类型：1 PO，2 SQL，3 HTTP，4 RPC，5 UI，6 ASSERT，7 UTIL
      */
-    private Integer stepType;
+    private Integer moduleType;
 
     /**
-     * 聚合步骤列表
+     * 方法类型，含义跟module_type有关
      */
-    private String steps;
+    private Integer methodType;
 
     /**
-     * sql语句列表，List<CommonDTO>类型
+     * 方法名，当module_type=1或7时，分别对应resource.name和auto_case.name
      */
-    private String jdbcSql;
+    private String methodName;
 
     /**
-     * 数据源地址
+     * 方法关联的id，当module_type=1或7时，分别对应resource.id和auto_case.id
      */
-    private String jdbcUrl;
+    private Integer methodId;
 
     /**
-     * 数据源驱动
+     * 入参1
      */
-    private String jdbcDriver;
+    private String parameter1;
 
     /**
-     * 数据源用户名
+     * 入参2
      */
-    private String jdbcUsername;
+    private String parameter2;
 
     /**
-     * 数据源密码
+     * 入参3
      */
-    private String jdbcPassword;
+    private String parameter3;
 
     /**
-     * http完整路径，可带参数
+     * 变量名
      */
-    private String httpUrl;
-
-    /**
-     * http请求类型
-     */
-    private String httpType;
-
-    /**
-     * http请求头
-     */
-    private String httpHeader;
-
-    /**
-     * http请求体
-     */
-    private String httpBody;
-
-    /**
-     * rpc域名或ip:prot
-     */
-    private String rpcUrl;
-
-    /**
-     * rpc接口路径，class name
-     */
-    private String rpcInterface;
-
-    /**
-     * rpc方法
-     */
-    private String rpcMethod;
-
-    /**
-     * rpc入参类型
-     */
-    private String rpcParameterType;
-
-    /**
-     * rpc入参，List<CommonDTO>类型
-     */
-    private String rpcParameter;
-
-    /**
-     * 控件操作类型：1 click，2 sendkey，3 is exist
-     */
-    private Integer uiType;
-
-    /**
-     * 被测网址
-     */
-    private String uiUrl;
-
-    /**
-     * 自动化元素，默认xpath
-     */
-    private String uiElement;
-
-    /**
-     * 元素序号，从1开始
-     */
-    private Integer uiElementId;
-
-    /**
-     * 键盘输入的值
-     */
-    private String uiKey;
-
-    /**
-     * 实际结果取到后的等待时间
-     */
-    private Integer afterSleep;
-
-    /**
-     * 断言类型：1 完全匹配，2 模糊匹配，-1 不校验
-     */
-    private Integer assertType;
-
-    /**
-     * 实际结果
-     */
-    private String assertActual;
-
-    /**
-     * 预期结果
-     */
-    private String assertExpect;
-
-    /**
-     * 断言结果
-     */
-    private Boolean assertResult;
-
-    /**
-     * 所属人id
-     */
-    private String ownerId;
-
-    /**
-     * 所属人
-     */
-    private String ownerName;
-
-    /**
-     * 是否公用
-     */
-    private Boolean isPublic;
+    private String varName;
 
 }

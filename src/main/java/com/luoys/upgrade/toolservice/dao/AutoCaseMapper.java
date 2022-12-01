@@ -54,20 +54,20 @@ public interface AutoCaseMapper {
      * @param caseId 主键id
      * @return 表对应的pojo对象
      */
-    AutoCasePO selectByID(@Param("caseId") Integer caseId);
+    AutoCasePO selectById(@Param("caseId") Integer caseId);
 
     /**
      * 按条件分页查询，默认10条数据一页
      *
      * @param status     状态
      * @param name       名字
-     * @param ownerId    所属人id
      * @param startIndex 页码，从0开始
      * @return 对象列表
      */
-    List<AutoCasePO> list(@Param("status") Integer status,
+    List<AutoCasePO> list(@Param("projectId") Integer projectId,
+                          @Param("supperCaseId") Integer supperCaseId,
+                          @Param("status") Integer status,
                           @Param("name") String name,
-                          @Param("ownerId") Integer ownerId,
                           @Param("startIndex") Integer startIndex);
 
     /**
@@ -75,11 +75,11 @@ public interface AutoCaseMapper {
      *
      * @param status  状态
      * @param name    名字
-     * @param ownerId 所属人id
      * @return 总数
      */
-    int count(@Param("status") Integer status,
-              @Param("name") String name,
-              @Param("ownerId") Integer ownerId);
+    int count(@Param("projectId") Integer projectId,
+              @Param("supperCaseId") Integer supperCaseId,
+              @Param("status") Integer status,
+              @Param("name") String name);
 
 }

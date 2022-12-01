@@ -1,5 +1,6 @@
 package com.luoys.upgrade.toolservice.service;
 
+import com.luoys.upgrade.toolservice.dao.po.AutoStepPO;
 import com.luoys.upgrade.toolservice.service.common.StringUtil;
 import com.luoys.upgrade.toolservice.service.common.ThreadPoolUtil;
 import com.luoys.upgrade.toolservice.dao.AutoStepMapper;
@@ -94,8 +95,9 @@ public class StepService {
 //        autoStepVO.setType(AutoStepTypeEnum.STEP_SQL.getCode());
 //        autoStepVO.setAssertType(AssertTypeEnum.NO_ASSERT.getCode());
         autoStepVO.setModuleType(ModuleTypeEnum.UNDEFINED_MODULE.getCode());
-        autoStepMapper.insert(TransformAutoStep.transformVO2PO(autoStepVO));
-        return autoStepVO.getStepId();
+        AutoStepPO autoStepPO = TransformAutoStep.transformVO2PO(autoStepVO);
+        autoStepMapper.insert(autoStepPO);
+        return autoStepPO.getId();
     }
 
     /**

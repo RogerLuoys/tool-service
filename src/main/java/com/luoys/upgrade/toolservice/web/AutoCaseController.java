@@ -34,7 +34,7 @@ public class AutoCaseController {
     }
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public Result<Boolean> create(@RequestHeader("userId") Integer userId, @RequestBody AutoCaseVO autoCaseVO) {
+    public Result<Integer> create(@RequestHeader("userId") Integer userId, @RequestBody AutoCaseVO autoCaseVO) {
         autoCaseVO.setOwnerId(userId);
         log.info("--->开始新增用例：{}", autoCaseVO);
         return Result.message(caseService.create(autoCaseVO));
@@ -42,9 +42,11 @@ public class AutoCaseController {
 
     @RequestMapping(value = "/quickCreate", method = RequestMethod.POST)
     public Result<String> quickCreate(@RequestBody AutoCaseVO autoCaseVO,
+                                      @RequestHeader(value = "projectId") Integer projectId,
                                        @RequestHeader(value = "userId") Integer userId) {
         log.info("--->开始快速新增用例");
         autoCaseVO.setOwnerId(userId);
+        autoCaseVO.setProjectId(projectId);
         autoCaseVO.setOwnerName(KeywordEnum.DEFAULT_USER.getValue());
         return Result.message(caseService.quickCreate(autoCaseVO));
     }
@@ -91,16 +93,29 @@ public class AutoCaseController {
         return Result.message(caseService.change2ScriptMode(autoCaseVO));
     }
 
-    @RequestMapping(value = "/query", method = RequestMethod.GET)
-    public Result<PageInfo<AutoCaseSimpleVO>> query(@RequestHeader("userId") Integer userId,
-                                                    @RequestParam(value = "isOnlyOwner", required = false) Boolean isOnlyOwner,
-                                                    @RequestParam(value = "status", required = false) Integer status,
-                                                    @RequestParam(value = "name", required = false) String name,
-                                                    @RequestParam("pageIndex") Integer pageIndex) {
+//    @RequestMapping(value = "/query", method = RequestMethod.GET)
+//    public Result<PageInfo<AutoCaseSimpleVO>> query(@RequestHeader("userId") Integer userId,
+//                                                    @RequestParam(value = "isOnlyOwner", required = false) Boolean isOnlyOwner,
+//                                                    @RequestParam(value = "status", required = false) Integer status,
+//                                                    @RequestParam(value = "name", required = false) String name,
+//                                                    @RequestParam("pageIndex") Integer pageIndex) {
+//        log.info("--->开始查询用例列表：");
+//        PageInfo<AutoCaseSimpleVO> pageInfo = new PageInfo();
+//        pageInfo.setList(caseService.query(userId, isOnlyOwner, status, name, pageIndex));
+//        pageInfo.setTotal(caseService.count(userId, isOnlyOwner, status, name));
+//        return Result.success(pageInfo);
+//    }
+
+    @RequestMapping(value = "/query", method = RequestMethod.POST)
+    public Result<PageInfo<AutoCaseSimpleVO>> query2(@RequestHeader("userId") Integer userId,
+                                                     @RequestHeader("projectId") Integer projectId,
+                                                    @RequestBody QueryVO queryVO) {
         log.info("--->开始查询用例列表：");
         PageInfo<AutoCaseSimpleVO> pageInfo = new PageInfo();
-        pageInfo.setList(caseService.query(userId, isOnlyOwner, status, name, pageIndex));
-        pageInfo.setTotal(caseService.count(userId, isOnlyOwner, status, name));
+        queryVO.setProjectId(projectId);
+        queryVO.setUserId(userId);
+        pageInfo.setList(caseService.query(queryVO));
+        pageInfo.setTotal(caseService.count(queryVO));
         return Result.success(pageInfo);
     }
 

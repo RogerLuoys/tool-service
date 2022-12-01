@@ -1,5 +1,6 @@
 package com.luoys.upgrade.toolservice.service;
 
+import com.luoys.upgrade.toolservice.dao.po.AutoCasePO;
 import com.luoys.upgrade.toolservice.service.client.StepExecutor;
 import com.luoys.upgrade.toolservice.service.common.NumberSender;
 import com.luoys.upgrade.toolservice.service.common.StringUtil;
@@ -13,11 +14,8 @@ import com.luoys.upgrade.toolservice.service.enums.AutoCaseTypeEnum;
 import com.luoys.upgrade.toolservice.service.enums.KeywordEnum;
 import com.luoys.upgrade.toolservice.service.enums.RelatedStepTypeEnum;
 import com.luoys.upgrade.toolservice.service.transform.TransformCaseStepRelation;
-import com.luoys.upgrade.toolservice.web.vo.AutoCaseSimpleVO;
-import com.luoys.upgrade.toolservice.web.vo.AutoCaseVO;
+import com.luoys.upgrade.toolservice.web.vo.*;
 import com.luoys.upgrade.toolservice.service.transform.TransformAutoCase;
-import com.luoys.upgrade.toolservice.web.vo.AutoStepVO;
-import com.luoys.upgrade.toolservice.web.vo.CaseStepVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -56,18 +54,18 @@ public class CaseService {
      * @param autoCaseVO 用例对象
      * @return 新增成功为true，失败为false
      */
-    public Boolean create(AutoCaseVO autoCaseVO) {
+    public Integer create(AutoCaseVO autoCaseVO) {
         if (autoCaseVO.getType() == null) {
             log.error("--->用例类型不能为空：{}", autoCaseVO);
-            return false;
+            return null;
         }
         if (autoCaseVO.getStatus() == null) {
             log.error("--->用例状态不能为空：{}", autoCaseVO);
-            return false;
+            return null;
         }
         if (StringUtil.isBlank(autoCaseVO.getName())) {
             log.error("--->用例名称不能为空：{}", autoCaseVO);
-            return false;
+            return null;
         }
 //        autoCaseVO.setCaseId(NumberSender.createCaseId());
         if (autoCaseVO.getOwnerId().equals(KeywordEnum.DEFAULT_USER.getCode().toString())) {
@@ -76,8 +74,9 @@ public class CaseService {
             String userName = userMapper.selectById(autoCaseVO.getOwnerId()).getUsername();
             autoCaseVO.setOwnerName(userName);
         }
-        int result = autoCaseMapper.insert(TransformAutoCase.transformVO2PO(autoCaseVO));
-        return result == 1;
+        AutoCasePO autoCasePO = TransformAutoCase.transformVO2PO(autoCaseVO);
+        autoCaseMapper.insert(autoCasePO);
+        return autoCasePO.getId();
     }
 
     /**
@@ -97,8 +96,9 @@ public class CaseService {
         }
         autoCaseVO.setStatus(AutoCaseStatusEnum.PLANNING.getCode());
 //        autoCaseVO.setCaseId(NumberSender.createCaseId());
-        int result = autoCaseMapper.insert(TransformAutoCase.transformVO2PO(autoCaseVO));
-        return result == 1 ? autoCaseVO.getCaseId() : null;
+        AutoCasePO autoCasePO = TransformAutoCase.transformVO2PO(autoCaseVO);
+        autoCaseMapper.insert(autoCasePO);
+        return autoCasePO.getId();
     }
 
     /**
@@ -197,30 +197,44 @@ public class CaseService {
         return updateRelatedStep(caseStepVO);
     }
 
+//    /**
+//     * 查询用例列表
+//     *
+//     * @param userId      用户id
+//     * @param isOnlyOwner 是否只查自己
+//     * @param status      用例状态
+//     * @param name        用例名称
+//     * @param pageIndex   页码
+//     * @return 用例列表
+//     */
+//    public List<AutoCaseSimpleVO> query(Integer userId, Boolean isOnlyOwner, Integer status, String name, Integer pageIndex) {
+//        if (!isOnlyOwner) {
+//            userId = null;
+//        }
+//        int startIndex = (pageIndex - 1) * KeywordEnum.DEFAULT_PAGE_SIZE.getCode();
+//        return TransformAutoCase.transformPO2SimpleVO(autoCaseMapper.list(status, name, userId, startIndex));
+//    }
+
     /**
      * 查询用例列表
      *
-     * @param userId      用户id
-     * @param isOnlyOwner 是否只查自己
-     * @param status      用例状态
-     * @param name        用例名称
-     * @param pageIndex   页码
+     * @param queryVO 查询条件
      * @return 用例列表
      */
-    public List<AutoCaseSimpleVO> query(Integer userId, Boolean isOnlyOwner, Integer status, String name, Integer pageIndex) {
-        if (!isOnlyOwner) {
-            userId = null;
-        }
-        int startIndex = (pageIndex - 1) * KeywordEnum.DEFAULT_PAGE_SIZE.getCode();
-        return TransformAutoCase.transformPO2SimpleVO(autoCaseMapper.list(status, name, userId, startIndex));
+    public List<AutoCaseSimpleVO> query(QueryVO queryVO) {
+        int startIndex = (queryVO.getPageIndex() - 1) * KeywordEnum.DEFAULT_PAGE_SIZE.getCode();
+        return TransformAutoCase.transformPO2SimpleVO(autoCaseMapper.list(queryVO.getProjectId(), queryVO.getSupperCaseId(), queryVO.getStatus(), queryVO.getName(), startIndex));
+    }
+    public Integer count(QueryVO queryVO) {
+        return autoCaseMapper.count(queryVO.getProjectId(), queryVO.getSupperCaseId(), queryVO.getStatus(), queryVO.getName());
     }
 
-    public Integer count(Integer userId, Boolean isOnlyOwner, Integer status, String name) {
-        if (!isOnlyOwner) {
-            userId = null;
-        }
-        return autoCaseMapper.count(status, name, userId);
-    }
+//    public Integer count(Integer userId, Boolean isOnlyOwner, Integer status, String name) {
+//        if (!isOnlyOwner) {
+//            userId = null;
+//        }
+//        return autoCaseMapper.count(status, name, userId);
+//    }
 
     /**
      * 查询用例详情
@@ -230,7 +244,7 @@ public class CaseService {
      */
     public AutoCaseVO queryDetail(Integer caseId) {
         // 查基本信息
-        AutoCaseVO autoCaseVO = TransformAutoCase.transformPO2VO(autoCaseMapper.selectByID(caseId));
+        AutoCaseVO autoCaseVO = TransformAutoCase.transformPO2VO(autoCaseMapper.selectById(caseId));
         // 查关联的步骤
         List<CaseStepVO> caseStepList = TransformCaseStepRelation.transformPO2VO(caseStepRelationMapper.listStepByCaseId(caseId));
         List<CaseStepVO> preList = new ArrayList<>();

@@ -22,7 +22,7 @@
     id, supper_case_id, `name`, description, time_out, `type`, `status`, finish_time, project_id, owner_id,
     owner_name
   </sql>
-  <select id="selectByID" parameterType="java.lang.String" resultMap="BaseResultMap">
+  <select id="selectById" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from auto_case
@@ -33,7 +33,10 @@
     <include refid="Base_Column_List" />
     from auto_case
     where is_delete = 0
-    and owner_id = #{ownerId,jdbcType=INTEGER}
+    and project_id = #{projectId,jdbcType=INTEGER}
+    <if test="supperCaseId != null">
+      and `supper_case_id` = #{supperCaseId,jdbcType=INTEGER}
+    </if>
     <if test="status != null">
       and `status` = #{status,jdbcType=TINYINT}
     </if>
@@ -49,7 +52,10 @@
     select count(1)
     from auto_case
     where is_delete = 0
-    and owner_id = #{ownerId,jdbcType=INTEGER}
+    and project_id = #{projectId,jdbcType=INTEGER}
+    <if test="supperCaseId != null">
+      and `supper_case_id` = #{supperCaseId,jdbcType=INTEGER}
+    </if>
     <if test="status != null">
       and `status` = #{status,jdbcType=TINYINT}
     </if>
@@ -107,7 +113,7 @@
       </if>
       gmt_modified = now()
     </set>
-    where id = #{caseId,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
   </update>
   <update id="updateStatus">
     update auto_case

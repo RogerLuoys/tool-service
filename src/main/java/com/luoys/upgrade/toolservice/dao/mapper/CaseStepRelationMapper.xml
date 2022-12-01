@@ -8,51 +8,27 @@
     <result column="type" jdbcType="TINYINT" property="type" />
     <result column="step_id" jdbcType="INTEGER" property="stepId" />
     <result column="step_name" jdbcType="VARCHAR" property="stepName" />
-    <result column="step_type" jdbcType="TINYINT" property="stepType" />
-    <result column="jdbc_sql" jdbcType="VARCHAR" property="jdbcSql" />
-    <result column="jdbc_url" jdbcType="VARCHAR" property="jdbcUrl" />
-    <result column="jdbc_driver" jdbcType="VARCHAR" property="jdbcDriver" />
-    <result column="jdbc_username" jdbcType="VARCHAR" property="jdbcUsername" />
-    <result column="jdbc_password" jdbcType="VARCHAR" property="jdbcPassword" />
-    <result column="http_url" jdbcType="VARCHAR" property="httpUrl" />
-    <result column="http_type" jdbcType="VARCHAR" property="httpType" />
-    <result column="http_header" jdbcType="VARCHAR" property="httpHeader" />
-    <result column="http_body" jdbcType="VARCHAR" property="httpBody" />
-    <result column="rpc_url" jdbcType="VARCHAR" property="rpcUrl" />
-    <result column="rpc_interface" jdbcType="VARCHAR" property="rpcInterface" />
-    <result column="rpc_method" jdbcType="VARCHAR" property="rpcMethod" />
-    <result column="rpc_parameter_type" jdbcType="VARCHAR" property="rpcParameterType" />
-    <result column="rpc_parameter" jdbcType="VARCHAR" property="rpcParameter" />
-    <result column="ui_type" jdbcType="TINYINT" property="uiType" />
-    <result column="ui_url" jdbcType="VARCHAR" property="uiUrl" />
-    <result column="ui_element" jdbcType="VARCHAR" property="uiElement" />
-    <result column="ui_element_id" jdbcType="INTEGER" property="uiElementId" />
-    <result column="ui_key" jdbcType="VARCHAR" property="uiKey" />
-    <result column="after_sleep" jdbcType="INTEGER" property="afterSleep" />
-    <result column="assert_type" jdbcType="TINYINT" property="assertType" />
-    <result column="assert_actual" jdbcType="VARCHAR" property="assertActual" />
-    <result column="assert_expect" jdbcType="VARCHAR" property="assertExpect" />
-    <result column="assert_result" jdbcType="TINYINT" property="assertResult" />
-    <result column="owner_id" jdbcType="VARCHAR" property="ownerId" />
-    <result column="owner_name" jdbcType="VARCHAR" property="ownerName" />
-    <result column="is_public" jdbcType="TINYINT" property="isPublic" />
+    <result column="step_type" jdbcType="TINYINT" property="moduleType" />
+    <result column="step_type" jdbcType="TINYINT" property="methodType" />
+    <result column="step_id" jdbcType="INTEGER" property="methodId" />
+    <result column="jdbc_sql" jdbcType="VARCHAR" property="methodName" />
+    <result column="jdbc_url" jdbcType="VARCHAR" property="parameter1" />
+    <result column="jdbc_driver" jdbcType="VARCHAR" property="parameter2" />
+    <result column="jdbc_username" jdbcType="VARCHAR" property="parameter3" />
+    <result column="jdbc_password" jdbcType="VARCHAR" property="varName" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, case_id, `sequence`, `type`, step_id, step_name, step_type, steps, jdbc_sql, jdbc_url, jdbc_driver, jdbc_username,
-    jdbc_password, http_url, http_type, http_header, http_body, rpc_url, rpc_interface, rpc_method, rpc_parameter_type,
-    rpc_parameter, ui_type, ui_url, ui_element, ui_element_id, ui_key, after_sleep, assert_type, assert_actual,
-    assert_expect, assert_result, owner_id, owner_name, is_public
+    id, case_id, `sequence`, `type`, step_id, step_name, moduleType, methodType, methodId, methodName, parameter1, parameter2,
+    parameter3, varName
   </sql>
   <select id="listStepByCaseId" resultMap="BaseResultMap">
     select
-      csr.case_id, csr.`sequence`, csr.`type`, s.step_id, s.name as step_name, s.type as step_type, s.steps, s.jdbc_sql, s.jdbc_url, s.jdbc_driver, s.jdbc_username,
-      s.jdbc_password, s.http_url, s.http_type, s.http_header, s.http_body, s.rpc_url, s.rpc_interface, s.rpc_method, s.rpc_parameter_type,
-      s.rpc_parameter, s.ui_type, s.ui_url, s.ui_element, s.ui_element_id, s.ui_key, s.after_sleep, s.assert_type, s.assert_actual,
-      s.assert_expect, s.assert_result, s.owner_id, s.owner_name, s.is_public
-    from case_step_relation csr
-    inner join auto_step s on csr.step_id = s.step_id
-    where csr.case_id = #{caseId,jdbcType=INTEGER} and csr.is_delete = 0
-    order by csr.`sequence`
+      a.case_id, a.`sequence`, a.`type`, b.id as step_id, b.name as step_name, b.module_type, b.method_type, b.method_id, b.method_name,
+      b.parameter1, b.parameter2, b.parameter3, b.var_name
+    from case_step_relation a
+    inner join auto_step b on a.step_id = b.id
+    where a.case_id = #{caseId,jdbcType=INTEGER} and b.is_delete = 0
+    order by a.`sequence`
   </select>
   <update id="removeByCaseId">
     update case_step_relation

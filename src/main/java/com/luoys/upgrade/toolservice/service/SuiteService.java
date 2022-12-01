@@ -1,5 +1,6 @@
 package com.luoys.upgrade.toolservice.service;
 
+import com.luoys.upgrade.toolservice.dao.po.AutoSuitePO;
 import com.luoys.upgrade.toolservice.service.client.StepExecutor;
 import com.luoys.upgrade.toolservice.service.common.NumberSender;
 import com.luoys.upgrade.toolservice.service.common.StringUtil;
@@ -87,8 +88,9 @@ public class SuiteService {
         }
 //        autoSuiteVO.setSuiteId(NumberSender.createSuiteId());
         autoSuiteVO.setStatus(AutoSuiteStatusEnum.SUITE_FREE.getCode());
-        int result = autoSuiteMapper.insert(TransformAutoSuite.transformVO2PO(autoSuiteVO));
-        return result == 1 ? autoSuiteVO.getSuiteId() : null;
+        AutoSuitePO autoSuitePO = TransformAutoSuite.transformVO2PO(autoSuiteVO);
+        int result = autoSuiteMapper.insert(autoSuitePO);
+        return autoSuitePO.getId();
     }
 
     /**
@@ -242,7 +244,7 @@ public class SuiteService {
      * @return 用例列表
      */
     public List<AutoCaseSimpleVO> queryAll(Integer suiteId, Integer userId, String name) {
-        List<AutoCasePO> allCase = autoCaseMapper.list(null, name, userId, null);
+        List<AutoCasePO> allCase = autoCaseMapper.list(null, null, null, name, null);
         List<SuiteCaseRelationPO> selectedCase = suiteCaseRelationMapper.listCaseBySuiteId(suiteId, null, null);
         List<AutoCasePO> selectableCase = new ArrayList<>();
         // 筛选出未添加过的用例

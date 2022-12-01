@@ -10,12 +10,12 @@ public enum ModuleTypeEnum {
 
     UNDEFINED_MODULE(-1, "--", "未知方法"),
     PO(1, "po", "封装好的方法，包含多个步骤"),
-    UTIL(1, "util", "工具相关的方法"),
-    UI(2, "ui", "UI相关的方法"),
-    SQL(3, "sql", "执行sql相关的方法"),
+    SQL(2, "sql", "执行sql相关的方法"),
+    RPC(3, "rpc", "调用rpc接口相关的方法"),
     HTTP(4, "http", "调用http接口相关的方法"),
-    RPC(5, "rpc", "调用rpc接口相关的方法"),
-    ASSERTION(6, "assertion", "断言");
+    UI(5, "ui", "UI相关的方法"),
+    UTIL(6, "util", "工具相关的方法"),
+    ASSERTION(7, "assertion", "断言");
 
 
     private final Integer code;

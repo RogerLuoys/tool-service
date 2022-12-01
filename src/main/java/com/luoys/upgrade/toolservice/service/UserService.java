@@ -1,5 +1,6 @@
 package com.luoys.upgrade.toolservice.service;
 
+import com.luoys.upgrade.toolservice.dao.po.UserPO;
 import com.luoys.upgrade.toolservice.service.common.NumberSender;
 import com.luoys.upgrade.toolservice.dao.UserMapper;
 import com.luoys.upgrade.toolservice.service.enums.KeywordEnum;
@@ -109,8 +110,9 @@ public class UserService {
 //            userVO.setStatus(DEFAULT_USER_STATUS);
 //        }
 //        userVO.setUserId(NumberSender.createUserId());
-        int insertUserResult = userMapper.insert(TransformUser.transformVO2PO(userVO));
-        return insertUserResult == 1 ? userVO : null;
+        UserPO userPO = TransformUser.transformVO2PO(userVO);
+        userMapper.insert(userPO);
+        return TransformUser.transformPO2VO(userPO);
     }
 
 }

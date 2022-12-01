@@ -6,7 +6,6 @@ import com.luoys.upgrade.toolservice.web.vo.CaseStepVO;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 用例步骤关联关系数据转换
@@ -39,7 +38,13 @@ public class TransformCaseStepRelation {
 //        vo.getAutoStep().setOwnerId(po.getOwnerId());
 //        vo.getAutoStep().setOwnerName(po.getOwnerName());
         vo.getAutoStep().setName(po.getStepName());
-        vo.getAutoStep().setModuleType(po.getStepType());
+        vo.getAutoStep().setModuleType(po.getModuleType());
+        vo.getAutoStep().setMethodId(po.getMethodId());
+        vo.getAutoStep().setMethodName(po.getMethodName());
+        vo.getAutoStep().setParameter3(po.getParameter3());
+        vo.getAutoStep().setParameter2(po.getParameter2());
+        vo.getAutoStep().setParameter1(po.getParameter1());
+        vo.getAutoStep().setVarName(po.getVarName());
 //        vo.getAutoStep().setAssertActual(po.getAssertActual());
 //        vo.getAutoStep().setAssertExpect(po.getAssertExpect());
 //        vo.getAutoStep().setAssertResult(po.getAssertResult());
