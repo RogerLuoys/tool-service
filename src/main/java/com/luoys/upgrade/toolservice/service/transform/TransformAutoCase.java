@@ -1,9 +1,12 @@
 package com.luoys.upgrade.toolservice.service.transform;
 
 import com.luoys.upgrade.toolservice.dao.po.AutoCasePO;
+import com.luoys.upgrade.toolservice.dao.po.AutoCaseQueryPO;
+import com.luoys.upgrade.toolservice.service.enums.KeywordEnum;
 import com.luoys.upgrade.toolservice.web.vo.AutoCaseSimpleVO;
 import com.luoys.upgrade.toolservice.web.vo.AutoCaseVO;
 import com.luoys.upgrade.toolservice.web.vo.CaseStepVO;
+import com.luoys.upgrade.toolservice.web.vo.QueryVO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -96,6 +99,27 @@ public class TransformAutoCase {
 //        po.setParameter(TransformCommon.toParameter(vo.getParameterList()));
 //        // 转换步骤脚本
 //        po.setMainSteps(vo.getMainSteps());
+        return po;
+    }
+
+    /**
+     * 转换用例的基本信息
+     * @param vo -
+     * @return -
+     */
+    public static AutoCaseQueryPO transformVO2PO(QueryVO vo) {
+        if (vo == null) {
+            return null;
+        }
+        AutoCaseQueryPO po = new AutoCaseQueryPO();
+        po.setName(vo.getName());
+        po.setType(vo.getType());
+        po.setStatus(vo.getStatus());
+        po.setProjectId(vo.getProjectId());
+        po.setSupperCaseId(vo.getSupperCaseId());
+        if (vo.getPageIndex() != null) {
+            po.setStartIndex((vo.getPageIndex() - 1) * KeywordEnum.DEFAULT_PAGE_SIZE.getCode());
+        }
         return po;
     }
 

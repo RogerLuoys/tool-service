@@ -1,6 +1,7 @@
 package com.luoys.upgrade.toolservice.service;
 
 import com.luoys.upgrade.toolservice.dao.po.AutoCasePO;
+import com.luoys.upgrade.toolservice.dao.po.AutoCaseQueryPO;
 import com.luoys.upgrade.toolservice.service.client.StepExecutor;
 import com.luoys.upgrade.toolservice.service.common.NumberSender;
 import com.luoys.upgrade.toolservice.service.common.StringUtil;
@@ -222,11 +223,14 @@ public class CaseService {
      * @return 用例列表
      */
     public List<AutoCaseSimpleVO> query(QueryVO queryVO) {
-        Integer startIndex = queryVO.getPageIndex() == null ? null : (queryVO.getPageIndex() - 1) * KeywordEnum.DEFAULT_PAGE_SIZE.getCode();
-        return TransformAutoCase.transformPO2SimpleVO(autoCaseMapper.list(queryVO.getProjectId(), queryVO.getSupperCaseId(), queryVO.getStatus(), queryVO.getName(), startIndex));
+//        Integer startIndex = queryVO.getPageIndex() == null ? null : (queryVO.getPageIndex() - 1) * KeywordEnum.DEFAULT_PAGE_SIZE.getCode();
+        AutoCaseQueryPO autoCaseQueryPO = TransformAutoCase.transformVO2PO(queryVO);
+        List<AutoCasePO> autoCasePOList =  autoCaseMapper.list(autoCaseQueryPO);
+        return TransformAutoCase.transformPO2SimpleVO(autoCasePOList);
     }
     public Integer count(QueryVO queryVO) {
-        return autoCaseMapper.count(queryVO.getProjectId(), queryVO.getSupperCaseId(), queryVO.getStatus(), queryVO.getName());
+        AutoCaseQueryPO autoCaseQueryPO = TransformAutoCase.transformVO2PO(queryVO);
+        return autoCaseMapper.count(autoCaseQueryPO);
     }
 
 //    public Integer count(Integer userId, Boolean isOnlyOwner, Integer status, String name) {

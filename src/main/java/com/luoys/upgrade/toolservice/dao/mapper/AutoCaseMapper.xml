@@ -28,7 +28,7 @@
     from auto_case
     where id = #{caseId,jdbcType=INTEGER}
   </select>
-  <select id="list" resultMap="BaseResultMap">
+  <select id="list" resultMap="BaseResultMap" parameterType="com.luoys.upgrade.toolservice.dao.po.AutoCaseQueryPO">
     select
     <include refid="Base_Column_List" />
     from auto_case
@@ -37,8 +37,14 @@
     <if test="supperCaseId != null">
       and `supper_case_id` = #{supperCaseId,jdbcType=INTEGER}
     </if>
+    <if test="ownerId != null">
+      and `owner_id` = #{ownerId,jdbcType=INTEGER}
+    </if>
     <if test="status != null">
       and `status` = #{status,jdbcType=TINYINT}
+    </if>
+    <if test="type != null">
+      and `type` = #{type,jdbcType=TINYINT}
     </if>
     <if test="name != null">
       and `name` like concat('%', #{name,jdbcType=VARCHAR}, '%')
@@ -48,7 +54,7 @@
       limit ${startIndex}, 10
     </if>
   </select>
-  <select id="count" resultType="java.lang.Integer">
+  <select id="count" resultType="java.lang.Integer" parameterType="com.luoys.upgrade.toolservice.dao.po.AutoCaseQueryPO">
     select count(1)
     from auto_case
     where is_delete = 0
@@ -56,8 +62,14 @@
     <if test="supperCaseId != null">
       and `supper_case_id` = #{supperCaseId,jdbcType=INTEGER}
     </if>
+    <if test="ownerId != null">
+      and `owner_id` = #{ownerId,jdbcType=INTEGER}
+    </if>
     <if test="status != null">
       and `status` = #{status,jdbcType=TINYINT}
+    </if>
+    <if test="type != null">
+      and `type` = #{type,jdbcType=TINYINT}
     </if>
     <if test="name != null">
       and `name` like concat('%', #{name,jdbcType=VARCHAR}, '%')

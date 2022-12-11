@@ -27,7 +27,7 @@ public class AutoStepVO {
     private String description;
 
     /**
-     * 模块类型：1 PO，2 SQL，3 HTTP，4 RPC，5 UI，6 ASSERT，7 UTIL
+     * 模块类型：-1 未定义，1 PO，2 SQL，3 HTTP，4 RPC，5 UI，6 ASSERT，7 UTIL
      */
     private Integer moduleType;
 

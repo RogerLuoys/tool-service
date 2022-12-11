@@ -1,5 +1,6 @@
 package com.luoys.upgrade.toolservice.service;
 
+import com.luoys.upgrade.toolservice.dao.po.AutoCaseQueryPO;
 import com.luoys.upgrade.toolservice.dao.po.AutoSuitePO;
 import com.luoys.upgrade.toolservice.service.client.StepExecutor;
 import com.luoys.upgrade.toolservice.service.common.NumberSender;
@@ -244,7 +245,10 @@ public class SuiteService {
      * @return 用例列表
      */
     public List<AutoCaseSimpleVO> queryAll(Integer suiteId, Integer userId, String name) {
-        List<AutoCasePO> allCase = autoCaseMapper.list(null, null, null, name, null);
+        AutoCaseQueryPO autoCaseQueryPO = new AutoCaseQueryPO();
+        autoCaseQueryPO.setName(name);
+        autoCaseQueryPO.setProjectId(1);//todo 要传
+        List<AutoCasePO> allCase = autoCaseMapper.list(autoCaseQueryPO);
         List<SuiteCaseRelationPO> selectedCase = suiteCaseRelationMapper.listCaseBySuiteId(suiteId, null, null);
         List<AutoCasePO> selectableCase = new ArrayList<>();
         // 筛选出未添加过的用例
