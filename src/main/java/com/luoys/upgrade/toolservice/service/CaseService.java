@@ -96,7 +96,6 @@ public class CaseService {
             return null;
         }
         autoCaseVO.setStatus(AutoCaseStatusEnum.PLANNING.getCode());
-//        autoCaseVO.setCaseId(NumberSender.createCaseId());
         AutoCasePO autoCasePO = TransformAutoCase.transformVO2PO(autoCaseVO);
         autoCaseMapper.insert(autoCasePO);
         return autoCasePO.getId();

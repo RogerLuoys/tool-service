@@ -44,10 +44,10 @@ public class AutoCaseController {
     public Result<String> quickCreate(@RequestBody AutoCaseVO autoCaseVO,
                                       @RequestHeader(value = "projectId") Integer projectId,
                                        @RequestHeader(value = "userId") Integer userId) {
-        log.info("--->开始快速新增用例");
         autoCaseVO.setOwnerId(userId);
         autoCaseVO.setProjectId(projectId);
         autoCaseVO.setOwnerName(KeywordEnum.DEFAULT_USER.getValue());
+        log.info("--->开始快速新增用例：{}", autoCaseVO);
         return Result.message(caseService.quickCreate(autoCaseVO));
     }
 
