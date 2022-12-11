@@ -222,7 +222,7 @@ public class CaseService {
      * @return 用例列表
      */
     public List<AutoCaseSimpleVO> query(QueryVO queryVO) {
-        int startIndex = (queryVO.getPageIndex() - 1) * KeywordEnum.DEFAULT_PAGE_SIZE.getCode();
+        Integer startIndex = queryVO.getPageIndex() == null ? null : (queryVO.getPageIndex() - 1) * KeywordEnum.DEFAULT_PAGE_SIZE.getCode();
         return TransformAutoCase.transformPO2SimpleVO(autoCaseMapper.list(queryVO.getProjectId(), queryVO.getSupperCaseId(), queryVO.getStatus(), queryVO.getName(), startIndex));
     }
     public Integer count(QueryVO queryVO) {

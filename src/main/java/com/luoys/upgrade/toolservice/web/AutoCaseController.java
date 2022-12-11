@@ -110,10 +110,10 @@ public class AutoCaseController {
     public Result<PageInfo<AutoCaseSimpleVO>> query2(@RequestHeader("userId") Integer userId,
                                                      @RequestHeader("projectId") Integer projectId,
                                                     @RequestBody QueryVO queryVO) {
-        log.info("--->开始查询用例列表：");
-        PageInfo<AutoCaseSimpleVO> pageInfo = new PageInfo();
         queryVO.setProjectId(projectId);
         queryVO.setUserId(userId);
+        log.info("--->开始查询用例列表：{}", queryVO);
+        PageInfo<AutoCaseSimpleVO> pageInfo = new PageInfo();
         pageInfo.setList(caseService.query(queryVO));
         pageInfo.setTotal(caseService.count(queryVO));
         return Result.success(pageInfo);

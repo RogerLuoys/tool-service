@@ -38,15 +38,15 @@ public class AutoCaseSimpleVO {
      */
     private Integer status;
 
-    /**
-     * 用例执行的最长时间
-     */
-    private Integer maxTime;
+//    /**
+//     * 用例执行的最长时间
+//     */
+//    private Integer maxTime;
 
-    /**
-     * 用例执行环境（参数）
-     */
-    private String environment;
+//    /**
+//     * 用例执行环境（参数）
+//     */
+//    private String environment;
 
     /**
      * 用例计划完成时间
