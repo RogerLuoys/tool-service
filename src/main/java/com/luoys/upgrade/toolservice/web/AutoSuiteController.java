@@ -28,9 +28,11 @@ public class AutoSuiteController {
 
     @RequestMapping(value = "/quickCreate", method = RequestMethod.POST)
     public Result<String> quickCreate(@RequestBody AutoSuiteVO autoSuiteVO,
-                                       @RequestHeader(value = "userId") Integer userId) {
+                                      @RequestHeader(value = "projectId") Integer projectId,
+                                      @RequestHeader(value = "userId") Integer userId) {
         log.info("--->开始快速新增套件：{}", autoSuiteVO);
         autoSuiteVO.setOwnerId(userId);
+        autoSuiteVO.setProjectId(projectId);
         autoSuiteVO.setOwnerName(KeywordEnum.DEFAULT_USER.getValue());
         return Result.message(suiteService.quickCreate(autoSuiteVO));
     }
@@ -80,14 +82,16 @@ public class AutoSuiteController {
         return Result.message(suiteService.reset(suiteId));
     }
 
-    @RequestMapping(value = "/query", method = RequestMethod.GET)
-    public Result<PageInfo<AutoSuiteSimpleVO>> query(@RequestParam(value = "name", required = false) String name,
-                                                     @RequestHeader(value = "userId") Integer userId,
-                                                     @RequestParam("pageIndex") Integer pageIndex) {
-        log.info("--->开始查询套件列表：");
+    @RequestMapping(value = "/query", method = RequestMethod.POST)
+    public Result<PageInfo<AutoSuiteSimpleVO>> query(@RequestHeader(value = "userId") Integer userId,
+                                                     @RequestHeader(value = "projectId") Integer projectId,
+                                                     @RequestBody QueryVO queryVO) {
+        queryVO.setUserId(userId);
+        queryVO.setProjectId(projectId);
+        log.info("--->开始查询套件列表：{}", queryVO);
         PageInfo<AutoSuiteSimpleVO> pageInfo = new PageInfo<>();
-        pageInfo.setList(suiteService.query(name, userId, pageIndex));
-        pageInfo.setTotal(suiteService.count(name, userId));
+        pageInfo.setList(suiteService.query(queryVO));
+        pageInfo.setTotal(suiteService.count(queryVO));
         return Result.success(pageInfo);
     }
 

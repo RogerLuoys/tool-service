@@ -1,8 +1,11 @@
 package com.luoys.upgrade.toolservice.service.transform;
 
 import com.luoys.upgrade.toolservice.dao.po.AutoSuitePO;
+import com.luoys.upgrade.toolservice.dao.po.AutoSuiteQueryPO;
+import com.luoys.upgrade.toolservice.service.enums.KeywordEnum;
 import com.luoys.upgrade.toolservice.web.vo.AutoSuiteSimpleVO;
 import com.luoys.upgrade.toolservice.web.vo.AutoSuiteVO;
+import com.luoys.upgrade.toolservice.web.vo.QueryVO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,8 +62,11 @@ public class TransformAutoSuite {
         vo.setName(po.getName());
         vo.setFailed(po.getFailed());
         vo.setPassed(po.getPassed());
+        vo.setCaseTimeOut(po.getCaseTimeOut());
+        vo.setTimeOut(po.getTimeOut());
         vo.setSuiteId(po.getId());
         vo.setOwnerName(po.getOwnerName());
+        vo.setProjectId(po.getProjectId());
 //        vo.setEnvironment(po.getEnvironment());
 //        vo.setCaseMaxTime(po.getCaseMaxTime());
         vo.setStatus(po.getStatus());
@@ -83,9 +89,12 @@ public class TransformAutoSuite {
         po.setTotal(vo.getTotal());
         po.setName(vo.getName());
         po.setId(vo.getSuiteId());
+        po.setProjectId(vo.getProjectId());
         po.setFailed(vo.getFailed());
         po.setPassed(vo.getPassed());
         po.setOwnerName(vo.getOwnerName());
+        po.setCaseTimeOut(vo.getCaseTimeOut());
+        po.setTimeOut(vo.getTimeOut());
 //        po.setEnvironment(vo.getEnvironment());
 //        po.setCaseMaxTime(vo.getCaseMaxTime());
         po.setStatus(vo.getStatus());
@@ -94,6 +103,21 @@ public class TransformAutoSuite {
 //        po.setIsUiCompleted(vo.getIsUiCompleted());
 //        // 参数列表转换
 //        po.setParameter(TransformCommon.toParameter(vo.getParameterList()));
+        return po;
+    }
+
+    public static AutoSuiteQueryPO transformVO2PO(QueryVO vo) {
+        if (vo == null) {
+            return null;
+        }
+        AutoSuiteQueryPO po = new AutoSuiteQueryPO();
+        po.setOwnerId(vo.getUserId());
+        po.setName(vo.getName());
+        po.setProjectId(vo.getProjectId());
+        if (vo.getPageIndex() != null) {
+            po.setStartIndex((vo.getPageIndex() - 1) * KeywordEnum.DEFAULT_PAGE_SIZE.getCode());
+        }
+        po.setStatus(vo.getStatus());
         return po;
     }
 

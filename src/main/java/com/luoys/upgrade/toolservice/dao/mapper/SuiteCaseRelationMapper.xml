@@ -76,15 +76,15 @@
   </update>
   <select id="listCaseBySuiteId" resultMap="BaseResultMap">
     select
-    scr.suite_id, scr.case_id, scr.status, ac.name as case_name, ac.type as case_type, ac.status as case_status, scr.sequence
-    from auto_case ac
-    inner join suite_case_relation scr on ac.case_id = scr.case_id
-    where scr.is_delete = 0 and ac.is_delete = 0
-    and scr.suite_id = #{suiteId,jdbcType=INTEGER}
+    b.suite_id, b.case_id, b.status, a.name as case_name, a.type as case_type, a.status as case_status, b.sequence
+    from auto_case a
+    inner join suite_case_relation b on a.id = b.case_id
+    where b.is_delete = 0 and a.is_delete = 0
+    and b.suite_id = #{suiteId,jdbcType=INTEGER}
     <if test="retry != null">
-      and scr.status != 3
+      and b.status != 3
     </if>
-    order by scr.sequence asc
+    order by b.sequence asc
     <if test="startIndex != null">
       limit ${startIndex}, 10
     </if>
@@ -92,12 +92,12 @@
   <select id="countBySuiteId" resultType="java.lang.Integer">
     select
     count(1)
-    from auto_case ac
-    inner join suite_case_relation scr on ac.case_id = scr.case_id
-    where scr.is_delete = 0 and ac.is_delete = 0
-    and scr.suite_id = #{suiteId,jdbcType=INTEGER}
+    from auto_case a
+    inner join suite_case_relation b on a.id = b.case_id
+    where b.is_delete = 0 and a.is_delete = 0
+    and b.suite_id = #{suiteId,jdbcType=INTEGER}
     <if test="status != null">
-      and scr.status = #{status,jdbcType=INTEGER}
+      and b.status = #{status,jdbcType=INTEGER}
     </if>
   </select>
 </mapper>

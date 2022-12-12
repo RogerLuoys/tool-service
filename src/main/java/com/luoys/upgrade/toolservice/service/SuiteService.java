@@ -1,7 +1,6 @@
 package com.luoys.upgrade.toolservice.service;
 
-import com.luoys.upgrade.toolservice.dao.po.AutoCaseQueryPO;
-import com.luoys.upgrade.toolservice.dao.po.AutoSuitePO;
+import com.luoys.upgrade.toolservice.dao.po.*;
 import com.luoys.upgrade.toolservice.service.client.StepExecutor;
 import com.luoys.upgrade.toolservice.service.common.NumberSender;
 import com.luoys.upgrade.toolservice.service.common.StringUtil;
@@ -10,8 +9,6 @@ import com.luoys.upgrade.toolservice.dao.AutoCaseMapper;
 import com.luoys.upgrade.toolservice.dao.AutoSuiteMapper;
 import com.luoys.upgrade.toolservice.dao.SuiteCaseRelationMapper;
 import com.luoys.upgrade.toolservice.dao.UserMapper;
-import com.luoys.upgrade.toolservice.dao.po.AutoCasePO;
-import com.luoys.upgrade.toolservice.dao.po.SuiteCaseRelationPO;
 import com.luoys.upgrade.toolservice.service.enums.AutoCaseStatusEnum;
 import com.luoys.upgrade.toolservice.service.enums.AutoCaseTypeEnum;
 import com.luoys.upgrade.toolservice.service.enums.AutoSuiteStatusEnum;
@@ -87,10 +84,9 @@ public class SuiteService {
             log.error("--->套件名字必填：{}", autoSuiteVO);
             return null;
         }
-//        autoSuiteVO.setSuiteId(NumberSender.createSuiteId());
         autoSuiteVO.setStatus(AutoSuiteStatusEnum.SUITE_FREE.getCode());
         AutoSuitePO autoSuitePO = TransformAutoSuite.transformVO2PO(autoSuiteVO);
-        int result = autoSuiteMapper.insert(autoSuitePO);
+        autoSuiteMapper.insert(autoSuitePO);
         return autoSuitePO.getId();
     }
 
@@ -216,24 +212,24 @@ public class SuiteService {
     /**
      * 查询套件列表
      *
-     * @param name      名字，可空
-     * @param pageIndex 页码
+     * @param queryVO  查询条件
      * @return 套件列表
      */
-    public List<AutoSuiteSimpleVO> query(String name, Integer ownerId, Integer pageIndex) {
-        int startIndex = (pageIndex - 1) * KeywordEnum.DEFAULT_PAGE_SIZE.getCode();
-        return TransformAutoSuite.transformPO2SimpleVO(autoSuiteMapper.list(name, ownerId, startIndex));
+    public List<AutoSuiteSimpleVO> query(QueryVO queryVO) {
+        AutoSuiteQueryPO autoSuiteQueryPO = TransformAutoSuite.transformVO2PO(queryVO);
+        List<AutoSuitePO> autoSuitePOList = autoSuiteMapper.list(autoSuiteQueryPO);
+        return TransformAutoSuite.transformPO2SimpleVO(autoSuitePOList);
     }
 
     /**
      * 查询套件总条数
      *
-     * @param name    名字，可空
-     * @param ownerId 用户名
-     * @return 套件列表
+     * @param queryVO  查询条件
+     * @return 套件总数
      */
-    public Integer count(String name, Integer ownerId) {
-        return autoSuiteMapper.count(name, ownerId);
+    public Integer count(QueryVO queryVO) {
+        AutoSuiteQueryPO autoSuiteQueryPO = TransformAutoSuite.transformVO2PO(queryVO);
+        return autoSuiteMapper.count(autoSuiteQueryPO);
     }
 
     /**

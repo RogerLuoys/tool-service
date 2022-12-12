@@ -76,7 +76,7 @@ public class AutoSuitePO {
     /**
      * 所属项目id
      */
-    private String projectId;
+    private Integer projectId;
 
     /**
      * 所属责任人id

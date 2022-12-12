@@ -29,35 +29,19 @@ public class AutoSuiteVO {
     private String description;
 
     /**
-     * 套件状态：1 空闲，2 执行中
+     * 套件状态：1 空闲，2 执行中，3 排队中
      */
     private Integer status;
 
     /**
-     * 用例执行的环境
+     * 套件执行超时时间
      */
-    private String environment;
+    private Integer timeOut;
 
     /**
-     * 入参列表，List<CommonDTO>类型
+     * 用例执行超时时间
      */
-    private List<ParameterDTO> parameterList;
-
-    /**
-     * 步骤间的等待时间
-     */
-    private Integer stepSleep;
-
-    /**
-     * 用例执行的最长时间
-     */
-    private Integer caseMaxTime;
-
-    /**
-     * 用例列表，PageInfo类型，通过getList取列表
-     */
-//    private List<SuiteCaseVO> caseList;
-    private PageInfo<SuiteCaseVO> relatedCase;
+    private Integer caseTimeOut;
 
     /**
      * 用例总数
@@ -75,23 +59,23 @@ public class AutoSuiteVO {
     private Integer failed;
 
     /**
-     * 所属人id
+     * 所属项目id
+     */
+    private Integer projectId;
+
+    /**
+     * 所属责任人id
      */
     private Integer ownerId;
 
     /**
-     * 所属人
+     * 所属人昵称
      */
     private String ownerName;
 
     /**
-     * ui用例是否执行完成
+     * 用例列表，PageInfo类型，通过getList取列表
      */
-    private Boolean isUiCompleted;
-
-    /**
-     * api用例是否执行完成
-     */
-    private Boolean isApiCompleted;
+    private PageInfo<SuiteCaseVO> relatedCase;
 
 }

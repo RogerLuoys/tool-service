@@ -21,7 +21,7 @@
 <!--    <result column="is_ui_completed" jdbcType="TINYINT" property="isUiCompleted" />-->
   </resultMap>
   <sql id="Base_Column_List">
-    id, `name`, description, status, time_out, case_time_out, total,
+    id, `name`, description, `status`, time_out, case_time_out, total,
     passed, failed, project_id, owner_id, owner_name
   </sql>
   <select id="selectByUUID" resultMap="BaseResultMap">
@@ -30,7 +30,7 @@
     from auto_suite
     where id = #{suiteId,jdbcType=INTEGER}
   </select>
-  <select id="list" resultMap="BaseResultMap">
+  <select id="list" resultMap="BaseResultMap" parameterType="com.luoys.upgrade.toolservice.dao.po.AutoSuiteQueryPO">
     select
     <include refid="Base_Column_List" />
     from auto_suite
@@ -46,7 +46,7 @@
     </if>
     order by gmt_create desc limit ${startIndex}, 10
   </select>
-  <select id="count" resultType="java.lang.Integer">
+  <select id="count" resultType="java.lang.Integer" parameterType="com.luoys.upgrade.toolservice.dao.po.AutoSuiteQueryPO">
     select count(1)
     from auto_suite
     where is_delete = 0
@@ -66,12 +66,12 @@
     where id = #{suiteId,jdbcType=INTEGER}
   </update>
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.luoys.upgrade.toolservice.dao.po.AutoSuitePO" useGeneratedKeys="true">
-    insert into auto_suite (`name`, description, status,
+    insert into auto_suite (`name`, description, `status`,
       time_out, case_time_out,
-      total, passed, failed, project_id
+      total, passed, failed, project_id,
       owner_id, owner_name, is_delete,
       gmt_create, gmt_modified)
-    values (#{suiteId,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT},
+    values (#{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT},
       #{timeOut,jdbcType=INTEGER}, #{caseTimeOut,jdbcType=INTEGER},
       #{total,jdbcType=INTEGER}, #{passed,jdbcType=INTEGER}, #{failed,jdbcType=INTEGER}, #{projectId,jdbcType=INTEGER},
       #{ownerId,jdbcType=INTEGER}, #{ownerName,jdbcType=VARCHAR}, 0, now(), now())
@@ -108,7 +108,7 @@
       </if>
       gmt_modified = now()
     </set>
-    where id = #{suiteId,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
   </update>
   <update id="updateResult">
     update auto_suite
