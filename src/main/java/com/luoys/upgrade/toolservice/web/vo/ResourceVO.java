@@ -2,6 +2,7 @@ package com.luoys.upgrade.toolservice.web.vo;
 
 import com.luoys.upgrade.toolservice.service.dto.DataSourceDTO;
 import com.luoys.upgrade.toolservice.service.dto.DeviceDTO;
+import com.luoys.upgrade.toolservice.service.dto.SlaveDTO;
 import lombok.Data;
 
 /**
@@ -43,19 +44,14 @@ public class ResourceVO {
     private DataSourceDTO dataSource;
 
     /**
-     * 设备
+     * 执行自动化的机器
      */
-    private DeviceDTO device;
+    private SlaveDTO slave;
 
     /**
-     * 容器域名或虚拟机ip port
+     * 所属项目id
      */
-    private String envUrl;
-
-    /**
-     * 从节点ip port
-     */
-    private String slaveUrl;
+    private Integer projectId;
 
     /**
      * 所属人id
@@ -67,14 +63,14 @@ public class ResourceVO {
      */
     private String ownerName;
 
-    /**
-     * 使用人id
-     */
-    private Integer userId;
-
-    /**
-     * 使用人昵称
-     */
-    private String userName;
+//    /**
+//     * 使用人id
+//     */
+//    private Integer userId;
+//
+//    /**
+//     * 使用人昵称
+//     */
+//    private String userName;
 
 }

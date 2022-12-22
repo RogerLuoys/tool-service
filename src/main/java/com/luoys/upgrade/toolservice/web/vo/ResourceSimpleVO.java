@@ -9,6 +9,7 @@ import lombok.Data;
  *
  * @author luoys
  */
+@Deprecated
 @Data
 public class ResourceSimpleVO {
 

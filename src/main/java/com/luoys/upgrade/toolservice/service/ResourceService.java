@@ -1,5 +1,6 @@
 package com.luoys.upgrade.toolservice.service;
 
+import com.luoys.upgrade.toolservice.dao.po.ResourcePO;
 import com.luoys.upgrade.toolservice.service.common.NumberSender;
 import com.luoys.upgrade.toolservice.dao.ResourceMapper;
 import com.luoys.upgrade.toolservice.dao.UserMapper;
@@ -34,7 +35,7 @@ public class ResourceService {
      */
     public Boolean create(ResourceVO resourceVO) {
 //        resourceVO.setResourceId(NumberSender.createResourceId());
-        if (resourceVO.getOwnerId().equals(KeywordEnum.DEFAULT_USER.getCode().toString())) {
+        if (resourceVO.getOwnerId().equals(KeywordEnum.DEFAULT_USER.getCode())) {
             resourceVO.setOwnerName(KeywordEnum.DEFAULT_USER.getValue());
         } else {
             String username = userMapper.selectById(resourceVO.getOwnerId()).getUsername();
@@ -66,16 +67,16 @@ public class ResourceService {
         return result == 1;
     }
 
-    /**
-     * 更换使用者
-     *
-     * @param resourceVO 资源对象
-     * @return 成功为true，失败为false
-     */
-    public Boolean updateUser(ResourceVO resourceVO) {
-        int result = resourceMapper.updateUser(resourceVO.getResourceId(), resourceVO.getUserId(), resourceVO.getUserName());
-        return result == 1;
-    }
+//    /**
+//     * 更换使用者
+//     *
+//     * @param resourceVO 资源对象
+//     * @return 成功为true，失败为false
+//     */
+//    public Boolean updateUser(ResourceVO resourceVO) {
+//        int result = resourceMapper.updateUser(resourceVO.getResourceId(), resourceVO.getUserId(), resourceVO.getUserName());
+//        return result == 1;
+//    }
 
     /**
      * 查询资源列表
@@ -86,9 +87,10 @@ public class ResourceService {
      * @param pageIndex 页码
      * @return 资源列表
      */
-    public List<ResourceSimpleVO> query(Integer type, String name, Integer userId, Integer pageIndex) {
+    public List<ResourceVO> query(Integer type, String name, Integer userId, Integer pageIndex) {
         int startIndex = (pageIndex - 1) * KeywordEnum.DEFAULT_PAGE_SIZE.getCode();
-        return TransformResource.transformPO2SimpleVO(resourceMapper.list(type, name, userId, startIndex));
+        List<ResourcePO> resourcePOList = resourceMapper.list(type, name, userId, startIndex);
+        return TransformResource.transformPO2VO(resourcePOList);
     }
 
     /**

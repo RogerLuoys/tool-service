@@ -120,9 +120,12 @@
       <if test="slavePort != null">
         slave_port = #{slavePort,jdbcType=VARCHAR},
       </if>
+<!--      <if test="slaveThread != null">-->
+<!--        slave_port = #{slavePort,jdbcType=VARCHAR},-->
+<!--      </if>-->
       gmt_modified = now()
     </set>
-    where id = #{resourceId,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
   </update>
   <update id="updateUser">
     update resource

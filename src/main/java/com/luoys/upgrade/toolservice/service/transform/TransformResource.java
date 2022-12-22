@@ -3,6 +3,7 @@ package com.luoys.upgrade.toolservice.service.transform;
 import com.luoys.upgrade.toolservice.dao.po.ResourcePO;
 import com.luoys.upgrade.toolservice.service.dto.DataSourceDTO;
 import com.luoys.upgrade.toolservice.service.dto.DeviceDTO;
+import com.luoys.upgrade.toolservice.service.dto.SlaveDTO;
 import com.luoys.upgrade.toolservice.service.enums.ResourceTypeEnum;
 import com.luoys.upgrade.toolservice.web.vo.ResourceSimpleVO;
 import com.luoys.upgrade.toolservice.web.vo.ResourceVO;
@@ -67,23 +68,24 @@ public class TransformResource {
                 dataSourceDTO.setPassword(po.getJdbcPassword());
                 vo.setDataSource(dataSourceDTO);
                 break;
-//            case DEVICE:
-//                DeviceDTO deviceDTO = new DeviceDTO();
-//                deviceDTO.setDpi(po.getDeviceDpi());
-//                deviceDTO.setModel(po.getDeviceModel());
-//                deviceDTO.setOs(po.getDeviceOs());
-//                deviceDTO.setSize(po.getDeviceSize());
-//                vo.setDevice(deviceDTO);
-//                break;
-//            case TEST_ENV:
-//                vo.setEnvUrl(po.getEnvUrl());
-//                break;
             case SLAVE_SOURCE:
-//                vo.setSlaveUrl(po.getSlaveUrl());
+                SlaveDTO slaveDTO = new SlaveDTO();
+                slaveDTO.setIp(po.getSlaveIp());
+                slaveDTO.setPort(po.getSlavePort());
+                slaveDTO.setThread(po.getSlaveThread());
+                vo.setSlave(slaveDTO);
                 break;
 
         }
         return vo;
+    }
+
+    public static List<ResourceVO> transformPO2VO(List<ResourcePO> poList) {
+        List<ResourceVO> voList = new ArrayList<>();
+        for (ResourcePO po : poList) {
+            voList.add(transformPO2VO(po));
+        }
+        return voList;
     }
 
     public static ResourcePO transformVO2PO(ResourceVO vo) {
@@ -99,8 +101,6 @@ public class TransformResource {
         po.setType(vo.getType());
         po.setOwnerId(vo.getOwnerId());
         po.setOwnerName(vo.getOwnerName());
-//        po.setUserId(vo.getUserId());
-//        po.setUserName(vo.getUserName());
         //根据类型转换不同的对象
         switch (ResourceTypeEnum.fromCode(vo.getType())) {
             case DATA_SOURCE:
@@ -109,17 +109,10 @@ public class TransformResource {
                 po.setJdbcUrl(vo.getDataSource().getUrl());
                 po.setJdbcUsername(vo.getDataSource().getUsername());
                 break;
-//            case DEVICE:
-//                po.setDeviceDpi(vo.getDevice().getDpi());
-//                po.setDeviceModel(vo.getDevice().getModel());
-//                po.setDeviceOs(vo.getDevice().getOs());
-//                po.setDeviceSize(vo.getDevice().getSize());
-//                break;
-//            case TEST_ENV:
-//                po.setEnvUrl(vo.getEnvUrl());
-//                break;
             case SLAVE_SOURCE:
-//                po.setSlaveUrl(vo.getSlaveUrl());
+                po.setSlaveIp(vo.getSlave().getIp());
+                po.setSlavePort(vo.getSlave().getPort());
+                po.setSlaveThread(vo.getSlave().getThread());
                 break;
         }
         return po;

@@ -20,8 +20,11 @@ public class ResourceController {
     private ResourceService resourceService;
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public Result<String> create(@RequestHeader("userId") Integer userId, @RequestBody ResourceVO resourceVO) {
+    public Result<String> create(@RequestHeader("userId") Integer userId,
+                                 @RequestHeader(value = "projectId") Integer projectId,
+                                 @RequestBody ResourceVO resourceVO) {
         resourceVO.setOwnerId(userId);
+        resourceVO.setProjectId(projectId);
         log.info("--->开始新增资源：{}", resourceVO);
         return Result.message(resourceService.create(resourceVO));
     }
@@ -38,19 +41,19 @@ public class ResourceController {
         return Result.message(resourceService.update(resourceVO));
     }
 
-    @RequestMapping(value = "/updateUser", method = RequestMethod.PUT)
-    public Result<String> updateUser(@RequestBody ResourceVO resourceVO) {
-        log.info("--->开始更换使用者：{}", resourceVO);
-        return Result.message(resourceService.updateUser(resourceVO));
-    }
+//    @RequestMapping(value = "/updateUser", method = RequestMethod.PUT)
+//    public Result<String> updateUser(@RequestBody ResourceVO resourceVO) {
+//        log.info("--->开始更换使用者：{}", resourceVO);
+//        return Result.message(resourceService.updateUser(resourceVO));
+//    }
 
     @RequestMapping(value = "/query", method = RequestMethod.GET)
-    public Result<PageInfo<ResourceSimpleVO>> query(@RequestParam(value = "type", required = false) Integer type,
+    public Result<PageInfo<ResourceVO>> query(@RequestParam(value = "type", required = false) Integer type,
                                                     @RequestParam(value = "name", required = false) String name,
                                                     @RequestHeader("userId") Integer userId,
                                                     @RequestParam("pageIndex") Integer pageIndex) {
         log.info("--->开始查询资源列表：");
-        PageInfo<ResourceSimpleVO> pageInfo = new PageInfo<>();
+        PageInfo<ResourceVO> pageInfo = new PageInfo<>();
         pageInfo.setList(resourceService.query(type, name, userId, pageIndex));
         pageInfo.setTotal(resourceService.count(type, name, userId));
         return Result.success(pageInfo);
