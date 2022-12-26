@@ -13,11 +13,6 @@ public class UserPO {
 
     private Integer id;
 
-//    /**
-//     * uuid，即owner_id
-//     */
-//    private String userId;
-
     /**
      * 登录名
      */

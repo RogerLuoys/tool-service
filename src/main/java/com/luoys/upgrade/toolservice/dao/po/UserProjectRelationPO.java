@@ -23,6 +23,16 @@ public class UserProjectRelationPO {
     /**
      * 1 管理员，2 普通
      */
-    private Byte type;
+    private Integer type;
+
+    /**
+     * 登录名(账号)
+     */
+    private String username;
+
+    /**
+     * 用户昵称
+     */
+    private String nickname;
 
 }

@@ -6,6 +6,8 @@
     <result column="user_id" jdbcType="INTEGER" property="userId" />
     <result column="project_id" jdbcType="INTEGER" property="projectId" />
     <result column="type" jdbcType="TINYINT" property="type" />
+    <result column="username" jdbcType="VARCHAR" property="username" />
+    <result column="nickname" jdbcType="VARCHAR" property="nickname" />
   </resultMap>
   <sql id="Base_Column_List">
     id, user_id, project_id, `type`
@@ -15,6 +17,16 @@
     <include refid="Base_Column_List" />
     from user_project_relation
     where user_id = #{userId,jdbcType=INTEGER}
+  </select>
+  <select id="listMember" resultMap="BaseResultMap">
+    select
+      a.user_id, a.project_id, a.type, b.username, b.nickname
+    from user_project_relation a
+           inner join user b on a.user_id = b.id
+    where a.project_id = #{projectId,jdbcType=INTEGER} and b.is_delete = 0
+    <if test="nickname != null">
+      and `nickname` = #{nickname,jdbcType=VARCHAR}
+    </if>
   </select>
   <delete id="remove" parameterType="java.lang.Integer">
     delete from user_project_relation
