@@ -8,13 +8,18 @@ import java.util.List;
 
 @Repository
 public interface UserProjectRelationMapper {
-    int remove(@Param("userId") Integer userId, @Param("projectId") Integer project);
+    int remove(@Param("userId") Integer userId, @Param("projectId") Integer projectId);
 
     int insert(UserProjectRelationPO record);
 
     UserProjectRelationPO select(@Param("userId") Integer userId);
 
-    List<UserProjectRelationPO> listMember(UserProjectRelationPO record);
+    List<UserProjectRelationPO> listMember(@Param("projectId") Integer project,
+                                           @Param("nickname") String nickname,
+                                           @Param("startIndex") Integer startIndex);
+
+    int count(@Param("projectId") Integer project,
+              @Param("nickname") String nickname);
 
     int update(UserProjectRelationPO record);
 

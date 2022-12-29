@@ -27,6 +27,17 @@
     <if test="nickname != null">
       and `nickname` = #{nickname,jdbcType=VARCHAR}
     </if>
+    order by a.gmt_create desc limit ${startIndex}, 10
+  </select>
+  <select id="count"  resultType="java.lang.Integer">
+    select
+    count(1)
+    from user_project_relation a
+    inner join user b on a.user_id = b.id
+    where a.project_id = #{projectId,jdbcType=INTEGER} and b.is_delete = 0
+    <if test="nickname != null">
+      and `nickname` = #{nickname,jdbcType=VARCHAR}
+    </if>
   </select>
   <delete id="remove" parameterType="java.lang.Integer">
     delete from user_project_relation
@@ -43,17 +54,17 @@
   <update id="update" parameterType="com.luoys.upgrade.toolservice.dao.po.UserProjectRelationPO">
     update user_project_relation
     <set>
-      <if test="userId != null">
-        user_id = #{userId,jdbcType=INTEGER},
-      </if>
-      <if test="projectId != null">
-        project_id = #{projectId,jdbcType=INTEGER},
-      </if>
+<!--      <if test="userId != null">-->
+<!--        user_id = #{userId,jdbcType=INTEGER},-->
+<!--      </if>-->
+<!--      <if test="projectId != null">-->
+<!--        project_id = #{projectId,jdbcType=INTEGER},-->
+<!--      </if>-->
       <if test="type != null">
         `type` = #{type,jdbcType=TINYINT},
       </if>
       gmt_modified = now()
     </set>
-    where id = #{id,jdbcType=INTEGER}
+    where user_id = #{userId,jdbcType=INTEGER} and project_id = #{projectId,jdbcType=INTEGER}
   </update>
 </mapper>
