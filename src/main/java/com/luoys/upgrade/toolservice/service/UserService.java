@@ -11,6 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * 用户服务，包含用户相关的所有业务逻辑
  *
@@ -75,6 +77,19 @@ public class UserService {
             return null;
         }
         return TransformUser.transformPO2VO(userMapper.selectById(userId));
+    }
+
+    /**
+     * 根据登录名或昵称查询用户列表
+     * @param name username或nickname
+     * @return 用户列表
+     */
+    public List<UserVO> queryByName(String name) {
+        if (null == name) {
+            return null;
+        }
+        List<UserPO> userPOList = userMapper.listByName(name);
+        return TransformUser.transformPO2VO(userPOList);
     }
 
     /**

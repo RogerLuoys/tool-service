@@ -4,6 +4,8 @@ import com.luoys.upgrade.toolservice.dao.po.UserPO;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * 用户dao层接口
  *
@@ -71,5 +73,13 @@ public interface UserMapper {
      * @return 账号信息
      */
     UserPO select(UserPO record);
+
+    /**
+     * 通过登录名或昵称查询
+     *
+     * @param name username或nickname
+     * @return 账号信息
+     */
+    List<UserPO> listByName(@Param("name") String name);
 
 }

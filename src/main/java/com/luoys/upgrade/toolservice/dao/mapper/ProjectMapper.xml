@@ -16,6 +16,25 @@
     from project
     where id = #{projectId,jdbcType=INTEGER}
   </select>
+  <select id="list" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from project
+    where is_delete = 0
+    <if test="name != null">
+      and `name` like concat('%', #{name,jdbcType=VARCHAR}, '%')
+    </if>
+    order by gmt_create desc limit ${startIndex}, 10
+  </select>
+  <select id="count" resultType="java.lang.Integer">
+    select
+    count(1)
+    from project
+    where is_delete = 0
+    <if test="name != null">
+      and `name` like concat('%', #{name,jdbcType=VARCHAR}, '%')
+    </if>
+  </select>
   <delete id="remove" parameterType="java.lang.Integer">
     update project set is_delete = 1
     where id = #{projectId,jdbcType=INTEGER}

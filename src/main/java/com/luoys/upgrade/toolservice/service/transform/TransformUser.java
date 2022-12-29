@@ -1,7 +1,12 @@
 package com.luoys.upgrade.toolservice.service.transform;
 
+import com.luoys.upgrade.toolservice.dao.po.ResourcePO;
 import com.luoys.upgrade.toolservice.dao.po.UserPO;
+import com.luoys.upgrade.toolservice.web.vo.ResourceVO;
 import com.luoys.upgrade.toolservice.web.vo.UserVO;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class TransformUser {
 
@@ -29,9 +34,18 @@ public class TransformUser {
         vo.setUserId(po.getId());
         vo.setUsername(po.getUsername());
         vo.setPhone(po.getPhone());
-//        vo.setStatus(po.getStatus());
         vo.setType(po.getType());
         vo.setNickname(po.getNickname());
         return vo;
     }
+
+
+    public static List<UserVO> transformPO2VO(List<UserPO> poList) {
+        List<UserVO> voList = new ArrayList<>();
+        for (UserPO po : poList) {
+            voList.add(transformPO2VO(po));
+        }
+        return voList;
+    }
+
 }

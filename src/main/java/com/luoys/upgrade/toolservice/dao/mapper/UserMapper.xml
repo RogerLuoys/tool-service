@@ -108,4 +108,12 @@
       and `status` = #{status,jdbcType=TINYINT},
     </if>
   </select>
+  <select id="listByName" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from user
+    where is_delete = 0
+    and (username like concat(#{username,jdbcType=VARCHAR}, '%')
+    or nickname like concat(#{nickname,jdbcType=VARCHAR}, '%'))
+  </select>
 </mapper>
