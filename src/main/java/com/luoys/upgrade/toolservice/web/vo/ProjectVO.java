@@ -25,4 +25,9 @@ public class ProjectVO {
      */
     private String description;
 
+    /**
+     * 项目负责人
+     */
+    private Integer ownerId;
+
 }

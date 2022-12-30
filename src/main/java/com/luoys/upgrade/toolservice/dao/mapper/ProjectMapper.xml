@@ -44,7 +44,7 @@
       is_delete, gmt_create, gmt_modified
       )
     values (#{parentProjectId,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, 
-      0, now(), now()}
+      0, now(), now()
       )
   </insert>
   <update id="update" parameterType="com.luoys.upgrade.toolservice.dao.po.ProjectPO">

@@ -1,7 +1,6 @@
 package com.luoys.upgrade.toolservice.service;
 
 import com.luoys.upgrade.toolservice.dao.po.UserPO;
-import com.luoys.upgrade.toolservice.service.common.NumberSender;
 import com.luoys.upgrade.toolservice.dao.UserMapper;
 import com.luoys.upgrade.toolservice.service.enums.KeywordEnum;
 import com.luoys.upgrade.toolservice.service.enums.UserTypeEnum;
@@ -10,6 +9,7 @@ import com.luoys.upgrade.toolservice.web.vo.UserVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.DigestUtils;
 
 import java.util.List;
 
@@ -76,7 +76,8 @@ public class UserService {
         if (null == userId) {
             return null;
         }
-        return TransformUser.transformPO2VO(userMapper.selectById(userId));
+        UserPO userPO = userMapper.selectById(userId);
+        return TransformUser.transformPO2VO(userPO);
     }
 
     /**
@@ -129,5 +130,16 @@ public class UserService {
         userMapper.insert(userPO);
         return TransformUser.transformPO2VO(userPO);
     }
+
+    /**
+     * 账号信息加密
+     * @param userVO 需要有用户名和密码
+     * @return 密文
+     */
+    private String encryptByMd5(UserVO userVO) {
+        String userInfo = userVO.getUsername() + "," +userVO.getPassword();
+        return DigestUtils.md5DigestAsHex(userInfo.getBytes());
+    }
+
 
 }

@@ -64,7 +64,7 @@ public interface UserMapper {
      * @param userId 业务id
      * @return 账号信息
      */
-    UserPO selectById(Integer userId);
+    UserPO selectById(@Param("userId") Integer userId);
 
     /**
      * 通过其它条件查询
