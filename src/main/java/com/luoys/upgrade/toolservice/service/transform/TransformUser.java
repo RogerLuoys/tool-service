@@ -22,6 +22,7 @@ public class TransformUser {
         po.setPhone(vo.getPhone());
         po.setNickname(vo.getNickname());
         po.setPassword(vo.getPassword());
+        po.setLoginInfo(vo.getLoginInfo());
         return po;
     }
 
@@ -35,6 +36,7 @@ public class TransformUser {
         vo.setUsername(po.getUsername());
         vo.setPhone(po.getPhone());
         vo.setType(po.getType());
+        vo.setLoginInfo(po.getLoginInfo());
         vo.setNickname(po.getNickname());
         return vo;
     }

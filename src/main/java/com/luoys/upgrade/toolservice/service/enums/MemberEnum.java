@@ -9,7 +9,7 @@ import java.util.Map;
 public enum MemberEnum {
 
     OWNER(1, "负责人"),
-    ADMIN(2, "管理员"),
+    SUPERVISOR(2, "管理员"),
     ORDINARY(3, "普通成员");
 
     private final Integer code;

@@ -1,7 +1,11 @@
 package com.luoys.upgrade.toolservice.service;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 import com.luoys.upgrade.toolservice.dao.po.UserPO;
 import com.luoys.upgrade.toolservice.dao.UserMapper;
+import com.luoys.upgrade.toolservice.service.common.CacheUtil;
+import com.luoys.upgrade.toolservice.service.dto.JdbcDTO;
 import com.luoys.upgrade.toolservice.service.enums.KeywordEnum;
 import com.luoys.upgrade.toolservice.service.enums.UserTypeEnum;
 import com.luoys.upgrade.toolservice.service.transform.TransformUser;
@@ -12,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 用户服务，包含用户相关的所有业务逻辑
@@ -22,23 +27,34 @@ import java.util.List;
 @Service
 public class UserService {
 
-
-    private final static int DEFAULT_USER_STATUS = 1;
+    private Cache<String, UserVO> userCache = Caffeine.newBuilder()
+            //cache的初始容量
+            .initialCapacity(5)
+            //cache最大缓存数
+            .maximumSize(1000)
+            //设置写缓存后n秒钟过期
+            .expireAfterWrite(12, TimeUnit.HOURS)
+            //设置读写缓存后n秒钟过期,实际很少用到,类似于expireAfterWrite
+            //.expireAfterAccess(17, TimeUnit.SECONDS)
+            .build();
 
     @Autowired
-    private UserMapper userMapper;
+    private static UserMapper userMapper;
 
     /**
      * 更新用户信息
      * @param userVO 用户对象
      * @return 更新成功为true
      */
-    public Boolean update(UserVO userVO) {
+    public Integer update(UserVO userVO) {
         if (userVO == null) {
             return null;
         }
-        int result = userMapper.update(TransformUser.transformVO2PO(userVO));
-        return  result == 1;
+        if (userVO.getPassword() != null) {
+            userVO.setLoginInfo(encryptByMd5(userVO));
+        }
+        UserPO userPO = TransformUser.transformVO2PO(userVO);
+        return  userMapper.update(userPO);
     }
 
     /**
@@ -51,20 +67,24 @@ public class UserService {
         if (loginName == null || passWord == null) {
             return null;
         }
-        return TransformUser.transformPO2VO(userMapper.selectByLoginInfo(loginName, null, passWord));
+        return TransformUser.transformPO2VO(userMapper.selectByAccountInfo(loginName, null, passWord));
     }
 
     /**
-     * 根据手机号密码查询用户
-     * @param phone 手机号
-     * @param passWord 密码
+     * 根据登录信息查询用户
+     * @param loginInfo 登录信息(密文)
      * @return 用户对象
      */
-    public UserVO queryByPhone(String phone, String passWord) {
-        if (phone == null || passWord == null) {
+    public UserVO queryByLoginInfo(String loginInfo) {
+        if (loginInfo == null) {
             return null;
         }
-        return TransformUser.transformPO2VO(userMapper.selectByLoginInfo(null, phone, passWord));
+        UserVO userVO = userCache.getIfPresent(loginInfo);
+        if (userVO == null) {
+            userVO = TransformUser.transformPO2VO(userMapper.selectByLoginInfo(loginInfo));
+            userCache.put(loginInfo, userVO);
+        }
+        return userVO;
     }
 
     /**
@@ -122,10 +142,7 @@ public class UserService {
         if (userVO.getType() == null) {
             userVO.setType(UserTypeEnum.REGULAR.getCode());
         }
-//        if (userVO.getStatus() == null) {
-//            userVO.setStatus(DEFAULT_USER_STATUS);
-//        }
-//        userVO.setUserId(NumberSender.createUserId());
+        userVO.setLoginInfo(encryptByMd5(userVO));
         UserPO userPO = TransformUser.transformVO2PO(userVO);
         userMapper.insert(userPO);
         return TransformUser.transformPO2VO(userPO);
@@ -137,9 +154,12 @@ public class UserService {
      * @return 密文
      */
     private String encryptByMd5(UserVO userVO) {
-        String userInfo = userVO.getUsername() + "," +userVO.getPassword();
+        String userInfo = userVO.getUsername() + userVO.getPassword();
         return DigestUtils.md5DigestAsHex(userInfo.getBytes());
     }
 
+    private static UserVO getValueFromDB(String key) {
+        return null;
+    }
 
 }

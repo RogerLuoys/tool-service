@@ -38,4 +38,9 @@ public class UserPO {
      */
     private Integer type;
 
+    /**
+     * 登录信息(密文)
+     */
+    private String loginInfo;
+
 }

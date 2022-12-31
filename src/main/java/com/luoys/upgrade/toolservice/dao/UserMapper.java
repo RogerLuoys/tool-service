@@ -46,9 +46,17 @@ public interface UserMapper {
      * @param passWord  登录密码
      * @return 账号信息
      */
-    UserPO selectByLoginInfo(@Param("username") String username,
+    UserPO selectByAccountInfo(@Param("username") String username,
                              @Param("phone") String phone,
                              @Param("passWord") String passWord);
+
+    /**
+     * 用户登录
+     *
+     * @param loginInfo 登录账号
+     * @return 账号信息
+     */
+    UserPO selectByLoginInfo(@Param("loginInfo") String loginInfo);
 
     /**
      * 通过登录账号查询

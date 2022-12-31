@@ -25,10 +25,10 @@ public class UserVO {
      */
     private String phone;
 
-//    /**
-//     * 用户昵称
-//     */
-//    private String userName;
+    /**
+     * 登录信息(密文)
+     */
+    private String loginInfo;
 
     /**
      * 1--管理员；2--普通账号

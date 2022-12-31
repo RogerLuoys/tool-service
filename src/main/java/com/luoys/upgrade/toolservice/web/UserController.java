@@ -38,7 +38,7 @@ public class UserController {
     }
 
     @RequestMapping(value = "/update", method = RequestMethod.PUT)
-    public Result<Boolean> update(@RequestBody UserVO userVO){
+    public Result<Integer> update(@RequestBody UserVO userVO){
         log.info("--->修改用户信息开始：{}", userVO);
         return Result.success(userService.update(userVO));
     }
