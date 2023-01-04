@@ -23,9 +23,9 @@ public class UserController {
     }
 
     @RequestMapping(value = "/queryDetail", method = RequestMethod.GET)
-    public Result<UserVO> queryDetail(@RequestHeader("userId") Integer userId) {
-        log.info("--->查询用户信息开始：userId={}", userId);
-        return Result.success(userService.queryByUserId(userId));
+    public Result<UserVO> queryDetail(@RequestHeader("loginInfo") String loginInfo) {
+        log.info("--->查询用户信息开始：loginInfo={}", loginInfo);
+        return Result.success(userService.queryByLoginInfo(loginInfo));
     }
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)

@@ -1,5 +1,6 @@
 package com.luoys.upgrade.toolservice.web;
 
+import com.luoys.upgrade.toolservice.service.UserService;
 import com.luoys.upgrade.toolservice.service.common.Result;
 import com.luoys.upgrade.toolservice.service.SuiteService;
 import com.luoys.upgrade.toolservice.service.enums.KeywordEnum;
@@ -19,6 +20,8 @@ public class AutoSuiteController {
     @Autowired
     private SuiteService suiteService;
 
+    @Autowired
+    private UserService userService;
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     public Result<Boolean> create(@RequestBody AutoSuiteVO autoSuiteVO) {
@@ -29,9 +32,9 @@ public class AutoSuiteController {
     @RequestMapping(value = "/quickCreate", method = RequestMethod.POST)
     public Result<String> quickCreate(@RequestBody AutoSuiteVO autoSuiteVO,
                                       @RequestHeader(value = "projectId") Integer projectId,
-                                      @RequestHeader(value = "userId") Integer userId) {
+                                      @RequestHeader(value = "loginInfo") String loginInfo) {
         log.info("--->开始快速新增套件：{}", autoSuiteVO);
-        autoSuiteVO.setOwnerId(userId);
+        autoSuiteVO.setOwnerId(userService.queryByLoginInfo(loginInfo).getUserId());
         autoSuiteVO.setProjectId(projectId);
         autoSuiteVO.setOwnerName(KeywordEnum.DEFAULT_USER.getValue());
         return Result.message(suiteService.quickCreate(autoSuiteVO));
@@ -45,9 +48,10 @@ public class AutoSuiteController {
 
     @RequestMapping(value = "/batchRelatedCase", method = RequestMethod.GET)
     public Result<Boolean> batchRelatedCase(@RequestParam("suiteId") Integer suiteId,
-                                            @RequestHeader("userId") Integer userId,
+                                            @RequestHeader("loginInfo") String loginInfo,
                                             @RequestParam("caseName") String caseName) {
         log.info("--->开始批量关联的用例");
+        Integer userId = userService.queryByLoginInfo(loginInfo).getUserId();
         return Result.message(suiteService.createRelatedCase(suiteId, userId, caseName));
     }
 
@@ -83,12 +87,12 @@ public class AutoSuiteController {
     }
 
     @RequestMapping(value = "/query", method = RequestMethod.POST)
-    public Result<PageInfo<AutoSuiteSimpleVO>> query(@RequestHeader(value = "userId") Integer userId,
+    public Result<PageInfo<AutoSuiteSimpleVO>> query(@RequestHeader(value = "loginInfo") String loginInfo,
                                                      @RequestHeader(value = "projectId") Integer projectId,
                                                      @RequestBody QueryVO queryVO) {
-        queryVO.setUserId(userId);
         queryVO.setProjectId(projectId);
         log.info("--->开始查询套件列表：{}", queryVO);
+        queryVO.setUserId(userService.queryByLoginInfo(loginInfo).getUserId());
         PageInfo<AutoSuiteSimpleVO> pageInfo = new PageInfo<>();
         pageInfo.setList(suiteService.query(queryVO));
         pageInfo.setTotal(suiteService.count(queryVO));

@@ -23,12 +23,12 @@ public class ConfigPO {
     /**
      * 1 变量，2 driver启动项
      */
-    private Byte type;
+    private Integer type;
 
     /**
      * 1 文本框，2 单选框，3 下拉选项
      */
-    private Byte paramType;
+    private Integer paramType;
 
     /**
      * 变量引用名称
@@ -41,9 +41,14 @@ public class ConfigPO {
     private String paramValue;
 
     /**
+     * 备注
+     */
+    private String paramComment;
+
+    /**
      * 1 chrome web，2chrome h5，3android
      */
-    private Byte uiType;
+    private Integer uiType;
 
     /**
      * driver 启动项

@@ -1,7 +1,9 @@
 package com.luoys.upgrade.toolservice.service;
 
+import com.luoys.upgrade.toolservice.dao.ConfigMapper;
 import com.luoys.upgrade.toolservice.dao.po.AutoCasePO;
 import com.luoys.upgrade.toolservice.dao.po.AutoCaseQueryPO;
+import com.luoys.upgrade.toolservice.dao.po.ConfigPO;
 import com.luoys.upgrade.toolservice.service.client.StepExecutor;
 import com.luoys.upgrade.toolservice.service.common.NumberSender;
 import com.luoys.upgrade.toolservice.service.common.StringUtil;
@@ -15,6 +17,7 @@ import com.luoys.upgrade.toolservice.service.enums.AutoCaseTypeEnum;
 import com.luoys.upgrade.toolservice.service.enums.KeywordEnum;
 import com.luoys.upgrade.toolservice.service.enums.RelatedStepTypeEnum;
 import com.luoys.upgrade.toolservice.service.transform.TransformCaseStepRelation;
+import com.luoys.upgrade.toolservice.service.transform.TransformConfig;
 import com.luoys.upgrade.toolservice.web.vo.*;
 import com.luoys.upgrade.toolservice.service.transform.TransformAutoCase;
 import lombok.extern.slf4j.Slf4j;
@@ -42,6 +45,9 @@ public class CaseService {
 
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private ConfigMapper configMapper;
 
     @Autowired
     private StepService stepService;
@@ -248,6 +254,14 @@ public class CaseService {
     public AutoCaseVO queryDetail(Integer caseId) {
         // 查基本信息
         AutoCaseVO autoCaseVO = TransformAutoCase.transformPO2VO(autoCaseMapper.selectById(caseId));
+        // 如果是超类则查参数
+        if (AutoCaseTypeEnum.SUPPER_CLASS.getCode().equals(autoCaseVO.getType())
+                || autoCaseVO.getType().equals(AutoCaseTypeEnum.DATA_FACTORY.getCode())) {
+            List<ConfigPO> configPOList = configMapper.list(autoCaseVO.getCaseId());
+            autoCaseVO.setParameterList(TransformConfig.transformPO2VO(configPOList));
+            // todo ui启动参数
+            autoCaseVO.setArgumentList(null);
+        }
         // 查关联的步骤
         List<CaseStepVO> caseStepList = TransformCaseStepRelation.transformPO2VO(caseStepRelationMapper.listStepByCaseId(caseId));
         List<CaseStepVO> preList = new ArrayList<>();

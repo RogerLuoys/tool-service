@@ -39,7 +39,7 @@ public class UserService {
             .build();
 
     @Autowired
-    private static UserMapper userMapper;
+    private UserMapper userMapper;
 
     /**
      * 更新用户信息
@@ -51,7 +51,7 @@ public class UserService {
             return null;
         }
         if (userVO.getPassword() != null) {
-            userVO.setLoginInfo(encryptByMd5(userVO));
+            userVO.setLoginInfo(encryptByMd5(userVO.getUsername(), userVO.getPassword()));
         }
         UserPO userPO = TransformUser.transformVO2PO(userVO);
         return  userMapper.update(userPO);
@@ -82,6 +82,10 @@ public class UserService {
         UserVO userVO = userCache.getIfPresent(loginInfo);
         if (userVO == null) {
             userVO = TransformUser.transformPO2VO(userMapper.selectByLoginInfo(loginInfo));
+            if (userVO == null) {
+                log.error("---->用户不存在");
+                return null;
+            }
             userCache.put(loginInfo, userVO);
         }
         return userVO;
@@ -142,7 +146,7 @@ public class UserService {
         if (userVO.getType() == null) {
             userVO.setType(UserTypeEnum.REGULAR.getCode());
         }
-        userVO.setLoginInfo(encryptByMd5(userVO));
+        userVO.setLoginInfo(encryptByMd5(userVO.getUsername(), userVO.getPassword()));
         UserPO userPO = TransformUser.transformVO2PO(userVO);
         userMapper.insert(userPO);
         return TransformUser.transformPO2VO(userPO);
@@ -150,16 +154,11 @@ public class UserService {
 
     /**
      * 账号信息加密
-     * @param userVO 需要有用户名和密码
      * @return 密文
      */
-    private String encryptByMd5(UserVO userVO) {
-        String userInfo = userVO.getUsername() + userVO.getPassword();
+    private String encryptByMd5(String username, String password) {
+        String userInfo = username + password;
         return DigestUtils.md5DigestAsHex(userInfo.getBytes());
-    }
-
-    private static UserVO getValueFromDB(String key) {
-        return null;
     }
 
 }

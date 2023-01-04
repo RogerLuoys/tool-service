@@ -50,15 +50,15 @@ public class AutoCaseVO {
      */
     private Integer timeOut;
 
-//    /**
-//     * 用例执行环境（参数）
-//     */
-//    private String environment;
+    /**
+     * 脚本参数列表
+     */
+    private List<ConfigVO> parameterList;
 
-//    /**
-//     * 入参列表，List<CommonDTO>类型
-//     */
-//    private List<ParameterDTO> parameterList;
+    /**
+     * UI启动参数列表
+     */
+    private List<ConfigVO> argumentList;
 
     /**
      * 用例计划完成时间

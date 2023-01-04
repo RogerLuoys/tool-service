@@ -3,16 +3,17 @@
 <mapper namespace="com.luoys.upgrade.toolservice.dao.ConfigMapper">
   <resultMap id="BaseResultMap" type="com.luoys.upgrade.toolservice.dao.po.ConfigPO">
     <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="name" jdbcType="VARCHAR" property="name" />
-    <result column="description" jdbcType="VARCHAR" property="description" />
+<!--    <result column="name" jdbcType="VARCHAR" property="name" />-->
+<!--    <result column="description" jdbcType="VARCHAR" property="description" />-->
     <result column="type" jdbcType="TINYINT" property="type" />
     <result column="param_type" jdbcType="TINYINT" property="paramType" />
     <result column="param_name" jdbcType="VARCHAR" property="paramName" />
     <result column="param_value" jdbcType="VARCHAR" property="paramValue" />
-    <result column="ui_type" jdbcType="TINYINT" property="uiType" />
-    <result column="ui_argument" jdbcType="VARCHAR" property="uiArgument" />
+    <result column="param_comment" jdbcType="VARCHAR" property="paramComment" />
+<!--    <result column="ui_type" jdbcType="TINYINT" property="uiType" />-->
+<!--    <result column="ui_argument" jdbcType="VARCHAR" property="uiArgument" />-->
     <result column="case_id" jdbcType="INTEGER" property="caseId" />
-    <result column="project_id" jdbcType="INTEGER" property="projectId" />
+<!--    <result column="project_id" jdbcType="INTEGER" property="projectId" />-->
   </resultMap>
   <sql id="Base_Column_List">
     id, `name`, description, `type`, param_type, param_name, param_value, ui_type, ui_argument, 
@@ -23,6 +24,12 @@
     <include refid="Base_Column_List" />
     from config
     where id = #{configId,jdbcType=INTEGER}
+  </select>
+  <select id="list" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from config
+    where case_id = #{caseId,jdbcType=INTEGER}
   </select>
   <delete id="remove" parameterType="java.lang.Integer">
     update config set is_delete=1
@@ -42,12 +49,12 @@
   <update id="update" parameterType="com.luoys.upgrade.toolservice.dao.po.ConfigPO">
     update config
     <set>
-      <if test="name != null">
-        `name` = #{name,jdbcType=VARCHAR},
-      </if>
-      <if test="description != null">
-        description = #{description,jdbcType=VARCHAR},
-      </if>
+<!--      <if test="name != null">-->
+<!--        `name` = #{name,jdbcType=VARCHAR},-->
+<!--      </if>-->
+<!--      <if test="description != null">-->
+<!--        description = #{description,jdbcType=VARCHAR},-->
+<!--      </if>-->
       <if test="type != null">
         `type` = #{type,jdbcType=TINYINT},
       </if>
@@ -60,18 +67,18 @@
       <if test="paramValue != null">
         param_value = #{paramValue,jdbcType=VARCHAR},
       </if>
-      <if test="uiType != null">
-        ui_type = #{uiType,jdbcType=TINYINT},
-      </if>
-      <if test="uiArgument != null">
-        ui_argument = #{uiArgument,jdbcType=VARCHAR},
-      </if>
+<!--      <if test="uiType != null">-->
+<!--        ui_type = #{uiType,jdbcType=TINYINT},-->
+<!--      </if>-->
+<!--      <if test="uiArgument != null">-->
+<!--        ui_argument = #{uiArgument,jdbcType=VARCHAR},-->
+<!--      </if>-->
       <if test="caseId != null">
         case_id = #{caseId,jdbcType=INTEGER},
       </if>
-      <if test="projectId != null">
-        project_id = #{projectId,jdbcType=INTEGER},
-      </if>
+<!--      <if test="projectId != null">-->
+<!--        project_id = #{projectId,jdbcType=INTEGER},-->
+<!--      </if>-->
       gmt_modified = now()
     </set>
     where id = #{configId,jdbcType=INTEGER}

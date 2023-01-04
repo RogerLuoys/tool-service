@@ -1,0 +1,50 @@
+package com.luoys.upgrade.toolservice.service.transform;
+
+import com.luoys.upgrade.toolservice.dao.po.ConfigPO;
+import com.luoys.upgrade.toolservice.dao.po.ProjectPO;
+import com.luoys.upgrade.toolservice.service.dto.ParameterDTO;
+import com.luoys.upgrade.toolservice.web.vo.ConfigVO;
+import com.luoys.upgrade.toolservice.web.vo.ProjectVO;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class TransformConfig {
+
+    public static ConfigVO transformPO2VO(ConfigPO po) {
+        if (po == null) {
+            return null;
+        }
+        ConfigVO vo = new ConfigVO();
+        vo.setConfigId(po.getId());
+        vo.setValue(po.getParamValue());
+        vo.setComment(po.getParamComment());
+        vo.setName(po.getParamName());
+        vo.setType(po.getType());
+        vo.setParamType(po.getParamType());
+        return vo;
+    }
+
+    public static List<ConfigVO> transformPO2VO(List<ConfigPO> poList) {
+        List<ConfigVO> voList = new ArrayList<>();
+        for (ConfigPO po : poList) {
+            voList.add(transformPO2VO(po));
+        }
+        return voList;
+    }
+
+    public static ConfigPO transformVO2PO(ConfigVO vo) {
+        if (vo == null) {
+            return null;
+        }
+        ConfigPO po = new ConfigPO();
+        po.setParamComment(vo.getComment());
+        po.setId(vo.getConfigId());
+        po.setParamName(vo.getName());
+        po.setParamComment(vo.getComment());
+        po.setType(vo.getType());
+        po.setParamType(vo.getParamType());
+        return po;
+    }
+
+}

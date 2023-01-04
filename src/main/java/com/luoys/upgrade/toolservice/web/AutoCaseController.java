@@ -1,5 +1,6 @@
 package com.luoys.upgrade.toolservice.web;
 
+import com.luoys.upgrade.toolservice.service.UserService;
 import com.luoys.upgrade.toolservice.service.common.Result;
 import com.luoys.upgrade.toolservice.service.CaseService;
 import com.luoys.upgrade.toolservice.service.enums.KeywordEnum;
@@ -19,6 +20,8 @@ public class AutoCaseController {
     @Autowired
     private CaseService caseService;
 
+    @Autowired
+    private UserService userService;
 
     @RequestMapping(value = "/test", method = RequestMethod.GET)
     public Result<String> test(@RequestParam("caseId") String caseId) {
@@ -34,9 +37,9 @@ public class AutoCaseController {
     }
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public Result<Integer> create(@RequestHeader("userId") Integer userId, @RequestBody AutoCaseVO autoCaseVO) {
-        autoCaseVO.setOwnerId(userId);
+    public Result<Integer> create(@RequestHeader("loginInfo") String loginInfo, @RequestBody AutoCaseVO autoCaseVO) {
         log.info("--->开始新增用例：{}", autoCaseVO);
+        autoCaseVO.setOwnerId(userService.queryByLoginInfo(loginInfo).getUserId());
         return Result.message(caseService.create(autoCaseVO));
     }
 
@@ -94,7 +97,7 @@ public class AutoCaseController {
     }
 
 //    @RequestMapping(value = "/query", method = RequestMethod.GET)
-//    public Result<PageInfo<AutoCaseSimpleVO>> query(@RequestHeader("userId") Integer userId,
+//    public Result<PageInfo<AutoCaseSimpleVO>> query(@RequestHeader("loginInfo") String loginInfo,
 //                                                    @RequestParam(value = "isOnlyOwner", required = false) Boolean isOnlyOwner,
 //                                                    @RequestParam(value = "status", required = false) Integer status,
 //                                                    @RequestParam(value = "name", required = false) String name,
@@ -107,12 +110,12 @@ public class AutoCaseController {
 //    }
 
     @RequestMapping(value = "/query", method = RequestMethod.POST)
-    public Result<PageInfo<AutoCaseSimpleVO>> query2(@RequestHeader("userId") Integer userId,
+    public Result<PageInfo<AutoCaseSimpleVO>> query2(@RequestHeader("loginInfo") String loginInfo,
                                                      @RequestHeader("projectId") Integer projectId,
                                                     @RequestBody QueryVO queryVO) {
         queryVO.setProjectId(projectId);
-        queryVO.setUserId(userId);
         log.info("--->开始查询用例列表：{}", queryVO);
+        queryVO.setUserId(userService.queryByLoginInfo(loginInfo).getUserId());
         PageInfo<AutoCaseSimpleVO> pageInfo = new PageInfo();
         pageInfo.setList(caseService.query(queryVO));
         pageInfo.setTotal(caseService.count(queryVO));
