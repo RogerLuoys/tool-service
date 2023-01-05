@@ -22,6 +22,7 @@ public class TransformConfig {
         vo.setName(po.getParamName());
         vo.setType(po.getType());
         vo.setParamType(po.getParamType());
+        vo.setCaseId(po.getCaseId());
         return vo;
     }
 
@@ -38,10 +39,11 @@ public class TransformConfig {
             return null;
         }
         ConfigPO po = new ConfigPO();
+        po.setCaseId(vo.getCaseId());
         po.setParamComment(vo.getComment());
         po.setId(vo.getConfigId());
         po.setParamName(vo.getName());
-        po.setParamComment(vo.getComment());
+        po.setParamValue(vo.getValue());
         po.setType(vo.getType());
         po.setParamType(vo.getParamType());
         return po;

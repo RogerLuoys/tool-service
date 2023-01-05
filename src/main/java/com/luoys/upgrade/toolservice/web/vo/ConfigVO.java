@@ -10,6 +10,7 @@ import lombok.Data;
 @Data
 public class ConfigVO {
     private Integer configId;
+    private Integer caseId;
     private Integer type;
     private Integer paramType;
     private String name;

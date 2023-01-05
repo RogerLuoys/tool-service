@@ -46,12 +46,18 @@ public class AutoCaseController {
     @RequestMapping(value = "/quickCreate", method = RequestMethod.POST)
     public Result<String> quickCreate(@RequestBody AutoCaseVO autoCaseVO,
                                       @RequestHeader(value = "projectId") Integer projectId,
-                                       @RequestHeader(value = "userId") Integer userId) {
-        autoCaseVO.setOwnerId(userId);
+                                      @RequestHeader("loginInfo") String loginInfo) {
         autoCaseVO.setProjectId(projectId);
         autoCaseVO.setOwnerName(KeywordEnum.DEFAULT_USER.getValue());
         log.info("--->开始快速新增用例：{}", autoCaseVO);
+        autoCaseVO.setOwnerId(userService.queryByLoginInfo(loginInfo).getUserId());
         return Result.message(caseService.quickCreate(autoCaseVO));
+    }
+
+    @RequestMapping(value = "/quickCreateConfig", method = RequestMethod.POST)
+    public Result<String> quickCreateConfig(@RequestBody ConfigVO configVO) {
+        log.info("--->开始快速新增配置：{}", configVO);
+        return Result.message(caseService.quickCreate(configVO));
     }
 
     @RequestMapping(value = "/createRelatedStep", method = RequestMethod.POST)
@@ -72,6 +78,12 @@ public class AutoCaseController {
         return Result.message(caseService.removeRelatedStep(caseStepVO));
     }
 
+    @RequestMapping(value = "/removeConfig", method = RequestMethod.DELETE)
+    public Result<Boolean> removeConfig(@RequestParam("configId") Integer configId) {
+        log.info("--->开始删除配置：{}", configId);
+        return Result.message(caseService.removeConfig(configId));
+    }
+
     @RequestMapping(value = "/update", method = RequestMethod.PUT)
     public Result<Boolean> update(@RequestBody AutoCaseVO autoCaseVO) {
         log.info("--->开始更新用例：{}", autoCaseVO);
@@ -82,6 +94,12 @@ public class AutoCaseController {
     public Result<Boolean> updateRelatedCase(@RequestBody CaseStepVO caseStepVO) {
         log.info("--->开始更新测试集关联的用例：{}", caseStepVO);
         return Result.message(caseService.updateRelatedStep(caseStepVO));
+    }
+
+    @RequestMapping(value = "/updateConfig", method = RequestMethod.PUT)
+    public Result<Boolean> updateConfig(@RequestBody ConfigVO configVO) {
+        log.info("--->开始更新配置：{}", configVO);
+        return Result.message(caseService.updateConfig(configVO));
     }
 
     @RequestMapping(value = "/changeUiMode", method = RequestMethod.PUT)

@@ -108,6 +108,22 @@ public class CaseService {
     }
 
     /**
+     * 快速新增单个配置
+     *
+     * @param configVO 配置对象，需要有名称和类型
+     * @return 新增成功为1
+     */
+    public Integer quickCreate(ConfigVO configVO) {
+        if (configVO.getType() == null) {
+            log.error("--->用例类型不能为空：{}", configVO);
+            return null;
+        }
+        ConfigPO configPO = TransformConfig.transformVO2PO(configVO);
+        configMapper.insert(configPO);
+        return configPO.getId();
+    }
+
+    /**
      * 新增用例中关联的步骤
      *
      * @param caseStepVO 步骤对象
@@ -166,6 +182,16 @@ public class CaseService {
     }
 
     /**
+     * 删除用例中关联的配置
+     *
+     * @param configId 步骤对象
+     * @return 成功为true，失败为false
+     */
+    public Integer removeConfig(Integer configId) {
+        return configMapper.remove(configId);
+    }
+
+    /**
      * 更新单个用例
      *
      * @param autoCaseVO 用例对象
@@ -203,6 +229,10 @@ public class CaseService {
         return updateRelatedStep(caseStepVO);
     }
 
+    public Integer updateConfig(ConfigVO configVO) {
+        ConfigPO configPO = TransformConfig.transformVO2PO(configVO);
+        return configMapper.update(configPO);
+    }
 //    /**
 //     * 查询用例列表
 //     *

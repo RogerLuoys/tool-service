@@ -30,6 +30,7 @@
     <include refid="Base_Column_List" />
     from config
     where case_id = #{caseId,jdbcType=INTEGER}
+    and is_delete = 0
   </select>
   <delete id="remove" parameterType="java.lang.Integer">
     update config set is_delete=1
@@ -81,6 +82,6 @@
 <!--      </if>-->
       gmt_modified = now()
     </set>
-    where id = #{configId,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>
