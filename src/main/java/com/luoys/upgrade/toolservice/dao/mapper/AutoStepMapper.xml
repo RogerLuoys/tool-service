@@ -106,7 +106,7 @@
       </if>
       gmt_modified = now()
     </set>
-    where step_id = #{stepId,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
   </update>
 <!--  <update id="updateResult">-->
 <!--    update auto_step-->

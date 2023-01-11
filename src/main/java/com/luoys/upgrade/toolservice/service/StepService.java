@@ -117,9 +117,9 @@ public class StepService {
      * @param autoStepVO 步骤对象
      * @return 成功为true，失败为false
      */
-    public Boolean update(AutoStepVO autoStepVO) {
-        int result = autoStepMapper.update(TransformAutoStep.transformVO2PO(autoStepVO));
-        return result == 1;
+    public Integer update(AutoStepVO autoStepVO) {
+        AutoStepPO autoStepPO = TransformAutoStep.transformVO2PO(autoStepVO);
+        return autoStepMapper.update(autoStepPO);
     }
 
 //    /**

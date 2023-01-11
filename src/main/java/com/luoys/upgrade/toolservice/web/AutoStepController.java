@@ -34,7 +34,7 @@ public class AutoStepController {
     }
 
     @RequestMapping(value = "/update", method = RequestMethod.PUT)
-    public Result<Boolean> update(@RequestBody AutoStepVO autoStepVO) {
+    public Result<Integer> update(@RequestBody AutoStepVO autoStepVO) {
         log.info("--->开始更新步骤：{}", autoStepVO);
         return Result.message(stepService.update(autoStepVO));
     }
