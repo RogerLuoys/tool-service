@@ -8,18 +8,18 @@
     <result column="type" jdbcType="TINYINT" property="type" />
     <result column="step_id" jdbcType="INTEGER" property="stepId" />
     <result column="step_name" jdbcType="VARCHAR" property="stepName" />
-    <result column="step_type" jdbcType="TINYINT" property="moduleType" />
-    <result column="step_type" jdbcType="TINYINT" property="methodType" />
-    <result column="step_id" jdbcType="INTEGER" property="methodId" />
-    <result column="jdbc_sql" jdbcType="VARCHAR" property="methodName" />
-    <result column="jdbc_url" jdbcType="VARCHAR" property="parameter1" />
-    <result column="jdbc_driver" jdbcType="VARCHAR" property="parameter2" />
-    <result column="jdbc_username" jdbcType="VARCHAR" property="parameter3" />
-    <result column="jdbc_password" jdbcType="VARCHAR" property="varName" />
+    <result column="module_type" jdbcType="TINYINT" property="moduleType" />
+    <result column="method_type" jdbcType="TINYINT" property="methodType" />
+    <result column="method_id" jdbcType="INTEGER" property="methodId" />
+    <result column="method_name" jdbcType="VARCHAR" property="methodName" />
+    <result column="parameter1" jdbcType="VARCHAR" property="parameter1" />
+    <result column="parameter2" jdbcType="VARCHAR" property="parameter2" />
+    <result column="parameter3" jdbcType="VARCHAR" property="parameter3" />
+    <result column="var_name" jdbcType="VARCHAR" property="varName" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, case_id, `sequence`, `type`, step_id, step_name, moduleType, methodType, methodId, methodName, parameter1, parameter2,
-    parameter3, varName
+    id, case_id, `sequence`, `type`, step_id, step_name, module_type, method_type, method_id, method_name, parameter1, parameter2,
+    parameter3, var_name
   </sql>
   <select id="listStepByCaseId" resultMap="BaseResultMap">
     select

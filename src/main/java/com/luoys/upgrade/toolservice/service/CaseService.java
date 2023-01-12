@@ -3,6 +3,7 @@ package com.luoys.upgrade.toolservice.service;
 import com.luoys.upgrade.toolservice.dao.ConfigMapper;
 import com.luoys.upgrade.toolservice.dao.po.AutoCasePO;
 import com.luoys.upgrade.toolservice.dao.po.AutoCaseQueryPO;
+import com.luoys.upgrade.toolservice.dao.po.CaseStepRelationPO;
 import com.luoys.upgrade.toolservice.dao.po.ConfigPO;
 import com.luoys.upgrade.toolservice.service.client.StepExecutor;
 import com.luoys.upgrade.toolservice.service.common.NumberSender;
@@ -129,13 +130,14 @@ public class CaseService {
      * @param caseStepVO 步骤对象
      * @return 成功为true，失败为false
      */
-    public Boolean createRelatedStep(CaseStepVO caseStepVO) {
+    public Integer createRelatedStep(CaseStepVO caseStepVO) {
         // 如果关联步骤为空，则先快速创建一个步骤
         if (null == caseStepVO.getStepId() || caseStepVO.getStepId() <= 0) {
             caseStepVO.setStepId(stepService.quickCreate());
         }
-        int result = caseStepRelationMapper.insert(TransformCaseStepRelation.transformVO2PO(caseStepVO));
-        return result == 1;
+        CaseStepRelationPO caseStepRelationPO = TransformCaseStepRelation.transformVO2PO(caseStepVO);
+        caseStepRelationMapper.insert(caseStepRelationPO);
+        return caseStepRelationPO.getId();
     }
 
 //    /**
