@@ -88,7 +88,10 @@ public class ResourceService {
      * @return 资源列表
      */
     public List<ResourceVO> query(Integer type, String name, Integer userId, Integer pageIndex) {
-        int startIndex = (pageIndex - 1) * KeywordEnum.DEFAULT_PAGE_SIZE.getCode();
+        Integer startIndex = null;
+        if (pageIndex != null) {
+            startIndex = (pageIndex - 1) * KeywordEnum.DEFAULT_PAGE_SIZE.getCode();
+        }
         List<ResourcePO> resourcePOList = resourceMapper.list(type, name, userId, startIndex);
         return TransformResource.transformPO2VO(resourcePOList);
     }

@@ -49,7 +49,7 @@ public class ResourceController {
     public Result<PageInfo<ResourceVO>> query(@RequestParam(value = "type", required = false) Integer type,
                                                     @RequestParam(value = "name", required = false) String name,
                                                     @RequestHeader("loginInfo") String loginInfo,
-                                                    @RequestParam("pageIndex") Integer pageIndex) {
+                                                    @RequestParam(value = "pageIndex", required = false) Integer pageIndex) {
         log.info("--->开始查询资源列表：");
         Integer userId = userService.queryByLoginInfo(loginInfo).getUserId();
         PageInfo<ResourceVO> pageInfo = new PageInfo<>();

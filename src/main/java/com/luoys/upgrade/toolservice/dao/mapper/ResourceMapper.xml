@@ -52,7 +52,9 @@
     <if test="name != null">
       and `name` like concat('%', #{name,jdbcType=VARCHAR}, '%')
     </if>
-    order by gmt_create desc limit ${startIndex}, 10
+    <if test="startIndex != null">
+      order by gmt_create desc limit ${startIndex}, 10
+    </if>
   </select>
   <select id="count" resultType="java.lang.Integer">
     select count(1)

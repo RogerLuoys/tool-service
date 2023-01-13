@@ -39,64 +39,13 @@ public class TransformCaseStepRelation {
 //        vo.getAutoStep().setOwnerName(po.getOwnerName());
         vo.getAutoStep().setName(po.getStepName());
         vo.getAutoStep().setModuleType(po.getModuleType());
+        vo.getAutoStep().setMethodType(po.getMethodType());
         vo.getAutoStep().setMethodId(po.getMethodId());
         vo.getAutoStep().setMethodName(po.getMethodName());
         vo.getAutoStep().setParameter3(po.getParameter3());
         vo.getAutoStep().setParameter2(po.getParameter2());
         vo.getAutoStep().setParameter1(po.getParameter1());
         vo.getAutoStep().setVarName(po.getVarName());
-//        vo.getAutoStep().setAssertActual(po.getAssertActual());
-//        vo.getAutoStep().setAssertExpect(po.getAssertExpect());
-//        vo.getAutoStep().setAssertResult(po.getAssertResult());
-//        vo.getAutoStep().setAfterSleep(po.getAfterSleep());
-//        vo.getAutoStep().setAssertType(po.getAssertType());
-//        // 模板转换
-//        switch (AutoStepTypeEnum.fromCode(po.getStepType())) {
-//            case STEP_SQL:
-//                JdbcDTO jdbcDTO = new JdbcDTO();
-//                //设置sql对象
-//                jdbcDTO.setSql(po.getJdbcSql());
-//                //设置数据源对象
-//                jdbcDTO.setDriver(po.getJdbcDriver());
-//                jdbcDTO.setUrl(po.getJdbcUrl());
-//                jdbcDTO.setUsername(po.getJdbcUsername());
-//                jdbcDTO.setPassword(po.getJdbcPassword());
-//                //设置数据库对象
-//                vo.getAutoStep().setJdbc(jdbcDTO);
-//                break;
-//            case STEP_HTTP:
-//                HttpRequestDTO httpRequestDTO = new HttpRequestDTO();
-//                httpRequestDTO.setHttpURL(po.getHttpUrl());
-//                httpRequestDTO.setHttpType(po.getHttpType());
-//                httpRequestDTO.setHttpHeaderList(TransformCommon.toParameter(po.getHttpHeader()));
-//                httpRequestDTO.setHttpBody(po.getHttpBody());
-//                vo.getAutoStep().setHttpRequest(httpRequestDTO);
-//                break;
-//            case STEP_RPC:
-//                RpcDTO rpcDTO = new RpcDTO();
-//                rpcDTO.setUrl(po.getRpcUrl());
-//                rpcDTO.setInterfaceName(po.getRpcInterface());
-//                rpcDTO.setMethodName(po.getRpcMethod());
-//                rpcDTO.setParameterType(po.getRpcParameterType());
-//                rpcDTO.setParameterList(TransformCommon.toParameter(po.getRpcParameter()));
-//                vo.getAutoStep().setRpc(rpcDTO);
-//                break;
-//            case STEP_UI:
-//                UiDTO uiDTO = new UiDTO();
-//                uiDTO.setUrl(po.getUiUrl());
-//                uiDTO.setType(po.getUiType());
-//                uiDTO.setElement(po.getUiElement());
-//                uiDTO.setElementId(po.getUiElementId());
-//                uiDTO.setKey(po.getUiKey());
-//                vo.getAutoStep().setUi(uiDTO);
-//                break;
-//            case STEP_MULTIPLE:
-//                Map<String, List<StepDTO>> stepMap = TransformCommon.toMultipleStep(po.getSteps());
-//                vo.getAutoStep().setIfStepList(stepMap.get(AreaEnum.IF.getValue()));
-//                vo.getAutoStep().setElseStepList(stepMap.get(AreaEnum.ELSE.getValue()));
-//                vo.getAutoStep().setThenStepList(stepMap.get(AreaEnum.THEN.getValue()));
-//                break;
-//        }
         return vo;
     }
 
