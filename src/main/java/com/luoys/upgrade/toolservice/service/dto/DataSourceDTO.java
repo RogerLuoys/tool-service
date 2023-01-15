@@ -15,10 +15,10 @@ public class DataSourceDTO {
      */
     private Integer sourceId;
 
-//    /**
-//     * 数据库名(调用名)
-//     */
-//    private String name;
+    /**
+     * 数据库名(调用名)
+     */
+    private String name;
 
     /**
      * 数据源地址

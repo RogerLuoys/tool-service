@@ -2,14 +2,11 @@ package com.luoys.upgrade.toolservice.service.client;
 
 import com.luoys.upgrade.toolservice.dao.po.AutoStepPO;
 import com.luoys.upgrade.toolservice.service.common.CacheUtil;
-import com.luoys.upgrade.toolservice.service.dto.JdbcDTO;
-import com.luoys.upgrade.toolservice.service.enums.SqlTypeEnum;
+import com.luoys.upgrade.toolservice.service.dto.DataSourceDTO;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
-import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -22,10 +19,8 @@ import java.util.Map;
  * @author luoys
  */
 @Slf4j
-//@Component
 public class DBClient {
 
-//    private final DriverManagerDataSource dataSource = new DriverManagerDataSource();
     private JdbcTemplate jdbcTemplate;
     private HikariDataSource dataSource;
 
@@ -102,15 +97,15 @@ public class DBClient {
     /**
      * 初始化数据源，使用HikariDataSource
      *
-     * @param jdbcDTO 数据源
+     * @param dataSourceDTO 数据源
      */
-    private void init(JdbcDTO jdbcDTO) {
+    private void init(DataSourceDTO dataSourceDTO) {
         jdbcTemplate = new JdbcTemplate();
         HikariConfig config = new HikariConfig();
-        config.setDriverClassName(jdbcDTO.getDriver());
-        config.setJdbcUrl(jdbcDTO.getUrl());
-        config.setUsername(jdbcDTO.getUsername());
-        config.setPassword(jdbcDTO.getPassword());
+        config.setDriverClassName(dataSourceDTO.getDriver());
+        config.setJdbcUrl(dataSourceDTO.getUrl());
+        config.setUsername(dataSourceDTO.getUsername());
+        config.setPassword(dataSourceDTO.getPassword());
         dataSource = new HikariDataSource(config);
         jdbcTemplate.setDataSource(dataSource);
     }

@@ -2,17 +2,10 @@ package com.luoys.upgrade.toolservice.service.client;
 
 import com.alibaba.fastjson.JSON;
 import com.luoys.upgrade.toolservice.dao.po.AutoStepPO;
-import com.luoys.upgrade.toolservice.service.dto.ParameterDTO;
-import com.luoys.upgrade.toolservice.service.dto.RpcDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.ApplicationConfig;
 import org.apache.dubbo.config.ReferenceConfig;
 import org.apache.dubbo.rpc.service.GenericService;
-import org.springframework.stereotype.Component;
-
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * rpc调用客户端，用于自动化步骤rpc类型的实现

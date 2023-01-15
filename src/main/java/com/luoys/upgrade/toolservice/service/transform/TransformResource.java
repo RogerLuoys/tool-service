@@ -2,7 +2,6 @@ package com.luoys.upgrade.toolservice.service.transform;
 
 import com.luoys.upgrade.toolservice.dao.po.ResourcePO;
 import com.luoys.upgrade.toolservice.service.dto.DataSourceDTO;
-import com.luoys.upgrade.toolservice.service.dto.DeviceDTO;
 import com.luoys.upgrade.toolservice.service.dto.SlaveDTO;
 import com.luoys.upgrade.toolservice.service.enums.ResourceTypeEnum;
 import com.luoys.upgrade.toolservice.web.vo.ResourceSimpleVO;

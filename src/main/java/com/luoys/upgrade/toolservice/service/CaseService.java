@@ -411,33 +411,14 @@ public class CaseService {
     public Boolean useAsync(AutoCaseVO autoCaseVO) throws RejectedExecutionException {
         ThreadPoolUtil.executeAuto(() -> {
             log.info("--->执行单个用例：caseId={}", autoCaseVO.getCaseId());
-            StepExecutor executor = new StepExecutor();
+            AutoCaseVO supperCaseVO = this.queryDetail(autoCaseVO.getSupperCaseId());
+            StepExecutor executor = new StepExecutor(supperCaseVO);
             boolean result = execute(autoCaseVO, executor);
             log.info("---->执行完毕，更新用例结果：caseId={}, result={}", autoCaseVO.getCaseId(), result);
             autoCaseMapper.updateStatus(autoCaseVO.getCaseId(),
                     result ? AutoCaseStatusEnum.SUCCESS.getCode() : AutoCaseStatusEnum.FAIL.getCode());
         });
         return true;
-
-//        // UI用例和API用例使用不同线程池，UI自动化只能单个子线程
-//        if (autoCaseVO.getType().equals(AutoCaseTypeEnum.UI_CASE.getCode())) {
-//            ThreadPoolUtil.executeUI(() -> {
-//                log.info("--->执行ui用例的步骤：caseId={}", autoCaseVO.getCaseId());
-//                boolean result = executeUI(autoCaseVO);
-//                log.info("---->步骤执行完毕，更新用例结果：caseId={}, result={}", autoCaseVO.getCaseId(), result);
-//                autoCaseMapper.updateStatus(autoCaseVO.getCaseId(),
-//                        result ? AutoCaseStatusEnum.SUCCESS.getCode() : AutoCaseStatusEnum.FAIL.getCode());
-//            });
-//        } else {
-//            ThreadPoolUtil.executeAPI(() -> {
-//                log.info("--->执行api用例的步骤：caseId={}", autoCaseVO.getCaseId());
-//                boolean result = executeAPI(autoCaseVO);
-//                log.info("---->步骤执行完毕，更新用例结果：caseId={}, result={}", autoCaseVO.getCaseId(), result);
-//                autoCaseMapper.updateStatus(autoCaseVO.getCaseId(),
-//                        result ? AutoCaseStatusEnum.SUCCESS.getCode() : AutoCaseStatusEnum.FAIL.getCode());
-//            });
-//        }
-//        return true;
     }
 
     /**
@@ -506,32 +487,28 @@ public class CaseService {
             log.error("--->用例没有主步骤：caseId={}", autoCaseVO.getCaseId());
             return false;
         }
-        // 执行前置步骤
+        // 执行前置步骤@BeforeTest
         if (autoCaseVO.getPreStepList() != null && autoCaseVO.getPreStepList().size() != 0) {
             for (CaseStepVO vo : autoCaseVO.getPreStepList()) {
-//                vo.getAutoStep().setEnvironment(StringUtil.isBlank(autoCaseVO.getEnvironment()) ? null : autoCaseVO.getEnvironment());
-                executor.execute(vo.getAutoStep());
+                // 前置步骤任意方法执行异常或失败，都直接跳过下面步骤
+                if (executor.execute(vo.getAutoStep()).equalsIgnoreCase("false")) {
+                    return false;
+                }
             }
         }
-        // 执行主要步骤，只要有一个步骤为false，则整个case结果为false
+        // 执行主要步骤@Test，只要有一个步骤为false，则整个case结果为false
         if (autoCaseVO.getMainStepList() != null && autoCaseVO.getMainStepList().size() != 0) {
             for (CaseStepVO vo : autoCaseVO.getMainStepList()) {
                 if (executor.execute(vo.getAutoStep()).equalsIgnoreCase("false")) {
                     result = false;
                     break;
                 }
-//                vo.getAutoStep().setEnvironment(StringUtil.isBlank(autoCaseVO.getEnvironment()) ? null : autoCaseVO.getEnvironment());
-//                if (!stepService.use(vo.getAutoStep())) {
-//                    result = false;
-//                }
             }
         }
-        // 执行收尾步骤，如果执行结果为false，则不执行该步骤保留现场
+        // 执行收尾步骤@AfterTest
         if (result && autoCaseVO.getAfterStepList() != null && autoCaseVO.getAfterStepList().size() != 0) {
             for (CaseStepVO vo : autoCaseVO.getAfterStepList()) {
                 executor.execute(vo.getAutoStep());
-//                vo.getAutoStep().setEnvironment(StringUtil.isBlank(autoCaseVO.getEnvironment()) ? null : autoCaseVO.getEnvironment());
-//                stepService.use(vo.getAutoStep());
             }
         }
         return result;

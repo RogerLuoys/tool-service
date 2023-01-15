@@ -1,7 +1,13 @@
 package com.luoys.upgrade.toolservice.service.client;
 
 import com.luoys.upgrade.toolservice.dao.po.AutoStepPO;
+import com.luoys.upgrade.toolservice.service.enums.ConfigTypeEnum;
+import com.luoys.upgrade.toolservice.service.enums.autoStep.ModuleTypeEnum;
+import com.luoys.upgrade.toolservice.web.vo.AutoCaseVO;
 import com.luoys.upgrade.toolservice.web.vo.AutoStepVO;
+import com.luoys.upgrade.toolservice.web.vo.ConfigVO;
+
+import java.util.List;
 
 /**
  * 步骤执行器，参考外观模式
@@ -15,17 +21,60 @@ public class StepExecutor {
     private UtilClient util = new UtilClient();
     private AssertionClient assertion = new AssertionClient(ui);
 
-    public void init() {
-        ui.initChromeWeb();
-    };
+    public StepExecutor() {}
+
+    public StepExecutor(AutoCaseVO autoCaseVO) {
+        List<ConfigVO> argument = autoCaseVO.getArgumentList();
+        // 非UI自动化，不用额外初始化
+        if (argument == null || argument.size() == 0) {
+            return;
+        }
+        // 是UI自动化，需要初始化对应的webdriver
+        switch (ConfigTypeEnum.fromCode(argument.get(0).getType())) {
+            case CHROME:
+                ui.initChrome();
+                break;
+            case FIREFOX:
+                // todo init
+                break;
+            case ANDROID:
+                ui.initAndroid();
+                break;
+        }
+
+    }
 
     public void close() {
         ui.quit();
     }
 
     public String execute(AutoStepPO autoStepPO) {
-        String varName;
-        return sql.execute(autoStepPO);
+        String varName = null;
+        switch (ModuleTypeEnum.fromCode(autoStepPO.getModuleType())) {
+            case PO:
+                break;
+            case SQL:
+                varName = sql.execute(autoStepPO);
+                break;
+            case RPC:
+                varName = rpc.execute(autoStepPO);
+                break;
+            case HTTP:
+                varName = http.execute(autoStepPO);
+                break;
+            case UI:
+                varName = ui.execute(autoStepPO);
+                break;
+            case UTIL:
+                varName = util.execute(autoStepPO);
+                break;
+            case ASSERTION:
+                varName = assertion.execute(autoStepPO).toString();
+                break;
+            default:
+                varName = "false";
+        }
+        return varName;
     }
 
 

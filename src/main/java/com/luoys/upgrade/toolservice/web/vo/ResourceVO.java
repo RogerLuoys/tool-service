@@ -1,7 +1,6 @@
 package com.luoys.upgrade.toolservice.web.vo;
 
 import com.luoys.upgrade.toolservice.service.dto.DataSourceDTO;
-import com.luoys.upgrade.toolservice.service.dto.DeviceDTO;
 import com.luoys.upgrade.toolservice.service.dto.SlaveDTO;
 import lombok.Data;
 

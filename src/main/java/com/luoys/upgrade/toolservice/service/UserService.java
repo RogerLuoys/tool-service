@@ -4,8 +4,6 @@ import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.luoys.upgrade.toolservice.dao.po.UserPO;
 import com.luoys.upgrade.toolservice.dao.UserMapper;
-import com.luoys.upgrade.toolservice.service.common.CacheUtil;
-import com.luoys.upgrade.toolservice.service.dto.JdbcDTO;
 import com.luoys.upgrade.toolservice.service.enums.KeywordEnum;
 import com.luoys.upgrade.toolservice.service.enums.UserTypeEnum;
 import com.luoys.upgrade.toolservice.service.transform.TransformUser;
@@ -29,13 +27,11 @@ public class UserService {
 
     private Cache<String, UserVO> userCache = Caffeine.newBuilder()
             //cache的初始容量
-            .initialCapacity(5)
+            .initialCapacity(10)
             //cache最大缓存数
             .maximumSize(1000)
             //设置写缓存后n秒钟过期
             .expireAfterWrite(12, TimeUnit.HOURS)
-            //设置读写缓存后n秒钟过期,实际很少用到,类似于expireAfterWrite
-            //.expireAfterAccess(17, TimeUnit.SECONDS)
             .build();
 
     @Autowired
