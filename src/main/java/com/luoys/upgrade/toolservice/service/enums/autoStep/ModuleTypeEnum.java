@@ -41,6 +41,12 @@ public enum ModuleTypeEnum {
         }
     }
 
+    static {
+        for (ModuleTypeEnum e : ModuleTypeEnum.values()) {
+            CODE_MAP.put(e.getCode(), e);
+        }
+    }
+
     public static ModuleTypeEnum fromName(String name) {
         return name == null ? null : VALUE_MAP.get(name.toLowerCase());
     }

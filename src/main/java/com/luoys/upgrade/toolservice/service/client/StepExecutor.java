@@ -3,6 +3,7 @@ package com.luoys.upgrade.toolservice.service.client;
 import com.luoys.upgrade.toolservice.dao.po.AutoStepPO;
 import com.luoys.upgrade.toolservice.service.enums.ConfigTypeEnum;
 import com.luoys.upgrade.toolservice.service.enums.autoStep.ModuleTypeEnum;
+import com.luoys.upgrade.toolservice.service.transform.TransformAutoStep;
 import com.luoys.upgrade.toolservice.web.vo.AutoCaseVO;
 import com.luoys.upgrade.toolservice.web.vo.AutoStepVO;
 import com.luoys.upgrade.toolservice.web.vo.ConfigVO;
@@ -79,8 +80,6 @@ public class StepExecutor {
 
 
     public String execute(AutoStepVO autoStepVO) {
-        String varName;
-//        return sql.execute(autoStepPO);
-        return null;
+        return execute(TransformAutoStep.transformVO2PO(autoStepVO));
     }
 }

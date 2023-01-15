@@ -499,7 +499,8 @@ public class CaseService {
         // 执行主要步骤@Test，只要有一个步骤为false，则整个case结果为false
         if (autoCaseVO.getMainStepList() != null && autoCaseVO.getMainStepList().size() != 0) {
             for (CaseStepVO vo : autoCaseVO.getMainStepList()) {
-                if (executor.execute(vo.getAutoStep()).equalsIgnoreCase("false")) {
+                String var = executor.execute(vo.getAutoStep());
+                if (var == null || var.equalsIgnoreCase("false")) {
                     result = false;
                     break;
                 }
