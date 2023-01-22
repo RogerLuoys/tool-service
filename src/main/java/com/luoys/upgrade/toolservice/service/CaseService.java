@@ -487,6 +487,7 @@ public class CaseService {
             log.error("--->用例没有主步骤：caseId={}", autoCaseVO.getCaseId());
             return false;
         }
+        // todo 直接传一个case，传之前把PO和sql替换掉
         // 执行前置步骤@BeforeTest
         if (autoCaseVO.getPreStepList() != null && autoCaseVO.getPreStepList().size() != 0) {
             for (CaseStepVO vo : autoCaseVO.getPreStepList()) {
