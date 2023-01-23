@@ -49,4 +49,23 @@ public class TransformConfig {
         return po;
     }
 
+    public static ParameterDTO transformVO2DTO(ConfigVO vo) {
+        if (vo == null) {
+            return null;
+        }
+        ParameterDTO dto = new ParameterDTO();
+        dto.setComment(vo.getComment());
+        dto.setName(vo.getName());
+        dto.setValue(vo.getValue());
+        return dto;
+    }
+
+    public static List<ParameterDTO> transformVO2DTO(List<ConfigVO> voList) {
+        List<ParameterDTO> dtoList = new ArrayList<>();
+        for (ConfigVO vo : voList) {
+            dtoList.add(transformVO2DTO(vo));
+        }
+        return dtoList;
+    }
+
 }

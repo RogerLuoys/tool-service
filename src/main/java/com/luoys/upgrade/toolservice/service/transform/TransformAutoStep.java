@@ -1,9 +1,11 @@
 package com.luoys.upgrade.toolservice.service.transform;
 
+import com.luoys.upgrade.toolservice.service.common.CacheUtil;
 import com.luoys.upgrade.toolservice.service.common.StringUtil;
 import com.luoys.upgrade.toolservice.dao.po.AutoStepPO;
 import com.luoys.upgrade.toolservice.service.dto.*;
 import com.luoys.upgrade.toolservice.service.enums.*;
+import com.luoys.upgrade.toolservice.service.enums.autoStep.ModuleTypeEnum;
 import com.luoys.upgrade.toolservice.web.vo.AutoStepSimpleVO;
 import com.luoys.upgrade.toolservice.web.vo.AutoStepVO;
 
@@ -98,32 +100,41 @@ public class TransformAutoStep {
         return po;
     }
 
-//    /**
-//     * 变量合并
-//     *
-//     * @param autoStepVO -
-//     */
-//    public static void mergeParam(AutoStepVO autoStepVO) {
-//        if (StringUtil.isBlank(autoStepVO.getEnvironment())) {
-//            return;
-//        }
-//        String actualURL;
-//        switch (AutoStepTypeEnum.fromCode(autoStepVO.getType())) {
-//            case STEP_HTTP:
-//                actualURL = autoStepVO.getHttpRequest().getHttpURL().replace(
-//                        KeywordEnum.PRE_PARAM_ENV.getValue(), autoStepVO.getEnvironment());
-//                autoStepVO.getHttpRequest().setHttpURL(actualURL);
-//                break;
-//            case STEP_RPC:
-//                actualURL = autoStepVO.getRpc().getUrl().replace(
-//                        KeywordEnum.PRE_PARAM_ENV.getValue(), autoStepVO.getEnvironment());
-//                autoStepVO.getRpc().setUrl(actualURL);
-//                break;
-//            case STEP_UI:
-//                actualURL = autoStepVO.getUi().getUrl().replace(
-//                        KeywordEnum.PRE_PARAM_ENV.getValue(), autoStepVO.getEnvironment());
-//                autoStepVO.getUi().setUrl(actualURL);
-//                break;
-//        }
-//    }
+    public static StepDTO transformVO2DTO(AutoStepVO vo) {
+        if (vo == null) {
+            return null;
+        }
+        StepDTO dto = new StepDTO();
+        // 设置基本信息
+        dto.setStepId(vo.getStepId());
+        dto.setMethodType(vo.getMethodType());
+        dto.setModuleType(vo.getModuleType());
+        dto.setParameter1(vo.getParameter1());
+        dto.setParameter2(vo.getParameter2());
+        dto.setParameter3(vo.getParameter3());
+        dto.setVarName(vo.getVarName());
+        if (vo.getModuleType().equals(ModuleTypeEnum.SQL.getCode())) {
+            dto.setDataSource(CacheUtil.getJdbcById(vo.getMethodId()));
+        }
+        return dto;
+    }
+
+    public static List<StepDTO> transformVO2DTO(List<AutoStepVO> voList) {
+        List<StepDTO> dtoList = new ArrayList<>();
+        for (AutoStepVO vo : voList) {
+            if (vo.getModuleType().equals(ModuleTypeEnum.PO.getCode())) {
+                List<StepDTO> po = CacheUtil.getPoById(vo.getMethodId());
+                for (StepDTO poStep: po) {
+                    poStep.setParameter1(poStep.getParameter1().replaceAll("\\$\\{param1}", vo.getParameter1()));
+                    poStep.setParameter2(poStep.getParameter2().replaceAll("\\$\\{param2}", vo.getParameter2()));
+                    poStep.setParameter3(poStep.getParameter3().replaceAll("\\$\\{param3}", vo.getParameter3()));
+                    dtoList.add(poStep);
+                }
+            } else {
+                dtoList.add(transformVO2DTO(vo));
+            }
+        }
+        return dtoList;
+    }
+
 }

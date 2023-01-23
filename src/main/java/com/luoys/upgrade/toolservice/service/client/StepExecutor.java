@@ -1,6 +1,9 @@
 package com.luoys.upgrade.toolservice.service.client;
 
 import com.luoys.upgrade.toolservice.dao.po.AutoStepPO;
+import com.luoys.upgrade.toolservice.service.dto.CaseDTO;
+import com.luoys.upgrade.toolservice.service.dto.StepDTO;
+import com.luoys.upgrade.toolservice.service.enums.AutoCaseStatusEnum;
 import com.luoys.upgrade.toolservice.service.enums.ConfigTypeEnum;
 import com.luoys.upgrade.toolservice.service.enums.autoStep.ModuleTypeEnum;
 import com.luoys.upgrade.toolservice.service.transform.TransformAutoStep;
@@ -78,8 +81,51 @@ public class StepExecutor {
         return varName;
     }
 
+    public void execute(StepDTO stepDTO) {
+        stepDTO.setResult(null);
+    }
 
     public String execute(AutoStepVO autoStepVO) {
         return execute(TransformAutoStep.transformVO2PO(autoStepVO));
+    }
+
+    public void execute(CaseDTO caseDTO) {
+        for (StepDTO oneStep: caseDTO.getBeforeSuite()) {
+            execute(oneStep);
+            if (oneStep.getResult().equalsIgnoreCase("false")) {
+                caseDTO.setStatus(AutoCaseStatusEnum.FAIL.getCode());
+                return;
+            }
+        }
+        for (StepDTO oneStep: caseDTO.getSupperBeforeClass()) {
+            execute(oneStep);
+            if (oneStep.getResult().equalsIgnoreCase("false")) {
+                caseDTO.setStatus(AutoCaseStatusEnum.FAIL.getCode());
+                return;
+            }
+        }
+        for (StepDTO oneStep: caseDTO.getBeforeTest()) {
+            execute(oneStep);
+            if (oneStep.getResult().equalsIgnoreCase("false")) {
+                caseDTO.setStatus(AutoCaseStatusEnum.FAIL.getCode());
+                return;
+            }
+        }
+        for (StepDTO oneStep: caseDTO.getTest()) {
+            execute(oneStep);
+            if (oneStep.getResult().equalsIgnoreCase("false")) {
+                caseDTO.setStatus(AutoCaseStatusEnum.FAIL.getCode());
+                return;
+            }
+        }
+        for (StepDTO oneStep: caseDTO.getAfterTest()) {
+            execute(oneStep);
+        }
+        for (StepDTO oneStep: caseDTO.getSupperAfterClass()) {
+            execute(oneStep);
+        }
+        for (StepDTO oneStep: caseDTO.getAfterSuite()) {
+            execute(oneStep);
+        }
     }
 }

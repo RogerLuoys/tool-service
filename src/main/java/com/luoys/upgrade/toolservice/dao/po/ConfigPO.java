@@ -8,6 +8,7 @@ import lombok.Data;
  */
 @Data
 public class ConfigPO {
+
     private Integer id;
 
     /**

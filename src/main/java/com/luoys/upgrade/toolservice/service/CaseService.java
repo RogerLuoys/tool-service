@@ -1,22 +1,26 @@
 package com.luoys.upgrade.toolservice.service;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 import com.luoys.upgrade.toolservice.dao.ConfigMapper;
 import com.luoys.upgrade.toolservice.dao.po.AutoCasePO;
 import com.luoys.upgrade.toolservice.dao.po.AutoCaseQueryPO;
 import com.luoys.upgrade.toolservice.dao.po.CaseStepRelationPO;
 import com.luoys.upgrade.toolservice.dao.po.ConfigPO;
 import com.luoys.upgrade.toolservice.service.client.StepExecutor;
-import com.luoys.upgrade.toolservice.service.common.NumberSender;
 import com.luoys.upgrade.toolservice.service.common.StringUtil;
 import com.luoys.upgrade.toolservice.service.common.ThreadPoolUtil;
 import com.luoys.upgrade.toolservice.dao.AutoCaseMapper;
 import com.luoys.upgrade.toolservice.dao.CaseStepRelationMapper;
 import com.luoys.upgrade.toolservice.dao.UserMapper;
-import com.luoys.upgrade.toolservice.service.client.UIClient;
+import com.luoys.upgrade.toolservice.service.dto.CaseDTO;
+import com.luoys.upgrade.toolservice.service.dto.DataSourceDTO;
+import com.luoys.upgrade.toolservice.service.dto.StepDTO;
 import com.luoys.upgrade.toolservice.service.enums.AutoCaseStatusEnum;
 import com.luoys.upgrade.toolservice.service.enums.AutoCaseTypeEnum;
 import com.luoys.upgrade.toolservice.service.enums.KeywordEnum;
 import com.luoys.upgrade.toolservice.service.enums.RelatedStepTypeEnum;
+import com.luoys.upgrade.toolservice.service.transform.TransformAutoStep;
 import com.luoys.upgrade.toolservice.service.transform.TransformCaseStepRelation;
 import com.luoys.upgrade.toolservice.service.transform.TransformConfig;
 import com.luoys.upgrade.toolservice.web.vo.*;
@@ -28,6 +32,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 用例服务，包含自动化用例相关的所有业务逻辑
@@ -37,6 +42,24 @@ import java.util.concurrent.RejectedExecutionException;
 @Slf4j
 @Service
 public class CaseService {
+
+    private Cache<Integer, DataSourceDTO> dbCache = Caffeine.newBuilder()
+            //cache的初始容量
+            .initialCapacity(5)
+            //cache最大缓存数
+            .maximumSize(20)
+            //设置写缓存后n秒钟过期
+            .expireAfterWrite(24, TimeUnit.HOURS)
+            .build();
+
+    private Cache<Integer, List<StepDTO>> poCache = Caffeine.newBuilder()
+            //cache的初始容量
+            .initialCapacity(5)
+            //cache最大缓存数
+            .maximumSize(100)
+            //设置写缓存后n秒钟过期
+            .expireAfterWrite(24, TimeUnit.HOURS)
+            .build();
 
     @Autowired
     private AutoCaseMapper autoCaseMapper;
@@ -412,6 +435,12 @@ public class CaseService {
         ThreadPoolUtil.executeAuto(() -> {
             log.info("--->执行单个用例：caseId={}", autoCaseVO.getCaseId());
             AutoCaseVO supperCaseVO = this.queryDetail(autoCaseVO.getSupperCaseId());
+            CaseDTO caseDTO = new CaseDTO();
+            caseDTO.setSupperCaseId(autoCaseVO.getSupperCaseId());
+            caseDTO.setParameterList(TransformConfig.transformVO2DTO(supperCaseVO.getParameterList()));
+            caseDTO.setArgumentList(TransformConfig.transformVO2DTO(supperCaseVO.getArgumentList()));
+            caseDTO.setBeforeSuite(null); // 暂不支持
+            caseDTO.setSupperBeforeClass(TransformAutoStep.transformVO2DTO(supperCaseVO.getPreStepList()));
             StepExecutor executor = new StepExecutor(supperCaseVO);
             boolean result = execute(autoCaseVO, executor);
             log.info("---->执行完毕，更新用例结果：caseId={}, result={}", autoCaseVO.getCaseId(), result);

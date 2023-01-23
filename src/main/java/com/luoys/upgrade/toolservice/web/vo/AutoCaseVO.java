@@ -1,7 +1,6 @@
 package com.luoys.upgrade.toolservice.web.vo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.luoys.upgrade.toolservice.service.dto.ParameterDTO;
 import lombok.Data;
 
 import java.util.Date;

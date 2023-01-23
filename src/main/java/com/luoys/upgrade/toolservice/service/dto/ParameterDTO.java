@@ -9,9 +9,10 @@ import lombok.Data;
  */
 @Data
 public class ParameterDTO {
-    private Integer configId;
-    private Integer type;
+
     private String name;
+
     private String value;
+
     private String comment;
 }

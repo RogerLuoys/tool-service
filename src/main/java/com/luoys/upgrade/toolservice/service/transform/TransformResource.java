@@ -79,6 +79,18 @@ public class TransformResource {
         return vo;
     }
 
+    public static DataSourceDTO transformPO2DTO(ResourcePO po) {
+        if (po == null) {
+            return null;
+        }
+        DataSourceDTO dataSourceDTO = new DataSourceDTO();
+        dataSourceDTO.setDriver(po.getJdbcDriver());
+        dataSourceDTO.setUrl(po.getJdbcUrl());
+        dataSourceDTO.setUsername(po.getJdbcUsername());
+        dataSourceDTO.setPassword(po.getJdbcPassword());
+        return dataSourceDTO;
+    }
+
     public static List<ResourceVO> transformPO2VO(List<ResourcePO> poList) {
         List<ResourceVO> voList = new ArrayList<>();
         for (ResourcePO po : poList) {
