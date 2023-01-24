@@ -3,6 +3,7 @@ package com.luoys.upgrade.toolservice.service.client;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.luoys.upgrade.toolservice.dao.po.AutoStepPO;
+import com.luoys.upgrade.toolservice.service.dto.StepDTO;
 import com.luoys.upgrade.toolservice.service.enums.autoStep.methodType.UtilEnum;
 import lombok.extern.slf4j.Slf4j;
 
@@ -18,18 +19,35 @@ import java.util.Random;
 //@Component
 public class UtilClient {
 
-    public synchronized String execute(AutoStepPO autoStepPO) {
-        switch (UtilEnum.fromCode(autoStepPO.getMethodType())) {
+//    public synchronized String execute(AutoStepPO autoStepPO) {
+//        switch (UtilEnum.fromCode(autoStepPO.getMethodType())) {
+//            case SLEEP:
+//                return sleep(Integer.parseInt(autoStepPO.getParameter1()));
+//            case GET_JSON:
+//                return getJson(autoStepPO.getParameter1(), autoStepPO.getParameter2());
+//            case GET_JSON_ANY:
+//                return getJsonAny(autoStepPO.getParameter1(), autoStepPO.getParameter2());
+//            case GET_TIME:
+//                return getTime();
+//            case GET_RANDOM:
+//                return getRandom(autoStepPO.getParameter1(), autoStepPO.getParameter2());
+//            default:
+//                return "步骤失败";
+//        }
+//    }
+
+    public synchronized String execute(StepDTO stepDTO) {
+        switch (UtilEnum.fromCode(stepDTO.getMethodType())) {
             case SLEEP:
-                return sleep(Integer.parseInt(autoStepPO.getParameter1()));
+                return sleep(Integer.parseInt(stepDTO.getParameter1()));
             case GET_JSON:
-                return getJson(autoStepPO.getParameter1(), autoStepPO.getParameter2());
+                return getJson(stepDTO.getParameter1(), stepDTO.getParameter2());
             case GET_JSON_ANY:
-                return getJsonAny(autoStepPO.getParameter1(), autoStepPO.getParameter2());
+                return getJsonAny(stepDTO.getParameter1(), stepDTO.getParameter2());
             case GET_TIME:
                 return getTime();
             case GET_RANDOM:
-                return getRandom(autoStepPO.getParameter1(), autoStepPO.getParameter2());
+                return getRandom(stepDTO.getParameter1(), stepDTO.getParameter2());
             default:
                 return "步骤失败";
         }

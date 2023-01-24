@@ -2,6 +2,7 @@ package com.luoys.upgrade.toolservice.service.client;
 
 import com.luoys.upgrade.toolservice.dao.po.AutoStepPO;
 import com.luoys.upgrade.toolservice.service.common.StringUtil;
+import com.luoys.upgrade.toolservice.service.dto.StepDTO;
 import com.luoys.upgrade.toolservice.service.enums.autoStep.methodType.UiEnum;
 import io.appium.java_client.android.AndroidDriver;
 import lombok.extern.slf4j.Slf4j;
@@ -46,50 +47,108 @@ public class UIClient {
     private WebDriver driver = null;
     private Actions actions = null;
 
+//    /**
+//     * 执行ui步骤，有同步锁
+//     *
+//     * @param autoStepPO -
+//     * @return 执行结果
+//     */
+//    public String execute(AutoStepPO autoStepPO) {
+//        String result = "步骤成功";
+//        switch (UiEnum.fromCode(autoStepPO.getMethodType())) {
+//            case OPEN_URL:
+//                this.openUrl(autoStepPO.getParameter1());
+//                break;
+//            case CLICK:
+//                this.click(autoStepPO.getParameter1(), StringUtil.isBlank(autoStepPO.getParameter2()) ? "0" : autoStepPO.getParameter2());
+//                break;
+//            case CLICK_BY_JS:
+//                this.clickByJs(autoStepPO.getParameter1());
+//                break;
+//            case CLICK_BY_MOVE:
+//                this.clickByMove(autoStepPO.getParameter1());
+//                break;
+//            case SEND_KEY:
+//                if (StringUtil.isBlank(autoStepPO.getParameter2()) && StringUtil.isBlank(autoStepPO.getParameter3())) {
+//                    this.sendKey(autoStepPO.getParameter1());
+//                } else if (StringUtil.isBlank(autoStepPO.getParameter3())) {
+//                    this.sendKey(autoStepPO.getParameter1(), autoStepPO.getParameter2());
+//                } else {
+//                    this.sendKey(autoStepPO.getParameter1(), autoStepPO.getParameter2(), autoStepPO.getParameter3());
+//                }
+//                break;
+//            case SEND_KEY_BY_ENTER:
+//                this.sendKeyByEnter(autoStepPO.getParameter1(), autoStepPO.getParameter2());
+//                break;
+//            case MOVE:
+//                this.move(autoStepPO.getParameter1());
+//                break;
+//            case DRAG:
+//                this.drag(autoStepPO.getParameter1(), autoStepPO.getParameter2());
+//                break;
+//            case EXECUTE_JS:
+//                if (StringUtil.isBlank(autoStepPO.getParameter2())) {
+//                    this.executeJs(autoStepPO.getParameter1());
+//                } else {
+//                    this.executeJs(autoStepPO.getParameter1(), autoStepPO.getParameter2());
+//                }
+//                break;
+//            case SWITCH_TAB:
+//                this.switchTab();
+//                break;
+//            case CLEAR_COOKIES:
+//                this.clearCookies();
+//                break;
+//            default:
+//                result = "步骤失败";
+//        }
+//        return result;
+//    }
+
     /**
      * 执行ui步骤，有同步锁
      *
-     * @param autoStepPO -
+     * @param stepDTO -
      * @return 执行结果
      */
-    public String execute(AutoStepPO autoStepPO) {
+    public String execute(StepDTO stepDTO) {
         String result = "步骤成功";
-        switch (UiEnum.fromCode(autoStepPO.getMethodType())) {
+        switch (UiEnum.fromCode(stepDTO.getMethodType())) {
             case OPEN_URL:
-                this.openUrl(autoStepPO.getParameter1());
+                this.openUrl(stepDTO.getParameter1());
                 break;
             case CLICK:
-                this.click(autoStepPO.getParameter1(), StringUtil.isBlank(autoStepPO.getParameter2()) ? "0" : autoStepPO.getParameter2());
+                this.click(stepDTO.getParameter1(), StringUtil.isBlank(stepDTO.getParameter2()) ? "0" : stepDTO.getParameter2());
                 break;
             case CLICK_BY_JS:
-                this.clickByJs(autoStepPO.getParameter1());
+                this.clickByJs(stepDTO.getParameter1());
                 break;
             case CLICK_BY_MOVE:
-                this.clickByMove(autoStepPO.getParameter1());
+                this.clickByMove(stepDTO.getParameter1());
                 break;
             case SEND_KEY:
-                if (StringUtil.isBlank(autoStepPO.getParameter2()) && StringUtil.isBlank(autoStepPO.getParameter3())) {
-                    this.sendKey(autoStepPO.getParameter1());
-                } else if (StringUtil.isBlank(autoStepPO.getParameter3())) {
-                    this.sendKey(autoStepPO.getParameter1(), autoStepPO.getParameter2());
+                if (StringUtil.isBlank(stepDTO.getParameter2()) && StringUtil.isBlank(stepDTO.getParameter3())) {
+                    this.sendKey(stepDTO.getParameter1());
+                } else if (StringUtil.isBlank(stepDTO.getParameter3())) {
+                    this.sendKey(stepDTO.getParameter1(), stepDTO.getParameter2());
                 } else {
-                    this.sendKey(autoStepPO.getParameter1(), autoStepPO.getParameter2(), autoStepPO.getParameter3());
+                    this.sendKey(stepDTO.getParameter1(), stepDTO.getParameter2(), stepDTO.getParameter3());
                 }
                 break;
             case SEND_KEY_BY_ENTER:
-                this.sendKeyByEnter(autoStepPO.getParameter1(), autoStepPO.getParameter2());
+                this.sendKeyByEnter(stepDTO.getParameter1(), stepDTO.getParameter2());
                 break;
             case MOVE:
-                this.move(autoStepPO.getParameter1());
+                this.move(stepDTO.getParameter1());
                 break;
             case DRAG:
-                this.drag(autoStepPO.getParameter1(), autoStepPO.getParameter2());
+                this.drag(stepDTO.getParameter1(), stepDTO.getParameter2());
                 break;
             case EXECUTE_JS:
-                if (StringUtil.isBlank(autoStepPO.getParameter2())) {
-                    this.executeJs(autoStepPO.getParameter1());
+                if (StringUtil.isBlank(stepDTO.getParameter2())) {
+                    this.executeJs(stepDTO.getParameter1());
                 } else {
-                    this.executeJs(autoStepPO.getParameter1(), autoStepPO.getParameter2());
+                    this.executeJs(stepDTO.getParameter1(), stepDTO.getParameter2());
                 }
                 break;
             case SWITCH_TAB:

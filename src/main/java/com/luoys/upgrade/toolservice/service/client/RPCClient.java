@@ -2,6 +2,7 @@ package com.luoys.upgrade.toolservice.service.client;
 
 import com.alibaba.fastjson.JSON;
 import com.luoys.upgrade.toolservice.dao.po.AutoStepPO;
+import com.luoys.upgrade.toolservice.service.dto.StepDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.ApplicationConfig;
 import org.apache.dubbo.config.ReferenceConfig;
@@ -18,15 +19,26 @@ public class RPCClient {
 
     private ReferenceConfig<GenericService> reference;
 
+//    /**
+//     * 执行rpc调用，仅支持rpc接口有且只有单个入参的情况 todo 要支持多入参
+//     * 有同步锁
+//     *
+//     * @param autoStepPO rpc对象
+//     * @return 调用的response
+//     */
+//    public String execute(AutoStepPO autoStepPO) {
+//        return invoke(autoStepPO.getParameter1(), autoStepPO.getParameter2(), autoStepPO.getParameter3());
+//    }
+
     /**
      * 执行rpc调用，仅支持rpc接口有且只有单个入参的情况 todo 要支持多入参
      * 有同步锁
      *
-     * @param autoStepPO rpc对象
+     * @param stepDTO rpc对象
      * @return 调用的response
      */
-    public String execute(AutoStepPO autoStepPO) {
-        return invoke(autoStepPO.getParameter1(), autoStepPO.getParameter2(), autoStepPO.getParameter3());
+    public String execute(StepDTO stepDTO) {
+        return invoke(stepDTO.getParameter1(), stepDTO.getParameter2(), stepDTO.getParameter3());
     }
 
     /**

@@ -1,6 +1,9 @@
 package com.luoys.upgrade.toolservice.service.transform;
 
 import com.luoys.upgrade.toolservice.dao.po.CaseStepRelationPO;
+import com.luoys.upgrade.toolservice.service.common.CacheUtil;
+import com.luoys.upgrade.toolservice.service.dto.StepDTO;
+import com.luoys.upgrade.toolservice.service.enums.autoStep.ModuleTypeEnum;
 import com.luoys.upgrade.toolservice.web.vo.AutoStepVO;
 import com.luoys.upgrade.toolservice.web.vo.CaseStepVO;
 
@@ -91,6 +94,24 @@ public class TransformCaseStepRelation {
             poList.add(transformVO2PO(vo));
         }
         return poList;
+    }
+
+    public static List<StepDTO> transformVO2DTO(List<CaseStepVO> voList) {
+        List<StepDTO> dtoList = new ArrayList<>();
+        for (CaseStepVO vo : voList) {
+            if (vo.getAutoStep().getModuleType().equals(ModuleTypeEnum.PO.getCode())) {
+                List<StepDTO> po = CacheUtil.getPoById(vo.getAutoStep().getMethodId());
+                for (StepDTO poStep: po) {
+                    poStep.setParameter1(poStep.getParameter1().replaceAll("\\$\\{param1}", vo.getAutoStep().getParameter1()));
+                    poStep.setParameter2(poStep.getParameter2().replaceAll("\\$\\{param2}", vo.getAutoStep().getParameter2()));
+                    poStep.setParameter3(poStep.getParameter3().replaceAll("\\$\\{param3}", vo.getAutoStep().getParameter3()));
+                    dtoList.add(poStep);
+                }
+            } else {
+                dtoList.add(TransformAutoStep.transformVO2DTO(vo.getAutoStep()));
+            }
+        }
+        return dtoList;
     }
 
 }

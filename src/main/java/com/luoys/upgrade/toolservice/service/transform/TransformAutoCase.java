@@ -2,6 +2,7 @@ package com.luoys.upgrade.toolservice.service.transform;
 
 import com.luoys.upgrade.toolservice.dao.po.AutoCasePO;
 import com.luoys.upgrade.toolservice.dao.po.AutoCaseQueryPO;
+import com.luoys.upgrade.toolservice.service.dto.CaseDTO;
 import com.luoys.upgrade.toolservice.service.enums.KeywordEnum;
 import com.luoys.upgrade.toolservice.web.vo.AutoCaseSimpleVO;
 import com.luoys.upgrade.toolservice.web.vo.AutoCaseVO;
@@ -123,6 +124,20 @@ public class TransformAutoCase {
             po.setStartIndex((vo.getPageIndex() - 1) * KeywordEnum.DEFAULT_PAGE_SIZE.getCode());
         }
         return po;
+    }
+
+    /**
+     * 转换用例的基本信息
+     * @param vo -
+     * @return -
+     */
+    public static CaseDTO transformVO2DTO(AutoCaseVO vo) {
+        if (vo == null) {
+            return null;
+        }
+        CaseDTO dto = new CaseDTO();
+        // todo ?
+        return dto;
     }
 
 }

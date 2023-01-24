@@ -1,6 +1,7 @@
 package com.luoys.upgrade.toolservice.service.client;
 
 import com.luoys.upgrade.toolservice.dao.po.AutoStepPO;
+import com.luoys.upgrade.toolservice.service.dto.StepDTO;
 import com.luoys.upgrade.toolservice.service.enums.autoStep.methodType.AssertionEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.WebElement;
@@ -22,32 +23,63 @@ public class AssertionClient {
         this.ui = ui;
     }
 
+//    /**
+//     * 执行断言
+//     *
+//     * @param autoStepPO 断言对象
+//     * @return 成功返回true，失败返回false
+//     */
+//    public Boolean execute(AutoStepPO autoStepPO) {
+//        switch (AssertionEnum.fromCode(autoStepPO.getModuleType())) {
+//            case IS_EQUALS:
+//                return isEquals(autoStepPO.getParameter1(), autoStepPO.getParameter2());
+//            case IS_CONTAINS:
+//                return isContains(autoStepPO.getParameter1(), autoStepPO.getParameter2());
+//            case IS_BE_CONTAINS:
+//                return isBeContains(autoStepPO.getParameter1(), autoStepPO.getParameter2());
+//            case IS_DELETED:
+//                return isDeleted(autoStepPO.getParameter1());
+//            case IS_NOT_DELETED:
+//                return isNotDeleted(autoStepPO.getParameter1());
+//            case IS_GREATER:
+//                return isGreater(autoStepPO.getParameter1(), autoStepPO.getParameter2());
+//            case IS_SMALLER:
+//                return isSmaller(autoStepPO.getParameter1(), autoStepPO.getParameter2());
+//            case IS_XPATH_EXIST:
+//                return isXpathExist(autoStepPO.getParameter1());
+//            case IS_XPATH_NOT_EXIST:
+//                return isXpathNotExist(autoStepPO.getParameter1());
+//            default:
+//                return false;
+//        }
+//    }
+
     /**
      * 执行断言
      *
-     * @param autoStepPO 断言对象
+     * @param stepDTO 断言对象
      * @return 成功返回true，失败返回false
      */
-    public Boolean execute(AutoStepPO autoStepPO) {
-        switch (AssertionEnum.fromCode(autoStepPO.getModuleType())) {
+    public Boolean execute(StepDTO stepDTO) {
+        switch (AssertionEnum.fromCode(stepDTO.getModuleType())) {
             case IS_EQUALS:
-                return isEquals(autoStepPO.getParameter1(), autoStepPO.getParameter2());
+                return isEquals(stepDTO.getParameter1(), stepDTO.getParameter2());
             case IS_CONTAINS:
-                return isContains(autoStepPO.getParameter1(), autoStepPO.getParameter2());
+                return isContains(stepDTO.getParameter1(), stepDTO.getParameter2());
             case IS_BE_CONTAINS:
-                return isBeContains(autoStepPO.getParameter1(), autoStepPO.getParameter2());
+                return isBeContains(stepDTO.getParameter1(), stepDTO.getParameter2());
             case IS_DELETED:
-                return isDeleted(autoStepPO.getParameter1());
+                return isDeleted(stepDTO.getParameter1());
             case IS_NOT_DELETED:
-                return isNotDeleted(autoStepPO.getParameter1());
+                return isNotDeleted(stepDTO.getParameter1());
             case IS_GREATER:
-                return isGreater(autoStepPO.getParameter1(), autoStepPO.getParameter2());
+                return isGreater(stepDTO.getParameter1(), stepDTO.getParameter2());
             case IS_SMALLER:
-                return isSmaller(autoStepPO.getParameter1(), autoStepPO.getParameter2());
+                return isSmaller(stepDTO.getParameter1(), stepDTO.getParameter2());
             case IS_XPATH_EXIST:
-                return isXpathExist(autoStepPO.getParameter1());
+                return isXpathExist(stepDTO.getParameter1());
             case IS_XPATH_NOT_EXIST:
-                return isXpathNotExist(autoStepPO.getParameter1());
+                return isXpathNotExist(stepDTO.getParameter1());
             default:
                 return false;
         }

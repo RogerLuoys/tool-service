@@ -52,41 +52,65 @@ public class StepExecutor {
         ui.quit();
     }
 
-    public String execute(AutoStepPO autoStepPO) {
+//    public String execute(AutoStepPO autoStepPO) {
+//        String varName = null;
+//        switch (ModuleTypeEnum.fromCode(autoStepPO.getModuleType())) {
+//            case PO:
+//                break;
+//            case SQL:
+//                varName = sql.execute(autoStepPO);
+//                break;
+//            case RPC:
+//                varName = rpc.execute(autoStepPO);
+//                break;
+//            case HTTP:
+//                varName = http.execute(autoStepPO);
+//                break;
+//            case UI:
+//                varName = ui.execute(autoStepPO);
+//                break;
+//            case UTIL:
+//                varName = util.execute(autoStepPO);
+//                break;
+//            case ASSERTION:
+//                varName = assertion.execute(autoStepPO).toString();
+//                break;
+//            default:
+//                varName = "false";
+//        }
+//        return varName;
+//    }
+//    public String execute(AutoStepVO autoStepVO) {
+//        return execute(TransformAutoStep.transformVO2PO(autoStepVO));
+//    }
+
+    public void execute(StepDTO stepDTO) {
         String varName = null;
-        switch (ModuleTypeEnum.fromCode(autoStepPO.getModuleType())) {
+        switch (ModuleTypeEnum.fromCode(stepDTO.getModuleType())) {
             case PO:
                 break;
             case SQL:
-                varName = sql.execute(autoStepPO);
+                varName = sql.execute(stepDTO);
                 break;
             case RPC:
-                varName = rpc.execute(autoStepPO);
+                varName = rpc.execute(stepDTO);
                 break;
             case HTTP:
-                varName = http.execute(autoStepPO);
+                varName = http.execute(stepDTO);
                 break;
             case UI:
-                varName = ui.execute(autoStepPO);
+                varName = ui.execute(stepDTO);
                 break;
             case UTIL:
-                varName = util.execute(autoStepPO);
+                varName = util.execute(stepDTO);
                 break;
             case ASSERTION:
-                varName = assertion.execute(autoStepPO).toString();
+                varName = assertion.execute(stepDTO).toString();
                 break;
             default:
                 varName = "false";
         }
-        return varName;
-    }
-
-    public void execute(StepDTO stepDTO) {
-        stepDTO.setResult(null);
-    }
-
-    public String execute(AutoStepVO autoStepVO) {
-        return execute(TransformAutoStep.transformVO2PO(autoStepVO));
+        stepDTO.setResult(varName);
     }
 
     public void execute(CaseDTO caseDTO) {

@@ -426,7 +426,7 @@ public class CaseService {
 
 
     /**
-     * 使用用例（异步），并更新用例的执行结果
+     * 执行用例（异步），并更新用例的执行结果
      *
      * @param autoCaseVO 用例对象
      * @return 主要步骤全部执行结果都为true才返回true
@@ -436,16 +436,24 @@ public class CaseService {
             log.info("--->执行单个用例：caseId={}", autoCaseVO.getCaseId());
             AutoCaseVO supperCaseVO = this.queryDetail(autoCaseVO.getSupperCaseId());
             CaseDTO caseDTO = new CaseDTO();
+            // 处理基本参数
             caseDTO.setSupperCaseId(autoCaseVO.getSupperCaseId());
             caseDTO.setParameterList(TransformConfig.transformVO2DTO(supperCaseVO.getParameterList()));
             caseDTO.setArgumentList(TransformConfig.transformVO2DTO(supperCaseVO.getArgumentList()));
+            // 编排步骤
             caseDTO.setBeforeSuite(null); // 暂不支持
-            caseDTO.setSupperBeforeClass(TransformAutoStep.transformVO2DTO(supperCaseVO.getPreStepList()));
-            StepExecutor executor = new StepExecutor(supperCaseVO);
-            boolean result = execute(autoCaseVO, executor);
-            log.info("---->执行完毕，更新用例结果：caseId={}, result={}", autoCaseVO.getCaseId(), result);
+            caseDTO.setSupperBeforeClass(TransformCaseStepRelation.transformVO2DTO(supperCaseVO.getPreStepList()));
+            caseDTO.setBeforeTest(TransformCaseStepRelation.transformVO2DTO(autoCaseVO.getPreStepList()));
+            caseDTO.setTest(TransformCaseStepRelation.transformVO2DTO(autoCaseVO.getMainStepList()));
+            caseDTO.setAfterTest(TransformCaseStepRelation.transformVO2DTO(autoCaseVO.getAfterStepList()));
+            caseDTO.setSupperAfterClass(TransformCaseStepRelation.transformVO2DTO(supperCaseVO.getAfterStepList()));
+            caseDTO.setAfterSuite(null); // 暂不支持
+
+            StepExecutor executor = new StepExecutor();
+            executor.execute(caseDTO);
+            log.info("---->执行完毕，更新用例结果：caseId={}, result={}", autoCaseVO.getCaseId(), caseDTO.getStatus());
             autoCaseMapper.updateStatus(autoCaseVO.getCaseId(),
-                    result ? AutoCaseStatusEnum.SUCCESS.getCode() : AutoCaseStatusEnum.FAIL.getCode());
+                    caseDTO.getStatus());
         });
         return true;
     }
@@ -457,92 +465,44 @@ public class CaseService {
      * @return 主要步骤全部执行结果都为true才返回true
      */
     public Boolean use(AutoCaseVO autoCaseVO, StepExecutor executor) {
-        boolean result = execute(autoCaseVO, executor);
-        log.info("--->执行用例完成：caseId={}, caseName={}, result={}", autoCaseVO.getCaseId(), autoCaseVO.getName(), result);
-        return result;
-
-//        boolean result;
-//        // UI和接口用例分开执行
-//        if (autoCaseVO.getType().equals(AutoCaseTypeEnum.UI_CASE.getCode())) {
-//            result = executeUI(autoCaseVO);
-//        } else {
-//            result = executeAPI(autoCaseVO);
-//        }
-//        log.info("--->执行用例完成：caseId={}, caseName={}, result={}", autoCaseVO.getCaseId(), autoCaseVO.getName(), result);
-//        return result;
+        CaseDTO caseDTO = TransformAutoCase.transformVO2DTO(autoCaseVO);
+        executor.execute(caseDTO);
+        log.info("--->执行用例完成：caseId={}, caseName={}, result={}", autoCaseVO.getCaseId(), autoCaseVO.getName(), caseDTO.getStatus());
+        return true;
     }
 
-//    /**
-//     * 执行接口自动化用例
-//     *
-//     * @param autoCaseVO 用例对象
-//     * @return 主要步骤全部执行结果都为true才返回true
-//     */
-//    private Boolean executeAPI(AutoCaseVO autoCaseVO) {
-//        try {
-//            return execute(autoCaseVO);
-//        } catch (Exception e) {
-//            log.error("--->执行api用例异常：caseId={}", autoCaseVO.getCaseId(), e);
+//    private Boolean execute(AutoCaseVO autoCaseVO, StepExecutor executor) {
+//        boolean result = true;
+//        if (autoCaseVO.getMainStepList() == null || autoCaseVO.getMainStepList().size() == 0) {
+//            log.error("--->用例没有主步骤：caseId={}", autoCaseVO.getCaseId());
 //            return false;
 //        }
-//    }
-//
-//    /**
-//     * 执行UI自动化用例
-//     *
-//     * @param autoCaseVO 用例对象
-//     * @return 主要步骤全部执行结果都为true才返回true
-//     */
-//    private Boolean executeUI(AutoCaseVO autoCaseVO) {
-//        boolean result;
-//        try {
-//            // 打开webDrive，默认chrome(20220822，不用了，放在execute中)
-////            uiClient.init();
-//            // 执行包含ui步骤的用例
-//            result = execute(autoCaseVO);
-//        } catch (Exception e) {
-//            log.error("--->执行ui用例异常：caseId={}", autoCaseVO.getCaseId(), e);
-//            return false;
-//        } finally {
-//            // 退出webDrive（20220822，不用了）
-////            uiClient.quit();
+//        // 执行前置步骤@BeforeTest
+//        if (autoCaseVO.getPreStepList() != null && autoCaseVO.getPreStepList().size() != 0) {
+//            for (CaseStepVO vo : autoCaseVO.getPreStepList()) {
+//                // 前置步骤任意方法执行异常或失败，都直接跳过下面步骤
+//                if (executor.execute(vo.getAutoStep()).equalsIgnoreCase("false")) {
+//                    return false;
+//                }
+//            }
+//        }
+//        // 执行主要步骤@Test，只要有一个步骤为false，则整个case结果为false
+//        if (autoCaseVO.getMainStepList() != null && autoCaseVO.getMainStepList().size() != 0) {
+//            for (CaseStepVO vo : autoCaseVO.getMainStepList()) {
+//                String var = executor.execute(vo.getAutoStep());
+//                if (var == null || var.equalsIgnoreCase("false")) {
+//                    result = false;
+//                    break;
+//                }
+//            }
+//        }
+//        // 执行收尾步骤@AfterTest
+//        if (result && autoCaseVO.getAfterStepList() != null && autoCaseVO.getAfterStepList().size() != 0) {
+//            for (CaseStepVO vo : autoCaseVO.getAfterStepList()) {
+//                executor.execute(vo.getAutoStep());
+//            }
 //        }
 //        return result;
 //    }
-
-    private Boolean execute(AutoCaseVO autoCaseVO, StepExecutor executor) {
-        boolean result = true;
-        if (autoCaseVO.getMainStepList() == null || autoCaseVO.getMainStepList().size() == 0) {
-            log.error("--->用例没有主步骤：caseId={}", autoCaseVO.getCaseId());
-            return false;
-        }
-        // todo 直接传一个case，传之前把PO和sql替换掉
-        // 执行前置步骤@BeforeTest
-        if (autoCaseVO.getPreStepList() != null && autoCaseVO.getPreStepList().size() != 0) {
-            for (CaseStepVO vo : autoCaseVO.getPreStepList()) {
-                // 前置步骤任意方法执行异常或失败，都直接跳过下面步骤
-                if (executor.execute(vo.getAutoStep()).equalsIgnoreCase("false")) {
-                    return false;
-                }
-            }
-        }
-        // 执行主要步骤@Test，只要有一个步骤为false，则整个case结果为false
-        if (autoCaseVO.getMainStepList() != null && autoCaseVO.getMainStepList().size() != 0) {
-            for (CaseStepVO vo : autoCaseVO.getMainStepList()) {
-                String var = executor.execute(vo.getAutoStep());
-                if (var == null || var.equalsIgnoreCase("false")) {
-                    result = false;
-                    break;
-                }
-            }
-        }
-        // 执行收尾步骤@AfterTest
-        if (result && autoCaseVO.getAfterStepList() != null && autoCaseVO.getAfterStepList().size() != 0) {
-            for (CaseStepVO vo : autoCaseVO.getAfterStepList()) {
-                executor.execute(vo.getAutoStep());
-            }
-        }
-        return result;
-    }
 
 }

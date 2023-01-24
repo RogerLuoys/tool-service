@@ -3,6 +3,7 @@ package com.luoys.upgrade.toolservice.service.client;
 import com.luoys.upgrade.toolservice.dao.po.AutoStepPO;
 import com.luoys.upgrade.toolservice.service.common.CacheUtil;
 import com.luoys.upgrade.toolservice.service.dto.DataSourceDTO;
+import com.luoys.upgrade.toolservice.service.dto.StepDTO;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +25,40 @@ public class DBClient {
     private JdbcTemplate jdbcTemplate;
     private HikariDataSource dataSource;
 
+//    /**
+//     * 执行sql
+//     * 支持增删改查，删改查一定要带条件
+//     *
+//     * @param autoStepPO 要执行的sql
+//     * @return -
+//     */
+//    public String execute(AutoStepPO autoStepPO) {
+//        // 初始化数据库链接
+//        init(CacheUtil.getJdbcById(autoStepPO.getMethodId()));
+//        String result, sql;
+//        sql = autoStepPO.getParameter1();
+//        // 根据sql语句类型，选择不同的方法执行
+//        if (sql.toUpperCase().matches("^INSERT INTO .+")) {
+//            result = this.insert(sql);
+//        } else if (sql.toUpperCase().matches("^DELETE FROM [A-Z0-9_]+ WHERE .+")) {
+//            result = this.delete(sql);
+//        } else if (sql.toUpperCase().matches("^UPDATE [A-Z0-9_]+ SET .+ WHERE .+")) {
+//            result = this.update(sql);
+//        } else if (sql.toUpperCase().matches("^SELECT .+ FROM [A-Z0-9_]+")) {//todo 还要改
+//            // 查询单列
+//            if (sql.toUpperCase().matches("^SELECT [^,*]+ FROM [A-Z0-9_]+ WHERE .+")) {
+//                result = this.selectOneCell(sql);
+//            } else {
+//                result = this.select(sql);
+//            }
+//        } else {
+//            result = "未识别sql类型";
+//        }
+//        // 关闭数据库链接
+//        this.close();
+//        return result;
+//    }
+
     /**
      * 执行sql
      * 支持增删改查，删改查一定要带条件
@@ -31,11 +66,11 @@ public class DBClient {
      * @param autoStepPO 要执行的sql
      * @return -
      */
-    public String execute(AutoStepPO autoStepPO) {
+    public String execute(StepDTO stepDTO) {
         // 初始化数据库链接
-        init(CacheUtil.getJdbcById(autoStepPO.getMethodId()));
+        init(stepDTO.getDataSource());
         String result, sql;
-        sql = autoStepPO.getParameter1();
+        sql = stepDTO.getParameter1();
         // 根据sql语句类型，选择不同的方法执行
         if (sql.toUpperCase().matches("^INSERT INTO .+")) {
             result = this.insert(sql);
