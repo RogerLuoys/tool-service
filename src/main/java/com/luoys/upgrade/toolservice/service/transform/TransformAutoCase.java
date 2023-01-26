@@ -2,6 +2,7 @@ package com.luoys.upgrade.toolservice.service.transform;
 
 import com.luoys.upgrade.toolservice.dao.po.AutoCasePO;
 import com.luoys.upgrade.toolservice.dao.po.AutoCaseQueryPO;
+import com.luoys.upgrade.toolservice.service.common.CacheUtil;
 import com.luoys.upgrade.toolservice.service.dto.CaseDTO;
 import com.luoys.upgrade.toolservice.service.enums.KeywordEnum;
 import com.luoys.upgrade.toolservice.web.vo.AutoCaseSimpleVO;
@@ -127,7 +128,7 @@ public class TransformAutoCase {
     }
 
     /**
-     * 转换用例的基本信息
+     * 转换用例
      * @param vo -
      * @return -
      */
@@ -136,7 +137,21 @@ public class TransformAutoCase {
             return null;
         }
         CaseDTO dto = new CaseDTO();
-        // todo ?
+        // 从缓存中取超类数据
+        AutoCaseVO supperCaseVO = CacheUtil.getSupperClassById(vo.getSupperCaseId());
+        // 处理基本参数
+        dto.setSupperCaseId(vo.getSupperCaseId());
+        dto.setParameterList(TransformConfig.transformVO2DTO(supperCaseVO.getParameterList()));
+        dto.setArgumentList(TransformConfig.transformVO2DTO(supperCaseVO.getArgumentList()));
+        // 编排步骤
+        dto.setBeforeSuite(null); // 暂不支持
+        dto.setSupperBeforeClass(TransformCaseStepRelation.transformVO2DTO(supperCaseVO.getPreStepList()));
+        dto.setBeforeTest(TransformCaseStepRelation.transformVO2DTO(vo.getPreStepList()));
+        dto.setTest(TransformCaseStepRelation.transformVO2DTO(vo.getMainStepList()));
+        dto.setAfterTest(TransformCaseStepRelation.transformVO2DTO(vo.getAfterStepList()));
+        dto.setSupperAfterClass(TransformCaseStepRelation.transformVO2DTO(supperCaseVO.getAfterStepList()));
+        dto.setAfterSuite(null); // 暂不支持
+
         return dto;
     }
 

@@ -43,24 +43,6 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class CaseService {
 
-    private Cache<Integer, DataSourceDTO> dbCache = Caffeine.newBuilder()
-            //cache的初始容量
-            .initialCapacity(5)
-            //cache最大缓存数
-            .maximumSize(20)
-            //设置写缓存后n秒钟过期
-            .expireAfterWrite(24, TimeUnit.HOURS)
-            .build();
-
-    private Cache<Integer, List<StepDTO>> poCache = Caffeine.newBuilder()
-            //cache的初始容量
-            .initialCapacity(5)
-            //cache最大缓存数
-            .maximumSize(100)
-            //设置写缓存后n秒钟过期
-            .expireAfterWrite(24, TimeUnit.HOURS)
-            .build();
-
     @Autowired
     private AutoCaseMapper autoCaseMapper;
 
@@ -258,23 +240,6 @@ public class CaseService {
         ConfigPO configPO = TransformConfig.transformVO2PO(configVO);
         return configMapper.update(configPO);
     }
-//    /**
-//     * 查询用例列表
-//     *
-//     * @param userId      用户id
-//     * @param isOnlyOwner 是否只查自己
-//     * @param status      用例状态
-//     * @param name        用例名称
-//     * @param pageIndex   页码
-//     * @return 用例列表
-//     */
-//    public List<AutoCaseSimpleVO> query(Integer userId, Boolean isOnlyOwner, Integer status, String name, Integer pageIndex) {
-//        if (!isOnlyOwner) {
-//            userId = null;
-//        }
-//        int startIndex = (pageIndex - 1) * KeywordEnum.DEFAULT_PAGE_SIZE.getCode();
-//        return TransformAutoCase.transformPO2SimpleVO(autoCaseMapper.list(status, name, userId, startIndex));
-//    }
 
     /**
      * 查询用例列表
@@ -292,13 +257,6 @@ public class CaseService {
         AutoCaseQueryPO autoCaseQueryPO = TransformAutoCase.transformVO2PO(queryVO);
         return autoCaseMapper.count(autoCaseQueryPO);
     }
-
-//    public Integer count(Integer userId, Boolean isOnlyOwner, Integer status, String name) {
-//        if (!isOnlyOwner) {
-//            userId = null;
-//        }
-//        return autoCaseMapper.count(status, name, userId);
-//    }
 
     /**
      * 查询用例详情
@@ -434,21 +392,22 @@ public class CaseService {
     public Boolean useAsync(AutoCaseVO autoCaseVO) throws RejectedExecutionException {
         ThreadPoolUtil.executeAuto(() -> {
             log.info("--->执行单个用例：caseId={}", autoCaseVO.getCaseId());
-            AutoCaseVO supperCaseVO = this.queryDetail(autoCaseVO.getSupperCaseId());
-            CaseDTO caseDTO = new CaseDTO();
-            // 处理基本参数
-            caseDTO.setSupperCaseId(autoCaseVO.getSupperCaseId());
-            caseDTO.setParameterList(TransformConfig.transformVO2DTO(supperCaseVO.getParameterList()));
-            caseDTO.setArgumentList(TransformConfig.transformVO2DTO(supperCaseVO.getArgumentList()));
-            // 编排步骤
-            caseDTO.setBeforeSuite(null); // 暂不支持
-            caseDTO.setSupperBeforeClass(TransformCaseStepRelation.transformVO2DTO(supperCaseVO.getPreStepList()));
-            caseDTO.setBeforeTest(TransformCaseStepRelation.transformVO2DTO(autoCaseVO.getPreStepList()));
-            caseDTO.setTest(TransformCaseStepRelation.transformVO2DTO(autoCaseVO.getMainStepList()));
-            caseDTO.setAfterTest(TransformCaseStepRelation.transformVO2DTO(autoCaseVO.getAfterStepList()));
-            caseDTO.setSupperAfterClass(TransformCaseStepRelation.transformVO2DTO(supperCaseVO.getAfterStepList()));
-            caseDTO.setAfterSuite(null); // 暂不支持
+//            AutoCaseVO supperCaseVO = this.queryDetail(autoCaseVO.getSupperCaseId());
+//            CaseDTO caseDTO = new CaseDTO();
+//            // 处理基本参数
+//            caseDTO.setSupperCaseId(autoCaseVO.getSupperCaseId());
+//            caseDTO.setParameterList(TransformConfig.transformVO2DTO(supperCaseVO.getParameterList()));
+//            caseDTO.setArgumentList(TransformConfig.transformVO2DTO(supperCaseVO.getArgumentList()));
+//            // 编排步骤
+//            caseDTO.setBeforeSuite(null); // 暂不支持
+//            caseDTO.setSupperBeforeClass(TransformCaseStepRelation.transformVO2DTO(supperCaseVO.getPreStepList()));
+//            caseDTO.setBeforeTest(TransformCaseStepRelation.transformVO2DTO(autoCaseVO.getPreStepList()));
+//            caseDTO.setTest(TransformCaseStepRelation.transformVO2DTO(autoCaseVO.getMainStepList()));
+//            caseDTO.setAfterTest(TransformCaseStepRelation.transformVO2DTO(autoCaseVO.getAfterStepList()));
+//            caseDTO.setSupperAfterClass(TransformCaseStepRelation.transformVO2DTO(supperCaseVO.getAfterStepList()));
+//            caseDTO.setAfterSuite(null); // 暂不支持
 
+            CaseDTO caseDTO = TransformAutoCase.transformVO2DTO(autoCaseVO);
             StepExecutor executor = new StepExecutor();
             executor.execute(caseDTO);
             log.info("---->执行完毕，更新用例结果：caseId={}, result={}", autoCaseVO.getCaseId(), caseDTO.getStatus());

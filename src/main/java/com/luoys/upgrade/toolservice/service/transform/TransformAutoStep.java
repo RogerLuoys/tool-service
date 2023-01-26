@@ -8,6 +8,7 @@ import com.luoys.upgrade.toolservice.service.enums.*;
 import com.luoys.upgrade.toolservice.service.enums.autoStep.ModuleTypeEnum;
 import com.luoys.upgrade.toolservice.web.vo.AutoStepSimpleVO;
 import com.luoys.upgrade.toolservice.web.vo.AutoStepVO;
+import com.luoys.upgrade.toolservice.web.vo.CaseStepVO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -136,5 +137,13 @@ public class TransformAutoStep {
         }
         return dtoList;
     }
+
+//    public static List<StepDTO> transformVO2DTO(List<CaseStepVO> voList) {
+//        List<StepDTO> dtoList = new ArrayList<>();
+//        for (CaseStepVO vo : voList) {
+//            dtoList.add(transformVO2DTO(vo.getAutoStep()));
+//        }
+//        return dtoList;
+//    }
 
 }

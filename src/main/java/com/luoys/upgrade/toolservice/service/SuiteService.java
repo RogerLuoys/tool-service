@@ -9,6 +9,7 @@ import com.luoys.upgrade.toolservice.dao.AutoCaseMapper;
 import com.luoys.upgrade.toolservice.dao.AutoSuiteMapper;
 import com.luoys.upgrade.toolservice.dao.SuiteCaseRelationMapper;
 import com.luoys.upgrade.toolservice.dao.UserMapper;
+import com.luoys.upgrade.toolservice.service.dto.CaseDTO;
 import com.luoys.upgrade.toolservice.service.enums.AutoCaseStatusEnum;
 import com.luoys.upgrade.toolservice.service.enums.AutoCaseTypeEnum;
 import com.luoys.upgrade.toolservice.service.enums.AutoSuiteStatusEnum;
@@ -337,63 +338,15 @@ public class SuiteService {
             // 使用线程池执行用例，并更新结果
             ThreadPoolUtil.executeAuto(() -> {
                 try {
-//                    // 先套件ui用例的执行状态更新
-//                    autoSuiteMapper.updateExecuteStatus(suiteId, null, false);
                     StepExecutor executor = new StepExecutor();
                     // 执行所有用例，后更新结果
                     execute(caseList, executor, suiteId);
                 } finally {
-//                    autoSuiteMapper.updateExecuteStatus(suiteId, null, true);
-//                    // ui用例执行完成后，如果api用例也执行完成，则将套件状态变更为空闲
-//                    if (autoSuiteMapper.selectByUUID(suiteId).getIsApiCompleted()) {
-//                        autoSuiteMapper.updateStatus(suiteId, AutoSuiteStatusEnum.SUITE_FREE.getCode());
-//                    }
-                    // 用例执行完成，则将套件状态变更为空闲
                     autoSuiteMapper.updateStatus(suiteId, AutoSuiteStatusEnum.SUITE_FREE.getCode());
                 }
             });
         }
         return true;
-//        // 根据优先级排序，并将ui和api用例分开
-//        Map<Integer, List<SuiteCaseVO>> casesMap = orderAndSort(caseList);
-//        List<SuiteCaseVO> uiCaseList = casesMap.get(AutoCaseTypeEnum.UI_CASE.getCode());
-//        List<SuiteCaseVO> apiCaseList = casesMap.get(AutoCaseTypeEnum.INTERFACE_CASE.getCode());
-//
-//        if (uiCaseList.size() != 0) {
-//            // 使用ui线程池执行ui用例，并更新结果
-//            ThreadPoolUtil.executeUI(() -> {
-//                try {
-//                    // 先套件ui用例的执行状态更新
-//                    autoSuiteMapper.updateExecuteStatus(suiteId, null, false);
-//                    // 执行所有用例，后更新结果
-//                    execute(uiCaseList, autoSuiteVO.getEnvironment(), suiteId);
-//                } finally {
-//                    autoSuiteMapper.updateExecuteStatus(suiteId, null, true);
-//                    // ui用例执行完成后，如果api用例也执行完成，则将套件状态变更为空闲
-//                    if (autoSuiteMapper.selectByUUID(suiteId).getIsApiCompleted()) {
-//                        autoSuiteMapper.updateStatus(suiteId, AutoSuiteStatusEnum.SUITE_FREE.getCode());
-//                    }
-//                }
-//            });
-//        }
-//        if (apiCaseList.size() != 0) {
-//            // 使用api线程池执行api用例，并更新结果
-//            ThreadPoolUtil.executeAPI(() -> {
-//                try {
-//                    // 把套件的api状态改为执行中
-//                    autoSuiteMapper.updateExecuteStatus(suiteId, false, null);
-//                    // 先执行，后更新结果
-//                    execute(apiCaseList, autoSuiteVO.getEnvironment(), suiteId);
-//                } finally {
-//                    autoSuiteMapper.updateExecuteStatus(suiteId, true, null);
-//                    // api用例执行完成后，如果ui用例也执行完成，则将套件状态变更为空闲
-//                    if (autoSuiteMapper.selectByUUID(suiteId).getIsUiCompleted()) {
-//                        autoSuiteMapper.updateStatus(suiteId, AutoSuiteStatusEnum.SUITE_FREE.getCode());
-//                    }
-//                }
-//            });
-//        }
-//        return true;
     }
 
     /**
@@ -416,21 +369,6 @@ public class SuiteService {
             execute(caseList, executor, suiteCaseVO.getSuiteId());
         });
         return true;
-
-//        if (caseList.get(0).getAutoCase().getType().equals(AutoCaseTypeEnum.UI_CASE.getCode())) {
-//            // 使用ui线程池执行ui用例，并更新结果
-//            ThreadPoolUtil.executeUI(() -> {
-//                // 执行所有用例，后更新结果
-//                execute(caseList, suiteCaseVO.getAutoCase().getEnvironment(), suiteCaseVO.getSuiteId());
-//            });
-//        } else {
-//            // 使用api线程池执行api用例，并更新结果
-//            ThreadPoolUtil.executeAPI(() -> {
-//                // 先执行，后更新结果
-//                execute(caseList, suiteCaseVO.getAutoCase().getEnvironment(), suiteCaseVO.getSuiteId());
-//            });
-//        }
-//        return true;
     }
 
 //    /**
@@ -491,7 +429,7 @@ public class SuiteService {
     }
 
     /**
-     * 执行用例，并更新套件中的用例状态
+     * 批量执行用例，并更新套件中的用例状态
      *
      * @param caseList 用例列表，列表对象中需要有caseId和suiteId
      * @return 返回所执行用例的成功数和失败数
@@ -502,8 +440,8 @@ public class SuiteService {
             try {
                 // 先通过caseId查出用例详情，再设置执行参数，最后执行用例
                 AutoCaseVO autoCaseVO = caseService.queryDetail(vo.getAutoCase().getCaseId());
-//                autoCaseVO.setEnvironment(environment);
-                result = caseService.use(autoCaseVO, executor);
+                CaseDTO caseDTO = TransformAutoCase.transformVO2DTO(autoCaseVO);
+                result = executor.execute(caseDTO);
             } catch (Exception e) {
                 log.error("--->批量执行用例异常：caseId={}", vo.getAutoCase().getCaseId(), e);
                 result = false;

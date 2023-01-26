@@ -54,6 +54,7 @@ public class TransformConfig {
             return null;
         }
         ParameterDTO dto = new ParameterDTO();
+        dto.setType(vo.getType());
         dto.setComment(vo.getComment());
         dto.setName(vo.getName());
         dto.setValue(vo.getValue());

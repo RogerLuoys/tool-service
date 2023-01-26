@@ -17,10 +17,10 @@ import org.apache.dubbo.rpc.service.GenericService;
 //@Component
 public class RPCClient {
 
-    private ReferenceConfig<GenericService> reference;
+//    private ReferenceConfig<GenericService> reference;
 
 //    /**
-//     * 执行rpc调用，仅支持rpc接口有且只有单个入参的情况 todo 要支持多入参
+//     * 执行rpc调用，仅支持rpc接口有且只有单个入参的情况
 //     * 有同步锁
 //     *
 //     * @param autoStepPO rpc对象

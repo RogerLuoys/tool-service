@@ -60,28 +60,28 @@ public class AssertionClient {
      * @param stepDTO 断言对象
      * @return 成功返回true，失败返回false
      */
-    public Boolean execute(StepDTO stepDTO) {
+    public String execute(StepDTO stepDTO) {
         switch (AssertionEnum.fromCode(stepDTO.getModuleType())) {
             case IS_EQUALS:
-                return isEquals(stepDTO.getParameter1(), stepDTO.getParameter2());
+                return isEquals(stepDTO.getParameter1(), stepDTO.getParameter2()).toString();
             case IS_CONTAINS:
-                return isContains(stepDTO.getParameter1(), stepDTO.getParameter2());
+                return isContains(stepDTO.getParameter1(), stepDTO.getParameter2()).toString();
             case IS_BE_CONTAINS:
-                return isBeContains(stepDTO.getParameter1(), stepDTO.getParameter2());
+                return isBeContains(stepDTO.getParameter1(), stepDTO.getParameter2()).toString();
             case IS_DELETED:
-                return isDeleted(stepDTO.getParameter1());
+                return isDeleted(stepDTO.getParameter1()).toString();
             case IS_NOT_DELETED:
-                return isNotDeleted(stepDTO.getParameter1());
+                return isNotDeleted(stepDTO.getParameter1()).toString();
             case IS_GREATER:
-                return isGreater(stepDTO.getParameter1(), stepDTO.getParameter2());
+                return isGreater(stepDTO.getParameter1(), stepDTO.getParameter2()).toString();
             case IS_SMALLER:
-                return isSmaller(stepDTO.getParameter1(), stepDTO.getParameter2());
+                return isSmaller(stepDTO.getParameter1(), stepDTO.getParameter2()).toString();
             case IS_XPATH_EXIST:
-                return isXpathExist(stepDTO.getParameter1());
+                return isXpathExist(stepDTO.getParameter1()).toString();
             case IS_XPATH_NOT_EXIST:
-                return isXpathNotExist(stepDTO.getParameter1());
+                return isXpathNotExist(stepDTO.getParameter1()).toString();
             default:
-                return false;
+                return "false";
         }
     }
 
