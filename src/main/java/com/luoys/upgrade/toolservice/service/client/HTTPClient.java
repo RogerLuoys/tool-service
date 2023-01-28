@@ -108,7 +108,7 @@ public class HTTPClient {
         switch (HttpEnum.fromCode(stepDTO.getMethodType())) {
             case GET:
                 // 第二个入参不为空，表示有header
-                if (StringUtil.isBlank(stepDTO.getParameter2())) {
+                if (!StringUtil.isBlank(stepDTO.getParameter2())) {
                     JSONObject jsonObject = JSON.parseObject(stepDTO.getParameter2());
                     for (String key : jsonObject.keySet()) {
                         headers.add(key, jsonObject.getString(key));
@@ -118,7 +118,7 @@ public class HTTPClient {
                 return restTemplate.exchange(stepDTO.getParameter1(), HttpMethod.GET, entity, String.class, uriVariables).getBody();
             case POST:
                 // 第三个入参不为空，表示有header
-                if (StringUtil.isBlank(stepDTO.getParameter3())) {
+                if (!StringUtil.isBlank(stepDTO.getParameter3())) {
                     JSONObject jsonObject = JSON.parseObject(stepDTO.getParameter3());
                     for (String key : jsonObject.keySet()) {
                         headers.add(key, jsonObject.getString(key));
@@ -128,7 +128,7 @@ public class HTTPClient {
                 return restTemplate.exchange(stepDTO.getParameter1(), HttpMethod.POST, entity, String.class, uriVariables).getBody();
             case PUT:
                 // 第三个入参不为空，表示有header
-                if (StringUtil.isBlank(stepDTO.getParameter3())) {
+                if (!StringUtil.isBlank(stepDTO.getParameter3())) {
                     JSONObject jsonObject = JSON.parseObject(stepDTO.getParameter3());
                     for (String key : jsonObject.keySet()) {
                         headers.add(key, jsonObject.getString(key));
@@ -138,7 +138,7 @@ public class HTTPClient {
                 return restTemplate.exchange(stepDTO.getParameter1(), HttpMethod.PUT, entity, String.class, uriVariables).getBody();
             case DELETE:
                 // 第三个入参不为空，表示有header
-                if (StringUtil.isBlank(stepDTO.getParameter3())) {
+                if (!StringUtil.isBlank(stepDTO.getParameter3())) {
                     JSONObject jsonObject = JSON.parseObject(stepDTO.getParameter3());
                     for (String key : jsonObject.keySet()) {
                         headers.add(key, jsonObject.getString(key));

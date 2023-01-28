@@ -61,7 +61,7 @@ public class AssertionClient {
      * @return 成功返回true，失败返回false
      */
     public String execute(StepDTO stepDTO) {
-        switch (AssertionEnum.fromCode(stepDTO.getModuleType())) {
+        switch (AssertionEnum.fromCode(stepDTO.getMethodType())) {
             case IS_EQUALS:
                 return isEquals(stepDTO.getParameter1(), stepDTO.getParameter2()).toString();
             case IS_CONTAINS:

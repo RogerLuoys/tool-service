@@ -1,13 +1,12 @@
 package com.luoys.upgrade.toolservice.service.transform;
 
 import com.luoys.upgrade.toolservice.dao.po.ConfigPO;
-import com.luoys.upgrade.toolservice.dao.po.ProjectPO;
-import com.luoys.upgrade.toolservice.service.dto.ParameterDTO;
 import com.luoys.upgrade.toolservice.web.vo.ConfigVO;
-import com.luoys.upgrade.toolservice.web.vo.ProjectVO;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class TransformConfig {
 
@@ -49,24 +48,49 @@ public class TransformConfig {
         return po;
     }
 
-    public static ParameterDTO transformVO2DTO(ConfigVO vo) {
-        if (vo == null) {
+//    public static ParameterDTO transformVO2DTO(ConfigVO vo) {
+//        if (vo == null) {
+//            return null;
+//        }
+//        ParameterDTO dto = new ParameterDTO();
+//        dto.setType(vo.getType());
+//        dto.setComment(vo.getComment());
+//        dto.setName(vo.getName());
+//        dto.setValue(vo.getValue());
+//        return dto;
+//    }
+//
+//    public static List<ParameterDTO> transformVO2DTO(List<ConfigVO> voList) {
+//        if (voList == null) {
+//            return null;
+//        }
+//        List<ParameterDTO> dtoList = new ArrayList<>();
+//        for (ConfigVO vo : voList) {
+//            dtoList.add(transformVO2DTO(vo));
+//        }
+//        return dtoList;
+//    }
+
+    public static Map<String, String> transformVO2Map(List<ConfigVO> voList) {
+        if (voList == null) {
             return null;
         }
-        ParameterDTO dto = new ParameterDTO();
-        dto.setType(vo.getType());
-        dto.setComment(vo.getComment());
-        dto.setName(vo.getName());
-        dto.setValue(vo.getValue());
-        return dto;
+        Map<String, String> map = new HashMap<>();
+        for (ConfigVO vo : voList) {
+            map.put(vo.getName(), vo.getValue());
+        }
+        return map;
     }
 
-    public static List<ParameterDTO> transformVO2DTO(List<ConfigVO> voList) {
-        List<ParameterDTO> dtoList = new ArrayList<>();
-        for (ConfigVO vo : voList) {
-            dtoList.add(transformVO2DTO(vo));
+    public static String[] transformVO2Array(List<ConfigVO> voList) {
+        if (voList == null) {
+            return null;
         }
-        return dtoList;
+        String[] str = new String[voList.size()];
+        for (int i = 0; i < voList.size(); i++) {
+            str[i] = voList.get(i).getValue();
+        }
+        return str;
     }
 
 }

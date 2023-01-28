@@ -1,6 +1,5 @@
 package com.luoys.upgrade.toolservice.service;
 
-import com.luoys.upgrade.toolservice.service.common.NumberSender;
 import com.luoys.upgrade.toolservice.service.common.StringUtil;
 import com.luoys.upgrade.toolservice.service.common.TimeUtil;
 import com.luoys.upgrade.toolservice.dao.TaskMapper;
@@ -31,7 +30,7 @@ public class TaskService {
      * @return 成功返回taskId，失败为null
      */
     public String create(TaskVO taskVO) {
-        taskVO.setTaskId(NumberSender.createTaskDailyId());
+//        taskVO.setTaskId(NumberSender.createTaskDailyId());
         return taskMapper.insert(TransformTask.transformVO2PO(taskVO)) == 1 ? taskVO.getTaskId() : null;
     }
 

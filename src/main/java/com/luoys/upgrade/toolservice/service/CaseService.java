@@ -339,7 +339,7 @@ public class CaseService {
 
         // 通过正则解析脚本，把整段脚本解析成行('\w':任意字符，'.':0到无限次)
 //        List<String> mainSteps = StringUtil.getMatch("auto\\.(ui|http|sql|rpc|util|po|assertion)\\.\\w+\\(.*\\);", autoCaseVO.getMainSteps());
-        List<String> mainSteps = StringUtil.getMatch("\\(string[ ]{1,4}\\w{1,20}[ ]{1,4}=[ ]{1,4})?auto\\.(ui|http|sql|rpc|util|po|assertion)\\.\\w+\\(.*\\);[ ]{0,4}(\\n|\\r)\\i", autoCaseVO.getMainSteps());
+        List<String> mainSteps = StringUtil.getMatch("\\(String[ ]{1,4}\\w{1,20}[ ]{1,4}=[ ]{1,4})?auto\\.(ui|http|sql|rpc|util|po|assertion)\\.\\w+\\(.*\\);[ ]{0,4}(\\n|\\r)\\i", autoCaseVO.getMainSteps());
 
         // 完全新增脚本，或脚本内步骤有新增，需要创建对应数量的关联步骤
         while (mainSteps.size() - autoCaseVO.getMainStepList().size() > 0) {
@@ -392,21 +392,6 @@ public class CaseService {
     public Boolean useAsync(AutoCaseVO autoCaseVO) throws RejectedExecutionException {
         ThreadPoolUtil.executeAuto(() -> {
             log.info("--->执行单个用例：caseId={}", autoCaseVO.getCaseId());
-//            AutoCaseVO supperCaseVO = this.queryDetail(autoCaseVO.getSupperCaseId());
-//            CaseDTO caseDTO = new CaseDTO();
-//            // 处理基本参数
-//            caseDTO.setSupperCaseId(autoCaseVO.getSupperCaseId());
-//            caseDTO.setParameterList(TransformConfig.transformVO2DTO(supperCaseVO.getParameterList()));
-//            caseDTO.setArgumentList(TransformConfig.transformVO2DTO(supperCaseVO.getArgumentList()));
-//            // 编排步骤
-//            caseDTO.setBeforeSuite(null); // 暂不支持
-//            caseDTO.setSupperBeforeClass(TransformCaseStepRelation.transformVO2DTO(supperCaseVO.getPreStepList()));
-//            caseDTO.setBeforeTest(TransformCaseStepRelation.transformVO2DTO(autoCaseVO.getPreStepList()));
-//            caseDTO.setTest(TransformCaseStepRelation.transformVO2DTO(autoCaseVO.getMainStepList()));
-//            caseDTO.setAfterTest(TransformCaseStepRelation.transformVO2DTO(autoCaseVO.getAfterStepList()));
-//            caseDTO.setSupperAfterClass(TransformCaseStepRelation.transformVO2DTO(supperCaseVO.getAfterStepList()));
-//            caseDTO.setAfterSuite(null); // 暂不支持
-
             CaseDTO caseDTO = TransformAutoCase.transformVO2DTO(autoCaseVO);
             StepExecutor executor = new StepExecutor();
             executor.execute(caseDTO);

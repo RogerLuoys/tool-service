@@ -11,16 +11,19 @@ public class RootClient {
     public RPCClient rpc = new RPCClient();
     public UtilClient util = new UtilClient();
     public AssertionClient assertion = new AssertionClient(ui);
+    public Boolean isBeforeSuiteDone = false;
+    public Boolean suiteError = false;
+    public Boolean isAfterSuite = false;
 
     public RootClient(CaseDTO caseDTO) {
         // 非UI自动化，不用额外初始化
-        if (caseDTO.getArgumentList() == null || caseDTO.getArgumentList().size() == 0) {
+        if (caseDTO.getUiType() == null) {
             return;
         }
         // 是UI自动化，需要初始化对应的webdriver
-        switch (ConfigTypeEnum.fromCode(caseDTO.getArgumentList().get(0).getType())) {
+        switch (ConfigTypeEnum.fromCode(caseDTO.getUiType())) {
             case CHROME:
-                ui.initChrome();
+                ui.initChrome(caseDTO.getUiArgument());
                 break;
             case FIREFOX:
                 // todo init

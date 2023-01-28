@@ -2,21 +2,16 @@ package com.luoys.upgrade.toolservice.service.common;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
-import com.luoys.upgrade.toolservice.dao.AutoCaseMapper;
 import com.luoys.upgrade.toolservice.dao.CaseStepRelationMapper;
 import com.luoys.upgrade.toolservice.dao.ResourceMapper;
-import com.luoys.upgrade.toolservice.dao.po.AutoCasePO;
 import com.luoys.upgrade.toolservice.dao.po.ResourcePO;
 import com.luoys.upgrade.toolservice.service.CaseService;
 import com.luoys.upgrade.toolservice.service.dto.DataSourceDTO;
 import com.luoys.upgrade.toolservice.service.dto.StepDTO;
-import com.luoys.upgrade.toolservice.service.transform.TransformAutoCase;
-import com.luoys.upgrade.toolservice.service.transform.TransformAutoStep;
 import com.luoys.upgrade.toolservice.service.transform.TransformCaseStepRelation;
 import com.luoys.upgrade.toolservice.service.transform.TransformResource;
 import com.luoys.upgrade.toolservice.web.vo.AutoCaseVO;
 import com.luoys.upgrade.toolservice.web.vo.CaseStepVO;
-import org.apache.ibatis.annotations.Case;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

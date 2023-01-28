@@ -1,10 +1,5 @@
 package com.luoys.upgrade.toolservice.service.transform;
 
-import com.alibaba.fastjson.JSON;
-import com.luoys.upgrade.toolservice.service.common.StringUtil;
-import com.luoys.upgrade.toolservice.service.dto.*;
-import com.luoys.upgrade.toolservice.service.enums.AreaEnum;
-import com.luoys.upgrade.toolservice.service.enums.SqlTypeEnum;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;

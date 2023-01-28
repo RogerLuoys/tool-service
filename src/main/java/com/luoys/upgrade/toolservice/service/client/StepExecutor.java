@@ -1,23 +1,15 @@
 package com.luoys.upgrade.toolservice.service.client;
 
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
-import com.luoys.upgrade.toolservice.dao.po.AutoStepPO;
+import com.luoys.upgrade.toolservice.service.common.StringUtil;
 import com.luoys.upgrade.toolservice.service.dto.CaseDTO;
-import com.luoys.upgrade.toolservice.service.dto.DataSourceDTO;
 import com.luoys.upgrade.toolservice.service.dto.StepDTO;
 import com.luoys.upgrade.toolservice.service.enums.AutoCaseStatusEnum;
-import com.luoys.upgrade.toolservice.service.enums.ConfigTypeEnum;
 import com.luoys.upgrade.toolservice.service.enums.autoStep.ModuleTypeEnum;
-import com.luoys.upgrade.toolservice.service.transform.TransformAutoStep;
-import com.luoys.upgrade.toolservice.web.vo.AutoCaseVO;
-import com.luoys.upgrade.toolservice.web.vo.AutoStepVO;
-import com.luoys.upgrade.toolservice.web.vo.ConfigVO;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 /**
  * 步骤执行器，参考外观模式。
@@ -25,82 +17,13 @@ import java.util.concurrent.TimeUnit;
  */
 public class StepExecutor {
 
-//    private DBClient sql = new DBClient();
-//    private UIClient ui = new UIClient();
-//    private HTTPClient http = new HTTPClient();
-//    private RPCClient rpc = new RPCClient();
-//    private UtilClient util = new UtilClient();
-//    private AssertionClient assertion = new AssertionClient(ui);
-
-
     // 每个测试模块对应一个RootClient，主要是WebDriver会不同
-    private Map<Integer, RootClient> clientMap = new HashMap<>();
-
-    public StepExecutor() {}
-
-//    public StepExecutor(AutoCaseVO autoCaseVO) {
-//        List<ConfigVO> argument = autoCaseVO.getArgumentList();
-//        // 非UI自动化，不用额外初始化
-//        if (argument == null || argument.size() == 0) {
-//            return;
-//        }
-//        // 是UI自动化，需要初始化对应的webdriver
-//        switch (ConfigTypeEnum.fromCode(argument.get(0).getType())) {
-//            case CHROME:
-//                ui.initChrome();
-//                break;
-//            case FIREFOX:
-//                break;
-//            case ANDROID:
-//                ui.initAndroid();
-//                break;
-//        }
-//
-//    }
-
-    public void close() {
-        for (Integer key: clientMap.keySet()) {
-            clientMap.get(key).ui.quit();
-        }
-    }
-
-//    public String execute(AutoStepPO autoStepPO) {
-//        String varName = null;
-//        switch (ModuleTypeEnum.fromCode(autoStepPO.getModuleType())) {
-//            case PO:
-//                break;
-//            case SQL:
-//                varName = sql.execute(autoStepPO);
-//                break;
-//            case RPC:
-//                varName = rpc.execute(autoStepPO);
-//                break;
-//            case HTTP:
-//                varName = http.execute(autoStepPO);
-//                break;
-//            case UI:
-//                varName = ui.execute(autoStepPO);
-//                break;
-//            case UTIL:
-//                varName = util.execute(autoStepPO);
-//                break;
-//            case ASSERTION:
-//                varName = assertion.execute(autoStepPO).toString();
-//                break;
-//            default:
-//                varName = "false";
-//        }
-//        return varName;
-//    }
-//    public String execute(AutoStepVO autoStepVO) {
-//        return execute(TransformAutoStep.transformVO2PO(autoStepVO));
-//    }
+    private final Map<Integer, RootClient> clientMap = new HashMap<>();
+    private final Map<Integer, List<StepDTO>> afterSuiteMap = new HashMap<>();
 
     public void execute(StepDTO stepDTO, RootClient auto) {
-        String varName = null;
+        String varName;
         switch (ModuleTypeEnum.fromCode(stepDTO.getModuleType())) {
-            case PO:
-                break;
             case SQL:
                 varName = auto.sql.execute(stepDTO);
                 break;
@@ -125,51 +48,114 @@ public class StepExecutor {
         stepDTO.setResult(varName);
     }
 
+    public void close() {
+        for (Integer key: clientMap.keySet()) {
+            // 先执行超类中的@AfterSuite
+            if (afterSuiteMap.get(key) != null) {
+                for (StepDTO oneStep: afterSuiteMap.get(key)) {
+                    execute(oneStep, clientMap.get(key));
+                }
+            }
+            // 再关闭webdriver相关资源
+            clientMap.get(key).ui.quit();
+        }
+    }
+
+    private void mergeParam(StepDTO stepDTO, Map<String, String> params) {
+        if (params == null || params.size() == 0) {
+            return;
+        }
+        List<String> varNames1 = stepDTO.getParameter1() == null ? new ArrayList<>() : StringUtil.getMatch("\\$\\{\\w{1,20}}", stepDTO.getParameter1());
+        List<String> varNames2 = stepDTO.getParameter2() == null ? new ArrayList<>() : StringUtil.getMatch("\\$\\{\\w{1,20}}", stepDTO.getParameter2());
+        List<String> varNames3 = stepDTO.getParameter3() == null ? new ArrayList<>() : StringUtil.getMatch("\\$\\{\\w{1,20}}", stepDTO.getParameter3());
+        if (varNames1.size() != 0) {
+            for (String varName: varNames1) {
+                stepDTO.setParameter1(stepDTO.getParameter1().replace(varName, params.get(varName)));
+            }
+        }
+        if (varNames2.size() != 0) {
+            for (String varName: varNames2) {
+                stepDTO.setParameter2(stepDTO.getParameter2().replace(varName, params.get(varName)));
+            }
+        }
+        if (varNames3.size() != 0) {
+            for (String varName: varNames3) {
+                stepDTO.setParameter3(stepDTO.getParameter3().replace(varName, params.get(varName)));
+            }
+        }
+    }
+
+    private boolean execute(List<StepDTO> steps, RootClient auto) {
+        if (steps == null || steps.size() == 0) {
+            return true;
+        }
+        Map<String, String> params = new HashMap<>();
+        for (StepDTO oneStep: steps) {
+            // 变量替换
+            mergeParam(oneStep, params);
+            execute(oneStep, auto);
+            if (oneStep.getResult().equalsIgnoreCase("false")) {
+                return false;
+            }
+            // 赋值
+            if (!StringUtil.isBlank(oneStep.getVarName())) {
+                params.put("${" + oneStep.getVarName() + "}", oneStep.getResult());
+            }
+        }
+        return true;
+    }
+
     public Boolean execute(CaseDTO caseDTO) {
-        RootClient auto = null;
+        RootClient auto;
+        // 通过超类ID，找到对应的执行客户端
         if (clientMap.containsKey(caseDTO.getSupperCaseId())) {
             auto = clientMap.get(caseDTO.getSupperCaseId());
         } else {
             auto = new RootClient(caseDTO);
             clientMap.put(caseDTO.getSupperCaseId(), auto);
+            afterSuiteMap.put(caseDTO.getSupperCaseId(), caseDTO.getAfterSuite());
         }
-        for (StepDTO oneStep: caseDTO.getBeforeSuite()) {
-            execute(oneStep, auto);
-            if (oneStep.getResult().equalsIgnoreCase("false")) {
+        // 套件执行异常，直接跳过所有步骤
+        if (auto.suiteError) {
+            caseDTO.setStatus(AutoCaseStatusEnum.FAIL.getCode());
+            return false;
+        }
+        // 步骤为空，直接失败
+        if (caseDTO.getTest() == null || caseDTO.getTest().size() == 0) {
+            caseDTO.setStatus(AutoCaseStatusEnum.FAIL.getCode());
+            return false;
+        }
+
+        // 执行@BeforeSuite，只执行一次
+        if (!auto.isBeforeSuiteDone) {
+            if (!execute(caseDTO.getBeforeSuite(), auto)) {
                 caseDTO.setStatus(AutoCaseStatusEnum.FAIL.getCode());
                 return false;
             }
+            auto.isBeforeSuiteDone = true;
         }
-        for (StepDTO oneStep: caseDTO.getSupperBeforeClass()) {
-            execute(oneStep, auto);
-            if (oneStep.getResult().equalsIgnoreCase("false")) {
-                caseDTO.setStatus(AutoCaseStatusEnum.FAIL.getCode());
-                return false;
-            }
+        // 执行超类中的@BeforeTest
+        if (!execute(caseDTO.getSupperBeforeTest(), auto)) {
+            caseDTO.setStatus(AutoCaseStatusEnum.FAIL.getCode());
+            return false;
         }
-        for (StepDTO oneStep: caseDTO.getBeforeTest()) {
-            execute(oneStep, auto);
-            if (oneStep.getResult().equalsIgnoreCase("false")) {
-                caseDTO.setStatus(AutoCaseStatusEnum.FAIL.getCode());
-                return false;
-            }
+        // 执行测试类中的@BeforeTest
+        if (!execute(caseDTO.getBeforeTest(), auto)) {
+            caseDTO.setStatus(AutoCaseStatusEnum.FAIL.getCode());
+            return false;
         }
-        for (StepDTO oneStep: caseDTO.getTest()) {
-            execute(oneStep, auto);
-            if (oneStep.getResult().equalsIgnoreCase("false")) {
-                caseDTO.setStatus(AutoCaseStatusEnum.FAIL.getCode());
-                return false;
-            }
+        // 执行测试类中的@Test
+        if (!execute(caseDTO.getTest(), auto)) {
+            caseDTO.setStatus(AutoCaseStatusEnum.FAIL.getCode());
+            return false;
         }
-        for (StepDTO oneStep: caseDTO.getAfterTest()) {
-            execute(oneStep, auto);
-        }
-        for (StepDTO oneStep: caseDTO.getSupperAfterClass()) {
-            execute(oneStep, auto);
-        }
-        for (StepDTO oneStep: caseDTO.getAfterSuite()) {
-            execute(oneStep, auto);
-        }
+        // @Test中的步骤全部执行完成且都为true，则用例执行成功
+        caseDTO.setStatus(AutoCaseStatusEnum.SUCCESS.getCode());
+        // 执行测试类中的@AfterTest
+        execute(caseDTO.getAfterTest(), auto);
+        // 执行超类中的@AfterTest
+        execute(caseDTO.getAfterTest(), auto);
         return true;
     }
+
 }

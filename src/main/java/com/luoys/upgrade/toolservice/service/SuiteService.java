@@ -2,7 +2,6 @@ package com.luoys.upgrade.toolservice.service;
 
 import com.luoys.upgrade.toolservice.dao.po.*;
 import com.luoys.upgrade.toolservice.service.client.StepExecutor;
-import com.luoys.upgrade.toolservice.service.common.NumberSender;
 import com.luoys.upgrade.toolservice.service.common.StringUtil;
 import com.luoys.upgrade.toolservice.service.common.ThreadPoolUtil;
 import com.luoys.upgrade.toolservice.dao.AutoCaseMapper;
@@ -11,7 +10,6 @@ import com.luoys.upgrade.toolservice.dao.SuiteCaseRelationMapper;
 import com.luoys.upgrade.toolservice.dao.UserMapper;
 import com.luoys.upgrade.toolservice.service.dto.CaseDTO;
 import com.luoys.upgrade.toolservice.service.enums.AutoCaseStatusEnum;
-import com.luoys.upgrade.toolservice.service.enums.AutoCaseTypeEnum;
 import com.luoys.upgrade.toolservice.service.enums.AutoSuiteStatusEnum;
 import com.luoys.upgrade.toolservice.service.enums.KeywordEnum;
 import com.luoys.upgrade.toolservice.service.transform.TransformAutoCase;
@@ -455,5 +453,7 @@ public class SuiteService {
                         suiteCaseRelationMapper.countBySuiteId(suiteId, AutoCaseStatusEnum.FAIL.getCode()));
             }
         }
+        // 所有用例执行完成后，关闭资源
+        executor.close();
     }
 }

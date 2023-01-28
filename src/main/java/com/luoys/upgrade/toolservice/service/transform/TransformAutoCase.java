@@ -141,15 +141,15 @@ public class TransformAutoCase {
         AutoCaseVO supperCaseVO = CacheUtil.getSupperClassById(vo.getSupperCaseId());
         // 处理基本参数
         dto.setSupperCaseId(vo.getSupperCaseId());
-        dto.setParameterList(TransformConfig.transformVO2DTO(supperCaseVO.getParameterList()));
-        dto.setArgumentList(TransformConfig.transformVO2DTO(supperCaseVO.getArgumentList()));
+        dto.setParams(TransformConfig.transformVO2Map(supperCaseVO.getParameterList()));
+        dto.setUiArgument(TransformConfig.transformVO2Array(supperCaseVO.getArgumentList()));
         // 编排步骤
         dto.setBeforeSuite(null); // 暂不支持
-        dto.setSupperBeforeClass(TransformCaseStepRelation.transformVO2DTO(supperCaseVO.getPreStepList()));
+        dto.setSupperBeforeTest(TransformCaseStepRelation.transformVO2DTO(supperCaseVO.getPreStepList()));
         dto.setBeforeTest(TransformCaseStepRelation.transformVO2DTO(vo.getPreStepList()));
         dto.setTest(TransformCaseStepRelation.transformVO2DTO(vo.getMainStepList()));
         dto.setAfterTest(TransformCaseStepRelation.transformVO2DTO(vo.getAfterStepList()));
-        dto.setSupperAfterClass(TransformCaseStepRelation.transformVO2DTO(supperCaseVO.getAfterStepList()));
+        dto.setSupperAfterTest(TransformCaseStepRelation.transformVO2DTO(supperCaseVO.getAfterStepList()));
         dto.setAfterSuite(null); // 暂不支持
 
         return dto;

@@ -3,6 +3,7 @@ package com.luoys.upgrade.toolservice.service.dto;
 import lombok.Data;
 
 import java.util.List;
+import java.util.Map;
 
 // 参考命令模式
 
@@ -27,15 +28,30 @@ public class CaseDTO {
      */
     private Integer status;
 
+//    /**
+//     * 脚本参数列表
+//     */
+//    private List<ParameterDTO> parameterList;
+
     /**
      * 脚本参数列表
      */
-    private List<ParameterDTO> parameterList;
+    private Map<String, String> params;
+
+//    /**
+//     * UI启动参数列表
+//     */
+//    private List<ParameterDTO> argumentList;
+
+    /**
+     * UI启动类型
+     */
+    private Integer uiType;
 
     /**
      * UI启动参数列表
      */
-    private List<ParameterDTO> argumentList;
+    private String[] uiArgument;
 
     /**
      * 相当于测试类的@Test
@@ -43,12 +59,12 @@ public class CaseDTO {
     private List<StepDTO> test;
 
     /**
-     * 相当于测试类的@BeforeTest
+     * 相当于测试类的@BeforeTest，又因为只有一个@Test所以也相当于BeforeClass
      */
     private List<StepDTO> beforeTest;
 
     /**
-     * 相当于测试类的@AfterTest
+     * 相当于测试类的@AfterTest，又因为只有一个@Test所以也相当于AfterClass
      */
     private List<StepDTO> afterTest;
 
@@ -63,13 +79,13 @@ public class CaseDTO {
     private List<StepDTO> afterSuite;
 
     /**
-     * 相当于测试超类的@BeforeClass
+     * 相当于测试超类的@BeforeTest
      */
-    private List<StepDTO> supperBeforeClass;
+    private List<StepDTO> supperBeforeTest;
 
     /**
-     * 相当于测试超类的@AfterClass
+     * 相当于测试超类的@AfterTest
      */
-    private List<StepDTO> supperAfterClass;
+    private List<StepDTO> supperAfterTest;
 
 }

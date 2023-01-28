@@ -22,7 +22,7 @@ public enum AssertionEnum {
     IS_GREATER(6, "isGreater", "判断是否为假"),
     IS_SMALLER(7, "isSmaller", "判断是否为假"),
     IS_XPATH_EXIST(8, "isXpathExist", "判断页面元素是否存在"),
-    IS_XPATH_NOT_EXIST(8, "isXpathNotExist", "判断页面元素是否存在");
+    IS_XPATH_NOT_EXIST(9, "isXpathNotExist", "判断页面元素是否存在");
 
 
     private final Integer code;

@@ -1,7 +1,5 @@
 package com.luoys.upgrade.toolservice.service.client;
 
-import com.luoys.upgrade.toolservice.dao.po.AutoStepPO;
-import com.luoys.upgrade.toolservice.service.common.CacheUtil;
 import com.luoys.upgrade.toolservice.service.dto.DataSourceDTO;
 import com.luoys.upgrade.toolservice.service.dto.StepDTO;
 import com.zaxxer.hikari.HikariConfig;
@@ -25,45 +23,11 @@ public class DBClient {
     private JdbcTemplate jdbcTemplate;
     private HikariDataSource dataSource;
 
-//    /**
-//     * 执行sql
-//     * 支持增删改查，删改查一定要带条件
-//     *
-//     * @param autoStepPO 要执行的sql
-//     * @return -
-//     */
-//    public String execute(AutoStepPO autoStepPO) {
-//        // 初始化数据库链接
-//        init(CacheUtil.getJdbcById(autoStepPO.getMethodId()));
-//        String result, sql;
-//        sql = autoStepPO.getParameter1();
-//        // 根据sql语句类型，选择不同的方法执行
-//        if (sql.toUpperCase().matches("^INSERT INTO .+")) {
-//            result = this.insert(sql);
-//        } else if (sql.toUpperCase().matches("^DELETE FROM [A-Z0-9_]+ WHERE .+")) {
-//            result = this.delete(sql);
-//        } else if (sql.toUpperCase().matches("^UPDATE [A-Z0-9_]+ SET .+ WHERE .+")) {
-//            result = this.update(sql);
-//        } else if (sql.toUpperCase().matches("^SELECT .+ FROM [A-Z0-9_]+")) {//todo 还要改
-//            // 查询单列
-//            if (sql.toUpperCase().matches("^SELECT [^,*]+ FROM [A-Z0-9_]+ WHERE .+")) {
-//                result = this.selectOneCell(sql);
-//            } else {
-//                result = this.select(sql);
-//            }
-//        } else {
-//            result = "未识别sql类型";
-//        }
-//        // 关闭数据库链接
-//        this.close();
-//        return result;
-//    }
-
     /**
      * 执行sql
      * 支持增删改查，删改查一定要带条件
      *
-     * @param autoStepPO 要执行的sql
+     * @param stepDTO 要执行的sql
      * @return -
      */
     public String execute(StepDTO stepDTO) {
@@ -78,7 +42,7 @@ public class DBClient {
             result = this.delete(sql);
         } else if (sql.toUpperCase().matches("^UPDATE [A-Z0-9_]+ SET .+ WHERE .+")) {
             result = this.update(sql);
-        } else if (sql.toUpperCase().matches("^SELECT .+ FROM [A-Z0-9_]+")) {//todo 还要改
+        } else if (sql.toUpperCase().matches("^SELECT .+ FROM [A-Z0-9_]+ (WHERE .+)?")) {
             // 查询单列
             if (sql.toUpperCase().matches("^SELECT [^,*]+ FROM [A-Z0-9_]+ WHERE .+")) {
                 result = this.selectOneCell(sql);
@@ -86,48 +50,13 @@ public class DBClient {
                 result = this.select(sql);
             }
         } else {
-            result = "未识别sql类型";
+            log.error("--->识别sql语句失败");
+            result = "false";
         }
         // 关闭数据库链接
         this.close();
         return result;
     }
-
-//    /**
-//     * 执行sql，有同步锁
-//     *
-//     * @param jdbcDTO -
-//     * @return 全部执行成功则为true
-//     */
-//    public String execute(JdbcDTO jdbcDTO) {
-//        if (jdbcDTO == null || jdbcDTO.getSql() == null) {
-//            log.error("--->执行sql时参数异常");
-//            return "执行参数异常";
-//        }
-//        // 初始化数据库链接
-//        init(jdbcDTO);
-//        String result;
-//        // 根据sql类型选择不同的执行方法
-//        switch (SqlTypeEnum.fromValue(jdbcDTO.getSqlType())) {
-//            case INSERT:
-//                result = insert(jdbcDTO.getSql());
-//                break;
-//            case DELETE:
-//                result = delete(jdbcDTO.getSql());
-//                break;
-//            case UPDATE:
-//                result = update(jdbcDTO.getSql());
-//                break;
-//            case SELECT:
-//                result = select(jdbcDTO.getSql());
-//                break;
-//            default:
-//                result = "不支持sql类型 ";
-//        }
-//        // 关闭数据库链接
-//        close();
-//        return result;
-//    }
 
     /**
      * 初始化数据源，使用HikariDataSource
@@ -153,26 +82,6 @@ public class DBClient {
             dataSource.close();
         }
     }
-
-
-//    /**
-//     * 初始化数据源
-//     * 如果已初始化，则跳过
-//     *
-//     */
-//    public void init(String driver, String url, String userName, String password) {
-//        if (this.jdbcTemplate != null) {
-//            return;
-//        }
-//        this.jdbcTemplate = new JdbcTemplate();
-//        this.dataSource = new DriverManagerDataSource();
-//        this.dataSource.setDriverClassName(driver);
-//        this.dataSource.setUrl(url);
-//        this.dataSource.setUsername(userName);
-//        this.dataSource.setPassword(password);
-//        this.jdbcTemplate.setDataSource(this.dataSource);
-//    }
-
 
     /**
      * 把更新sql转换为查询总行数的sql，查询sql以更新sql的条件为条件
