@@ -5,15 +5,14 @@ import com.luoys.upgrade.toolservice.service.enums.ConfigTypeEnum;
 
 public class RootClient {
 
-    public DBClient sql = new DBClient();
-    public UIClient ui = new UIClient();
-    public HTTPClient http = new HTTPClient();
-    public RPCClient rpc = new RPCClient();
+    public SqlClient sql = new SqlClient();
+    public UiClient ui = new UiClient();
+    public HttpClient http = new HttpClient();
+    public RpcClient rpc = new RpcClient();
     public UtilClient util = new UtilClient();
     public AssertionClient assertion = new AssertionClient(ui);
     public Boolean isBeforeSuiteDone = false;
     public Boolean suiteError = false;
-    public Boolean isAfterSuite = false;
 
     public RootClient(CaseDTO caseDTO) {
         // 非UI自动化，不用额外初始化

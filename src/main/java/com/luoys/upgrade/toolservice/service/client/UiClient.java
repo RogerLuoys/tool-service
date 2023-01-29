@@ -1,6 +1,5 @@
 package com.luoys.upgrade.toolservice.service.client;
 
-import com.luoys.upgrade.toolservice.dao.po.AutoStepPO;
 import com.luoys.upgrade.toolservice.service.common.StringUtil;
 import com.luoys.upgrade.toolservice.service.dto.StepDTO;
 import com.luoys.upgrade.toolservice.service.enums.autoStep.methodType.UiEnum;
@@ -29,8 +28,7 @@ import java.util.*;
  * @author luoys
  */
 @Slf4j
-//@Component
-public class UIClient {
+public class UiClient {
 
 //    private final Long DEFAULT_WAIT_TIME = 30L;
 //    private WebDriver driver = null;

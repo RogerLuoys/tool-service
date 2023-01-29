@@ -1,7 +1,6 @@
 package com.luoys.upgrade.toolservice.service.client;
 
 import com.alibaba.fastjson.JSON;
-import com.luoys.upgrade.toolservice.dao.po.AutoStepPO;
 import com.luoys.upgrade.toolservice.service.dto.StepDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.ApplicationConfig;
@@ -14,8 +13,7 @@ import org.apache.dubbo.rpc.service.GenericService;
  * @author luoys
  */
 @Slf4j
-//@Component
-public class RPCClient {
+public class RpcClient {
 
 //    private ReferenceConfig<GenericService> reference;
 

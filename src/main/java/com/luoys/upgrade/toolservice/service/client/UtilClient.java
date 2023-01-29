@@ -16,7 +16,6 @@ import java.util.Random;
  * @author luoys
  */
 @Slf4j
-//@Component
 public class UtilClient {
 
 //    public synchronized String execute(AutoStepPO autoStepPO) {

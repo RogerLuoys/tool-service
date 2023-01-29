@@ -1,6 +1,5 @@
 package com.luoys.upgrade.toolservice.service.client;
 
-import com.luoys.upgrade.toolservice.dao.po.AutoStepPO;
 import com.luoys.upgrade.toolservice.service.dto.StepDTO;
 import com.luoys.upgrade.toolservice.service.enums.autoStep.methodType.AssertionEnum;
 import lombok.extern.slf4j.Slf4j;
@@ -15,11 +14,11 @@ import java.util.List;
 //@Component
 public class AssertionClient {
 
-    private UIClient ui;
+    private UiClient ui;
 
     public AssertionClient() {}
 
-    public AssertionClient (UIClient ui) {
+    public AssertionClient (UiClient ui) {
         this.ui = ui;
     }
 

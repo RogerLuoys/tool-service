@@ -18,7 +18,7 @@ import java.util.Map;
  * @author luoys
  */
 @Slf4j
-public class DBClient {
+public class SqlClient {
 
     private JdbcTemplate jdbcTemplate;
     private HikariDataSource dataSource;

@@ -2,14 +2,7 @@ package com.luoys.upgrade.toolservice.service;
 
 import com.luoys.upgrade.toolservice.dao.po.AutoStepPO;
 import com.luoys.upgrade.toolservice.service.common.StringUtil;
-import com.luoys.upgrade.toolservice.service.common.ThreadPoolUtil;
 import com.luoys.upgrade.toolservice.dao.AutoStepMapper;
-import com.luoys.upgrade.toolservice.dao.UserMapper;
-import com.luoys.upgrade.toolservice.service.client.DBClient;
-import com.luoys.upgrade.toolservice.service.client.HTTPClient;
-import com.luoys.upgrade.toolservice.service.client.RPCClient;
-import com.luoys.upgrade.toolservice.service.client.UIClient;
-import com.luoys.upgrade.toolservice.service.dto.*;
 import com.luoys.upgrade.toolservice.service.enums.*;
 import com.luoys.upgrade.toolservice.service.enums.autoStep.methodType.*;
 import com.luoys.upgrade.toolservice.service.enums.autoStep.ModuleTypeEnum;
@@ -18,10 +11,6 @@ import com.luoys.upgrade.toolservice.web.vo.AutoStepVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.RejectedExecutionException;
 
 /**
  * 步骤服务，包含自动化步骤相关的所有业务逻辑
