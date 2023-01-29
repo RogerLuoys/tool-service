@@ -20,11 +20,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.RejectedExecutionException;
+import java.util.stream.Collectors;
 
 /**
  * 套件服务，包含自动化套件相关的所有业务逻辑
@@ -319,8 +317,8 @@ public class SuiteService {
             log.error("--->套件内正在执行中：suiteId={}", suiteId);
             return false;
         }
-        // 获取关联的所有用例
-        List<SuiteCaseVO> caseList = autoSuiteVO.getRelatedCase().getList();
+        // 获取关联的所有用例，并按sequence排序
+        List<SuiteCaseVO> caseList = autoSuiteVO.getRelatedCase().getList().stream().sorted(Comparator.comparing(SuiteCaseVO::getSequence)).collect(Collectors.toList());
         if (caseList.size() == 0) {
             log.error("--->套件内未找到关联的用例：suiteId={}", suiteId);
             return false;
@@ -331,19 +329,16 @@ public class SuiteService {
             suiteCaseRelationMapper.resetStatusBySuiteId(suiteId);
         }
         autoSuiteMapper.updateStatus(suiteId, AutoSuiteStatusEnum.SUITE_RUNNING.getCode());
-        // todo caseList按sequence排序
-        if (caseList.size() != 0) {
-            // 使用线程池执行用例，并更新结果
-            ThreadPoolUtil.executeAuto(() -> {
-                try {
-                    StepExecutor executor = new StepExecutor();
-                    // 执行所有用例，后更新结果
-                    execute(caseList, executor, suiteId);
-                } finally {
-                    autoSuiteMapper.updateStatus(suiteId, AutoSuiteStatusEnum.SUITE_FREE.getCode());
-                }
-            });
-        }
+        // 使用线程池执行用例，并更新结果
+        ThreadPoolUtil.executeAuto(() -> {
+            try {
+                StepExecutor executor = new StepExecutor();
+                // 执行所有用例，后更新结果
+                execute(caseList, executor, suiteId);
+            } finally {
+                autoSuiteMapper.updateStatus(suiteId, AutoSuiteStatusEnum.SUITE_FREE.getCode());
+            }
+        });
         return true;
     }
 
