@@ -16,10 +16,7 @@ import com.luoys.upgrade.toolservice.dao.UserMapper;
 import com.luoys.upgrade.toolservice.service.dto.CaseDTO;
 import com.luoys.upgrade.toolservice.service.dto.DataSourceDTO;
 import com.luoys.upgrade.toolservice.service.dto.StepDTO;
-import com.luoys.upgrade.toolservice.service.enums.AutoCaseStatusEnum;
-import com.luoys.upgrade.toolservice.service.enums.AutoCaseTypeEnum;
-import com.luoys.upgrade.toolservice.service.enums.KeywordEnum;
-import com.luoys.upgrade.toolservice.service.enums.RelatedStepTypeEnum;
+import com.luoys.upgrade.toolservice.service.enums.*;
 import com.luoys.upgrade.toolservice.service.transform.TransformAutoStep;
 import com.luoys.upgrade.toolservice.service.transform.TransformCaseStepRelation;
 import com.luoys.upgrade.toolservice.service.transform.TransformConfig;
@@ -33,6 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * 用例服务，包含自动化用例相关的所有业务逻辑
@@ -271,9 +269,10 @@ public class CaseService {
         if (AutoCaseTypeEnum.SUPPER_CLASS.getCode().equals(autoCaseVO.getType())
                 || autoCaseVO.getType().equals(AutoCaseTypeEnum.DATA_FACTORY.getCode())) {
             List<ConfigPO> configPOList = configMapper.list(autoCaseVO.getCaseId());
-            autoCaseVO.setParameterList(TransformConfig.transformPO2VO(configPOList));
-            // todo ui启动参数
-            autoCaseVO.setArgumentList(null);
+            List<ConfigPO> paramList = configPOList.stream().filter(configPO -> configPO.getType().equals(ConfigTypeEnum.NORMAL.getCode())).collect(Collectors.toList());
+            List<ConfigPO> uiList = configPOList.stream().filter(configPO -> !configPO.getType().equals(ConfigTypeEnum.NORMAL.getCode())).collect(Collectors.toList());
+            autoCaseVO.setParameterList(TransformConfig.transformPO2VO(paramList));
+            autoCaseVO.setArgumentList(TransformConfig.transformPO2VO(uiList));
         }
         // 查关联的步骤
         List<CaseStepVO> caseStepList = TransformCaseStepRelation.transformPO2VO(caseStepRelationMapper.listStepByCaseId(caseId));

@@ -121,7 +121,7 @@ public class UiClient {
      * @param key 字符
      * @return 枚举值
      */
-    protected CharSequence getKey(String key) {
+    private CharSequence getKey(String key) {
         // 快捷键
         if (key.equalsIgnoreCase("<ENTER>")) {
             return Keys.ENTER;
@@ -132,7 +132,7 @@ public class UiClient {
         return key;
     }
 
-    protected void settings() {
+    private void settings() {
         // 初始化actions
         this.actions = new Actions(this.driver);
         // 隐式等待设置
@@ -140,7 +140,7 @@ public class UiClient {
         // 显示等待初始化
         this.webDriverWait = new WebDriverWait(this.driver, this.explicitDuration);
         // 流畅等待初始化
-        this.wait = new FluentWait<WebDriver>(this.driver)
+        this.wait = new FluentWait<>(this.driver)
                 .withTimeout(this.fluentDuration)
                 .pollingEvery(Duration.ofSeconds(1))
                 .ignoring(NoSuchElementException.class);
@@ -157,7 +157,7 @@ public class UiClient {
      * 用ChromeDriver初始化webdriver，参数默认，web模式；
      * 如果已初始化过，则跳过
      */
-    public void initChromeWeb() {
+    private void initChromeWeb() {
         // 不为null则表示已初始化
         if (this.driver != null) {
             return;
@@ -269,7 +269,7 @@ public class UiClient {
      *
      * @param url 被测网站主页或登录页
      */
-    public void openUrl(String url) {
+    private void openUrl(String url) {
         this.driver.get(url);
     }
 
@@ -299,7 +299,7 @@ public class UiClient {
      *
      * @param xpath 元素的xpath
      */
-    public void click(String xpath) {
+    private void click(String xpath) {
         this.click(xpath, "0");
     }
 
@@ -309,7 +309,7 @@ public class UiClient {
      * @param xpath 元素的xpath
      * @param index list下标，从0开始
      */
-    public void click(String xpath, String index) {
+    private void click(String xpath, String index) {
         // 这里不能用显式等待，有的控件等不到，却可以点击
         WebElement webElement = this.wait.until(driver -> driver.findElements(By.xpath(xpath)).get(Integer.parseInt(index)));
         this.actions.click(webElement).perform();
@@ -320,7 +320,7 @@ public class UiClient {
      * 通过js的形式点击页面元素
      * @param xpath 页面元素的xpath
      */
-    public void clickByJs(String xpath) {
+    private void clickByJs(String xpath) {
         this.executeJs("arguments[0].click();", xpath);
     }
 
@@ -329,7 +329,7 @@ public class UiClient {
      *
      * @param xpath 元素的xpath
      */
-    public void clickByMove(String xpath) {
+    private void clickByMove(String xpath) {
         WebElement webElement = this.wait.until(driver -> driver.findElement(By.xpath(xpath)));
         this.actions.moveToElement(webElement).click().perform();
     }
@@ -339,7 +339,7 @@ public class UiClient {
      *
      * @param key   输入的字符串或快捷键
      */
-    public void sendKey(String key) {
+    private void sendKey(String key) {
         this.actions.sendKeys(this.getKey(key)).perform();
     }
 
@@ -349,7 +349,7 @@ public class UiClient {
      * @param xpath 元素的xpath
      * @param key   输入的字符串或按键
      */
-    public void sendKey(String xpath, String key) {
+    private void sendKey(String xpath, String key) {
         WebElement webElement = this.wait.until(driver -> driver.findElement(By.xpath(xpath)));
         // 再强制等0.5s会更稳定(显示、隐式、流畅等待都有小概率操作失败)
         this.sleep(500L);
@@ -364,7 +364,7 @@ public class UiClient {
      * @param key   输入的字符串
      * @param shortcutKey 快捷键
      */
-    public void sendKey(String xpath, String key, String shortcutKey) {
+    private void sendKey(String xpath, String key, String shortcutKey) {
         WebElement webElement = this.wait.until(driver -> driver.findElement(By.xpath(xpath)));
         // 再强制等0.5s会更稳定(显示、隐式、流畅等待都有小概率操作失败)
         this.sleep(500L);
@@ -378,7 +378,7 @@ public class UiClient {
      * @param xpath 元素的xpath
      * @param key   输入的字符串
      */
-    public void sendKeyByEnter(String xpath, String key) {
+    private void sendKeyByEnter(String xpath, String key) {
         WebElement webElement = this.wait.until(driver -> driver.findElement(By.xpath(xpath)));
         // 再强制等0.5s会更稳定(显示、隐式、流畅等待都有小概率操作失败)
         this.sleep(500L);
@@ -391,7 +391,7 @@ public class UiClient {
      *
      * @param xpath 元素的xpath
      */
-    public void move(String xpath) {
+    private void move(String xpath) {
         WebElement webElement = this.wait.until(driver -> driver.findElement(By.xpath(xpath)));
         this.actions.moveToElement(webElement).perform();
     }
@@ -401,7 +401,7 @@ public class UiClient {
      * @param fromXpath
      * @param toXpath
      */
-    public void drag(String fromXpath, String toXpath) {
+    private void drag(String fromXpath, String toXpath) {
         WebElement from = this.wait.until(driver -> driver.findElement(By.xpath(fromXpath)));
         WebElement to = this.wait.until(driver -> driver.findElement(By.xpath(toXpath)));
         this.actions.dragAndDrop(from, to).perform();
@@ -413,7 +413,7 @@ public class UiClient {
      *
      * @param javaScript 脚本
      */
-    public void executeJs(String javaScript) {
+    private void executeJs(String javaScript) {
         ((JavascriptExecutor) this.driver).executeScript(javaScript);
     }
 
@@ -423,7 +423,7 @@ public class UiClient {
      * @param javaScript 脚本
      * @param xpath 元素xpath
      */
-    public void executeJs(String javaScript, String xpath) {
+    private void executeJs(String javaScript, String xpath) {
         WebElement webElement = this.driver.findElement(By.xpath(xpath));
         ((JavascriptExecutor) this.driver).executeScript(javaScript, webElement);
     }
@@ -433,7 +433,7 @@ public class UiClient {
      * 切换到最后一个标签页，并关闭其它；
      * 如果只有一个标签页，则不处理
      */
-    public void switchTab() {
+    private void switchTab() {
         Set<String> windows = this.driver.getWindowHandles();
         if (windows.size() <= 1) {
             return;
@@ -450,7 +450,7 @@ public class UiClient {
     /**
      * 删除所有cookies
      */
-    public void clearCookies() {
+    private void clearCookies() {
         this.driver.manage().deleteAllCookies();
     }
 

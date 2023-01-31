@@ -18,23 +18,6 @@ import java.util.Random;
 @Slf4j
 public class UtilClient {
 
-//    public synchronized String execute(AutoStepPO autoStepPO) {
-//        switch (UtilEnum.fromCode(autoStepPO.getMethodType())) {
-//            case SLEEP:
-//                return sleep(Integer.parseInt(autoStepPO.getParameter1()));
-//            case GET_JSON:
-//                return getJson(autoStepPO.getParameter1(), autoStepPO.getParameter2());
-//            case GET_JSON_ANY:
-//                return getJsonAny(autoStepPO.getParameter1(), autoStepPO.getParameter2());
-//            case GET_TIME:
-//                return getTime();
-//            case GET_RANDOM:
-//                return getRandom(autoStepPO.getParameter1(), autoStepPO.getParameter2());
-//            default:
-//                return "步骤失败";
-//        }
-//    }
-
     public synchronized String execute(StepDTO stepDTO) {
         switch (UtilEnum.fromCode(stepDTO.getMethodType())) {
             case SLEEP:
