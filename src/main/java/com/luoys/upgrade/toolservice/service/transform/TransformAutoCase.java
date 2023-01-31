@@ -143,6 +143,9 @@ public class TransformAutoCase {
         dto.setSupperCaseId(vo.getSupperCaseId());
         dto.setParams(TransformConfig.transformVO2Map(supperCaseVO.getParameterList()));
         dto.setUiArgument(TransformConfig.transformVO2Array(supperCaseVO.getArgumentList()));
+        if (supperCaseVO.getArgumentList() != null && supperCaseVO.getArgumentList().size() > 0) {
+            dto.setUiType(supperCaseVO.getArgumentList().get(0).getType());
+        }
         // 编排步骤
         dto.setBeforeSuite(null); // 暂不支持
         dto.setSupperBeforeTest(TransformCaseStepRelation.transformVO2DTO(supperCaseVO.getPreStepList()));
