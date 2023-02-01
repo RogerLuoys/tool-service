@@ -317,7 +317,7 @@ public class SuiteService {
             log.error("--->套件内正在执行中：suiteId={}", suiteId);
             return false;
         }
-        // 获取关联的所有用例，并按sequence排序
+        // 获取关联的所有用例，并按sequence正序
         List<SuiteCaseVO> caseList = autoSuiteVO.getRelatedCase().getList().stream().sorted(Comparator.comparing(SuiteCaseVO::getSequence)).collect(Collectors.toList());
         if (caseList.size() == 0) {
             log.error("--->套件内未找到关联的用例：suiteId={}", suiteId);
@@ -332,11 +332,14 @@ public class SuiteService {
         // 使用线程池执行用例，并更新结果
         ThreadPoolUtil.executeAuto(() -> {
             try {
-                StepExecutor executor = new StepExecutor();
                 // 执行所有用例，后更新结果
-                execute(caseList, executor, suiteId);
+                execute(caseList);
             } finally {
                 autoSuiteMapper.updateStatus(suiteId, AutoSuiteStatusEnum.SUITE_FREE.getCode());
+                // 全量更新套件执行结果
+                autoSuiteMapper.updateResult(suiteId,
+                        suiteCaseRelationMapper.countBySuiteId(suiteId, AutoCaseStatusEnum.SUCCESS.getCode()),
+                        suiteCaseRelationMapper.countBySuiteId(suiteId, AutoCaseStatusEnum.FAIL.getCode()));
             }
         });
         return true;
@@ -357,9 +360,12 @@ public class SuiteService {
         caseList.add(suiteCaseVO);
         // 使用线程池执行用例，并更新结果
         ThreadPoolUtil.executeAuto(() -> {
-            StepExecutor executor = new StepExecutor();
             // 执行所有用例，后更新结果
-            execute(caseList, executor, suiteCaseVO.getSuiteId());
+            execute(caseList);
+            // 全量更新套件执行结果
+            autoSuiteMapper.updateResult(suiteCaseVO.getSuiteId(),
+                    suiteCaseRelationMapper.countBySuiteId(suiteCaseVO.getSuiteId(), AutoCaseStatusEnum.SUCCESS.getCode()),
+                    suiteCaseRelationMapper.countBySuiteId(suiteCaseVO.getSuiteId(), AutoCaseStatusEnum.FAIL.getCode()));
         });
         return true;
     }
@@ -427,8 +433,9 @@ public class SuiteService {
      * @param caseList 用例列表，列表对象中需要有caseId和suiteId
      * @return 返回所执行用例的成功数和失败数
      */
-    private void execute(List<SuiteCaseVO> caseList, StepExecutor executor, Integer suiteId) {
+    private void execute(List<SuiteCaseVO> caseList) {
         boolean result = false;
+        StepExecutor executor = new StepExecutor();
         for (SuiteCaseVO vo : caseList) {
             try {
                 // 先通过caseId查出用例详情，再设置执行参数，最后执行用例
@@ -442,10 +449,6 @@ public class SuiteService {
                 // 更新套件中关联用例的执行状态
                 suiteCaseRelationMapper.updateStatus(vo.getSuiteId(), vo.getCaseId(),
                         result ? AutoCaseStatusEnum.SUCCESS.getCode() : AutoCaseStatusEnum.FAIL.getCode());
-                // 全量更新套件执行结果
-                autoSuiteMapper.updateResult(suiteId,
-                        suiteCaseRelationMapper.countBySuiteId(suiteId, AutoCaseStatusEnum.SUCCESS.getCode()),
-                        suiteCaseRelationMapper.countBySuiteId(suiteId, AutoCaseStatusEnum.FAIL.getCode()));
             }
         }
         // 所有用例执行完成后，关闭资源
