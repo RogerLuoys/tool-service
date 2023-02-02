@@ -7,7 +7,6 @@ import com.luoys.upgrade.toolservice.service.dto.CaseDTO;
 import com.luoys.upgrade.toolservice.service.enums.KeywordEnum;
 import com.luoys.upgrade.toolservice.web.vo.AutoCaseSimpleVO;
 import com.luoys.upgrade.toolservice.web.vo.AutoCaseVO;
-import com.luoys.upgrade.toolservice.web.vo.CaseStepVO;
 import com.luoys.upgrade.toolservice.web.vo.QueryVO;
 
 import java.util.ArrayList;

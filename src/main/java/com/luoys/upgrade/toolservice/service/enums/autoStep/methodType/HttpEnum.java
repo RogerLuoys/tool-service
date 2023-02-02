@@ -20,10 +20,7 @@ public enum HttpEnum {
 
     private final Integer code;
     private final String value;
-    /**
-     * Http步骤的方法名
-     */
-    private final String name;
+    private final String name; //Http步骤的方法名
     private final String description;
 
     HttpEnum(Integer code, String value, String name, String description) {
@@ -36,13 +33,13 @@ public enum HttpEnum {
 
     private static final Map<Integer, HttpEnum> CODE_MAP = new HashMap<>();
     private static final Map<String, HttpEnum> VALUE_MAP = new HashMap<>();
-    private static final Map<String, HttpEnum> TEMPLATE_MAP = new HashMap<>();
+    private static final Map<String, HttpEnum> NAME_MAP = new HashMap<>();
 
     static {
         for (HttpEnum e : HttpEnum.values()) {
             CODE_MAP.put(e.getCode(), e);
             VALUE_MAP.put(e.getValue(), e);
-            TEMPLATE_MAP.put(e.getName().toLowerCase(), e);
+            NAME_MAP.put(e.getName().toLowerCase(), e);
         }
     }
 
@@ -55,7 +52,7 @@ public enum HttpEnum {
     }
 
     public static HttpEnum fromName(String name) {
-        return name == null ? null : TEMPLATE_MAP.get(name);
+        return name == null ? null : NAME_MAP.get(name);
     }
 
 }

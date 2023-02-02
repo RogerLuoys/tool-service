@@ -1,4 +1,4 @@
-package com.luoys.upgrade.toolservice.service.client;
+package com.luoys.upgrade.toolservice.service.automation.client;
 
 import com.luoys.upgrade.toolservice.service.common.StringUtil;
 import com.luoys.upgrade.toolservice.service.dto.StepDTO;

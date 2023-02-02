@@ -1,8 +1,7 @@
-package com.luoys.upgrade.toolservice.service.client;
+package com.luoys.upgrade.toolservice.service.automation.client;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.luoys.upgrade.toolservice.dao.po.AutoStepPO;
 import com.luoys.upgrade.toolservice.service.dto.StepDTO;
 import com.luoys.upgrade.toolservice.service.enums.autoStep.methodType.UtilEnum;
 import lombok.extern.slf4j.Slf4j;

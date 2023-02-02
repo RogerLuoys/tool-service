@@ -1,23 +1,18 @@
 package com.luoys.upgrade.toolservice.service;
 
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
 import com.luoys.upgrade.toolservice.dao.ConfigMapper;
 import com.luoys.upgrade.toolservice.dao.po.AutoCasePO;
 import com.luoys.upgrade.toolservice.dao.po.AutoCaseQueryPO;
 import com.luoys.upgrade.toolservice.dao.po.CaseStepRelationPO;
 import com.luoys.upgrade.toolservice.dao.po.ConfigPO;
-import com.luoys.upgrade.toolservice.service.client.StepExecutor;
+import com.luoys.upgrade.toolservice.service.automation.AutoExecutor;
 import com.luoys.upgrade.toolservice.service.common.StringUtil;
 import com.luoys.upgrade.toolservice.service.common.ThreadPoolUtil;
 import com.luoys.upgrade.toolservice.dao.AutoCaseMapper;
 import com.luoys.upgrade.toolservice.dao.CaseStepRelationMapper;
 import com.luoys.upgrade.toolservice.dao.UserMapper;
 import com.luoys.upgrade.toolservice.service.dto.CaseDTO;
-import com.luoys.upgrade.toolservice.service.dto.DataSourceDTO;
-import com.luoys.upgrade.toolservice.service.dto.StepDTO;
 import com.luoys.upgrade.toolservice.service.enums.*;
-import com.luoys.upgrade.toolservice.service.transform.TransformAutoStep;
 import com.luoys.upgrade.toolservice.service.transform.TransformCaseStepRelation;
 import com.luoys.upgrade.toolservice.service.transform.TransformConfig;
 import com.luoys.upgrade.toolservice.web.vo.*;
@@ -26,10 +21,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.RejectedExecutionException;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -40,6 +33,8 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 public class CaseService {
+
+    public static final String ONE_STEP = "\\(String[ ]{1,4}\\w{1,20}[ ]{1,4}=[ ]{1,4})?auto\\.(ui|http|sql|rpc|util|po|assertion)\\.\\w+\\(.*\\);[ ]{0,4}(\\n|\\r)\\i";
 
     @Autowired
     private AutoCaseMapper autoCaseMapper;
@@ -265,7 +260,29 @@ public class CaseService {
     public AutoCaseVO queryDetail(Integer caseId) {
         // 查基本信息
         AutoCaseVO autoCaseVO = TransformAutoCase.transformPO2VO(autoCaseMapper.selectById(caseId));
-        // 如果是超类则查参数
+        // 查关联的步骤
+        List<CaseStepVO> caseStepList = TransformCaseStepRelation.transformPO2VO(caseStepRelationMapper.listStepByCaseId(caseId));
+        // 区分步骤类型
+        List<CaseStepVO> beforeTest = caseStepList.stream().filter(caseStepVO -> caseStepVO.getType().equals(RelatedStepTypeEnum.BEFORE_TEST.getCode())).collect(Collectors.toList());
+        List<CaseStepVO> mainTest = caseStepList.stream().filter(caseStepVO -> caseStepVO.getType().equals(RelatedStepTypeEnum.MAIN_TEST.getCode())).collect(Collectors.toList());
+        List<CaseStepVO> afterTest = caseStepList.stream().filter(caseStepVO -> caseStepVO.getType().equals(RelatedStepTypeEnum.AFTER_TEST.getCode())).collect(Collectors.toList());
+//        for (CaseStepVO vo : caseStepList) {
+//            switch (RelatedStepTypeEnum.fromCode(vo.getType())) {
+//                case BEFORE_TEST:
+//                    preList.add(vo);
+//                    break;
+//                case MAIN_TEST:
+//                    mainList.add(vo);
+//                    break;
+//                case AFTER_TEST:
+//                    afterList.add(vo);
+//                    break;
+//            }
+//        }
+        autoCaseVO.setPreStepList(beforeTest);
+        autoCaseVO.setMainStepList(mainTest);
+        autoCaseVO.setAfterStepList(afterTest);
+        // 如果是超类需继续查参数和BeforeSuite AfterSuite
         if (AutoCaseTypeEnum.SUPPER_CLASS.getCode().equals(autoCaseVO.getType())
                 || autoCaseVO.getType().equals(AutoCaseTypeEnum.DATA_FACTORY.getCode())) {
             List<ConfigPO> configPOList = configMapper.list(autoCaseVO.getCaseId());
@@ -273,29 +290,11 @@ public class CaseService {
             List<ConfigPO> uiList = configPOList.stream().filter(configPO -> !configPO.getType().equals(ConfigTypeEnum.NORMAL.getCode())).collect(Collectors.toList());
             autoCaseVO.setParameterList(TransformConfig.transformPO2VO(paramList));
             autoCaseVO.setArgumentList(TransformConfig.transformPO2VO(uiList));
+            List<CaseStepVO> beforeSuite = caseStepList.stream().filter(caseStepVO -> caseStepVO.getType().equals(RelatedStepTypeEnum.BEFORE_SUITE.getCode())).collect(Collectors.toList());
+            List<CaseStepVO> afterSuite = caseStepList.stream().filter(caseStepVO -> caseStepVO.getType().equals(RelatedStepTypeEnum.AFTER_SUITE.getCode())).collect(Collectors.toList());
+            autoCaseVO.setPreStepList(beforeSuite);
+            autoCaseVO.setMainStepList(afterSuite);
         }
-        // 查关联的步骤
-        List<CaseStepVO> caseStepList = TransformCaseStepRelation.transformPO2VO(caseStepRelationMapper.listStepByCaseId(caseId));
-        List<CaseStepVO> preList = new ArrayList<>();
-        List<CaseStepVO> mainList = new ArrayList<>();
-        List<CaseStepVO> afterList = new ArrayList<>();
-        // 区分步骤类型
-        for (CaseStepVO vo : caseStepList) {
-            switch (RelatedStepTypeEnum.fromCode(vo.getType())) {
-                case PRE_STEP:
-                    preList.add(vo);
-                    break;
-                case MAIN_STEP:
-                    mainList.add(vo);
-                    break;
-                case AFTER_STEP:
-                    afterList.add(vo);
-                    break;
-            }
-        }
-        autoCaseVO.setPreStepList(preList);
-        autoCaseVO.setMainStepList(mainList);
-        autoCaseVO.setAfterStepList(afterList);
         return autoCaseVO;
     }
 
@@ -338,7 +337,7 @@ public class CaseService {
 
         // 通过正则解析脚本，把整段脚本解析成行('\w':任意字符，'.':0到无限次)
 //        List<String> mainSteps = StringUtil.getMatch("auto\\.(ui|http|sql|rpc|util|po|assertion)\\.\\w+\\(.*\\);", autoCaseVO.getMainSteps());
-        List<String> mainSteps = StringUtil.getMatch("\\(String[ ]{1,4}\\w{1,20}[ ]{1,4}=[ ]{1,4})?auto\\.(ui|http|sql|rpc|util|po|assertion)\\.\\w+\\(.*\\);[ ]{0,4}(\\n|\\r)\\i", autoCaseVO.getMainSteps());
+        List<String> mainSteps = StringUtil.getMatch(ONE_STEP, autoCaseVO.getMainSteps());
 
         // 完全新增脚本，或脚本内步骤有新增，需要创建对应数量的关联步骤
         while (mainSteps.size() - autoCaseVO.getMainStepList().size() > 0) {
@@ -346,7 +345,7 @@ public class CaseService {
             caseStepVO.setCaseId(autoCaseVO.getCaseId());
             // 先创建步骤，再将stepId关联上
             caseStepVO.setStepId(stepService.quickCreate());
-            caseStepVO.setType(RelatedStepTypeEnum.MAIN_STEP.getCode());
+            caseStepVO.setType(RelatedStepTypeEnum.MAIN_TEST.getCode());
             // 步骤顺序需要设置好
             caseStepVO.setSequence(autoCaseVO.getMainStepList().size() + 1);
             // 将关系存入数据库
@@ -392,8 +391,8 @@ public class CaseService {
         ThreadPoolUtil.executeAuto(() -> {
             log.info("--->执行单个用例：caseId={}", autoCaseVO.getCaseId());
             CaseDTO caseDTO = TransformAutoCase.transformVO2DTO(autoCaseVO);
-            StepExecutor executor = new StepExecutor();
-            executor.execute(caseDTO);
+            AutoExecutor executor = new AutoExecutor();
+            executor.executeCase(caseDTO);
             log.info("---->执行完毕，更新用例结果：caseId={}, result={}", autoCaseVO.getCaseId(), caseDTO.getStatus());
             autoCaseMapper.updateStatus(autoCaseVO.getCaseId(),
                     caseDTO.getStatus());
@@ -407,9 +406,9 @@ public class CaseService {
      * @param autoCaseVO 用例对象
      * @return 主要步骤全部执行结果都为true才返回true
      */
-    public Boolean use(AutoCaseVO autoCaseVO, StepExecutor executor) {
+    public Boolean use(AutoCaseVO autoCaseVO, AutoExecutor executor) {
         CaseDTO caseDTO = TransformAutoCase.transformVO2DTO(autoCaseVO);
-        executor.execute(caseDTO);
+        executor.executeCase(caseDTO);
         log.info("--->执行用例完成：caseId={}, caseName={}, result={}", autoCaseVO.getCaseId(), autoCaseVO.getName(), caseDTO.getStatus());
         return true;
     }

@@ -1,5 +1,6 @@
-package com.luoys.upgrade.toolservice.service.client;
+package com.luoys.upgrade.toolservice.service.automation;
 
+import com.luoys.upgrade.toolservice.service.automation.client.RootClient;
 import com.luoys.upgrade.toolservice.service.common.StringUtil;
 import com.luoys.upgrade.toolservice.service.dto.CaseDTO;
 import com.luoys.upgrade.toolservice.service.dto.StepDTO;
@@ -12,16 +13,16 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 步骤执行器，参考外观模式。
- * 每个执行自动化的线程对应一个执行器
+ * 自动化执行器，参考外观模式。
+ * 每个执行自动化的线程只实例化一个执行器
  */
-public class StepExecutor {
+public class AutoExecutor {
 
     // 每个测试模块对应一个RootClient，主要是WebDriver会不同
     private final Map<Integer, RootClient> clientMap = new HashMap<>();
     private final Map<Integer, List<StepDTO>> afterSuiteMap = new HashMap<>();
 
-    public void execute(StepDTO stepDTO, RootClient auto) {
+    public void executeStep(StepDTO stepDTO, RootClient auto) {
         String varName;
         switch (ModuleTypeEnum.fromCode(stepDTO.getModuleType())) {
             case SQL:
@@ -53,7 +54,7 @@ public class StepExecutor {
             // 先执行超类中的@AfterSuite
             if (afterSuiteMap.get(key) != null) {
                 for (StepDTO oneStep: afterSuiteMap.get(key)) {
-                    execute(oneStep, clientMap.get(key));
+                    executeStep(oneStep, clientMap.get(key));
                 }
             }
             // 再关闭webdriver相关资源
@@ -85,7 +86,7 @@ public class StepExecutor {
         }
     }
 
-    private boolean execute(List<StepDTO> steps, RootClient auto) {
+    private boolean executeSteps(List<StepDTO> steps, RootClient auto) {
         if (steps == null || steps.size() == 0) {
             return true;
         }
@@ -93,7 +94,7 @@ public class StepExecutor {
         for (StepDTO oneStep: steps) {
             // 变量替换
             mergeParam(oneStep, params);
-            execute(oneStep, auto);
+            executeStep(oneStep, auto);
             if (oneStep.getResult().equalsIgnoreCase("false")) {
                 return false;
             }
@@ -105,7 +106,7 @@ public class StepExecutor {
         return true;
     }
 
-    public Boolean execute(CaseDTO caseDTO) {
+    public Boolean executeCase(CaseDTO caseDTO) {
         RootClient auto;
         // 通过超类ID，找到对应的执行客户端
         if (clientMap.containsKey(caseDTO.getSupperCaseId())) {
@@ -128,33 +129,33 @@ public class StepExecutor {
 
         // 执行@BeforeSuite，只执行一次
         if (!auto.isBeforeSuiteDone) {
-            if (!execute(caseDTO.getBeforeSuite(), auto)) {
+            if (!executeSteps(caseDTO.getBeforeSuite(), auto)) {
                 caseDTO.setStatus(AutoCaseStatusEnum.FAIL.getCode());
                 return false;
             }
             auto.isBeforeSuiteDone = true;
         }
         // 执行超类中的@BeforeTest
-        if (!execute(caseDTO.getSupperBeforeTest(), auto)) {
+        if (!executeSteps(caseDTO.getSupperBeforeTest(), auto)) {
             caseDTO.setStatus(AutoCaseStatusEnum.FAIL.getCode());
             return false;
         }
         // 执行测试类中的@BeforeTest
-        if (!execute(caseDTO.getBeforeTest(), auto)) {
+        if (!executeSteps(caseDTO.getBeforeTest(), auto)) {
             caseDTO.setStatus(AutoCaseStatusEnum.FAIL.getCode());
             return false;
         }
         // 执行测试类中的@Test
-        if (!execute(caseDTO.getTest(), auto)) {
+        if (!executeSteps(caseDTO.getTest(), auto)) {
             caseDTO.setStatus(AutoCaseStatusEnum.FAIL.getCode());
             return false;
         }
         // @Test中的步骤全部执行完成且都为true，则用例执行成功
         caseDTO.setStatus(AutoCaseStatusEnum.SUCCESS.getCode());
         // 执行测试类中的@AfterTest
-        execute(caseDTO.getAfterTest(), auto);
+        executeSteps(caseDTO.getAfterTest(), auto);
         // 执行超类中的@AfterTest
-        execute(caseDTO.getAfterTest(), auto);
+        executeSteps(caseDTO.getAfterTest(), auto);
         return true;
     }
 

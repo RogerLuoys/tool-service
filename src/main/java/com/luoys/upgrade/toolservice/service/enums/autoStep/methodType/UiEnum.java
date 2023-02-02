@@ -38,7 +38,7 @@ public enum UiEnum {
 
 
     private final Integer code;
-    private final String name;
+    private final String name; //ui 步骤的方法名
     private final String description;
 
     UiEnum(Integer code, String name, String description) {
@@ -48,12 +48,12 @@ public enum UiEnum {
     }
 
     private static final Map<Integer, UiEnum> CODE_MAP = new HashMap<>();
-    private static final Map<String, UiEnum> TEMPLATE_MAP = new HashMap<>();
+    private static final Map<String, UiEnum> NAME_MAP = new HashMap<>();
 
     static {
         for (UiEnum e : UiEnum.values()) {
             CODE_MAP.put(e.getCode(), e);
-            TEMPLATE_MAP.put(e.getName().toLowerCase(), e);
+            NAME_MAP.put(e.getName().toLowerCase(), e);
         }
     }
 
@@ -62,7 +62,7 @@ public enum UiEnum {
     }
 
     public static UiEnum fromName(String name) {
-        return name == null ? null : TEMPLATE_MAP.get(name.toLowerCase());
+        return name == null ? null : NAME_MAP.get(name.toLowerCase());
     }
 
 }

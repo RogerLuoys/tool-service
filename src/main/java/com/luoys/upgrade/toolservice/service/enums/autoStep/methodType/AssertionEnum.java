@@ -26,7 +26,7 @@ public enum AssertionEnum {
 
 
     private final Integer code;
-    private final String name;
+    private final String name; //Assertion步骤的方法名
     private final String description;
 
     AssertionEnum(Integer code, String name, String description) {
@@ -36,15 +36,20 @@ public enum AssertionEnum {
     }
 
     private static final Map<Integer, AssertionEnum> CODE_MAP = new HashMap<>();
+    private static final Map<String, AssertionEnum> NAME_MAP = new HashMap<>();
 
     static {
         for (AssertionEnum e : AssertionEnum.values()) {
             CODE_MAP.put(e.getCode(), e);
+            NAME_MAP.put(e.getName().toLowerCase(), e);
         }
     }
 
     public static AssertionEnum fromCode(Integer code) {
         return code == null ? null : CODE_MAP.get(code);
+    }
+    public static AssertionEnum fromName(String name) {
+        return name == null ? null : NAME_MAP.get(name.toLowerCase());
     }
 
 }

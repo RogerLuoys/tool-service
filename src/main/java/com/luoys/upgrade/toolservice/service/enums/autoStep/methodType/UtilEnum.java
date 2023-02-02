@@ -20,10 +20,7 @@ public enum UtilEnum {
     GET_TIME(5, "getTime", "获取当前linux时间");
 
     private final Integer code;
-    /**
-     * 工具相关步骤，脚本模式的调用模板
-     */
-    private final String name;
+    private final String name; //util 步骤的方法名
     private final String description;
 
     UtilEnum(Integer code, String name, String description) {
@@ -33,12 +30,12 @@ public enum UtilEnum {
     }
 
     private static final Map<Integer, UtilEnum> CODE_MAP = new HashMap<>();
-    private static final Map<String, UtilEnum> TEMPLATE_MAP = new HashMap<>();
+    private static final Map<String, UtilEnum> NAME_MAP = new HashMap<>();
 
     static {
         for (UtilEnum e : UtilEnum.values()) {
             CODE_MAP.put(e.getCode(), e);
-            TEMPLATE_MAP.put(e.getName().toLowerCase(), e);
+            NAME_MAP.put(e.getName().toLowerCase(), e);
         }
     }
 
@@ -47,7 +44,7 @@ public enum UtilEnum {
     }
 
     public static UtilEnum fromName(String name) {
-        return name == null ? null : TEMPLATE_MAP.get(name.toLowerCase());
+        return name == null ? null : NAME_MAP.get(name.toLowerCase());
     }
 
 }

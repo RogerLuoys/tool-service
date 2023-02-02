@@ -227,6 +227,14 @@ public class StepService {
                         break;
                 }
                 break;
+            case ASSERTION:
+                break;
+            case UTIL:
+                break;
+            case RPC:
+                break;
+            case PO:
+                break;
         }
         return autoStepVO;
     }
@@ -280,191 +288,202 @@ public class StepService {
         }
         // 脚本范例：auto.methodType.methodName(methodParam);
         String script = autoStepVO.getScript();
-        // 截取模块名，取第1个'.'到第2个'.'之间的内容，如：auto.ui.click(xpath)会取ui
-        String moduleName = script.substring(5, script.indexOf(".", 5));
-        // 截取方法名，取第2个'.'到第1个'('之间的内容，如：auto.ui.click(xpath)会取click
-        String methodName = script.substring(script.indexOf(".", 5) + 1, script.indexOf("("));
-//        // 则要取数据库名(执行sql的方法需要)
-//        String dbName = script.substring(9, script.indexOf("("));
-        // 截取步骤入参，如：xpath (根据实际情况使用)
-        String methodParam = script.substring(script.indexOf("(\"") + 2, script.lastIndexOf("\")"));
-//        String methodParamNoString = script.substring(script.indexOf("(") + 1, script.lastIndexOf(");"));
-        // 截取多个参数，如：("xpath","key") (根据实际情况使用)
-        String[] params = methodParam.split("\",\\s{0,4}\"");
-
-        // 步骤有赋值
+        // 步骤有赋值，先取变量名，再去除多余字符
         if (script.startsWith("String|string")) {
             // 取String和=之间的内容，再去空格
             String varName = script.substring(6, script.indexOf("=")).trim();
             autoStepVO.setVarName(varName);
+            script = script.substring(script.indexOf("auto."));
         }
-        // 直接设置方法名称
-        autoStepVO.setMethodName(methodName);
-        // 先根据步骤类型，再根据类型中的方法，进行步骤解析
+        // 截取模块名，取第1个'.'到第2个'.'之间的内容，如：auto.ui.click(xpath)会取ui
+        String moduleName = script.substring(5, script.indexOf(".", 5));
+        // 截取方法名，取第2个'.'到第1个'('之间的内容，如：auto.ui.click(xpath)会取click
+        String methodName = script.substring(script.indexOf(".", 5) + 1, script.indexOf("("));
+        // 截取步骤入参，如：xpath (根据实际情况使用)
+        String methodParam = script.substring(script.indexOf("(\"") + 2, script.lastIndexOf("\")"));
+        // 截取多个参数，如：("xpath","key") (根据实际情况使用)
+        String[] params = methodParam.split("\\\\\",\\s{0,4}\"\\\\");
+
+        // 通过模块名和方法名，解析脚本对应的方法枚举值
         switch (ModuleTypeEnum.fromName(moduleName)) {
+            case SQL:   // 执行sql类型的步骤
+                autoStepVO.setModuleType(ModuleTypeEnum.SQL.getCode());
+                if (SqlEnum.SQL_EXECUTE_BY_JSON.getName().equals(methodName)) {
+                    // 脚本范例：auto.sql.executeByJson("json")
+                    autoStepVO.setMethodType(SqlEnum.SQL_EXECUTE_BY_JSON.getCode());
+                    autoStepVO.setParameter1(methodParam);
+                } else {
+                    // 脚本范例：auto.sql.dbName("sql")
+                    autoStepVO.setParameter1(methodParam);
+                    autoStepVO.setMethodId(resourceService.queryDetailByName(methodName).getResourceId());
+                }
+                break;
+            case PO:  // 被封装的方法
+                autoStepVO.setModuleType(ModuleTypeEnum.PO.getCode());
+                if (PoEnum.PO_EXECUTE_BY_JSON.getName().equals(methodName)) {
+                    // 脚本范例：auto.po.executeByJson("json")
+                    autoStepVO.setMethodType(PoEnum.PO_EXECUTE_BY_JSON.getCode());
+                    autoStepVO.setParameter1(methodParam);
+                } else {
+                    // 脚本范例：auto.po.poName("param1","param2","param3")
+                    autoStepVO.setMethodType(PoEnum.PO_NAME.getCode());
+                    autoStepVO.setMethodId(null);
+                    autoStepVO.setParameter1(params[0]);
+                    autoStepVO.setParameter2(params[1]);
+                    autoStepVO.setParameter3(params[2]);
+                }
+                break;
             case UI:    // ui类型的步骤
-//                if (autoStepVO.getUi() == null) {
-//                    autoStepVO.setUi(new UiDTO());
-//                }
                 autoStepVO.setModuleType(ModuleTypeEnum.UI.getCode());
                 switch (UiEnum.fromName(methodName)) {
                     case OPEN_URL:  // 脚本范例：auto.ui.openUrl("url")
                         autoStepVO.setMethodType(UiEnum.OPEN_URL.getCode());
                         autoStepVO.setParameter1(methodParam);
-//                        autoStepVO.setName(UiTypeEnum.OPEN_URL.getDescription());
-//                        autoStepVO.getUi().setUrl(methodParamString);
-//                        autoStepVO.getUi().setType(UiTypeEnum.OPEN_URL.getCode());
                         break;
-                    case CLICK: // 脚本范例：auto.ui.click("xpath")
+                    case CLICK: // 脚本范例：auto.ui.click("xpath") 或 auto.ui.click("xpath", "1");
                         autoStepVO.setMethodType(UiEnum.CLICK.getCode());
                         autoStepVO.setParameter1(params[0]);
                         if (params.length != 1) {
                             autoStepVO.setParameter2(params[1]);
                         }
                         break;
-                    case SEND_KEY:  // 脚本范例：auto.ui.sendKey("xpath","key")
+                    case SEND_KEY:  // 脚本范例：auto.ui.sendKey("key") 或 auto.ui.sendKey("xpath","key") 或 auto.ui.sendKey("xpath","key")
                         autoStepVO.setMethodType(UiEnum.SEND_KEY.getCode());
                         autoStepVO.setParameter1(params[0]);
                         if (params.length == 3) {
                             autoStepVO.setParameter2(params[1]);
-                            autoStepVO.setParameter2(params[2]);
+                            autoStepVO.setParameter3(params[2]);
                         } else if (params.length == 2) {
                             autoStepVO.setParameter2(params[1]);
                         }
-//                        autoStepVO.setName(UiTypeEnum.SEND_KEY.getDescription());
-//                        autoStepVO.getUi().setElement(params[0]);
-//                        autoStepVO.getUi().setKey(params[1]);
-//                        autoStepVO.getUi().setType(UiTypeEnum.SEND_KEY.getCode());
                         break;
                     case SWITCH_TAB:  // 脚本范例：auto.ui.switchTab()
                         autoStepVO.setMethodType(UiEnum.SWITCH_TAB.getCode());
-//                        autoStepVO.setName(UiTypeEnum.SWITCH_FRAME.getDescription());
-//                        autoStepVO.getUi().setElement(methodParamString);
-//                        autoStepVO.getUi().setType(UiTypeEnum.SWITCH_FRAME.getCode());
                         break;
                     case MOVE: // 脚本范例：auto.ui.move("xpath")
                         autoStepVO.setMethodType(UiEnum.MOVE.getCode());
                         autoStepVO.setParameter1(methodParam);
-//                        autoStepVO.setName(UiTypeEnum.HOVER.getDescription());
-//                        autoStepVO.getUi().setElement(methodParamString);
-//                        autoStepVO.getUi().setType(UiTypeEnum.HOVER.getCode());
                         break;
                 }
                 break;
-            case SQL:   // 执行sql类型的步骤，脚本范例：auto.onePiece.execute("sql");
-//                if (autoStepVO.getJdbc() == null) {
-//                    autoStepVO.setJdbc(new JdbcDTO());
-//                }
-//                autoStepVO.setType(AutoStepTypeEnum.STEP_SQL.getCode());
-                autoStepVO.setModuleType(ModuleTypeEnum.SQL.getCode());
-                autoStepVO.setParameter1(methodParam);
-                autoStepVO.setMethodId(resourceService.queryDetailByName(methodName).getResourceId());
-
-//                // 数据源的连接信息固化，执行时不关联查询，在关联数据源或修改数据源时，要批量更新步骤里的数据源信息
-//                autoStepVO.getJdbc().setDbName(dbName);
-//                // 通过名称，在资源表中查询到数据库连接信息
-//                DataSourceDTO dataSource = resourceService.queryDetailByName(dbName).getDataSource();
-//                autoStepVO.getJdbc().setDriver(dataSource.getDriver());
-//                autoStepVO.getJdbc().setUrl(dataSource.getUrl());
-//                autoStepVO.getJdbc().setUsername(dataSource.getUsername());
-//                autoStepVO.getJdbc().setPassword(dataSource.getPassword());
-//                autoStepVO.getJdbc().setSql(methodParamString);
-                break;
             case HTTP:  // http类型的步骤
-//                if (autoStepVO.getHttpRequest() == null) {
-//                    autoStepVO.setHttpRequest(new HttpRequestDTO());
-//                }
-//                autoStepVO.setType(AutoStepTypeEnum.STEP_HTTP.getCode());
                 autoStepVO.setModuleType(ModuleTypeEnum.HTTP.getCode());
                 switch (HttpEnum.fromName(methodName)) {
                     case GET:   // 脚本范例：auto.http.get("url")
                         autoStepVO.setMethodType(HttpEnum.GET.getCode());
-
-//                        autoStepVO.setName(HttpTypeEnum.GET.getDescription());
-//                        autoStepVO.getHttpRequest().setHttpURL(methodParamString);
-//                        autoStepVO.getHttpRequest().setHttpType(HttpTypeEnum.GET.getValue());
+                        autoStepVO.setParameter1(methodParam);
                         break;
                     case POST:  // 脚本范例：auto.http.post("url","body")
                         autoStepVO.setMethodType(HttpEnum.POST.getCode());
-
-//                        autoStepVO.setName(HttpTypeEnum.POST.getDescription());
-//                        autoStepVO.getHttpRequest().setHttpURL(params[0]);
-//                        if (params.length == 2) {
-//                            autoStepVO.getHttpRequest().setHttpBody(params[1]);
-//                        }
-//                        autoStepVO.getHttpRequest().setHttpType(HttpTypeEnum.POST.getValue());
+                        autoStepVO.setParameter1(params[0]);
+                        autoStepVO.setParameter2(params[1]);
                         break;
                     case PUT:   // 脚本范例：auto.http.put("url","body")
                         autoStepVO.setMethodType(HttpEnum.PUT.getCode());
-
-//                        autoStepVO.setName(HttpTypeEnum.PUT.getDescription());
-//                        autoStepVO.getHttpRequest().setHttpURL(params[0]);
-//                        if (params.length == 2) {
-//                            autoStepVO.getHttpRequest().setHttpBody(params[1]);
-//                        }
-//                        autoStepVO.getHttpRequest().setHttpType(HttpTypeEnum.PUT.getValue());
+                        autoStepVO.setParameter1(params[0]);
+                        autoStepVO.setParameter2(params[1]);
                         break;
                     case DELETE:    // 脚本范例：auto.http.delete("url","body")
                         autoStepVO.setMethodType(HttpEnum.DELETE.getCode());
-
-//                        autoStepVO.setName(HttpTypeEnum.DELETE.getDescription());
-//                        autoStepVO.getHttpRequest().setHttpURL(params[0]);
-//                        if (params.length == 2) {
-//                            autoStepVO.getHttpRequest().setHttpBody(params[1]);
-//                        }
-//                        autoStepVO.getHttpRequest().setHttpType(HttpTypeEnum.DELETE.getValue());
+                        autoStepVO.setParameter1(params[0]);
+                        autoStepVO.setParameter2(params[1]);
                         break;
                 }
                 break;
-            case RPC:   // rpc类型的步骤，脚本范例：auto.rpc.invoke("location","json")
-                // todo rpc??
+            case RPC:   // rpc类型的步骤
                 autoStepVO.setModuleType(ModuleTypeEnum.RPC.getCode());
+                if (RpcEnum.RPC_EXECUTE_BY_JSON.getName().equals(methodName)) {
+                    // 脚本范例：auto.rpc.executeByJson("json")
+                    autoStepVO.setMethodType(RpcEnum.RPC_EXECUTE_BY_JSON.getCode());
+                    autoStepVO.setParameter1(methodParam);
+                } else {
+                    // 脚本范例：auto.rpc.invoke("uri","paramType","paramValue")
+                    autoStepVO.setMethodType(RpcEnum.INVOKE.getCode());
+                    autoStepVO.setParameter1(params[0]);
+                    autoStepVO.setParameter2(params[1]);
+                    autoStepVO.setParameter3(params[2]);
+                }
                 break;
             case UTIL:  // 工具类型的步骤
-//                if (autoStepVO.getUtil() == null) {
-//                    autoStepVO.setUtil(new UtilDTO());
-//                }
                 autoStepVO.setModuleType(ModuleTypeEnum.UTIL.getCode());
                 switch (UtilEnum.fromName(methodName)) {
-                    case SLEEP:
+                    case SLEEP: // 脚本范例：auto.util.sleep("1")
                         autoStepVO.setMethodType(UtilEnum.SLEEP.getCode());
-
-//                        autoStepVO.getUtil().setType(UtilTypeEnum.SLEEP.getCode());
-//                        autoStepVO.getUtil().setParam1(methodParamNoString);
+                        autoStepVO.setParameter1(methodParam);
                         break;
-                    case GET_JSON:
+                    case GET_JSON: // 脚本范例：auto.util.getJson("key","json")
                         autoStepVO.setMethodType(UtilEnum.GET_JSON.getCode());
-
-//                        autoStepVO.getUtil().setType(UtilTypeEnum.GET_JSON_VALUE.getCode());
-//                        autoStepVO.getUtil().setParam1(params[0]);
-//                        autoStepVO.getUtil().setParam2(params[1]);
-                    case GET_JSON_ANY:
+                        autoStepVO.setParameter1(params[0]);
+                        autoStepVO.setParameter2(params[1]);
+                        break;
+                    case GET_JSON_ANY: // 脚本范例：auto.util.getJsonAny("key","json")
                         autoStepVO.setMethodType(UtilEnum.GET_JSON_ANY.getCode());
-
-                    case GET_TIME:
+                        autoStepVO.setParameter1(params[0]);
+                        autoStepVO.setParameter2(params[1]);
+                        break;
+                    case GET_TIME: // 脚本范例：auto.util.getTime()
                         autoStepVO.setMethodType(UtilEnum.GET_TIME.getCode());
-
-//                        autoStepVO.getUtil().setType(UtilTypeEnum.GET_TIME.getCode());
-//                        autoStepVO.getUtil().setParam1(methodParamNoString);
-                    case GET_RANDOM:
+                        break;
+                    case GET_RANDOM: // 脚本范例：auto.util.getJsonAny("1","100")
                         autoStepVO.setMethodType(UtilEnum.GET_RANDOM.getCode());
-
-//                        autoStepVO.getUtil().setType(UtilTypeEnum.GET_RANDOM_NUMBER.getCode());
+                        autoStepVO.setParameter1(params[0]);
+                        autoStepVO.setParameter2(params[1]);
+                        break;
                 }
                 break;
-            case ASSERTION:
-                // todo assertion
+            case ASSERTION:  // 断言类型的步骤
                 autoStepVO.setModuleType(ModuleTypeEnum.ASSERTION.getCode());
-                break;
-            case PO:  // 被封装的方法
-                // todo task??
-                autoStepVO.setModuleType(ModuleTypeEnum.PO.getCode());
+                switch (AssertionEnum.fromName(methodName)) {
+                    case IS_EQUALS: // 脚本范例：auto.assertion.isEquals("actual","expect")
+                        autoStepVO.setMethodType(AssertionEnum.IS_EQUALS.getCode());
+                        autoStepVO.setParameter1(params[0]);
+                        autoStepVO.setParameter2(params[1]);
+                        break;
+                    case IS_DELETED: // 脚本范例：auto.assertion.isDelete("actual")
+                        autoStepVO.setMethodType(AssertionEnum.IS_DELETED.getCode());
+                        autoStepVO.setParameter1(methodParam);
+                        break;
+                    case IS_NOT_DELETED: // 脚本范例：auto.assertion.isNotDelete("actual")
+                        autoStepVO.setMethodType(AssertionEnum.IS_NOT_DELETED.getCode());
+                        autoStepVO.setParameter1(methodParam);
+                        break;
+                    case IS_GREATER: // 脚本范例：auto.assertion.isGreater("actual","expect")
+                        autoStepVO.setMethodType(AssertionEnum.IS_GREATER.getCode());
+                        autoStepVO.setParameter1(params[0]);
+                        autoStepVO.setParameter2(params[1]);
+                        break;
+                    case IS_SMALLER: // 脚本范例：auto.assertion.isSmaller("actual","expect")
+                        autoStepVO.setMethodType(AssertionEnum.IS_SMALLER.getCode());
+                        autoStepVO.setParameter1(params[0]);
+                        autoStepVO.setParameter2(params[1]);
+                        break;
+                    case IS_CONTAINS: // 脚本范例：auto.assertion.isContains("actual","expect")
+                        autoStepVO.setMethodType(AssertionEnum.IS_CONTAINS.getCode());
+                        autoStepVO.setParameter1(params[0]);
+                        autoStepVO.setParameter2(params[1]);
+                        break;
+                    case IS_BE_CONTAINS: // 脚本范例：auto.assertion.isBeContains("actual","expect")
+                        autoStepVO.setMethodType(AssertionEnum.IS_BE_CONTAINS.getCode());
+                        autoStepVO.setParameter1(params[0]);
+                        autoStepVO.setParameter2(params[1]);
+                        break;
+                    case IS_XPATH_EXIST: // 脚本范例：auto.assertion.isXpathExist("actual")
+                        autoStepVO.setMethodType(AssertionEnum.IS_XPATH_EXIST.getCode());
+                        autoStepVO.setParameter1(methodParam);
+                        break;
+                    case IS_XPATH_NOT_EXIST: // 脚本范例：auto.assertion.isXpathNotExist("actual")
+                        autoStepVO.setMethodType(AssertionEnum.IS_XPATH_NOT_EXIST.getCode());
+                        autoStepVO.setParameter1(methodParam);
+                        break;
+                }
                 break;
             default:
                 autoStepVO.setModuleType(ModuleTypeEnum.UNDEFINED_MODULE.getCode());
                 autoStepVO.setParameter1(script.length() <= 5000 ? script : "未知脚本过长，请自行检查");
                 break;
         }
+        // 设置方法名称
+        autoStepVO.setMethodName(methodName);
         return autoStepVO;
     }
 

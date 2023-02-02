@@ -1,7 +1,7 @@
 package com.luoys.upgrade.toolservice.service;
 
 import com.luoys.upgrade.toolservice.dao.po.*;
-import com.luoys.upgrade.toolservice.service.client.StepExecutor;
+import com.luoys.upgrade.toolservice.service.automation.AutoExecutor;
 import com.luoys.upgrade.toolservice.service.common.StringUtil;
 import com.luoys.upgrade.toolservice.service.common.ThreadPoolUtil;
 import com.luoys.upgrade.toolservice.dao.AutoCaseMapper;
@@ -435,13 +435,13 @@ public class SuiteService {
      */
     private void execute(List<SuiteCaseVO> caseList) {
         boolean result = false;
-        StepExecutor executor = new StepExecutor();
+        AutoExecutor executor = new AutoExecutor();
         for (SuiteCaseVO vo : caseList) {
             try {
                 // 先通过caseId查出用例详情，再设置执行参数，最后执行用例
                 AutoCaseVO autoCaseVO = caseService.queryDetail(vo.getAutoCase().getCaseId());
                 CaseDTO caseDTO = TransformAutoCase.transformVO2DTO(autoCaseVO);
-                result = executor.execute(caseDTO);
+                result = executor.executeCase(caseDTO);
             } catch (Exception e) {
                 log.error("--->批量执行用例异常：caseId={}", vo.getAutoCase().getCaseId(), e);
                 result = false;
