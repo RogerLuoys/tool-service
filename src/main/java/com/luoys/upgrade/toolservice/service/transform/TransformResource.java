@@ -4,7 +4,6 @@ import com.luoys.upgrade.toolservice.dao.po.ResourcePO;
 import com.luoys.upgrade.toolservice.service.dto.DataSourceDTO;
 import com.luoys.upgrade.toolservice.service.dto.SlaveDTO;
 import com.luoys.upgrade.toolservice.service.enums.ResourceTypeEnum;
-import com.luoys.upgrade.toolservice.web.vo.ResourceSimpleVO;
 import com.luoys.upgrade.toolservice.web.vo.ResourceVO;
 
 import java.util.ArrayList;
@@ -16,31 +15,6 @@ import java.util.List;
  * @author luoys
  */
 public class TransformResource {
-
-    public static ResourceSimpleVO transformPO2SimpleVO(ResourcePO po) {
-        if (po == null) {
-            return null;
-        }
-        ResourceSimpleVO vo = new ResourceSimpleVO();
-        vo.setDescription(po.getDescription());
-        vo.setOwnerId(po.getOwnerId());
-        vo.setPermission(po.getPermission());
-        vo.setName(po.getName());
-        vo.setType(po.getType());
-        vo.setResourceId(po.getId());
-        vo.setOwnerName(po.getOwnerName());
-//        vo.setUserId(po.getUserId());
-//        vo.setUserName(po.getUserName());
-        return vo;
-    }
-
-    public static List<ResourceSimpleVO> transformPO2SimpleVO(List<ResourcePO> poList) {
-        List<ResourceSimpleVO> voList = new ArrayList<>();
-        for (ResourcePO po : poList) {
-            voList.add(transformPO2SimpleVO(po));
-        }
-        return voList;
-    }
 
     public static ResourceVO transformPO2VO(ResourcePO po) {
         if (po == null) {

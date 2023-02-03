@@ -1,15 +1,6 @@
 package com.luoys.upgrade.toolservice.web;
 
 
-import com.luoys.upgrade.toolservice.service.common.Result;
-import com.luoys.upgrade.toolservice.service.FactoryService;
-import com.luoys.upgrade.toolservice.web.vo.PageInfo;
-import com.luoys.upgrade.toolservice.web.vo.ToolSimpleVO;
-import com.luoys.upgrade.toolservice.web.vo.ToolVO;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
 @Deprecated
 //@CrossOrigin
 //@Slf4j
