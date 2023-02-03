@@ -2,6 +2,7 @@ package com.luoys.upgrade.toolservice.service.common;
 
 
 import com.alibaba.fastjson.JSON;
+import org.apache.commons.text.StringEscapeUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -89,6 +90,30 @@ public class StringUtil {
             result.add(matcher.group());
         }
         return result;
+    }
+
+    /**
+     * 给字符串中的双引号加上转义字符`\`
+     * @param str 要转义的字符串
+     * @return 转义后的字符串
+     */
+    public static String escape(String str) {
+        if (StringUtil.isBlank(str)) {
+            return null;
+        }
+        return str.replaceAll("\"", Matcher.quoteReplacement("\\\""));
+    }
+
+    /**
+     * 反转义一次字符串
+     * @param str 要反转义的字符串
+     * @return 反转义后的字符串
+     */
+    public static String unescape(String str) {
+        if (StringUtil.isBlank(str)) {
+            return null;
+        }
+        return StringEscapeUtils.unescapeJava(str);
     }
 
 }

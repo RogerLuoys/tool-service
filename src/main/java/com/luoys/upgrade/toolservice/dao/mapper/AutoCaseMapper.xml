@@ -28,6 +28,14 @@
     from auto_case
     where id = #{caseId,jdbcType=INTEGER}
   </select>
+  <select id="selectPo" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from auto_case
+    where supper_case_id = #{supperCaseId,jdbcType=INTEGER}
+    and `name` = #{name,jdbcType=VARCHAR}
+    and `type` = 3
+  </select>
   <select id="list" resultMap="BaseResultMap" parameterType="com.luoys.upgrade.toolservice.dao.po.AutoCaseQueryPO">
     select
     <include refid="Base_Column_List" />

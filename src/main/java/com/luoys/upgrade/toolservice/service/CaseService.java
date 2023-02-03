@@ -371,7 +371,7 @@ public class CaseService {
             // 将脚本塞入对应的步骤中
             autoCaseVO.getMainStepList().get(i).getAutoStep().setScript(mainSteps.get(i));
             // 基于脚本，将步骤转换为ui模式(会覆盖原数据)
-            AutoStepVO autoStepVO = stepService.change2UiMode(autoCaseVO.getMainStepList().get(i).getAutoStep());
+            AutoStepVO autoStepVO = stepService.change2UiMode(autoCaseVO.getMainStepList().get(i).getAutoStep(), autoCaseVO.getSupperCaseId(), autoCaseVO.getProjectId());
             // 重新设置步骤执行顺序
             updateRelatedStep(autoCaseVO.getCaseId(), autoStepVO.getStepId(), i + 1);
             stepService.update(autoStepVO);

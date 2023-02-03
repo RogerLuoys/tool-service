@@ -34,11 +34,11 @@
     from resource
     where id = #{resourceId,jdbcType=INTEGER}
   </select>
-  <select id="selectByName" resultMap="BaseResultMap">
+  <select id="selectDataSource" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from resource
-    where `name` = #{name,jdbcType=VARCHAR}
+    where `name` = #{name,jdbcType=VARCHAR} and project_id = #{projectId,jdbcType=INTEGER}
   </select>
   <select id="list" resultMap="BaseResultMap">
     select

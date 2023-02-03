@@ -116,14 +116,14 @@ public class ResourceService {
         return TransformResource.transformPO2VO(resourceMapper.selectByID(resourceId));
     }
 
-    /**
-     * 查询资源详情，查询数据库连接信息时，需要通过名称查
-     *
-     * @param name 资源的名称
-     * @return 资源对象
-     */
-    public ResourceVO queryDetailByName(String name) {
-        return TransformResource.transformPO2VO(resourceMapper.selectByName(name));
-    }
+//    /**
+//     * 查询资源详情，查询数据库连接信息时，需要通过名称查
+//     *
+//     * @param name 资源的名称
+//     * @return 资源对象
+//     */
+//    public ResourceVO queryDetailByName(String name) {
+//        return TransformResource.transformPO2VO(resourceMapper.selectByName(name));
+//    }
 
 }

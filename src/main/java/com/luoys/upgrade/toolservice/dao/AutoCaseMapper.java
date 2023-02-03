@@ -57,6 +57,16 @@ public interface AutoCaseMapper {
      */
     AutoCasePO selectById(@Param("caseId") Integer caseId);
 
+    /**
+     * 根据id查询详情
+     *
+     * @param name po名
+     * @param supperCaseId po所属的超类名
+     * @return 表对应的pojo对象
+     */
+    AutoCasePO selectPo(@Param("name") String name,
+                        @Param("supperCaseId") Integer supperCaseId);
+
 //    /**
 //     * 按条件分页查询，默认10条数据一页
 //     *

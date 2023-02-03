@@ -1,5 +1,7 @@
 package com.luoys.upgrade.toolservice.service;
 
+import com.luoys.upgrade.toolservice.dao.AutoCaseMapper;
+import com.luoys.upgrade.toolservice.dao.ResourceMapper;
 import com.luoys.upgrade.toolservice.dao.po.AutoStepPO;
 import com.luoys.upgrade.toolservice.service.common.StringUtil;
 import com.luoys.upgrade.toolservice.dao.AutoStepMapper;
@@ -27,25 +29,10 @@ public class StepService {
     private AutoStepMapper autoStepMapper;
 
     @Autowired
-    private ResourceService resourceService;
+    private ResourceMapper resourceMapper;
 
-//    @Autowired
-//    private UserMapper userMapper;
-//
-//    @Autowired
-//    private HTTPClient httpClient;
-//
-//    @Autowired
-//    private RPCClient rpcClient;
-//
-//    @Autowired
-//    private DBClient dbClient;
-//
-//    @Autowired
-//    private UIClient uiClient;
-
-//    @DubboReference
-//    private UserService userService;
+    @Autowired
+    private AutoCaseMapper autoCaseMapper;
 
     /**
      * 创建单个步骤
@@ -176,105 +163,79 @@ public class StepService {
         if (autoStepVO == null) {
             return null;
         }
-        String param1 = autoStepVO.getParameter1();
-        String param2 = autoStepVO.getParameter2();
-        String param3 = autoStepVO.getParameter3();
+        String param1 = StringUtil.escape(autoStepVO.getParameter1());
+        String param2 = StringUtil.escape(autoStepVO.getParameter2());
+        String param3 = StringUtil.escape(autoStepVO.getParameter3());
         String methodName = autoStepVO.getMethodName();
         switch (ModuleTypeEnum.fromCode(autoStepVO.getModuleType())) {
             case UI:
-                switch (UiEnum.fromCode(autoStepVO.getMethodType())) {
-                    case CLICK:
-                        if (StringUtil.isBlank(param2)) {
-                            autoStepVO.setScript(this.buildScript(autoStepVO.getVarName(), ModuleTypeEnum.UI.getName(), methodName, param1));
-                        } else {
-                            autoStepVO.setScript(this.buildScript(autoStepVO.getVarName(), ModuleTypeEnum.UI.getName(), methodName, param1, param2));
-                        }
-                        break;
-                    case OPEN_URL:
-                    case CLICK_BY_JS:
-                        autoStepVO.setScript(this.buildScript(autoStepVO.getVarName(), ModuleTypeEnum.UI.getName(), methodName, param1));
-                        break;
-                    case SEND_KEY:
-                        autoStepVO.setScript(this.buildScript(autoStepVO.getVarName(), ModuleTypeEnum.UI.getName(), methodName, param1, param2));
-                        break;
-                    case SWITCH_TAB:
-                        autoStepVO.setScript(this.buildScript(autoStepVO.getVarName(), ModuleTypeEnum.UI.getName(), methodName));
-                        break;
-                }
+                autoStepVO.setScript(this.buildScript(autoStepVO.getVarName(), ModuleTypeEnum.UI.getName(), methodName, param1, param2, param3));
                 break;
             case SQL:
-                autoStepVO.setScript(this.buildScript(autoStepVO.getVarName(), ModuleTypeEnum.SQL.getName(), methodName, param1));
+                autoStepVO.setScript(this.buildScript(autoStepVO.getVarName(), ModuleTypeEnum.SQL.getName(), methodName, param1, param2, param3));
                 break;
             case HTTP:
-                switch (HttpEnum.fromCode(autoStepVO.getMethodType())) {
-                    case GET:
-                        if (StringUtil.isBlank(param2)) {
-                            autoStepVO.setScript(this.buildScript(autoStepVO.getVarName(), ModuleTypeEnum.HTTP.getName(), methodName, param1));
-                        } else {
-                            autoStepVO.setScript(this.buildScript(autoStepVO.getVarName(), ModuleTypeEnum.HTTP.getName(), methodName, param1, param2));
-                        }
-                        break;
-                    case POST: // post,put,delete 都重载两次，转换逻辑一样
-                    case PUT:
-                    case DELETE:
-                        if (StringUtil.isBlank(param2) && StringUtil.isBlank(param3)) {
-                            autoStepVO.setScript(this.buildScript(autoStepVO.getVarName(), ModuleTypeEnum.HTTP.getName(), methodName, param1));
-                        } else if (StringUtil.isBlank(param2)) {
-                            autoStepVO.setScript(this.buildScript(autoStepVO.getVarName(), ModuleTypeEnum.HTTP.getName(), methodName, param1, param2));
-                        } else {
-                            autoStepVO.setScript(this.buildScript(autoStepVO.getVarName(), ModuleTypeEnum.HTTP.getName(), methodName, param1, param2, param3));
-                        }
-                        break;
-                }
+                autoStepVO.setScript(this.buildScript(autoStepVO.getVarName(), ModuleTypeEnum.HTTP.getName(), methodName, param1, param2, param3));
                 break;
             case ASSERTION:
+                autoStepVO.setScript(this.buildScript(autoStepVO.getVarName(), ModuleTypeEnum.ASSERTION.getName(), methodName, param1, param2, param3));
                 break;
             case UTIL:
+                autoStepVO.setScript(this.buildScript(autoStepVO.getVarName(), ModuleTypeEnum.UTIL.getName(), methodName, param1, param2, param3));
                 break;
             case RPC:
+                autoStepVO.setScript(this.buildScript(autoStepVO.getVarName(), ModuleTypeEnum.RPC.getName(), methodName, param1, param2, param3));
                 break;
             case PO:
+                autoStepVO.setScript(this.buildScript(autoStepVO.getVarName(), ModuleTypeEnum.PO.getName(), methodName, param1, param2, param3));
                 break;
         }
         return autoStepVO;
     }
-
-//    private void toScript(AutoStepVO autoStepVO, String method) {
-//        // auto.module.method() 或 auto.module.method("param1") 或 auto.module.method("param1", "param2") 或 auto.module.method("param1", "param2", "param3")
-//        if (StringUtil.isBlank(autoStepVO.getParameter1()) && StringUtil.isBlank(autoStepVO.getParameter2()) && StringUtil.isBlank(autoStepVO.getParameter3())) {
-//            autoStepVO.setScript(this.buildScript(autoStepVO.getVarName(), ModuleTypeEnum.UI.getName(), method));
-//        } else if (StringUtil.isBlank(autoStepVO.getParameter2()) && StringUtil.isBlank(autoStepVO.getParameter3())) {
-//            autoStepVO.setScript(this.buildScript(autoStepVO.getVarName(), ModuleTypeEnum.UI.getName(), method, autoStepVO.getParameter1()));
-//        } else if ()
-//    }
 
     /**
      * 拼接脚本
      * @param varName 变量名
      * @param module 模块名
      * @param method 方法名
-     * @param parameters 入参
+     * @param param1 入参1
+     * @param param2 入参2
+     * @param param3 入参3
      * @return 步骤脚本
      */
-    private String buildScript(String varName, String module, String method, String... parameters) {
+    private String buildScript(String varName, String module, String method, String param1, String param2, String param3) {
         StringBuilder stringBuilder = new StringBuilder();
-        if (StringUtil.isBlank(varName)) {
+        if (!StringUtil.isBlank(varName)) {
             stringBuilder.append("String ").append(varName).append(" = ");
         }
         stringBuilder.append("auto").append(module).append(method).append("(\"");
-//        for (String param : parameters) {
-//            stringBuilder.append("\"").append(param).append("\"");
-//            stringBuilder.append(", ");
+//        for (int i = 0; i < parameters.length; i++) {
+//            stringBuilder.append("\"").append(parameters[i]).append("\"");
+//            if (i != parameters.length -1) {
+//                stringBuilder.append(", ");
+//            }
 //        }
-        for (int i = 0; i < parameters.length; i++) {
-            stringBuilder.append("\"").append(parameters[i]).append("\"");
-            if (i != parameters.length -1) {
-                stringBuilder.append(", ");
-            }
+        // 多形参方法，不接受前面参数为空，如(null, "1", "1")则认为未设置入参
+        if (StringUtil.isBlank(param1)) {
+            // 第一个参数为空，为未设置入参
+            stringBuilder.append("\")");
+            return stringBuilder.toString();
+        } else if (StringUtil.isBlank(param2)) {
+            // 第一个参数不为空，第二个参数为空，为设置了一个入参
+            stringBuilder.append("\"").append(param1).append("\"").append("\")");
+            return stringBuilder.toString();
+        } else if (StringUtil.isBlank(param3)) {
+            // 第一、二个参数不为空，第三个参数为空，为设置了两个入参
+            stringBuilder.append("\"").append(param1).append("\"")
+                    .append(", ").append("\"").append(param2).append("\"").append("\")");
+            return stringBuilder.toString();
+        } else {
+            // 第一、二、三个参数都不为空，为设置了三个入参
+            stringBuilder.append("\"").append(param1).append("\"")
+                    .append(", ").append("\"").append(param2).append("\"")
+                    .append(", ").append("\"").append(param3).append("\"").append("\")");
+            return stringBuilder.toString();
         }
-//        stringBuilder.delete(stringBuilder.length() - 2, stringBuilder.length());
-        stringBuilder.append("\")");
-        return stringBuilder.toString();
     }
 
     /**
@@ -282,7 +243,7 @@ public class StepService {
      *
      * @param autoStepVO - 带脚本的完整步骤对象
      */
-    public AutoStepVO change2UiMode(AutoStepVO autoStepVO) {
+    public AutoStepVO change2UiMode(AutoStepVO autoStepVO, Integer supperCaseId, Integer projectId) {
         if (autoStepVO == null) {
             return null;
         }
@@ -299,23 +260,45 @@ public class StepService {
         String moduleName = script.substring(5, script.indexOf(".", 5));
         // 截取方法名，取第2个'.'到第1个'('之间的内容，如：auto.ui.click(xpath)会取click
         String methodName = script.substring(script.indexOf(".", 5) + 1, script.indexOf("("));
-        // 截取步骤入参，如：xpath (根据实际情况使用)
-        String methodParam = script.substring(script.indexOf("(\"") + 2, script.lastIndexOf("\")"));
+        // 截取步骤入参，入参中的双引号，需要已被转义
+        String methodParam;
+        if (script.contains("(\"") && script.contains("\")")) {
+            methodParam = script.substring(script.indexOf("(\"") + 2, script.lastIndexOf("\")"));
+        } else {
+            methodParam = null;
+        }
         // 截取多个参数，如：("xpath","key") (根据实际情况使用)
-        String[] params = methodParam.split("\\\\\",\\s{0,4}\"\\\\");
+        String[] params = StringUtil.isBlank(methodParam) ? null : methodParam.split("\\\\\",\\s{0,4}\"\\\\");
+        String param1, param2, param3;
+        if (params == null || params.length == 0) {
+            param1 = null;
+            param2 = null;
+            param3 = null;
+        } else if (params.length == 1) {
+            param1 = params[0];
+            param2 = null;
+            param3 = null;
+        } else if (params.length == 2) {
+            param1 = params[0];
+            param2 = params[1];
+            param3 = null;
+        } else {
+            param1 = params[0];
+            param2 = params[1];
+            param3 = params[2];
+        }
 
-        // 通过模块名和方法名，解析脚本对应的方法枚举值
+        // 通过模块名和方法名，解析脚本步骤类型和方法类型的枚举值
         switch (ModuleTypeEnum.fromName(moduleName)) {
             case SQL:   // 执行sql类型的步骤
                 autoStepVO.setModuleType(ModuleTypeEnum.SQL.getCode());
                 if (SqlEnum.SQL_EXECUTE_BY_JSON.getName().equals(methodName)) {
                     // 脚本范例：auto.sql.executeByJson("json")
                     autoStepVO.setMethodType(SqlEnum.SQL_EXECUTE_BY_JSON.getCode());
-                    autoStepVO.setParameter1(methodParam);
                 } else {
                     // 脚本范例：auto.sql.dbName("sql")
-                    autoStepVO.setParameter1(methodParam);
-                    autoStepVO.setMethodId(resourceService.queryDetailByName(methodName).getResourceId());
+                    autoStepVO.setMethodType(SqlEnum.DB_NAME.getCode());
+                    autoStepVO.setMethodId(resourceMapper.selectDataSource(methodName, projectId).getId());
                 }
                 break;
             case PO:  // 被封装的方法
@@ -323,14 +306,10 @@ public class StepService {
                 if (PoEnum.PO_EXECUTE_BY_JSON.getName().equals(methodName)) {
                     // 脚本范例：auto.po.executeByJson("json")
                     autoStepVO.setMethodType(PoEnum.PO_EXECUTE_BY_JSON.getCode());
-                    autoStepVO.setParameter1(methodParam);
                 } else {
                     // 脚本范例：auto.po.poName("param1","param2","param3")
                     autoStepVO.setMethodType(PoEnum.PO_NAME.getCode());
-                    autoStepVO.setMethodId(null);
-                    autoStepVO.setParameter1(params[0]);
-                    autoStepVO.setParameter2(params[1]);
-                    autoStepVO.setParameter3(params[2]);
+                    autoStepVO.setMethodId(autoCaseMapper.selectPo(methodName, supperCaseId).getId());
                 }
                 break;
             case UI:    // ui类型的步骤
@@ -338,31 +317,18 @@ public class StepService {
                 switch (UiEnum.fromName(methodName)) {
                     case OPEN_URL:  // 脚本范例：auto.ui.openUrl("url")
                         autoStepVO.setMethodType(UiEnum.OPEN_URL.getCode());
-                        autoStepVO.setParameter1(methodParam);
                         break;
                     case CLICK: // 脚本范例：auto.ui.click("xpath") 或 auto.ui.click("xpath", "1");
                         autoStepVO.setMethodType(UiEnum.CLICK.getCode());
-                        autoStepVO.setParameter1(params[0]);
-                        if (params.length != 1) {
-                            autoStepVO.setParameter2(params[1]);
-                        }
                         break;
-                    case SEND_KEY:  // 脚本范例：auto.ui.sendKey("key") 或 auto.ui.sendKey("xpath","key") 或 auto.ui.sendKey("xpath","key")
+                    case SEND_KEY:  // 脚本范例：auto.ui.sendKey("key") 或 auto.ui.sendKey("xpath","key") 或 auto.ui.sendKey("xpath","key", "index")
                         autoStepVO.setMethodType(UiEnum.SEND_KEY.getCode());
-                        autoStepVO.setParameter1(params[0]);
-                        if (params.length == 3) {
-                            autoStepVO.setParameter2(params[1]);
-                            autoStepVO.setParameter3(params[2]);
-                        } else if (params.length == 2) {
-                            autoStepVO.setParameter2(params[1]);
-                        }
                         break;
                     case SWITCH_TAB:  // 脚本范例：auto.ui.switchTab()
                         autoStepVO.setMethodType(UiEnum.SWITCH_TAB.getCode());
                         break;
                     case MOVE: // 脚本范例：auto.ui.move("xpath")
                         autoStepVO.setMethodType(UiEnum.MOVE.getCode());
-                        autoStepVO.setParameter1(methodParam);
                         break;
                 }
                 break;
@@ -371,22 +337,15 @@ public class StepService {
                 switch (HttpEnum.fromName(methodName)) {
                     case GET:   // 脚本范例：auto.http.get("url")
                         autoStepVO.setMethodType(HttpEnum.GET.getCode());
-                        autoStepVO.setParameter1(methodParam);
                         break;
                     case POST:  // 脚本范例：auto.http.post("url","body")
                         autoStepVO.setMethodType(HttpEnum.POST.getCode());
-                        autoStepVO.setParameter1(params[0]);
-                        autoStepVO.setParameter2(params[1]);
                         break;
                     case PUT:   // 脚本范例：auto.http.put("url","body")
                         autoStepVO.setMethodType(HttpEnum.PUT.getCode());
-                        autoStepVO.setParameter1(params[0]);
-                        autoStepVO.setParameter2(params[1]);
                         break;
                     case DELETE:    // 脚本范例：auto.http.delete("url","body")
                         autoStepVO.setMethodType(HttpEnum.DELETE.getCode());
-                        autoStepVO.setParameter1(params[0]);
-                        autoStepVO.setParameter2(params[1]);
                         break;
                 }
                 break;
@@ -395,13 +354,9 @@ public class StepService {
                 if (RpcEnum.RPC_EXECUTE_BY_JSON.getName().equals(methodName)) {
                     // 脚本范例：auto.rpc.executeByJson("json")
                     autoStepVO.setMethodType(RpcEnum.RPC_EXECUTE_BY_JSON.getCode());
-                    autoStepVO.setParameter1(methodParam);
                 } else {
                     // 脚本范例：auto.rpc.invoke("uri","paramType","paramValue")
                     autoStepVO.setMethodType(RpcEnum.INVOKE.getCode());
-                    autoStepVO.setParameter1(params[0]);
-                    autoStepVO.setParameter2(params[1]);
-                    autoStepVO.setParameter3(params[2]);
                 }
                 break;
             case UTIL:  // 工具类型的步骤
@@ -409,25 +364,18 @@ public class StepService {
                 switch (UtilEnum.fromName(methodName)) {
                     case SLEEP: // 脚本范例：auto.util.sleep("1")
                         autoStepVO.setMethodType(UtilEnum.SLEEP.getCode());
-                        autoStepVO.setParameter1(methodParam);
                         break;
                     case GET_JSON: // 脚本范例：auto.util.getJson("key","json")
                         autoStepVO.setMethodType(UtilEnum.GET_JSON.getCode());
-                        autoStepVO.setParameter1(params[0]);
-                        autoStepVO.setParameter2(params[1]);
                         break;
                     case GET_JSON_ANY: // 脚本范例：auto.util.getJsonAny("key","json")
                         autoStepVO.setMethodType(UtilEnum.GET_JSON_ANY.getCode());
-                        autoStepVO.setParameter1(params[0]);
-                        autoStepVO.setParameter2(params[1]);
                         break;
                     case GET_TIME: // 脚本范例：auto.util.getTime()
                         autoStepVO.setMethodType(UtilEnum.GET_TIME.getCode());
                         break;
                     case GET_RANDOM: // 脚本范例：auto.util.getJsonAny("1","100")
                         autoStepVO.setMethodType(UtilEnum.GET_RANDOM.getCode());
-                        autoStepVO.setParameter1(params[0]);
-                        autoStepVO.setParameter2(params[1]);
                         break;
                 }
                 break;
@@ -436,59 +384,44 @@ public class StepService {
                 switch (AssertionEnum.fromName(methodName)) {
                     case IS_EQUALS: // 脚本范例：auto.assertion.isEquals("actual","expect")
                         autoStepVO.setMethodType(AssertionEnum.IS_EQUALS.getCode());
-                        autoStepVO.setParameter1(params[0]);
-                        autoStepVO.setParameter2(params[1]);
                         break;
                     case IS_DELETED: // 脚本范例：auto.assertion.isDelete("actual")
                         autoStepVO.setMethodType(AssertionEnum.IS_DELETED.getCode());
-                        autoStepVO.setParameter1(methodParam);
                         break;
                     case IS_NOT_DELETED: // 脚本范例：auto.assertion.isNotDelete("actual")
                         autoStepVO.setMethodType(AssertionEnum.IS_NOT_DELETED.getCode());
-                        autoStepVO.setParameter1(methodParam);
                         break;
                     case IS_GREATER: // 脚本范例：auto.assertion.isGreater("actual","expect")
                         autoStepVO.setMethodType(AssertionEnum.IS_GREATER.getCode());
-                        autoStepVO.setParameter1(params[0]);
-                        autoStepVO.setParameter2(params[1]);
                         break;
                     case IS_SMALLER: // 脚本范例：auto.assertion.isSmaller("actual","expect")
                         autoStepVO.setMethodType(AssertionEnum.IS_SMALLER.getCode());
-                        autoStepVO.setParameter1(params[0]);
-                        autoStepVO.setParameter2(params[1]);
                         break;
                     case IS_CONTAINS: // 脚本范例：auto.assertion.isContains("actual","expect")
                         autoStepVO.setMethodType(AssertionEnum.IS_CONTAINS.getCode());
-                        autoStepVO.setParameter1(params[0]);
-                        autoStepVO.setParameter2(params[1]);
                         break;
                     case IS_BE_CONTAINS: // 脚本范例：auto.assertion.isBeContains("actual","expect")
                         autoStepVO.setMethodType(AssertionEnum.IS_BE_CONTAINS.getCode());
-                        autoStepVO.setParameter1(params[0]);
-                        autoStepVO.setParameter2(params[1]);
                         break;
                     case IS_XPATH_EXIST: // 脚本范例：auto.assertion.isXpathExist("actual")
                         autoStepVO.setMethodType(AssertionEnum.IS_XPATH_EXIST.getCode());
-                        autoStepVO.setParameter1(methodParam);
                         break;
                     case IS_XPATH_NOT_EXIST: // 脚本范例：auto.assertion.isXpathNotExist("actual")
                         autoStepVO.setMethodType(AssertionEnum.IS_XPATH_NOT_EXIST.getCode());
-                        autoStepVO.setParameter1(methodParam);
                         break;
                 }
                 break;
             default:
                 autoStepVO.setModuleType(ModuleTypeEnum.UNDEFINED_MODULE.getCode());
-                autoStepVO.setParameter1(script.length() <= 5000 ? script : "未知脚本过长，请自行检查");
                 break;
         }
         // 设置方法名称
         autoStepVO.setMethodName(methodName);
+        // 设置方法入参
+        autoStepVO.setParameter1(param1);
+        autoStepVO.setParameter1(param2);
+        autoStepVO.setParameter1(param3);
         return autoStepVO;
-    }
-
-    private void setParameters(AutoStepVO autoStepVO, String param) {
-        String[] params = param.split("(\",\\s{0,4}\")");
     }
 
 //    /**

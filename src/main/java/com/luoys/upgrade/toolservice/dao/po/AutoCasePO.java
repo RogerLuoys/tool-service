@@ -39,7 +39,7 @@ public class AutoCasePO {
     private String description;
 
     /**
-     * 1 接口，2 UI
+     * 1 自动化脚本，2 自动化超类，3 封装的方法(PO)，4 数据工厂
      */
     private Integer type;
 

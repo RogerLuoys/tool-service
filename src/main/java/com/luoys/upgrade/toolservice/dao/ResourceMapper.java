@@ -62,10 +62,12 @@ public interface ResourceMapper {
     /**
      * 根据名称查询详情
      *
-     * @param name 业务id
+     * @param name 数据库名
+     * @param projectId 业务id
      * @return 表对应的pojo对象
      */
-    ResourcePO selectByName(@Param("name") String name);
+    ResourcePO selectDataSource(@Param("name") String name,
+                            @Param("projectId") Integer projectId);
 
     /**
      * 按条件分页查询，默认10条数据一页
