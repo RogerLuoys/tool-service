@@ -89,7 +89,7 @@ public interface AutoSuiteMapper {
      * @param suiteId 业务id(即主键id)
      * @return 表对应的pojo对象
      */
-    AutoSuitePO selectByUUID(@Param("suiteId") Integer suiteId);
+    AutoSuitePO selectById(@Param("suiteId") Integer suiteId);
 
     /**
      * 按条件分页查询，默认10条数据一页

@@ -2,7 +2,11 @@ package com.luoys.upgrade.toolservice.dao;
 
 import com.luoys.upgrade.toolservice.dao.po.ResourceSuiteRelationPO;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
+@Repository
 public interface ResourceSuiteRelationMapper {
     int remove(@Param("resourceId") Integer resourceId,
                @Param("suiteId") Integer suiteId,
@@ -12,7 +16,8 @@ public interface ResourceSuiteRelationMapper {
 
 
     ResourceSuiteRelationPO selectByResourceId(Integer id);
-    ResourceSuiteRelationPO selectBySuiteId(Integer id);
+
+    List<ResourceSuiteRelationPO> selectBySuiteId(Integer id);
 
     int update(ResourceSuiteRelationPO record);
 

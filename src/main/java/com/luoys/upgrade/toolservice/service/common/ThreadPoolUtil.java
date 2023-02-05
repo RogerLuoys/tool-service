@@ -23,6 +23,9 @@ public class ThreadPoolUtil {
         autoExecutor.execute(task);
     }
 
+    private static void test() {
+        autoExecutor.setMaximumPoolSize(3);
+    }
 //    private static ThreadPoolExecutor apiExecutor = new ThreadPoolExecutor(0, 3, 0, TimeUnit.SECONDS,
 //            new LinkedBlockingQueue<Runnable>(1), new ThreadPoolExecutor.AbortPolicy());
 //

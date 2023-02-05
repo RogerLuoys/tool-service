@@ -1,15 +1,13 @@
 package com.luoys.upgrade.toolservice.service;
 
+import com.luoys.upgrade.toolservice.dao.*;
 import com.luoys.upgrade.toolservice.dao.po.*;
 import com.luoys.upgrade.toolservice.service.automation.AutoExecutor;
 import com.luoys.upgrade.toolservice.service.common.StringUtil;
 import com.luoys.upgrade.toolservice.service.common.ThreadPoolUtil;
-import com.luoys.upgrade.toolservice.dao.AutoCaseMapper;
-import com.luoys.upgrade.toolservice.dao.AutoSuiteMapper;
-import com.luoys.upgrade.toolservice.dao.SuiteCaseRelationMapper;
-import com.luoys.upgrade.toolservice.dao.UserMapper;
 import com.luoys.upgrade.toolservice.service.dto.CaseDTO;
 import com.luoys.upgrade.toolservice.service.enums.AutoCaseStatusEnum;
+import com.luoys.upgrade.toolservice.service.enums.AutoSuiteSlaveTypeEnum;
 import com.luoys.upgrade.toolservice.service.enums.AutoSuiteStatusEnum;
 import com.luoys.upgrade.toolservice.service.enums.KeywordEnum;
 import com.luoys.upgrade.toolservice.service.transform.TransformAutoCase;
@@ -41,6 +39,9 @@ public class SuiteService {
 
     @Autowired
     private SuiteCaseRelationMapper suiteCaseRelationMapper;
+
+    @Autowired
+    private ResourceSuiteRelationMapper resourceSuiteRelationMapper;
 
     @Autowired
     private UserMapper userMapper;
@@ -291,7 +292,12 @@ public class SuiteService {
             retry = null;
         }
         // 查询基本信息
-        AutoSuiteVO autoSuiteVO = TransformAutoSuite.transformPO2VO(autoSuiteMapper.selectByUUID(suiteId));
+        AutoSuiteVO autoSuiteVO = TransformAutoSuite.transformPO2VO(autoSuiteMapper.selectById(suiteId));
+        // 查询指定的机器
+        if (autoSuiteVO.getSlaveType().equals(AutoSuiteSlaveTypeEnum.ASSIGN_SLAVE.getCode())) {
+            // todo 1
+            resourceSuiteRelationMapper.selectBySuiteId(autoSuiteVO.getSuiteId());
+        }
         // 查询用例列表
         List<SuiteCaseVO> caseList = TransformSuiteCaseRelation.transformPO2SimpleVO(
                 suiteCaseRelationMapper.listCaseBySuiteId(suiteId, startIndex == null ? null : ((startIndex - 1) * KeywordEnum.DEFAULT_PAGE_SIZE.getCode()), retry));

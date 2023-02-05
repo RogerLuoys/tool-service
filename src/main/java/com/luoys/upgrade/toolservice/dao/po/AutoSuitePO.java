@@ -34,6 +34,11 @@ public class AutoSuitePO {
     private String description;
 
     /**
+     * 1 localhost，2 任意机器，3指定机器
+     */
+    private Integer slaveType;
+
+    /**
      * 套件状态：1 空闲，2 执行中，3 排队中
      */
     private Integer status;

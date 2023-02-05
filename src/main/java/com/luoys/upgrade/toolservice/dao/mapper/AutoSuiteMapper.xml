@@ -6,6 +6,7 @@
 <!--    <result column="suite_id" jdbcType="VARCHAR" property="suiteId" />-->
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="description" jdbcType="VARCHAR" property="description" />
+    <result column="slave_type" jdbcType="TINYINT" property="slaveType" />
     <result column="status" jdbcType="TINYINT" property="status" />
 <!--    <result column="resource" jdbcType="VARCHAR" property="resource" />-->
 <!--    <result column="parameter" jdbcType="VARCHAR" property="parameter" />-->
@@ -21,10 +22,10 @@
 <!--    <result column="is_ui_completed" jdbcType="TINYINT" property="isUiCompleted" />-->
   </resultMap>
   <sql id="Base_Column_List">
-    id, `name`, description, `status`, time_out, case_time_out, total,
+    id, `name`, description, slave_type, `status`, time_out, case_time_out, total,
     passed, failed, project_id, owner_id, owner_name
   </sql>
-  <select id="selectByUUID" resultMap="BaseResultMap">
+  <select id="selectById" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from auto_suite
@@ -66,12 +67,12 @@
     where id = #{suiteId,jdbcType=INTEGER}
   </update>
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.luoys.upgrade.toolservice.dao.po.AutoSuitePO" useGeneratedKeys="true">
-    insert into auto_suite (`name`, description, `status`,
+    insert into auto_suite (`name`, description, slave_type, `status`,
       time_out, case_time_out,
       total, passed, failed, project_id,
       owner_id, owner_name, is_delete,
       gmt_create, gmt_modified)
-    values (#{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT},
+    values (#{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{slaveType,jdbcType=TINYINT}, #{status,jdbcType=TINYINT},
       #{timeOut,jdbcType=INTEGER}, #{caseTimeOut,jdbcType=INTEGER},
       #{total,jdbcType=INTEGER}, #{passed,jdbcType=INTEGER}, #{failed,jdbcType=INTEGER}, #{projectId,jdbcType=INTEGER},
       #{ownerId,jdbcType=INTEGER}, #{ownerName,jdbcType=VARCHAR}, 0, now(), now())
@@ -84,6 +85,9 @@
       </if>
       <if test="description != null">
         description = #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="slaveType != null">
+        slave_type = #{slaveType,jdbcType=TINYINT},
       </if>
       <if test="timeOut != null">
         time_out = #{timeOut,jdbcType=INTEGER},
