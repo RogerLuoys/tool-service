@@ -11,17 +11,27 @@ import lombok.Data;
 public class SlaveDTO {
 
     /**
-     * 设备型号
+     * 资源id
+     */
+    private Integer resourceId;
+
+    /**
+     * 名称
+     */
+    private String resourceName;
+
+    /**
+     * 机器ip
      */
     private String ip;
 
     /**
-     * 分辨率
+     * 机器端口
      */
     private String port;
 
     /**
-     * 屏幕尺寸
+     * 最大线程数
      */
     private Integer thread;
 

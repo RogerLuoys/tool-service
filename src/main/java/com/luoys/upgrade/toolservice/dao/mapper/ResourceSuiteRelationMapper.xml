@@ -10,17 +10,20 @@
   <sql id="Base_Column_List">
     id, resource_id, suite_id, `type`
   </sql>
-  <select id="selectByResourceId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+  <select id="selectByResourceId" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from resource_suite_relation
     where resource_id = #{resourceId,jdbcType=INTEGER}
   </select>
-  <select id="selectBySuiteId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+  <select id="selectBySuiteId" resultMap="BaseResultMap">
     select
-    <include refid="Base_Column_List" />
-    from resource_suite_relation
-    where suite_id = #{suiteId,jdbcType=INTEGER}
+    b.suite_id, b.resource_id, b.`type`, a.name as resource_name, a.type as resource_type, a.permission, a.jdbcUrl,
+      a.jdbcDriver, a.jdbcUsername, a.jdbcPassword, a.slaveIp, a.slavePort, a.slaveThread
+    from resource a
+    inner join resource_suite_relation b on a.id = b.resource_id
+    where b.is_delete = 0 and a.is_delete = 0
+    and b.suite_id = #{suiteId,jdbcType=INTEGER}
   </select>
   <delete id="remove">
     update resource_suite_relation set is_delete=1

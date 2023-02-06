@@ -12,6 +12,7 @@ import com.luoys.upgrade.toolservice.service.enums.AutoSuiteStatusEnum;
 import com.luoys.upgrade.toolservice.service.enums.KeywordEnum;
 import com.luoys.upgrade.toolservice.service.transform.TransformAutoCase;
 import com.luoys.upgrade.toolservice.service.transform.TransformAutoSuite;
+import com.luoys.upgrade.toolservice.service.transform.TransformResourceSuiteRelation;
 import com.luoys.upgrade.toolservice.service.transform.TransformSuiteCaseRelation;
 import com.luoys.upgrade.toolservice.web.vo.*;
 import lombok.extern.slf4j.Slf4j;
@@ -295,8 +296,8 @@ public class SuiteService {
         AutoSuiteVO autoSuiteVO = TransformAutoSuite.transformPO2VO(autoSuiteMapper.selectById(suiteId));
         // 查询指定的机器
         if (autoSuiteVO.getSlaveType().equals(AutoSuiteSlaveTypeEnum.ASSIGN_SLAVE.getCode())) {
-            // todo 1
-            resourceSuiteRelationMapper.selectBySuiteId(autoSuiteVO.getSuiteId());
+            List<ResourceSuiteRelationPO> resourceSuiteRelationPOList = resourceSuiteRelationMapper.selectBySuiteId(autoSuiteVO.getSuiteId());
+            autoSuiteVO.setSlaveList(TransformResourceSuiteRelation.transformPO2DTO(resourceSuiteRelationPOList));
         }
         // 查询用例列表
         List<SuiteCaseVO> caseList = TransformSuiteCaseRelation.transformPO2SimpleVO(
