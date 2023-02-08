@@ -90,6 +90,20 @@ public class SuiteService {
     }
 
     /**
+     * 为套件指定执行机器
+     *
+     * @param suiteId -
+     * @return -
+     */
+    public Integer createRelateSlave(Integer suiteId, Integer resourceId) {
+        ResourceSuiteRelationPO resourceSuiteRelationPO = new ResourceSuiteRelationPO();
+        resourceSuiteRelationPO.setSuiteId(suiteId);
+        resourceSuiteRelationPO.setResourceId(resourceId);
+        resourceSuiteRelationPO.setType(1);
+        return resourceSuiteRelationMapper.insert(resourceSuiteRelationPO);
+    }
+
+    /**
      * 套件关联单个用例
      *
      * @param suiteCaseVO 用例对象
@@ -163,14 +177,25 @@ public class SuiteService {
      * @param caseId  用例id
      * @return 成功为true，失败为false
      */
-    public Boolean removeRelatedCase(Integer suiteId, Integer caseId) {
+    public Integer removeRelatedCase(Integer suiteId, Integer caseId) {
         int result = suiteCaseRelationMapper.remove(suiteId, caseId);
         // 删除后更新总条数
         if (result > 0) {
             int total = suiteCaseRelationMapper.countBySuiteId(suiteId, null);
             autoSuiteMapper.updateTotal(suiteId, total);
         }
-        return result > 1;
+        return result;
+    }
+
+    /**
+     * 删除套件关联的用例
+     *
+     * @param suiteId 套件id
+     * @param resourceId  用例id
+     * @return 成功为true，失败为false
+     */
+    public Integer removeRelatedSlave(Integer suiteId, Integer resourceId) {
+        return resourceSuiteRelationMapper.remove(resourceId, suiteId, 1);
     }
 
     /**

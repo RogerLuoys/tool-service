@@ -19,7 +19,7 @@ public class TransformResourceSuiteRelation {
         }
         SlaveDTO dto = new SlaveDTO();
         dto.setResourceId(po.getResourceId());
-        dto.setResourceName(po.getResourceName());
+        dto.setName(po.getResourceName());
         dto.setThread(po.getSlaveThread());
         dto.setUrl(po.getSlaveUrl());
         return dto;

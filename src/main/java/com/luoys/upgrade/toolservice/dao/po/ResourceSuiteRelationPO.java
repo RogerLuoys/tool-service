@@ -6,10 +6,12 @@ import lombok.Data;
 
 /**
  * resource_suite_relation
- * @author 
+ * @author luoys
  */
 @Data
 public class ResourceSuiteRelationPO {
+
+    private Integer id;
 
     /**
      * 资源id

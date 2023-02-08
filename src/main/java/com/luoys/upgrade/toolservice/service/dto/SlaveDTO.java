@@ -18,7 +18,7 @@ public class SlaveDTO {
     /**
      * 名称
      */
-    private String resourceName;
+    private String name;
 
     /**
      * 机器地址 ip+port

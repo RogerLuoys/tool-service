@@ -6,6 +6,14 @@
     <result column="resource_id" jdbcType="INTEGER" property="resourceId" />
     <result column="suite_id" jdbcType="INTEGER" property="suiteId" />
     <result column="type" jdbcType="TINYINT" property="type" />
+    <result column="resource_name" jdbcType="VARCHAR" property="resourceName" />
+    <result column="permission" jdbcType="TINYINT" property="permission" />
+    <result column="jdbc_url" jdbcType="VARCHAR" property="jdbcUrl" />
+    <result column="jdbc_driver" jdbcType="VARCHAR" property="jdbcDriver" />
+    <result column="jdbc_username" jdbcType="VARCHAR" property="jdbcUsername" />
+    <result column="jdbc_password" jdbcType="VARCHAR" property="jdbcPassword" />
+    <result column="slave_url" jdbcType="VARCHAR" property="slaveUrl" />
+    <result column="slave_thread" jdbcType="VARCHAR" property="slaveThread" />
   </resultMap>
   <sql id="Base_Column_List">
     id, resource_id, suite_id, `type`
@@ -18,8 +26,8 @@
   </select>
   <select id="selectBySuiteId" resultMap="BaseResultMap">
     select
-    b.suite_id, b.resource_id, b.`type`, a.name as resource_name, a.type as resource_type, a.permission, a.jdbcUrl,
-      a.jdbcDriver, a.jdbcUsername, a.jdbcPassword, a.slaveIp, a.slavePort, a.slaveThread
+    b.suite_id, b.resource_id, b.`type`, a.name as resource_name, a.type as resource_type, a.permission, a.jdbc_url,
+      a.jdbc_driver, a.jdbc_username, a.jdbc_password, a.slave_url, a.slave_thread
     from resource a
     inner join resource_suite_relation b on a.id = b.resource_id
     where b.is_delete = 0 and a.is_delete = 0

@@ -40,10 +40,17 @@ public class AutoSuiteController {
         return Result.message(suiteService.quickCreate(autoSuiteVO));
     }
 
-    @RequestMapping(value = "/createRelatedCase", method = RequestMethod.POST)
+    @RequestMapping(value = "/createRelatedSlave", method = RequestMethod.POST)
     public Result<Boolean> createRelatedCase(@RequestBody SuiteCaseVO suiteCaseVO) {
         log.info("--->开始新增套件关联的用例：{}", suiteCaseVO);
         return Result.message(suiteService.createRelatedCase(suiteCaseVO));
+    }
+
+    @RequestMapping(value = "/createRelatedSlave", method = RequestMethod.GET)
+    public Result<Boolean> createRelatedSlave(@RequestParam("suiteId") Integer suiteId,
+                                             @RequestParam("resourceId") Integer resourceId) {
+        log.info("--->开始新增套件关联的机器：");
+        return Result.message(suiteService.createRelateSlave(suiteId, resourceId));
     }
 
     @RequestMapping(value = "/batchRelatedCase", method = RequestMethod.GET)
@@ -62,10 +69,17 @@ public class AutoSuiteController {
     }
 
     @RequestMapping(value = "/removeRelatedCase", method = RequestMethod.DELETE)
-    public Result<Boolean> removeRelatedCase(@RequestParam("suiteId") Integer suiteId,
+    public Result<Integer> removeRelatedCase(@RequestParam("suiteId") Integer suiteId,
                                              @RequestParam("caseId") Integer caseId) {
         log.info("--->开始删除套件关联的用例：suiteId={}, caseId={}", suiteId, caseId);
         return Result.message(suiteService.removeRelatedCase(suiteId, caseId));
+    }
+
+    @RequestMapping(value = "/removeRelatedSlave", method = RequestMethod.DELETE)
+    public Result<Integer> removeRelatedSlave(@RequestParam("suiteId") Integer suiteId,
+                                             @RequestParam("resourceId") Integer resourceId) {
+        log.info("--->开始删除套件关联的机器：suiteId={}, caseId={}", suiteId, resourceId);
+        return Result.message(suiteService.removeRelatedSlave(suiteId, resourceId));
     }
 
     @RequestMapping(value = "/update", method = RequestMethod.PUT)
