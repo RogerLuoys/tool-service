@@ -21,8 +21,7 @@ public class TransformResourceSuiteRelation {
         dto.setResourceId(po.getResourceId());
         dto.setResourceName(po.getResourceName());
         dto.setThread(po.getSlaveThread());
-        dto.setPort(po.getSlavePort());
-        dto.setThread(po.getSlaveThread());
+        dto.setUrl(po.getSlaveUrl());
         return dto;
     }
 

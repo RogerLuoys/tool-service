@@ -3,7 +3,6 @@
 <mapper namespace="com.luoys.upgrade.toolservice.dao.ResourceMapper">
   <resultMap id="BaseResultMap" type="com.luoys.upgrade.toolservice.dao.po.ResourcePO">
     <id column="id" jdbcType="INTEGER" property="id" />
-<!--    <result column="resource_id" jdbcType="VARCHAR" property="resourceId" />-->
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="description" jdbcType="VARCHAR" property="description" />
     <result column="type" jdbcType="TINYINT" property="type" />
@@ -12,21 +11,15 @@
     <result column="jdbc_driver" jdbcType="VARCHAR" property="jdbcDriver" />
     <result column="jdbc_username" jdbcType="VARCHAR" property="jdbcUsername" />
     <result column="jdbc_password" jdbcType="VARCHAR" property="jdbcPassword" />
-<!--    <result column="device_model" jdbcType="VARCHAR" property="deviceModel" />-->
-<!--    <result column="device_size" jdbcType="VARCHAR" property="deviceSize" />-->
-<!--    <result column="device_dpi" jdbcType="VARCHAR" property="deviceDpi" />-->
-<!--    <result column="device_os" jdbcType="VARCHAR" property="deviceOs" />-->
-    <result column="slave_ip" jdbcType="VARCHAR" property="slaveIp" />
-    <result column="slave_port" jdbcType="VARCHAR" property="slavePort" />
+    <result column="slave_url" jdbcType="VARCHAR" property="slaveUrl" />
+    <result column="slave_thread" jdbcType="INTEGER" property="slaveThread" />
     <result column="project_id" jdbcType="INTEGER" property="projectId" />
     <result column="owner_id" jdbcType="INTEGER" property="ownerId" />
     <result column="owner_name" jdbcType="VARCHAR" property="ownerName" />
-<!--    <result column="user_name" jdbcType="VARCHAR" property="userName" />-->
   </resultMap>
   <sql id="Base_Column_List">
     id, `name`, description, `type`, permission, jdbc_url, jdbc_driver, jdbc_username,
-    jdbc_password, slave_ip, slave_port,
-    project_id, owner_id, owner_name
+    jdbc_password, slave_url, slave_thread, project_id, owner_id, owner_name
   </sql>
   <select id="selectByID" resultMap="BaseResultMap">
     select
@@ -45,7 +38,7 @@
     <include refid="Base_Column_List" />
     from resource
     where is_delete = 0
-    and (owner_id = #{ownerId,jdbcType=INTEGER} or permission = 1)
+    and (permission = 1 or owner_id = #{ownerId,jdbcType=INTEGER})
     <if test="type != null">
       and type = #{type,jdbcType=TINYINT}
     </if>
@@ -77,14 +70,14 @@
     insert into resource (`name`, description, `type`,
       permission, jdbc_url, jdbc_driver,
       jdbc_username, jdbc_password,
-      slave_ip, slave_port, owner_id,
+      slave_url, owner_id,
       owner_name, project_id,
       is_delete, gmt_create, gmt_modified
       )
     values (#{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{type,jdbcType=TINYINT},
       #{permission,jdbcType=TINYINT}, #{jdbcUrl,jdbcType=VARCHAR}, #{jdbcDriver,jdbcType=VARCHAR},
       #{jdbcUsername,jdbcType=VARCHAR}, #{jdbcPassword,jdbcType=VARCHAR},
-      #{slaveIp,jdbcType=VARCHAR}, #{slavePort,jdbcType=VARCHAR}, #{ownerId,jdbcType=INTEGER},
+      #{slaveUrl,jdbcType=VARCHAR}, #{ownerId,jdbcType=INTEGER},
       #{ownerName,jdbcType=VARCHAR}, #{projectId,jdbcType=INTEGER},
       0, now(), now()
       )
@@ -116,15 +109,12 @@
       <if test="jdbcPassword != null">
         jdbc_password = #{jdbcPassword,jdbcType=VARCHAR},
       </if>
-      <if test="slaveIp != null">
-        slave_ip = #{slaveIp,jdbcType=VARCHAR},
+      <if test="slaveUrl != null">
+        slave_url = #{slaveUrl,jdbcType=VARCHAR},
       </if>
-      <if test="slavePort != null">
-        slave_port = #{slavePort,jdbcType=VARCHAR},
+      <if test="slaveThread != null">
+        slave_thread = #{slaveThread,jdbcType=INTEGER},
       </if>
-<!--      <if test="slaveThread != null">-->
-<!--        slave_port = #{slavePort,jdbcType=VARCHAR},-->
-<!--      </if>-->
       gmt_modified = now()
     </set>
     where id = #{id,jdbcType=INTEGER}

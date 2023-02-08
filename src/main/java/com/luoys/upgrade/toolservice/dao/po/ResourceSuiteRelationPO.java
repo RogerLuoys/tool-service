@@ -57,14 +57,9 @@ public class ResourceSuiteRelationPO {
     private String jdbcPassword;
 
     /**
-     * 设备型号
+     * 地址
      */
-    private String slaveIp;
-
-    /**
-     * 分辨率
-     */
-    private String slavePort;
+    private String slaveUrl;
 
     /**
      * 屏幕尺寸

@@ -21,14 +21,9 @@ public class SlaveDTO {
     private String resourceName;
 
     /**
-     * 机器ip
+     * 机器地址 ip+port
      */
-    private String ip;
-
-    /**
-     * 机器端口
-     */
-    private String port;
+    private String url;
 
     /**
      * 最大线程数

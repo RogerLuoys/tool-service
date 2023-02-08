@@ -53,17 +53,12 @@ public class ResourcePO {
     private String jdbcPassword;
 
     /**
-     * 设备型号
+     * 机器地址
      */
-    private String slaveIp;
+    private String slaveUrl;
 
     /**
-     * 分辨率
-     */
-    private String slavePort;
-
-    /**
-     * 屏幕尺寸
+     * 机器线程数
      */
     private Integer slaveThread;
 

@@ -27,6 +27,7 @@ public class TransformResource {
         vo.setResourceId(po.getId());
         vo.setName(po.getName());
         vo.setPermission(po.getPermission());
+        vo.setProjectId(po.getProjectId());
         vo.setOwnerId(po.getOwnerId());
         vo.setOwnerName(po.getOwnerName());
 //        vo.setUserId(po.getUserId());
@@ -43,8 +44,7 @@ public class TransformResource {
                 break;
             case SLAVE_SOURCE:
                 SlaveDTO slaveDTO = new SlaveDTO();
-                slaveDTO.setIp(po.getSlaveIp());
-                slaveDTO.setPort(po.getSlavePort());
+                slaveDTO.setUrl(po.getSlaveUrl());
                 slaveDTO.setThread(po.getSlaveThread());
                 vo.setSlave(slaveDTO);
                 break;
@@ -84,6 +84,7 @@ public class TransformResource {
         po.setName(vo.getName());
         po.setPermission(vo.getPermission());
         po.setType(vo.getType());
+        po.setProjectId(vo.getProjectId());
         po.setOwnerId(vo.getOwnerId());
         po.setOwnerName(vo.getOwnerName());
         //根据类型转换不同的对象
@@ -95,8 +96,7 @@ public class TransformResource {
                 po.setJdbcUsername(vo.getDataSource().getUsername());
                 break;
             case SLAVE_SOURCE:
-                po.setSlaveIp(vo.getSlave().getIp());
-                po.setSlavePort(vo.getSlave().getPort());
+                po.setSlaveUrl(vo.getSlave().getUrl());
                 po.setSlaveThread(vo.getSlave().getThread());
                 break;
         }

@@ -28,7 +28,7 @@ public class ResourceVO {
     private String description;
 
     /**
-     * 资源类型：1 数据库，2 设备，3 测试环境，4 从节点
+     * 资源类型：1 数据库，2 从节点
      */
     private Integer type;
 

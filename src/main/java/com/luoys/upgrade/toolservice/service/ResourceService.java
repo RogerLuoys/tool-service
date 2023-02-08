@@ -5,6 +5,7 @@ import com.luoys.upgrade.toolservice.dao.ResourceMapper;
 import com.luoys.upgrade.toolservice.dao.UserMapper;
 import com.luoys.upgrade.toolservice.service.enums.KeywordEnum;
 import com.luoys.upgrade.toolservice.service.transform.TransformResource;
+import com.luoys.upgrade.toolservice.web.vo.QueryVO;
 import com.luoys.upgrade.toolservice.web.vo.ResourceVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -79,31 +80,26 @@ public class ResourceService {
     /**
      * 查询资源列表
      *
-     * @param type      类型
-     * @param name      名字
-     * @param userId    用户id
-     * @param pageIndex 页码
+     * @param queryVO      类型
      * @return 资源列表
      */
-    public List<ResourceVO> query(Integer type, String name, Integer userId, Integer pageIndex) {
+    public List<ResourceVO> query(QueryVO queryVO) {
         Integer startIndex = null;
-        if (pageIndex != null) {
-            startIndex = (pageIndex - 1) * KeywordEnum.DEFAULT_PAGE_SIZE.getCode();
+        if (queryVO.getPageIndex() != null) {
+            startIndex = (queryVO.getPageIndex() - 1) * KeywordEnum.DEFAULT_PAGE_SIZE.getCode();
         }
-        List<ResourcePO> resourcePOList = resourceMapper.list(type, name, userId, startIndex);
+        List<ResourcePO> resourcePOList = resourceMapper.list(queryVO.getType(), queryVO.getName(), queryVO.getUserId(), startIndex);
         return TransformResource.transformPO2VO(resourcePOList);
     }
 
     /**
      * 查询资源总数
      *
-     * @param type   类型
-     * @param name   名字
-     * @param userId 用户id
+     * @param queryVO   类型
      * @return 资源列表
      */
-    public Integer count(Integer type, String name, Integer userId) {
-        return resourceMapper.count(type, name, userId);
+    public Integer count(QueryVO queryVO) {
+        return resourceMapper.count(queryVO.getType(), queryVO.getName(), queryVO.getUserId());
     }
 
     /**
