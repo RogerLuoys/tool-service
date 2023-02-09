@@ -139,7 +139,7 @@ public class AutoSuiteController {
 
     @RequestMapping(value = "/executeBySchedule", method = RequestMethod.POST)
     public Result<String> executeBySchedule(@RequestBody AutoSuiteVO autoSuiteVO) {
-        log.info("--->开始调度执行套件：autoSuiteVO={}", autoSuiteVO);
+        log.info("--->开始执行套件(调度)：autoSuiteVO={}", autoSuiteVO);
         try {
             return Result.message(suiteService.executeBySchedule(autoSuiteVO), "套件未执行，请检查状态");
         } catch (RejectedExecutionException e) {

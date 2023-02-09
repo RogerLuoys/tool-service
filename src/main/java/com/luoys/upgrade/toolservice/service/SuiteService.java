@@ -328,6 +328,7 @@ public class SuiteService {
         QueryVO queryVO = new QueryVO();
         queryVO.setSuiteId(suiteId);
         queryVO.setPageIndex(1);
+        queryVO.setPageSize(10);
         autoSuiteVO.setRelatedCase(this.queryRelateCase(queryVO));
         return autoSuiteVO;
     }
@@ -348,14 +349,14 @@ public class SuiteService {
                 suiteCaseRelationMapper.listCaseBySuiteId(suiteId, null, null));
         if (caseList.size() == 0) {
             log.error("--->套件内未找到关联的用例：suiteId={}", suiteId);
-            return null;
+            return caseList;
         }
         if (retry != null && retry) {
             // 如果是批量手动重试，则去掉已成功的用例
             caseList = caseList.stream().filter(suiteCaseVO -> !suiteCaseVO.getStatus().equals(AutoCaseStatusEnum.SUCCESS.getCode())).collect(Collectors.toList());
             if (caseList.size() == 0) {
                 log.info("--->套件内所有用例已执行成功，无需重试：suiteId={}", suiteId);
-                return null;
+                return caseList;
             }
         } else {
             // 如果非重试，则将套件上次的所有执行结果重置
@@ -375,27 +376,6 @@ public class SuiteService {
      * @return true只代表唤起执行操作成功
      */
     public Boolean executeByLocal(Integer suiteId, Boolean retry) throws RejectedExecutionException {
-//        // 查询套件关联的所有用例
-//        List<SuiteCaseVO> suiteCaseVOList = TransformSuiteCaseRelation.transformPO2SimpleVO(
-//                suiteCaseRelationMapper.listCaseBySuiteId(suiteId, null, null));
-//        if (suiteCaseVOList.size() == 0) {
-//            log.error("--->套件内未找到关联的用例：suiteId={}", suiteId);
-//            return false;
-//        }
-//        if (retry != null && retry) {
-//            // 如果是批量手动重试，则去掉已成功的用例
-//            suiteCaseVOList = suiteCaseVOList.stream().filter(suiteCaseVO -> !suiteCaseVO.getStatus().equals(AutoCaseStatusEnum.SUCCESS.getCode())).collect(Collectors.toList());
-//            if (suiteCaseVOList.size() == 0) {
-//                log.info("--->套件内所有用例已执行成功，无需重试：suiteId={}", suiteId);
-//                return true;
-//            }
-//        } else {
-//            // 如果非重试，则将套件上次的所有执行结果重置
-//            autoSuiteMapper.updateResult(suiteId, 0, 0);
-//            suiteCaseRelationMapper.resetStatusBySuiteId(suiteId);
-//        }
-//        // 用例按sequence正序
-//        List<SuiteCaseVO> caseList = suiteCaseVOList.stream().sorted(Comparator.comparing(SuiteCaseVO::getSequence)).collect(Collectors.toList());
         List<SuiteCaseVO> caseList = this.getCaseBeExecuted(suiteId, retry);
         autoSuiteMapper.updateStatus(suiteId, AutoSuiteStatusEnum.SUITE_RUNNING.getCode());
         // 使用线程池执行用例，并更新结果
@@ -454,6 +434,9 @@ public class SuiteService {
     public Boolean executeBySchedule(AutoSuiteVO autoSuiteVO) throws RejectedExecutionException {
         // 查询要执行的所有用例
         List<SuiteCaseVO> caseList = this.getCaseBeExecuted(autoSuiteVO.getSuiteId(), autoSuiteVO.getRetry());
+        if (caseList.size() == 0) {
+            return false;
+        }
         // 开始调度
         if (autoSuiteVO.getSlaveType().equals(AutoSuiteSlaveTypeEnum.ASSIGN_SLAVE.getCode())) {
             // 指定机器
@@ -466,6 +449,7 @@ public class SuiteService {
             for (int i = 0; i < runList.size(); i++) {
                 String url = slaveList.get(i).getUrl() + RUN_SUITE_URL;
                 String body = JSON.toJSONString(runList.get(i));
+                log.info("--->调用http接口执行套件：url={}", url);
                 HttpUtil.doPost(url, body);
             }
         } else if (autoSuiteVO.getSlaveType().equals(AutoSuiteSlaveTypeEnum.ANY_SLAVE.getCode())) {
@@ -475,6 +459,7 @@ public class SuiteService {
             for (ResourceVO resourceVO : resourceVOList) {
                 url = resourceVO.getSlave().getUrl() + RUN_SUITE_URL;
                 body = JSON.toJSONString(caseList);
+                log.info("--->调用http接口执行套件：url={}", url);
                 Result<String> result = HttpUtil.doPost(url, body);
                 if (result.getCode() == ResultEnum.SUCCESS_FOR_CUSTOM.getCode()) {
                     return true;

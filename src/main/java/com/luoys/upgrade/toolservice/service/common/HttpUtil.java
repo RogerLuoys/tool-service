@@ -16,12 +16,10 @@ public class HttpUtil {
     private static final RestTemplate restTemplate = restTemplateBuilder.build();
 
     public static Result<String> doPost(String url, String body) {
-        Map<String, String> uriVariables = new HashMap<>();
-        HttpEntity<String> entity;
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        entity = new HttpEntity<>(body, headers);
-        ResponseEntity responseEntity = restTemplate.exchange(url, HttpMethod.POST, entity, String.class, uriVariables);
+        HttpEntity<String> entity = new HttpEntity<>(body, headers);
+        ResponseEntity responseEntity = restTemplate.exchange(url, HttpMethod.POST, entity, String.class, new HashMap<>());
         return (Result<String>) responseEntity.getBody();
     }
 
