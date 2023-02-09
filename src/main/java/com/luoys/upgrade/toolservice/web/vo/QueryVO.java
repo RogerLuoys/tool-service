@@ -31,23 +31,33 @@ public class QueryVO {
     private Integer supperCaseId;
 
     /**
-     * 业务类型
+     * 套件id
+     */
+    private Integer suiteId;
+
+    /**
+     * 业务类型(通用)
      */
     private Integer type;
 
     /**
-     * 业务名
+     * 业务名(通用)
      */
     private String name;
 
     /**
-     * 业务状态
+     * 业务状态(通用)
      */
     private Integer status;
 
     /**
-     * 页码
+     * 页码(通用)
      */
     private Integer pageIndex;
+
+    /**
+     * 每页大小(通用)
+     */
+    private Integer pageSize;
 
 }

@@ -88,4 +88,8 @@ public class AutoSuiteVO {
      */
     private PageInfo<SuiteCaseVO> relatedCase;
 
+    /**
+     * 是否重试(仅执行时使用)
+     */
+    private Boolean retry;
 }

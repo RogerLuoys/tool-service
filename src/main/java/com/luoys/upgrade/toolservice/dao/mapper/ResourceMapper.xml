@@ -49,6 +49,13 @@
       order by gmt_create desc limit ${startIndex}, 10
     </if>
   </select>
+  <select id="listPublic" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from resource
+    where is_delete = 0
+    and (permission = 1 or (project_id = #{projectId,jdbcType=INTEGER} and permission = 2))
+  </select>
   <select id="count" resultType="java.lang.Integer">
     select count(1)
     from resource

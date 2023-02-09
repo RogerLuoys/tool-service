@@ -89,12 +89,12 @@ public interface SuiteCaseRelationMapper {
      *
      * @param suiteId    套件id
      * @param startIndex 分页，为空则查全部
-     * @param retry      true查询状态不通过的用例
+     * @param name      用例名
      * @return 关联用例列表
      */
     List<SuiteCaseRelationPO> listCaseBySuiteId(@Param("suiteId") Integer suiteId,
                                                 @Param("startIndex") Integer startIndex,
-                                                @Param("retry") Boolean retry);
+                                                @Param("name") String name);
 
     /**
      * 查询总数

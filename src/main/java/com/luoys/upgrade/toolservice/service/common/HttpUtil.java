@@ -5,10 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.luoys.upgrade.toolservice.service.dto.StepDTO;
 import com.luoys.upgrade.toolservice.service.enums.autoStep.methodType.HttpEnum;
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
+import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
@@ -18,6 +15,15 @@ public class HttpUtil {
     private static final RestTemplateBuilder restTemplateBuilder = new RestTemplateBuilder();
     private static final RestTemplate restTemplate = restTemplateBuilder.build();
 
+    public static Result<String> doPost(String url, String body) {
+        Map<String, String> uriVariables = new HashMap<>();
+        HttpEntity<String> entity;
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        entity = new HttpEntity<>(body, headers);
+        ResponseEntity responseEntity = restTemplate.exchange(url, HttpMethod.POST, entity, String.class, uriVariables);
+        return (Result<String>) responseEntity.getBody();
+    }
 
     /**
      * 执行http请求，有同步锁

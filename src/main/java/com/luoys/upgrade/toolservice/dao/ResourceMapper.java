@@ -84,6 +84,15 @@ public interface ResourceMapper {
                           @Param("startIndex") Integer startIndex);
 
     /**
+     * 查询公开的执行服务器
+     *
+     * @param projectId       项目id
+     * @return 对象列表
+     */
+    List<ResourcePO> listPublic(@Param("projectId") Integer projectId);
+
+
+    /**
      * 按条件查询总数
      *
      * @param type    类型

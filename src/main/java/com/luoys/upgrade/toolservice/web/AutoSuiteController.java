@@ -3,6 +3,7 @@ package com.luoys.upgrade.toolservice.web;
 import com.luoys.upgrade.toolservice.service.UserService;
 import com.luoys.upgrade.toolservice.service.common.Result;
 import com.luoys.upgrade.toolservice.service.SuiteService;
+import com.luoys.upgrade.toolservice.service.dto.SuiteDTO;
 import com.luoys.upgrade.toolservice.service.enums.KeywordEnum;
 import com.luoys.upgrade.toolservice.web.vo.*;
 import lombok.extern.slf4j.Slf4j;
@@ -114,20 +115,46 @@ public class AutoSuiteController {
     }
 
     @RequestMapping(value = "/queryDetail", method = RequestMethod.GET)
-    public Result<AutoSuiteVO> queryDetail(@RequestParam("suiteId") Integer suiteId,
-                                           @RequestParam("startIndex") Integer startIndex) {
+    public Result<AutoSuiteVO> queryDetail(@RequestParam("suiteId") Integer suiteId) {
         log.info("--->开始查询套件详情：suiteId={}", suiteId);
-        return Result.success(suiteService.queryDetail(suiteId, startIndex));
+        return Result.success(suiteService.queryDetail(suiteId));
     }
 
-    @RequestMapping(value = "/use", method = RequestMethod.GET)
-    public Result<String> use(@RequestParam("suiteId") Integer suiteId,
-                              @RequestParam(value = "retry", required = false) Boolean retry) {
-        log.info("--->开始执行套件：suiteId={}, retry={}", suiteId, retry);
+    @RequestMapping(value = "/queryRelateCase", method = RequestMethod.POST)
+    public Result<PageInfo<SuiteCaseVO>> queryRelateCase(@RequestBody QueryVO queryVO) {
+        log.info("--->开始查询套件关联的用例：{}", queryVO);
+        return Result.success(suiteService.queryRelateCase(queryVO));
+    }
+
+    @RequestMapping(value = "/executeByLocal", method = RequestMethod.GET)
+    public Result<String> executeByLocal(@RequestParam("suiteId") Integer suiteId,
+                                         @RequestParam(value = "retry", required = false) Boolean retry) {
+        log.info("--->开始执行套件(localhost)：suiteId={}, retry={}", suiteId, retry);
         try {
-            return Result.message(suiteService.useAsync(suiteId, retry), "套件未执行，请检查状态");
+            return Result.message(suiteService.executeByLocal(suiteId, retry), "套件未执行，请检查状态");
         } catch (RejectedExecutionException e) {
             return Result.errorMessage("执行队列已满，请稍后再试");
+        }
+    }
+
+    @RequestMapping(value = "/executeBySchedule", method = RequestMethod.POST)
+    public Result<String> executeBySchedule(@RequestBody AutoSuiteVO autoSuiteVO) {
+        log.info("--->开始调度执行套件：autoSuiteVO={}", autoSuiteVO);
+        try {
+            return Result.message(suiteService.executeBySchedule(autoSuiteVO), "套件未执行，请检查状态");
+        } catch (RejectedExecutionException e) {
+            return Result.errorMessage("执行队列已满，请稍后再试");
+        }
+    }
+
+    // 此接口给后端调用
+    @RequestMapping(value = "/scheduleRun", method = RequestMethod.POST)
+    public Result<String> executeBySchedule(@RequestBody SuiteDTO suiteDTO) {
+        log.info("--->开始执行套件(通过服务器调度)：{}", suiteDTO);
+        try {
+            return Result.success(suiteService.scheduleRun(suiteDTO));
+        } catch (RejectedExecutionException e) {
+            return Result.error("执行队列已满，请稍后再试");
         }
     }
 

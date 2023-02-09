@@ -81,8 +81,8 @@
     inner join suite_case_relation b on a.id = b.case_id
     where b.is_delete = 0 and a.is_delete = 0
     and b.suite_id = #{suiteId,jdbcType=INTEGER}
-    <if test="retry != null">
-      and b.status != 3
+    <if test="name != null">
+      and b.`name` like concat('%', #{name,jdbcType=VARCHAR}, '%')
     </if>
     order by b.sequence asc
     <if test="startIndex != null">

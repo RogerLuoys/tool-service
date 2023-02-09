@@ -15,9 +15,11 @@ public interface ResourceSuiteRelationMapper {
     int insert(ResourceSuiteRelationPO record);
 
 
-    ResourceSuiteRelationPO selectByResourceId(@Param("resourceId") Integer resourceId);
+    ResourceSuiteRelationPO selectByResourceId(@Param("resourceId") Integer resourceId,
+                                               @Param("type") Integer type);
 
-    List<ResourceSuiteRelationPO> selectBySuiteId(@Param("suiteId") Integer suiteId);
+    List<ResourceSuiteRelationPO> selectBySuiteId(@Param("suiteId") Integer suiteId,
+                                                  @Param("type") Integer type);
 
     int update(ResourceSuiteRelationPO record);
 
