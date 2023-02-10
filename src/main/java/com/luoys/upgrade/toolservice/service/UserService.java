@@ -4,6 +4,7 @@ import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.luoys.upgrade.toolservice.dao.po.UserPO;
 import com.luoys.upgrade.toolservice.dao.UserMapper;
+import com.luoys.upgrade.toolservice.service.common.CacheUtil;
 import com.luoys.upgrade.toolservice.service.enums.KeywordEnum;
 import com.luoys.upgrade.toolservice.service.enums.UserTypeEnum;
 import com.luoys.upgrade.toolservice.service.transform.TransformUser;
@@ -25,14 +26,14 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class UserService {
 
-    private Cache<String, UserVO> userCache = Caffeine.newBuilder()
-            //cache的初始容量
-            .initialCapacity(10)
-            //cache最大缓存数
-            .maximumSize(1000)
-            //设置写缓存后n秒钟过期
-            .expireAfterWrite(12, TimeUnit.HOURS)
-            .build();
+//    private Cache<String, UserVO> userCache = Caffeine.newBuilder()
+//            //cache的初始容量
+//            .initialCapacity(10)
+//            //cache最大缓存数
+//            .maximumSize(1000)
+//            //设置写缓存后n秒钟过期
+//            .expireAfterWrite(12, TimeUnit.HOURS)
+//            .build();
 
     @Autowired
     private UserMapper userMapper;
@@ -75,16 +76,15 @@ public class UserService {
         if (loginInfo == null) {
             return null;
         }
-        UserVO userVO = userCache.getIfPresent(loginInfo);
-        if (userVO == null) {
-            userVO = TransformUser.transformPO2VO(userMapper.selectByLoginInfo(loginInfo));
-            if (userVO == null) {
-                log.error("---->用户不存在");
-                return null;
-            }
-            userCache.put(loginInfo, userVO);
-        }
-        return userVO;
+        //        if (userVO == null) {
+//            userVO = TransformUser.transformPO2VO(userMapper.selectByLoginInfo(loginInfo));
+//            if (userVO == null) {
+//                log.error("--->用户不存在");
+//                return null;
+//            }
+//            userCache.put(loginInfo, userVO);
+//        }
+        return CacheUtil.getUserByLoginInfo(loginInfo);
     }
 
     /**
@@ -135,9 +135,6 @@ public class UserService {
         if (userVO == null || userVO.getUsername() == null || userVO.getPassword() == null) {
             log.error("--->注册入参为空");
             return null;
-        }
-        if (userVO.getUsername() == null) {
-            userVO.setUsername(KeywordEnum.DEFAULT_USER.getValue());
         }
         if (userVO.getType() == null) {
             userVO.setType(UserTypeEnum.REGULAR.getCode());

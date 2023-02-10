@@ -1,8 +1,6 @@
 package com.luoys.upgrade.toolservice.service.transform;
 
-import com.luoys.upgrade.toolservice.dao.po.ResourcePO;
 import com.luoys.upgrade.toolservice.dao.po.UserPO;
-import com.luoys.upgrade.toolservice.web.vo.ResourceVO;
 import com.luoys.upgrade.toolservice.web.vo.UserVO;
 
 import java.util.ArrayList;

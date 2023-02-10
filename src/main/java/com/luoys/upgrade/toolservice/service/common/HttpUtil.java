@@ -3,6 +3,7 @@ package com.luoys.upgrade.toolservice.service.common;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.luoys.upgrade.toolservice.service.dto.StepDTO;
+import com.luoys.upgrade.toolservice.service.dto.SuiteDTO;
 import com.luoys.upgrade.toolservice.service.enums.autoStep.methodType.HttpEnum;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.*;
@@ -21,6 +22,20 @@ public class HttpUtil {
         HttpEntity<String> entity = new HttpEntity<>(body, headers);
         ResponseEntity responseEntity = restTemplate.exchange(url, HttpMethod.POST, entity, String.class, new HashMap<>());
         return (Result<String>) responseEntity.getBody();
+    }
+
+    /**
+     * 通过restTemplate调用http接口 scheduleRun
+     * @param url -
+     * @param body -
+     * @return -
+     */
+    public static Result<String> scheduleRun(String url, SuiteDTO body) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<SuiteDTO> entity = new HttpEntity<>(body, headers);
+        ResponseEntity<Result> responseEntity = restTemplate.exchange(url + "autoSuite/executeBySchedule", HttpMethod.POST, entity, Result.class, new HashMap<>());
+        return responseEntity.getBody();
     }
 
     /**

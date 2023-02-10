@@ -1,6 +1,7 @@
 package com.luoys.upgrade.toolservice.service.transform;
 
 import com.luoys.upgrade.toolservice.dao.po.ResourcePO;
+import com.luoys.upgrade.toolservice.service.common.CacheUtil;
 import com.luoys.upgrade.toolservice.service.dto.DataSourceDTO;
 import com.luoys.upgrade.toolservice.service.dto.SlaveDTO;
 import com.luoys.upgrade.toolservice.service.enums.ResourceTypeEnum;
@@ -29,7 +30,7 @@ public class TransformResource {
         vo.setPermission(po.getPermission());
         vo.setProjectId(po.getProjectId());
         vo.setOwnerId(po.getOwnerId());
-        vo.setOwnerName(po.getOwnerName());
+        vo.setOwnerName(po.getOwnerId() == null ? null : CacheUtil.getUserById(po.getOwnerId()));
 //        vo.setUserId(po.getUserId());
 //        vo.setUserName(po.getUserName());
         //根据类型转换不同的对象
@@ -86,7 +87,7 @@ public class TransformResource {
         po.setType(vo.getType());
         po.setProjectId(vo.getProjectId());
         po.setOwnerId(vo.getOwnerId());
-        po.setOwnerName(vo.getOwnerName());
+//        po.setOwnerName(vo.getOwnerName());
         //根据类型转换不同的对象
         switch (ResourceTypeEnum.fromCode(vo.getType())) {
             case DATA_SOURCE:

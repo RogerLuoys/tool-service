@@ -36,9 +36,9 @@ public class SuiteDTO {
     private Integer projectId;
 
     /**
-     * 用例列表，PageInfo类型，通过getList取列表
+     * 待执行的用例列表
      */
-    private PageInfo<SuiteCaseVO> relatedCase;
+    private List<SuiteCaseVO> relatedCase;
 
     /**
      * 是否重试(仅执行时使用)

@@ -7,6 +7,7 @@
     <result column="suite_id" jdbcType="INTEGER" property="suiteId" />
     <result column="type" jdbcType="TINYINT" property="type" />
     <result column="resource_name" jdbcType="VARCHAR" property="resourceName" />
+    <result column="resource_type" jdbcType="TINYINT" property="resourceType" />
     <result column="permission" jdbcType="TINYINT" property="permission" />
     <result column="jdbc_url" jdbcType="VARCHAR" property="jdbcUrl" />
     <result column="jdbc_driver" jdbcType="VARCHAR" property="jdbcDriver" />
@@ -16,7 +17,8 @@
     <result column="slave_thread" jdbcType="VARCHAR" property="slaveThread" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, resource_id, suite_id, `type`
+    id, resource_id, suite_id, `type`, resource_name, resource_type, permission, jdbc_url, jdbc_driver, jdbc_username, jdbc_password,
+    slave_url, slave_thread
   </sql>
   <select id="selectByResourceId" resultMap="BaseResultMap">
     select 

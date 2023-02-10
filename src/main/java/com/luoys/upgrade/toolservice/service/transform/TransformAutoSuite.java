@@ -2,6 +2,8 @@ package com.luoys.upgrade.toolservice.service.transform;
 
 import com.luoys.upgrade.toolservice.dao.po.AutoSuitePO;
 import com.luoys.upgrade.toolservice.dao.po.AutoSuiteQueryPO;
+import com.luoys.upgrade.toolservice.service.common.CacheUtil;
+import com.luoys.upgrade.toolservice.service.dto.SuiteDTO;
 import com.luoys.upgrade.toolservice.service.enums.KeywordEnum;
 import com.luoys.upgrade.toolservice.web.vo.AutoSuiteSimpleVO;
 import com.luoys.upgrade.toolservice.web.vo.AutoSuiteVO;
@@ -33,7 +35,7 @@ public class TransformAutoSuite {
         vo.setPassed(po.getPassed());
         vo.setSuiteId(po.getId());
         vo.setOwnerId(po.getOwnerId());
-        vo.setOwnerName(po.getOwnerName());
+        vo.setOwnerName(po.getOwnerId() == null ? null : CacheUtil.getUserById(po.getOwnerId()));
 //        vo.setEnvironment(po.getEnvironment());
 //        vo.setCaseMaxTime(po.getCaseMaxTime());
 //        vo.setStepSleep(po.getStepSleep());
@@ -66,7 +68,7 @@ public class TransformAutoSuite {
         vo.setCaseTimeOut(po.getCaseTimeOut());
         vo.setTimeOut(po.getTimeOut());
         vo.setSuiteId(po.getId());
-        vo.setOwnerName(po.getOwnerName());
+        vo.setOwnerName(po.getOwnerId() == null ? null : CacheUtil.getUserById(po.getOwnerId()));
         vo.setProjectId(po.getProjectId());
 //        vo.setEnvironment(po.getEnvironment());
 //        vo.setCaseMaxTime(po.getCaseMaxTime());
@@ -93,18 +95,11 @@ public class TransformAutoSuite {
         po.setProjectId(vo.getProjectId());
         po.setFailed(vo.getFailed());
         po.setPassed(vo.getPassed());
-        po.setOwnerName(vo.getOwnerName());
+//        po.setOwnerName(vo.getOwnerName());
         po.setSlaveType(vo.getSlaveType());
         po.setCaseTimeOut(vo.getCaseTimeOut());
         po.setTimeOut(vo.getTimeOut());
-//        po.setEnvironment(vo.getEnvironment());
-//        po.setCaseMaxTime(vo.getCaseMaxTime());
         po.setStatus(vo.getStatus());
-//        po.setStepSleep(vo.getStepSleep());
-//        po.setIsApiCompleted(vo.getIsApiCompleted());
-//        po.setIsUiCompleted(vo.getIsUiCompleted());
-//        // 参数列表转换
-//        po.setParameter(TransformCommon.toParameter(vo.getParameterList()));
         return po;
     }
 
@@ -121,6 +116,20 @@ public class TransformAutoSuite {
         }
         po.setStatus(vo.getStatus());
         return po;
+    }
+
+    public static SuiteDTO transformVO2DTO(AutoSuiteVO vo) {
+        if (vo == null) {
+            return null;
+        }
+        SuiteDTO dto = new SuiteDTO();
+        // 设置基本信息
+        dto.setSuiteId(vo.getSuiteId());
+        dto.setProjectId(vo.getProjectId());
+        dto.setRelatedCase(vo.getRelatedCase().getList());
+        dto.setRetry(vo.getRetry());
+        dto.setSlaveType(vo.getSlaveType());
+        return dto;
     }
 
 }

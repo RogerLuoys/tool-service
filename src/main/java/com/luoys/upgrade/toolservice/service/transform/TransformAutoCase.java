@@ -31,9 +31,7 @@ public class TransformAutoCase {
         vo.setCaseId(po.getId());
         vo.setType(po.getType());
         vo.setStatus(po.getStatus());
-//        vo.setMaxTime(po.getMaxTime());
-        vo.setOwnerName(po.getOwnerName());
-//        vo.setEnvironment(po.getEnvironment());
+        vo.setOwnerName(po.getOwnerId() == null ? null : CacheUtil.getUserById(po.getOwnerId()));
         vo.setFinishTime(po.getFinishTime());
         return vo;
     }
@@ -61,7 +59,7 @@ public class TransformAutoCase {
         vo.setType(po.getType());
         vo.setDescription(po.getDescription());
         vo.setOwnerId(po.getOwnerId());
-        vo.setOwnerName(po.getOwnerName());
+        vo.setOwnerName(po.getOwnerId() == null ? null : CacheUtil.getUserById(po.getOwnerId()));
         vo.setProjectId(po.getProjectId());
         vo.setCaseId(po.getId());
         vo.setStatus(po.getStatus());
@@ -89,7 +87,7 @@ public class TransformAutoCase {
         po.setName(vo.getName());
         po.setDescription(vo.getDescription());
         po.setOwnerId(vo.getOwnerId());
-        po.setOwnerName(vo.getOwnerName());
+//        po.setOwnerName(vo.getOwnerName());
         po.setId(vo.getCaseId());
         po.setType(vo.getType());
         po.setStatus(vo.getStatus());

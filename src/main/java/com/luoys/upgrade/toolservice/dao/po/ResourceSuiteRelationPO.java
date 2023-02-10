@@ -34,6 +34,11 @@ public class ResourceSuiteRelationPO {
     private String resourceName;
 
     /**
+     * 资源类型：1 数据库，2 从节点
+     */
+    private Integer resourceType;
+
+    /**
      * 查看权限：1 公开，2 仅自己可见合
      */
     private Integer permission;

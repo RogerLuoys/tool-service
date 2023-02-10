@@ -82,7 +82,7 @@
     where b.is_delete = 0 and a.is_delete = 0
     and b.suite_id = #{suiteId,jdbcType=INTEGER}
     <if test="name != null">
-      and b.`name` like concat('%', #{name,jdbcType=VARCHAR}, '%')
+      and a.`name` like concat('%', #{name,jdbcType=VARCHAR}, '%')
     </if>
     order by b.sequence asc
     <if test="startIndex != null">

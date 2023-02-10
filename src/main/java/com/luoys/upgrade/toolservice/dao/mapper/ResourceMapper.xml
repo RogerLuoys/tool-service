@@ -15,11 +15,11 @@
     <result column="slave_thread" jdbcType="INTEGER" property="slaveThread" />
     <result column="project_id" jdbcType="INTEGER" property="projectId" />
     <result column="owner_id" jdbcType="INTEGER" property="ownerId" />
-    <result column="owner_name" jdbcType="VARCHAR" property="ownerName" />
+<!--    <result column="owner_name" jdbcType="VARCHAR" property="ownerName" />-->
   </resultMap>
   <sql id="Base_Column_List">
     id, `name`, description, `type`, permission, jdbc_url, jdbc_driver, jdbc_username,
-    jdbc_password, slave_url, slave_thread, project_id, owner_id, owner_name
+    jdbc_password, slave_url, slave_thread, project_id, owner_id
   </sql>
   <select id="selectByID" resultMap="BaseResultMap">
     select
@@ -77,15 +77,13 @@
     insert into resource (`name`, description, `type`,
       permission, jdbc_url, jdbc_driver,
       jdbc_username, jdbc_password,
-      slave_url, owner_id,
-      owner_name, project_id,
+      slave_url, owner_id, project_id,
       is_delete, gmt_create, gmt_modified
       )
     values (#{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{type,jdbcType=TINYINT},
       #{permission,jdbcType=TINYINT}, #{jdbcUrl,jdbcType=VARCHAR}, #{jdbcDriver,jdbcType=VARCHAR},
       #{jdbcUsername,jdbcType=VARCHAR}, #{jdbcPassword,jdbcType=VARCHAR},
-      #{slaveUrl,jdbcType=VARCHAR}, #{ownerId,jdbcType=INTEGER},
-      #{ownerName,jdbcType=VARCHAR}, #{projectId,jdbcType=INTEGER},
+      #{slaveUrl,jdbcType=VARCHAR}, #{ownerId,jdbcType=INTEGER}, #{projectId,jdbcType=INTEGER},
       0, now(), now()
       )
   </insert>

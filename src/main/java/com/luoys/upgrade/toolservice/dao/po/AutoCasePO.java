@@ -1,6 +1,5 @@
 package com.luoys.upgrade.toolservice.dao.po;
 
-import java.io.Serializable;
 import java.util.Date;
 
 import lombok.Data;
@@ -22,11 +21,6 @@ public class AutoCasePO {
      * 业务id
      */
     private Integer supperCaseId;
-
-//    /**
-//     * 业务id
-//     */
-//    private String caseId;
 
     /**
      * 名称
@@ -53,25 +47,10 @@ public class AutoCasePO {
      */
     private Integer timeOut;
 
-//    /**
-//     * 用例执行环境（参数）
-//     */
-//    private String environment;
-
-//    /**
-//     * 入参列表，List<CommonDTO>类型
-//     */
-//    private String parameter;
-
     /**
      * 用例计划完成时间
      */
     private Date finishTime;
-
-//    /**
-//     * 用例的脚本模式
-//     */
-//    private String mainSteps;
 
     /**
      * 所属项目id
@@ -83,9 +62,9 @@ public class AutoCasePO {
      */
     private Integer ownerId;
 
-    /**
-     * 所属人
-     */
-    private String ownerName;
+//    /**
+//     * 所属人
+//     */
+//    private String ownerName;
 
 }

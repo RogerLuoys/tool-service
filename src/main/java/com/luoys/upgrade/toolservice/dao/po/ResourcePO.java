@@ -72,9 +72,9 @@ public class ResourcePO {
      */
     private Integer ownerId;
 
-    /**
-     * 所属人昵称
-     */
-    private String ownerName;
+//    /**
+//     * 所属人昵称
+//     */
+//    private String ownerName;
 
 }

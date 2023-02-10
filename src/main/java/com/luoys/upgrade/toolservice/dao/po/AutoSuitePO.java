@@ -18,11 +18,6 @@ public class AutoSuitePO {
      */
     private Integer id;
 
-//    /**
-//     * 业务id
-//     */
-//    private String suiteId;
-
     /**
      * 名称
      */
@@ -42,16 +37,6 @@ public class AutoSuitePO {
      * 套件状态：1 空闲，2 执行中，3 排队中
      */
     private Integer status;
-
-//    /**
-//     * 用例执行的环境
-//     */
-//    private String resource;
-
-//    /**
-//     * 入参列表，List<CommonDTO>类型
-//     */
-//    private String parameter;
 
     /**
      * 套件执行超时时间
@@ -88,19 +73,9 @@ public class AutoSuitePO {
      */
     private Integer ownerId;
 
-    /**
-     * 所属人昵称
-     */
-    private String ownerName;
-
 //    /**
-//     * ui用例是否执行完成
+//     * 所属人昵称
 //     */
-//    private Boolean isUiCompleted;
-//
-//    /**
-//     * api用例是否执行完成
-//     */
-//    private Boolean isApiCompleted;
+//    private String ownerName;
 
 }

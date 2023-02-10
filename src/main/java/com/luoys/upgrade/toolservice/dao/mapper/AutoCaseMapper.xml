@@ -16,11 +16,10 @@
 <!--    <result column="main_steps" jdbcType="VARCHAR" property="mainSteps" />-->
     <result column="project_id" jdbcType="INTEGER" property="projectId" />
     <result column="owner_id" jdbcType="INTEGER" property="ownerId" />
-    <result column="owner_name" jdbcType="VARCHAR" property="ownerName" />
+<!--    <result column="owner_name" jdbcType="VARCHAR" property="ownerName" />-->
   </resultMap>
   <sql id="Base_Column_List">
-    id, supper_case_id, `name`, description, time_out, `type`, `status`, finish_time, project_id, owner_id,
-    owner_name
+    id, supper_case_id, `name`, description, time_out, `type`, `status`, finish_time, project_id, owner_id
   </sql>
   <select id="selectById" resultMap="BaseResultMap">
     select
@@ -90,12 +89,12 @@
   </update>
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.luoys.upgrade.toolservice.dao.po.AutoCasePO" useGeneratedKeys="true">
     insert into auto_case (supper_case_id, `name`, description, time_out,
-      `type`, `status`, finish_time, project_id, owner_id, owner_name,
+      `type`, `status`, finish_time, project_id, owner_id,
       is_delete, gmt_create, gmt_modified
       )
     values (#{supperCaseId,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{timeOut,jdbcType=INTEGER},
       #{type,jdbcType=TINYINT}, #{status,jdbcType=TINYINT}, #{finishTime,jdbcType=TIMESTAMP},
-      #{projectId,jdbcType=INTEGER}, #{ownerId,jdbcType=INTEGER}, #{ownerName,jdbcType=VARCHAR}, 0, now(), now()
+      #{projectId,jdbcType=INTEGER}, #{ownerId,jdbcType=INTEGER}, 0, now(), now()
       )
   </insert>
   <update id="update" parameterType="com.luoys.upgrade.toolservice.dao.po.AutoCasePO">
@@ -128,9 +127,9 @@
       <if test="ownerId != null">
         owner_id = #{ownerId,jdbcType=INTEGER},
       </if>
-      <if test="ownerName != null">
-        owner_name = #{ownerName,jdbcType=VARCHAR},
-      </if>
+<!--      <if test="ownerName != null">-->
+<!--        owner_name = #{ownerName,jdbcType=VARCHAR},-->
+<!--      </if>-->
       gmt_modified = now()
     </set>
     where id = #{id,jdbcType=INTEGER}

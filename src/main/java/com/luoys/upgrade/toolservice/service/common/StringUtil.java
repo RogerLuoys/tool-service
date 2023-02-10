@@ -3,6 +3,7 @@ package com.luoys.upgrade.toolservice.service.common;
 
 import com.alibaba.fastjson.JSON;
 import org.apache.commons.text.StringEscapeUtils;
+import org.springframework.util.DigestUtils;
 
 import java.util.ArrayList;
 import java.util.List;
