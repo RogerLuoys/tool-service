@@ -3,7 +3,6 @@
 <mapper namespace="com.luoys.upgrade.toolservice.dao.TaskMapper">
   <resultMap id="BaseResultMap" type="com.luoys.upgrade.toolservice.dao.po.TaskPO">
     <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="task_id" jdbcType="VARCHAR" property="taskId" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="description" jdbcType="VARCHAR" property="description" />
     <result column="comment" jdbcType="VARCHAR" property="comment" />
@@ -11,46 +10,45 @@
     <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
     <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
     <result column="owner_id" jdbcType="VARCHAR" property="ownerId" />
-    <result column="owner_name" jdbcType="VARCHAR" property="ownerName" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, task_id, `name`, description, `comment`, `status`, start_time, end_time,
-    owner_id, owner_name
+    id, `name`, description, `comment`, `status`, start_time, end_time,
+    owner_id
   </sql>
 
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.luoys.upgrade.toolservice.dao.po.TaskPO" useGeneratedKeys="true">
-    insert into task (task_id, `name`, description,
+    insert into task (`name`, description,
                             `comment`, `status`, start_time,
-                            end_time, owner_id, owner_name, is_delete, gmt_create,
+                            end_time, owner_id, is_delete, gmt_create,
                             gmt_modified)
-    values (#{taskId,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR},
+    values (#{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR},
             #{comment,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT}, #{startTime,jdbcType=TIMESTAMP},
-            #{endTime,jdbcType=TIMESTAMP}, #{ownerId,jdbcType=VARCHAR}, #{ownerName,jdbcType=VARCHAR},
+            #{endTime,jdbcType=TIMESTAMP}, #{ownerId,jdbcType=VARCHAR},
             0, now(), now())
   </insert>
-  <update id="updateStatusByUUID">
+  <update id="updateStatusById">
     update task
     set `status` = #{status,jdbcType=TINYINT},
         gmt_modified = now()
-    where task_id = #{taskId,jdbcType=VARCHAR}
+    where id = #{taskId,jdbcType=INTEGER}
   </update>
-  <update id="updateCommentByUUID">
+  <update id="updateCommentById">
     update task
     set comment = #{comment,jdbcType=VARCHAR},
         gmt_modified = now()
-    where task_id = #{taskId,jdbcType=VARCHAR}
+    where id = #{taskId,jdbcType=INTEGER}
   </update>
   <update id="remove">
     update task
     set is_delete = 1,
         gmt_modified = now()
-    where task_id = #{taskId,jdbcType=VARCHAR}
+    where id = #{taskId,jdbcType=INTEGER}
   </update>
-  <select id="selectByUUID" parameterType="java.lang.String" resultMap="BaseResultMap">
+  <select id="selectById" parameterType="java.lang.String" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from task
-    where task_id = #{taskId,jdbcType=INTEGER}
+    where id = #{taskId,jdbcType=INTEGER}
   </select>
   <select id="list" resultMap="BaseResultMap">
     select
@@ -79,6 +77,6 @@
       </if>
       gmt_modified = now()
     </set>
-    where task_id = #{taskId,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

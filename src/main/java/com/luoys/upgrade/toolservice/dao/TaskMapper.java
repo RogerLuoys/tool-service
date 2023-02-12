@@ -8,7 +8,6 @@ import java.util.Date;
 import java.util.List;
 
 @Repository
-@Deprecated
 public interface TaskMapper {
 
     /**
@@ -34,7 +33,7 @@ public interface TaskMapper {
      * @param status 要更新的状态
      * @return 成功为1
      */
-    int updateStatusByUUID(@Param("taskId") String taskId,
+    int updateStatusById(@Param("taskId") Integer taskId,
                            @Param("status") Integer status);
 
     /**
@@ -44,7 +43,7 @@ public interface TaskMapper {
      * @param comment 要更新的备份
      * @return 成功为1
      */
-    int updateCommentByUUID(@Param("taskId") String taskId,
+    int updateCommentById(@Param("taskId") Integer taskId,
                             @Param("comment") String comment);
 
     /**
@@ -53,7 +52,7 @@ public interface TaskMapper {
      * @param taskId 业务id
      * @return 成功为1
      */
-    int remove(@Param("taskId") String taskId);
+    int remove(@Param("taskId") Integer taskId);
 
     /**
      * 查询任务信息
@@ -61,7 +60,7 @@ public interface TaskMapper {
      * @param taskId 业务id
      * @return 任务对象
      */
-    TaskPO selectByUUID(@Param("taskId") String taskId);
+    TaskPO selectById(@Param("taskId") Integer taskId);
 
     /**
      * 按条件查询任务列表
@@ -71,7 +70,7 @@ public interface TaskMapper {
      * @param endTime   任务结束实际
      * @return 任务对象列表
      */
-    List<TaskPO> list(@Param("ownerId") String ownerId,
+    List<TaskPO> list(@Param("ownerId") Integer ownerId,
                       @Param("startTime") Date startTime,
                       @Param("endTime") Date endTime);
 

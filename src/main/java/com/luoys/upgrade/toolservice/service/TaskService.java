@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-@Deprecated
 @Slf4j
 @Service
 public class TaskService {
@@ -29,9 +28,10 @@ public class TaskService {
      * @param taskVO 任务对象
      * @return 成功返回taskId，失败为null
      */
-    public String create(TaskVO taskVO) {
-//        taskVO.setTaskId(NumberSender.createTaskDailyId());
-        return taskMapper.insert(TransformTask.transformVO2PO(taskVO)) == 1 ? taskVO.getTaskId() : null;
+    public Integer create(TaskVO taskVO) {
+        TaskPO taskPO = TransformTask.transformVO2PO(taskVO);
+        taskMapper.insert(taskPO);
+        return taskPO.getId();
     }
 
     /**
@@ -40,7 +40,7 @@ public class TaskService {
      * @param taskId 业务id
      * @return 成功为true
      */
-    public Boolean remove(String taskId) {
+    public Boolean remove(Integer taskId) {
         return taskMapper.remove(taskId) == 1;
     }
 
@@ -62,12 +62,12 @@ public class TaskService {
      * @param status 要更新的状态
      * @return 成功为true
      */
-    public Boolean updateStatus(String taskId, Integer status) {
+    public Boolean updateStatus(Integer taskId, Integer status) {
         if (taskId == null || status == null) {
             log.error("--->入参不能为空，修改状态失败");
             return null;
         }
-        return taskMapper.updateStatusByUUID(taskId, status) == 1;
+        return taskMapper.updateStatusById(taskId, status) == 1;
     }
 
     /**
@@ -77,12 +77,12 @@ public class TaskService {
      * @param comment 备注
      * @return 成功为true
      */
-    public Boolean updateComment(String taskId, String comment) {
+    public Boolean updateComment(Integer taskId, String comment) {
         if (taskId == null || comment == null) {
             log.error("--->入参不能为空，修改备注失败");
             return null;
         }
-        return taskMapper.updateCommentByUUID(taskId, comment) == 1;
+        return taskMapper.updateCommentById(taskId, comment) == 1;
     }
 
     /**
@@ -93,11 +93,7 @@ public class TaskService {
      * @param endTime   时间段结束时间
      * @return 任务列表
      */
-    public List<TaskVO> query(String ownerId, Date startTime, Date endTime) {
-        if (StringUtil.isBlank(ownerId)) {
-            log.error("--->所有者不能为空");
-            return null;
-        }
+    public List<TaskVO> query(Integer ownerId, Date startTime, Date endTime) {
         List<TaskPO> poList = taskMapper.list(
                 ownerId, startTime, endTime);
         return TransformTask.TransformPO2VO(poList);
@@ -110,7 +106,7 @@ public class TaskService {
      * @param currentDate 当前时间，根据此时间查询周一和周日
      * @return 当前时间所在周的所有任务
      */
-    public List<TaskWeeklyVO> queryByWeekly(String ownerId, Date currentDate) {
+    public List<TaskWeeklyVO> queryByWeekly(Integer ownerId, Date currentDate) {
         List<TaskWeeklyVO> weekList = new ArrayList<>();
         Date monStart = TimeUtil.getDayStart(TimeUtil.getWeekDate(currentDate, 1));
         Date sunEnd = TimeUtil.getDayEnd(TimeUtil.getWeekDate(currentDate, 7));

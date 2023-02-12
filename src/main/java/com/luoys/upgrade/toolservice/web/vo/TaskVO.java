@@ -11,7 +11,7 @@ public class TaskVO {
     /**
      * 业务id
      */
-    private String taskId;
+    private Integer taskId;
 
     /**
      * 名称
@@ -48,7 +48,7 @@ public class TaskVO {
     /**
      * 所属人id
      */
-    private String ownerId;
+    private Integer ownerId;
 
     /**
      * 所属人

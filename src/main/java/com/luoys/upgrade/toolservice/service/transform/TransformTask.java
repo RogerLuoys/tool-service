@@ -1,6 +1,7 @@
 package com.luoys.upgrade.toolservice.service.transform;
 
 import com.luoys.upgrade.toolservice.dao.po.TaskPO;
+import com.luoys.upgrade.toolservice.service.common.CacheUtil;
 import com.luoys.upgrade.toolservice.web.vo.TaskVO;
 
 import java.util.ArrayList;
@@ -11,7 +12,6 @@ import java.util.List;
  *
  * @author luoys
  */
-@Deprecated
 public class TransformTask {
 
     public static TaskPO transformVO2PO(TaskVO vo) {
@@ -24,10 +24,9 @@ public class TransformTask {
         po.setEndTime(vo.getEndTime());
         po.setStartTime(vo.getStartTime());
         po.setStatus(vo.getStatus());
-        po.setTaskId(vo.getTaskId());
+        po.setId(vo.getTaskId());
         po.setName(vo.getName());
         po.setOwnerId(vo.getOwnerId());
-        po.setOwnerName(vo.getOwnerName());
         return po;
     }
 
@@ -38,13 +37,13 @@ public class TransformTask {
         }
         TaskVO vo = new TaskVO();
         vo.setStatus(po.getStatus());
-        vo.setTaskId(po.getTaskId());
+        vo.setTaskId(po.getId());
         vo.setComment(po.getComment());
         vo.setDescription(po.getDescription());
         vo.setEndTime(po.getEndTime());
         vo.setName(po.getName());
         vo.setStartTime(po.getStartTime());
-        vo.setOwnerName(po.getOwnerName());
+        vo.setOwnerName(po.getOwnerId() == null ? null : CacheUtil.getUserById(po.getOwnerId()));
         vo.setOwnerId(po.getOwnerId());
         return vo;
     }

@@ -8,14 +8,8 @@ import lombok.Data;
  * @author luoys
  */
 @Data
-@Deprecated
 public class TaskPO {
     private Integer id;
-
-    /**
-     * 业务id
-     */
-    private String taskId;
 
     /**
      * 名称
@@ -50,11 +44,6 @@ public class TaskPO {
     /**
      * 所属人id
      */
-    private String ownerId;
-
-    /**
-     * 所属人昵称
-     */
-    private String ownerName;
+    private Integer ownerId;
 
 }
