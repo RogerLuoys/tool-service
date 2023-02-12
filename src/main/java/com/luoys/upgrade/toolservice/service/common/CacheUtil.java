@@ -10,6 +10,8 @@ import com.luoys.upgrade.toolservice.dao.po.UserPO;
 import com.luoys.upgrade.toolservice.service.CaseService;
 import com.luoys.upgrade.toolservice.service.dto.DataSourceDTO;
 import com.luoys.upgrade.toolservice.service.dto.StepDTO;
+import com.luoys.upgrade.toolservice.service.enums.DefaultEnum;
+import com.luoys.upgrade.toolservice.service.enums.UserTypeEnum;
 import com.luoys.upgrade.toolservice.service.transform.TransformCaseStepRelation;
 import com.luoys.upgrade.toolservice.service.transform.TransformResource;
 import com.luoys.upgrade.toolservice.service.transform.TransformUser;
@@ -138,13 +140,23 @@ public class CacheUtil {
     }
 
     private static UserVO getUserByInfoFromDB(String key) {
+        if (key.equals("03f798da9d3e6a10cfd620229fe122d4")) {
+            UserVO userVO = new UserVO();
+            userVO.setUserId(99999);
+            userVO.setLoginInfo("03f798da9d3e6a10cfd620229fe122d4");
+            userVO.setType(UserTypeEnum.REGULAR.getCode());
+            userVO.setUsername("default");
+            userVO.setPassword("101");
+            userVO.setNickname("演示账号");
+            return userVO;
+        }
         return TransformUser.transformPO2VO(userMapper.selectByLoginInfo(key));
     }
 
     private static String getNickNameFromDB(Integer key) {
         UserPO userPO = userMapper.selectById(key);
         if (userPO == null) {
-            return "无此账号";
+            return DefaultEnum.DEFAULT_UNKNOWN_USER.getValue();
         }
         return userPO.getNickname();
     }

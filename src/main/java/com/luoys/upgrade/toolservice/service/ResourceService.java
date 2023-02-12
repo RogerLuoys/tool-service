@@ -3,7 +3,7 @@ package com.luoys.upgrade.toolservice.service;
 import com.luoys.upgrade.toolservice.dao.po.ResourcePO;
 import com.luoys.upgrade.toolservice.dao.ResourceMapper;
 import com.luoys.upgrade.toolservice.dao.UserMapper;
-import com.luoys.upgrade.toolservice.service.enums.KeywordEnum;
+import com.luoys.upgrade.toolservice.service.enums.DefaultEnum;
 import com.luoys.upgrade.toolservice.service.transform.TransformResource;
 import com.luoys.upgrade.toolservice.web.vo.QueryVO;
 import com.luoys.upgrade.toolservice.web.vo.ResourceVO;
@@ -32,16 +32,17 @@ public class ResourceService {
      * @param resourceVO 资源对象
      * @return 成功为true，失败为false
      */
-    public Boolean create(ResourceVO resourceVO) {
+    public Integer create(ResourceVO resourceVO) {
 //        resourceVO.setResourceId(NumberSender.createResourceId());
-        if (resourceVO.getOwnerId().equals(KeywordEnum.DEFAULT_USER.getCode())) {
-            resourceVO.setOwnerName(KeywordEnum.DEFAULT_USER.getValue());
-        } else {
-            String username = userMapper.selectById(resourceVO.getOwnerId()).getUsername();
-            resourceVO.setOwnerName(username);
-        }
-        int result = resourceMapper.insert(TransformResource.transformVO2PO(resourceVO));
-        return result == 1;
+//        if (resourceVO.getOwnerId().equals(KeywordEnum.DEFAULT_USER.getCode())) {
+//            resourceVO.setOwnerName(KeywordEnum.DEFAULT_USER.getValue());
+//        } else {
+//            String username = userMapper.selectById(resourceVO.getOwnerId()).getUsername();
+//            resourceVO.setOwnerName(username);
+//        }
+        ResourcePO resourcePO = TransformResource.transformVO2PO(resourceVO);
+        resourceMapper.insert(resourcePO);
+        return resourcePO.getId();
     }
 
     /**
@@ -84,11 +85,11 @@ public class ResourceService {
      * @return 资源列表
      */
     public List<ResourceVO> query(QueryVO queryVO) {
-        Integer startIndex = null;
+        Integer startIndex = queryVO.getPageIndex() == null ? null : (queryVO.getPageIndex() - 1) * DefaultEnum.DEFAULT_PAGE_SIZE.getCode();;
         if (queryVO.getPageIndex() != null) {
-            startIndex = (queryVO.getPageIndex() - 1) * KeywordEnum.DEFAULT_PAGE_SIZE.getCode();
+            startIndex = (queryVO.getPageIndex() - 1) * DefaultEnum.DEFAULT_PAGE_SIZE.getCode();
         }
-        List<ResourcePO> resourcePOList = resourceMapper.list(queryVO.getType(), queryVO.getName(), queryVO.getUserId(), startIndex);
+        List<ResourcePO> resourcePOList = resourceMapper.list(queryVO.getType(), queryVO.getName(), queryVO.getUserId(), queryVO.getProjectId(), startIndex);
         return TransformResource.transformPO2VO(resourcePOList);
     }
 

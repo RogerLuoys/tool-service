@@ -39,9 +39,9 @@
     <if test="projectId != null">
       and project_id = #{projectId,jdbcType=INTEGER}
     </if>
-    <if test="ownerId != null">
-      and owner_id = #{ownerId,jdbcType=INTEGER}
-    </if>
+<!--    <if test="ownerId != null">-->
+<!--      and owner_id = #{ownerId,jdbcType=INTEGER}-->
+<!--    </if>-->
     <if test="name != null">
       and `name` like concat('%', #{name,jdbcType=VARCHAR}, '%')
     </if>

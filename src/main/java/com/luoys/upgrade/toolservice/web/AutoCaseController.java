@@ -3,7 +3,6 @@ package com.luoys.upgrade.toolservice.web;
 import com.luoys.upgrade.toolservice.service.UserService;
 import com.luoys.upgrade.toolservice.service.common.Result;
 import com.luoys.upgrade.toolservice.service.CaseService;
-import com.luoys.upgrade.toolservice.service.enums.KeywordEnum;
 import com.luoys.upgrade.toolservice.web.vo.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,7 +47,6 @@ public class AutoCaseController {
                                       @RequestHeader(value = "projectId") Integer projectId,
                                       @RequestHeader("loginInfo") String loginInfo) {
         autoCaseVO.setProjectId(projectId);
-        autoCaseVO.setOwnerName(KeywordEnum.DEFAULT_USER.getValue());
         log.info("--->开始快速新增用例：{}", autoCaseVO);
         autoCaseVO.setOwnerId(userService.queryByLoginInfo(loginInfo).getUserId());
         return Result.message(caseService.quickCreate(autoCaseVO));

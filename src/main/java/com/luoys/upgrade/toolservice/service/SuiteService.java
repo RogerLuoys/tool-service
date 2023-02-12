@@ -61,20 +61,21 @@ public class SuiteService {
      * @param autoSuiteVO 套件对象
      * @return 成功为true，失败为false
      */
-    public Boolean create(AutoSuiteVO autoSuiteVO) {
+    public Integer create(AutoSuiteVO autoSuiteVO) {
         if (StringUtil.isBlank(autoSuiteVO.getName())) {
             log.error("--->套件名字必填：{}", autoSuiteVO);
-            return false;
+            return -1;
         }
-        if (autoSuiteVO.getOwnerId().equals(KeywordEnum.DEFAULT_USER.getCode().toString())) {
-            autoSuiteVO.setOwnerName(KeywordEnum.DEFAULT_USER.getValue());
-        } else {
-            String userName = userMapper.selectById(autoSuiteVO.getOwnerId()).getUsername();
-            autoSuiteVO.setOwnerName(userName);
-        }
+//        if (autoSuiteVO.getOwnerId().equals(KeywordEnum.DEFAULT_USER.getCode().toString())) {
+//            autoSuiteVO.setOwnerName(KeywordEnum.DEFAULT_USER.getValue());
+//        } else {
+//            String userName = userMapper.selectById(autoSuiteVO.getOwnerId()).getUsername();
+//            autoSuiteVO.setOwnerName(userName);
+//        }
 //        autoSuiteVO.setSuiteId(NumberSender.createSuiteId());
-        int result = autoSuiteMapper.insert(TransformAutoSuite.transformVO2PO(autoSuiteVO));
-        return result == 1;
+        AutoSuitePO autoSuitePO = TransformAutoSuite.transformVO2PO(autoSuiteVO);
+        autoSuiteMapper.insert(autoSuitePO);
+        return autoSuitePO.getId();
     }
 
     /**
@@ -89,6 +90,7 @@ public class SuiteService {
             return null;
         }
         autoSuiteVO.setStatus(AutoSuiteStatusEnum.SUITE_FREE.getCode());
+        autoSuiteVO.setSlaveType(AutoSuiteSlaveTypeEnum.ANY_SLAVE.getCode());
         AutoSuitePO autoSuitePO = TransformAutoSuite.transformVO2PO(autoSuiteVO);
         autoSuiteMapper.insert(autoSuitePO);
         return autoSuitePO.getId();
@@ -116,7 +118,7 @@ public class SuiteService {
      */
     public Boolean createRelatedCase(SuiteCaseVO suiteCaseVO) {
         if (suiteCaseVO.getSequence() == null) {
-            suiteCaseVO.setSequence(KeywordEnum.DEFAULT_CASE_SEQUENCE.getCode());
+            suiteCaseVO.setSequence(DefaultEnum.DEFAULT_CASE_SEQUENCE.getCode());
         }
         if (suiteCaseVO.getStatus() == null) {
             suiteCaseVO.setStatus(AutoCaseStatusEnum.PLANNING.getCode());
@@ -143,7 +145,7 @@ public class SuiteService {
         for (AutoCaseSimpleVO vo : queryAll(suiteId, userId, name)) {
             SuiteCaseRelationPO po = new SuiteCaseRelationPO();
             po.setCaseId(vo.getCaseId());
-            po.setSequence(KeywordEnum.DEFAULT_CASE_SEQUENCE.getCode());
+            po.setSequence(DefaultEnum.DEFAULT_CASE_SEQUENCE.getCode());
             po.setStatus(AutoCaseStatusEnum.PLANNING.getCode());
             po.setSuiteId(suiteId);
             relateCase.add(po);

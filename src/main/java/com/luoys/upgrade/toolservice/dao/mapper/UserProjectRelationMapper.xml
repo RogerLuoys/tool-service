@@ -10,7 +10,7 @@
     <result column="nickname" jdbcType="VARCHAR" property="nickname" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, user_id, project_id, `type`
+    id, user_id, project_id, `type`, username, nickname
   </sql>
   <select id="select" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -20,23 +20,23 @@
   </select>
   <select id="listMember" resultMap="BaseResultMap">
     select
-      a.user_id, a.project_id, a.type, b.username, b.nickname
-    from user_project_relation a
-           inner join user b on a.user_id = b.id
-    where a.project_id = #{projectId,jdbcType=INTEGER} and b.is_delete = 0
+      b.user_id, b.project_id, b.type, a.username, a.nickname
+    from user a inner join user_project_relation b on a.id = b.user_id
+    where a.is_delete = 0 and b.is_delete = 0
+      and b.project_id = #{projectId,jdbcType=INTEGER}
     <if test="nickname != null">
-      and `nickname` = #{nickname,jdbcType=VARCHAR}
+      and a.`nickname` like concat('%', #{nickname,jdbcType=VARCHAR}, '%')
     </if>
     order by a.gmt_create desc limit ${startIndex}, 10
   </select>
   <select id="count"  resultType="java.lang.Integer">
     select
     count(1)
-    from user_project_relation a
-    inner join user b on a.user_id = b.id
-    where a.project_id = #{projectId,jdbcType=INTEGER} and b.is_delete = 0
+    from user a inner join user_project_relation b on a.id = b.user_id
+    where a.is_delete = 0 and b.is_delete = 0
+    and b.project_id = #{projectId,jdbcType=INTEGER}
     <if test="nickname != null">
-      and `nickname` = #{nickname,jdbcType=VARCHAR}
+      and a.`nickname` like concat('%', #{nickname,jdbcType=VARCHAR}, '%')
     </if>
   </select>
   <delete id="remove" parameterType="java.lang.Integer">

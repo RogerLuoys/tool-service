@@ -38,7 +38,7 @@
     <include refid="Base_Column_List" />
     from resource
     where is_delete = 0
-    and (permission = 1 or owner_id = #{ownerId,jdbcType=INTEGER})
+    and (permission = 1 or ((permission = 2 or owner_id = #{ownerId,jdbcType=INTEGER}) and project_id = #{projectId,jdbcType=INTEGER}))
     <if test="type != null">
       and type = #{type,jdbcType=TINYINT}
     </if>

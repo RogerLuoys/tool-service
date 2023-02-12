@@ -8,11 +8,9 @@ import lombok.Getter;
  * @author luoys
  */
 @Getter
-public enum KeywordEnum {
+public enum DefaultEnum {
 
-    PRE_PARAM_ENV(null, "${env}", "自动化执行的环境参数"),
-    DEFAULT_STEP_NAME(null, "新增测试步骤", "默认步骤名称"),
-    DEFAULT_USER(101, "默认用户", "默认用户id和昵称"),
+    DEFAULT_UNKNOWN_USER(-1, "未知用户", "数据库中未查到指定用户"),
     DEFAULT_PAGE_SIZE(10, null, "默认分页大小"),
     DEFAULT_CASE_SEQUENCE(999, null, "默认用例执行优先级");
 
@@ -20,7 +18,7 @@ public enum KeywordEnum {
     private final String value;
     private final String description;
 
-    KeywordEnum(Integer code, String value, String description) {
+    DefaultEnum(Integer code, String value, String description) {
         this.code = code;
         this.value = value;
         this.description = description;

@@ -4,7 +4,7 @@ import com.luoys.upgrade.toolservice.dao.ProjectMapper;
 import com.luoys.upgrade.toolservice.dao.UserProjectRelationMapper;
 import com.luoys.upgrade.toolservice.dao.po.ProjectPO;
 import com.luoys.upgrade.toolservice.dao.po.UserProjectRelationPO;
-import com.luoys.upgrade.toolservice.service.enums.KeywordEnum;
+import com.luoys.upgrade.toolservice.service.enums.DefaultEnum;
 import com.luoys.upgrade.toolservice.service.enums.MemberEnum;
 import com.luoys.upgrade.toolservice.service.transform.TransformProject;
 import com.luoys.upgrade.toolservice.web.vo.ProjectVO;
@@ -78,7 +78,7 @@ public class ProjectService {
      * @return 总数
      */
     public List<ProjectVO> query(String name, Integer pageIndex) {
-        int startIndex = (pageIndex - 1) * KeywordEnum.DEFAULT_PAGE_SIZE.getCode();
+        int startIndex = (pageIndex - 1) * DefaultEnum.DEFAULT_PAGE_SIZE.getCode();
         List<ProjectPO> projectPOList = projectMapper.list(name, startIndex);
         return TransformProject.transformPO2VO(projectPOList);
     }

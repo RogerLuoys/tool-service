@@ -1,11 +1,8 @@
 package com.luoys.upgrade.toolservice.service;
 
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
 import com.luoys.upgrade.toolservice.dao.po.UserPO;
 import com.luoys.upgrade.toolservice.dao.UserMapper;
 import com.luoys.upgrade.toolservice.service.common.CacheUtil;
-import com.luoys.upgrade.toolservice.service.enums.KeywordEnum;
 import com.luoys.upgrade.toolservice.service.enums.UserTypeEnum;
 import com.luoys.upgrade.toolservice.service.transform.TransformUser;
 import com.luoys.upgrade.toolservice.web.vo.UserVO;
@@ -15,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 /**
  * 用户服务，包含用户相关的所有业务逻辑

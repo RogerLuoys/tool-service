@@ -24,7 +24,7 @@ public class ResourceController {
     private UserService userService;
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public Result<String> create(@RequestHeader("loginInfo") String loginInfo,
+    public Result<Integer> create(@RequestHeader("loginInfo") String loginInfo,
                                  @RequestHeader(value = "projectId") Integer projectId,
                                  @RequestBody ResourceVO resourceVO) {
         resourceVO.setProjectId(projectId);

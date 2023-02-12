@@ -81,6 +81,7 @@ public interface ResourceMapper {
     List<ResourcePO> list(@Param("type") Integer type,
                           @Param("name") String name,
                           @Param("ownerId") Integer ownerId,
+                          @Param("projectId") Integer projectId,
                           @Param("startIndex") Integer startIndex);
 
     /**

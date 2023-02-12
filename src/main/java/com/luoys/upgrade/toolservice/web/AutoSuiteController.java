@@ -4,7 +4,6 @@ import com.luoys.upgrade.toolservice.service.UserService;
 import com.luoys.upgrade.toolservice.service.common.Result;
 import com.luoys.upgrade.toolservice.service.SuiteService;
 import com.luoys.upgrade.toolservice.service.dto.SuiteDTO;
-import com.luoys.upgrade.toolservice.service.enums.KeywordEnum;
 import com.luoys.upgrade.toolservice.web.vo.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +24,7 @@ public class AutoSuiteController {
     private UserService userService;
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public Result<Boolean> create(@RequestBody AutoSuiteVO autoSuiteVO) {
+    public Result<Integer> create(@RequestBody AutoSuiteVO autoSuiteVO) {
         log.info("--->开始新增套件：{}", autoSuiteVO);
         return Result.message(suiteService.create(autoSuiteVO));
     }
@@ -37,7 +36,6 @@ public class AutoSuiteController {
         log.info("--->开始快速新增套件：{}", autoSuiteVO);
         autoSuiteVO.setOwnerId(userService.queryByLoginInfo(loginInfo).getUserId());
         autoSuiteVO.setProjectId(projectId);
-        autoSuiteVO.setOwnerName(KeywordEnum.DEFAULT_USER.getValue());
         return Result.message(suiteService.quickCreate(autoSuiteVO));
     }
 

@@ -1,19 +1,9 @@
 package com.luoys.upgrade.toolservice.service;
 
 import com.luoys.upgrade.toolservice.dao.ConfigMapper;
-import com.luoys.upgrade.toolservice.dao.ProjectMapper;
-import com.luoys.upgrade.toolservice.dao.UserProjectRelationMapper;
-import com.luoys.upgrade.toolservice.dao.po.ProjectPO;
-import com.luoys.upgrade.toolservice.dao.po.UserProjectRelationPO;
-import com.luoys.upgrade.toolservice.service.enums.KeywordEnum;
-import com.luoys.upgrade.toolservice.service.enums.MemberEnum;
-import com.luoys.upgrade.toolservice.service.transform.TransformProject;
-import com.luoys.upgrade.toolservice.web.vo.ProjectVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 /**
  * 配置

@@ -4,7 +4,7 @@ import com.luoys.upgrade.toolservice.dao.po.AutoSuitePO;
 import com.luoys.upgrade.toolservice.dao.po.AutoSuiteQueryPO;
 import com.luoys.upgrade.toolservice.service.common.CacheUtil;
 import com.luoys.upgrade.toolservice.service.dto.SuiteDTO;
-import com.luoys.upgrade.toolservice.service.enums.KeywordEnum;
+import com.luoys.upgrade.toolservice.service.enums.DefaultEnum;
 import com.luoys.upgrade.toolservice.web.vo.AutoSuiteSimpleVO;
 import com.luoys.upgrade.toolservice.web.vo.AutoSuiteVO;
 import com.luoys.upgrade.toolservice.web.vo.QueryVO;
@@ -112,7 +112,7 @@ public class TransformAutoSuite {
         po.setName(vo.getName());
         po.setProjectId(vo.getProjectId());
         if (vo.getPageIndex() != null) {
-            po.setStartIndex((vo.getPageIndex() - 1) * KeywordEnum.DEFAULT_PAGE_SIZE.getCode());
+            po.setStartIndex((vo.getPageIndex() - 1) * DefaultEnum.DEFAULT_PAGE_SIZE.getCode());
         }
         po.setStatus(vo.getStatus());
         return po;

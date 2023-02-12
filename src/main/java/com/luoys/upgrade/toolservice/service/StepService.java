@@ -64,12 +64,7 @@ public class StepService {
         AutoStepVO autoStepVO = new AutoStepVO();
 //        autoStepVO.setStepId(NumberSender.createStepId());
         // 设置默认值
-        autoStepVO.setName(KeywordEnum.DEFAULT_STEP_NAME.getValue());
-//        autoStepVO.setIsPublic(false);
-//        autoStepVO.setOwnerId(KeywordEnum.DEFAULT_USER.getCode().toString());
-//        autoStepVO.setOwnerName(KeywordEnum.DEFAULT_USER.getValue());
-//        autoStepVO.setType(AutoStepTypeEnum.STEP_SQL.getCode());
-//        autoStepVO.setAssertType(AssertTypeEnum.NO_ASSERT.getCode());
+//        autoStepVO.setName(KeywordEnum.DEFAULT_STEP_NAME.getValue());
         autoStepVO.setModuleType(ModuleTypeEnum.UNDEFINED_MODULE.getCode());
         AutoStepPO autoStepPO = TransformAutoStep.transformVO2PO(autoStepVO);
         autoStepMapper.insert(autoStepPO);

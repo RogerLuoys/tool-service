@@ -74,12 +74,8 @@ public class CaseService {
             return null;
         }
 //        autoCaseVO.setCaseId(NumberSender.createCaseId());
-        if (autoCaseVO.getOwnerId().equals(KeywordEnum.DEFAULT_USER.getCode().toString())) {
-            autoCaseVO.setOwnerName(KeywordEnum.DEFAULT_USER.getValue());
-        } else {
-            String userName = userMapper.selectById(autoCaseVO.getOwnerId()).getUsername();
-            autoCaseVO.setOwnerName(userName);
-        }
+        String userName = userMapper.selectById(autoCaseVO.getOwnerId()).getUsername();
+        autoCaseVO.setOwnerName(userName);
         AutoCasePO autoCasePO = TransformAutoCase.transformVO2PO(autoCaseVO);
         autoCaseMapper.insert(autoCasePO);
         return autoCasePO.getId();

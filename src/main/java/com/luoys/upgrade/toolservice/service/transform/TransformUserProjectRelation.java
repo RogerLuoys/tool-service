@@ -35,6 +35,8 @@ public class TransformUserProjectRelation {
         vo.setProjectId(po.getProjectId());
         vo.setUserId(po.getUserId());
         vo.setType(po.getType());
+        vo.setNickname(po.getNickname());
+        vo.setUsername(po.getUsername());
         return vo;
     }
 

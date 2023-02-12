@@ -2,11 +2,9 @@ package com.luoys.upgrade.toolservice.service;
 
 import com.luoys.upgrade.toolservice.dao.UserProjectRelationMapper;
 import com.luoys.upgrade.toolservice.dao.po.UserProjectRelationPO;
-import com.luoys.upgrade.toolservice.service.enums.KeywordEnum;
-import com.luoys.upgrade.toolservice.service.transform.TransformResource;
+import com.luoys.upgrade.toolservice.service.enums.DefaultEnum;
 import com.luoys.upgrade.toolservice.service.transform.TransformUserProjectRelation;
 import com.luoys.upgrade.toolservice.web.vo.MemberVO;
-import com.luoys.upgrade.toolservice.web.vo.ResourceVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -63,7 +61,7 @@ public class MemberService {
      * @return 总数
      */
     public List<MemberVO> query(Integer projectId, String nickname, Integer pageIndex) {
-        int startIndex = (pageIndex - 1) * KeywordEnum.DEFAULT_PAGE_SIZE.getCode();
+        int startIndex = (pageIndex - 1) * DefaultEnum.DEFAULT_PAGE_SIZE.getCode();
         List<UserProjectRelationPO> userProjectRelationPOList = userProjectRelationMapper.listMember(projectId, nickname, startIndex);
         return TransformUserProjectRelation.transformPO2VO(userProjectRelationPOList);
     }

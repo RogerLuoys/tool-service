@@ -4,7 +4,7 @@ import com.luoys.upgrade.toolservice.dao.po.AutoCasePO;
 import com.luoys.upgrade.toolservice.dao.po.AutoCaseQueryPO;
 import com.luoys.upgrade.toolservice.service.common.CacheUtil;
 import com.luoys.upgrade.toolservice.service.dto.CaseDTO;
-import com.luoys.upgrade.toolservice.service.enums.KeywordEnum;
+import com.luoys.upgrade.toolservice.service.enums.DefaultEnum;
 import com.luoys.upgrade.toolservice.web.vo.AutoCaseSimpleVO;
 import com.luoys.upgrade.toolservice.web.vo.AutoCaseVO;
 import com.luoys.upgrade.toolservice.web.vo.QueryVO;
@@ -119,7 +119,7 @@ public class TransformAutoCase {
         po.setProjectId(vo.getProjectId());
         po.setSupperCaseId(vo.getSupperCaseId());
         if (vo.getPageIndex() != null) {
-            po.setStartIndex((vo.getPageIndex() - 1) * KeywordEnum.DEFAULT_PAGE_SIZE.getCode());
+            po.setStartIndex((vo.getPageIndex() - 1) * DefaultEnum.DEFAULT_PAGE_SIZE.getCode());
         }
         return po;
     }
