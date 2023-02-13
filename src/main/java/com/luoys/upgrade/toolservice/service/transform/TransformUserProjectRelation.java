@@ -4,6 +4,7 @@ import com.luoys.upgrade.toolservice.dao.po.AutoCasePO;
 import com.luoys.upgrade.toolservice.dao.po.UserProjectRelationPO;
 import com.luoys.upgrade.toolservice.web.vo.AutoCaseSimpleVO;
 import com.luoys.upgrade.toolservice.web.vo.MemberVO;
+import com.luoys.upgrade.toolservice.web.vo.ProjectVO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +45,24 @@ public class TransformUserProjectRelation {
         List<MemberVO> voList = new ArrayList<>();
         for (UserProjectRelationPO po : poList) {
             voList.add(transformPO2VO(po));
+        }
+        return voList;
+    }
+
+    public static ProjectVO transformPO2ProjectVO(UserProjectRelationPO po) {
+        if (po == null) {
+            return null;
+        }
+        ProjectVO vo = new ProjectVO();
+        vo.setProjectId(po.getProjectId());
+        vo.setName(po.getProjectName());
+        return vo;
+    }
+
+    public static List<ProjectVO> transformPO2ProjectVO(List<UserProjectRelationPO> poList) {
+        List<ProjectVO> voList = new ArrayList<>();
+        for (UserProjectRelationPO po : poList) {
+            voList.add(transformPO2ProjectVO(po));
         }
         return voList;
     }

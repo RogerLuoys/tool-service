@@ -12,7 +12,7 @@ public interface UserProjectRelationMapper {
 
     int insert(UserProjectRelationPO record);
 
-    UserProjectRelationPO select(@Param("userId") Integer userId);
+    List<UserProjectRelationPO> listProject(@Param("userId") Integer userId);
 
     List<UserProjectRelationPO> listMember(@Param("projectId") Integer project,
                                            @Param("nickname") String nickname,

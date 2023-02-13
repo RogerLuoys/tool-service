@@ -1,12 +1,16 @@
 package com.luoys.upgrade.toolservice.web;
 
+import com.luoys.upgrade.toolservice.dao.UserProjectRelationMapper;
 import com.luoys.upgrade.toolservice.service.ProjectService;
+import com.luoys.upgrade.toolservice.service.common.CacheUtil;
 import com.luoys.upgrade.toolservice.service.common.Result;
 import com.luoys.upgrade.toolservice.web.vo.PageInfo;
 import com.luoys.upgrade.toolservice.web.vo.ProjectVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @CrossOrigin
 @Slf4j
@@ -17,6 +21,8 @@ public class ProjectController {
     @Autowired
     private ProjectService projectService;
 
+    @Autowired
+    private UserProjectRelationMapper userProjectRelationMapper;
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     public Result<String> create(@RequestHeader(value = "userId") Integer userId,
@@ -45,6 +51,12 @@ public class ProjectController {
         pageInfo.setList(projectService.query(nickname, pageIndex));
         pageInfo.setTotal(projectService.count(nickname));
         return Result.success(pageInfo);
+    }
+
+    @RequestMapping(value = "/queryByUser", method = RequestMethod.GET)
+    public Result<List<ProjectVO>> queryByUser(@RequestHeader("loginInfo") String loginInfo) {
+        log.info("--->开始查询用户所属的项目：");
+        return Result.success(projectService.queryByUser(CacheUtil.getUserByLoginInfo(loginInfo).getUserId()));
     }
 
 }

@@ -2,6 +2,7 @@ package com.luoys.upgrade.toolservice.web;
 
 import com.luoys.upgrade.toolservice.service.common.Result;
 import com.luoys.upgrade.toolservice.service.UserService;
+import com.luoys.upgrade.toolservice.service.common.StringUtil;
 import com.luoys.upgrade.toolservice.web.vo.UserVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +18,17 @@ public class UserController {
     private UserService userService;
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
-    public Result<UserVO> login(@RequestParam("loginName") String loginName, @RequestParam("passWord") String passWord){
-        log.info("--->用户登录开始：loginName={}, passWord={}", loginName, passWord);
-        return Result.success(userService.queryByLoginName(loginName, passWord));
+    public Result<UserVO> login(@RequestHeader("loginInfo") String loginInfo,
+                                @RequestParam(value = "username", required = false) String username,
+                                @RequestParam(value = "passWord", required = false) String passWord){
+        log.info("--->用户登录开始：loginInfo = {}, username={}, passWord={}", loginInfo, username, passWord);
+        if (!StringUtil.isBlank(username)) {
+            return Result.success(userService.queryByLoginName(username, passWord));
+        } else if (!StringUtil.isBlank(loginInfo) && StringUtil.isBlank(username) && StringUtil.isBlank(passWord)) {
+            return Result.success(userService.queryByLoginInfo(loginInfo));
+        } else {
+            return Result.errorMessage("登录账号信息异常");
+        }
     }
 
     @RequestMapping(value = "/queryDetail", method = RequestMethod.GET)

@@ -8,6 +8,7 @@ import lombok.Data;
  */
 @Data
 public class UserProjectRelationPO {
+
     private Integer id;
 
     /**
@@ -35,4 +36,5 @@ public class UserProjectRelationPO {
      */
     private String nickname;
 
+    private String projectName;
 }

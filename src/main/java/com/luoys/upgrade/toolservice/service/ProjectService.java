@@ -7,6 +7,7 @@ import com.luoys.upgrade.toolservice.dao.po.UserProjectRelationPO;
 import com.luoys.upgrade.toolservice.service.enums.DefaultEnum;
 import com.luoys.upgrade.toolservice.service.enums.MemberEnum;
 import com.luoys.upgrade.toolservice.service.transform.TransformProject;
+import com.luoys.upgrade.toolservice.service.transform.TransformUserProjectRelation;
 import com.luoys.upgrade.toolservice.web.vo.ProjectVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,6 +91,17 @@ public class ProjectService {
      */
     public Integer count(String name) {
         return projectMapper.count(name);
+    }
+
+    /**
+     * 查询成员列表
+     *
+     * @param userId   用户id
+     * @return 总数
+     */
+    public List<ProjectVO> queryByUser(Integer userId) {
+        List<UserProjectRelationPO> userProjectRelationPOList = userProjectRelationMapper.listProject(userId);
+        return TransformUserProjectRelation.transformPO2ProjectVO(userProjectRelationPOList);
     }
 
 }
