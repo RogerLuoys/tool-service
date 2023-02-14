@@ -27,14 +27,14 @@ public class MemberController {
     }
 
     @RequestMapping(value = "/remove", method = RequestMethod.DELETE)
-    public Result<String> remove(@RequestHeader(value = "projectId") Integer projectId,
+    public Result<Integer> remove(@RequestHeader(value = "projectId") Integer projectId,
                                  @RequestParam(value = "userId") Integer userId) {
         log.info("--->开始移除成员：");
         return Result.message(memberService.remove(userId, projectId));
     }
 
     @RequestMapping(value = "/update", method = RequestMethod.PUT)
-    public Result<String> update(@RequestBody MemberVO memberVO) {
+    public Result<Integer> update(@RequestBody MemberVO memberVO) {
         log.info("--->开始更新成员：{}", memberVO);
         return Result.message(memberService.update(memberVO));
     }

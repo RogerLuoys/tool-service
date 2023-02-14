@@ -37,9 +37,8 @@ public class MemberService {
     /**
      * 逻辑删除单个资源
      */
-    public Boolean remove(Integer userId, Integer projectId) {
-        int result = userProjectRelationMapper.remove(userId, projectId);
-        return result == 1;
+    public Integer remove(Integer userId, Integer projectId) {
+        return userProjectRelationMapper.remove(userId, projectId);
     }
 
     /**
@@ -48,9 +47,9 @@ public class MemberService {
      * @param memberVO 成员对象
      * @return 成功为true，失败为false
      */
-    public Boolean update(MemberVO memberVO) {
-        int result = userProjectRelationMapper.update(TransformUserProjectRelation.transformVO2PO(memberVO));
-        return result == 1;
+    public Integer update(MemberVO memberVO) {
+        UserProjectRelationPO userProjectRelationPO = TransformUserProjectRelation.transformVO2PO(memberVO);
+        return userProjectRelationMapper.update(userProjectRelationPO);
     }
 
     /**

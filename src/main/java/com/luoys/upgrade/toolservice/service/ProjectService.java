@@ -55,20 +55,19 @@ public class ProjectService {
     /**
      * 逻辑删除单个资源
      */
-    public Boolean remove(Integer projectId) {
-        int result = projectMapper.remove(projectId);
-        return result == 1;
+    public Integer remove(Integer projectId) {
+        return projectMapper.remove(projectId);
     }
 
     /**
-     * 更新成员角色
+     * 更新项目
      *
-     * @param projectVO 成员对象
-     * @return 成功为true，失败为false
+     * @param projectVO 项目对象
+     * @return 成功为 1
      */
-    public Boolean update(ProjectVO projectVO) {
-        int result = projectMapper.update(TransformProject.transformVO2PO(projectVO));
-        return result == 1;
+    public Integer update(ProjectVO projectVO) {
+        ProjectPO projectPO = TransformProject.transformVO2PO(projectVO);
+        return projectMapper.update(projectPO);
     }
 
     /**

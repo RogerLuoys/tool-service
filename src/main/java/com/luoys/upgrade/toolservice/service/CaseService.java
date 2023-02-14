@@ -51,9 +51,6 @@ public class CaseService {
     @Autowired
     private StepService stepService;
 
-//    @Autowired
-//    private UIClient uiClient;
-
     /**
      * 新增单个用例
      *
@@ -73,9 +70,8 @@ public class CaseService {
             log.error("--->用例名称不能为空：{}", autoCaseVO);
             return null;
         }
-//        autoCaseVO.setCaseId(NumberSender.createCaseId());
-        String userName = userMapper.selectById(autoCaseVO.getOwnerId()).getUsername();
-        autoCaseVO.setOwnerName(userName);
+//        String userName = userMapper.selectById(autoCaseVO.getOwnerId()).getUsername();
+//        autoCaseVO.setOwnerName(userName);
         AutoCasePO autoCasePO = TransformAutoCase.transformVO2PO(autoCaseVO);
         autoCaseMapper.insert(autoCasePO);
         return autoCasePO.getId();
@@ -160,10 +156,10 @@ public class CaseService {
      * @param caseId 用例业务id
      * @return 删除成功为true，失败为false
      */
-    public Boolean remove(Integer caseId) {
+    public Integer remove(Integer caseId) {
         caseStepRelationMapper.removeByCaseId(caseId);
-        int result = autoCaseMapper.remove(caseId);
-        return result == 1;
+        autoCaseMapper.remove(caseId);
+        return autoCaseMapper.remove(caseId);
     }
 
     /**
@@ -172,9 +168,9 @@ public class CaseService {
      * @param caseStepVO 步骤对象
      * @return 成功为true，失败为false
      */
-    public Boolean removeRelatedStep(CaseStepVO caseStepVO) {
-        int result = caseStepRelationMapper.remove(TransformCaseStepRelation.transformVO2PO(caseStepVO));
-        return result == 1;
+    public Integer removeRelatedStep(CaseStepVO caseStepVO) {
+        CaseStepRelationPO caseStepRelationPO = TransformCaseStepRelation.transformVO2PO(caseStepVO);
+        return caseStepRelationMapper.remove(caseStepRelationPO);
     }
 
     /**
@@ -193,9 +189,9 @@ public class CaseService {
      * @param autoCaseVO 用例对象
      * @return 更新成功为true，失败为false
      */
-    public Boolean update(AutoCaseVO autoCaseVO) {
-        int result = autoCaseMapper.update(TransformAutoCase.transformVO2PO(autoCaseVO));
-        return result == 1;
+    public Integer update(AutoCaseVO autoCaseVO) {
+        AutoCasePO autoCasePO = TransformAutoCase.transformVO2PO(autoCaseVO);
+        return autoCaseMapper.update(autoCasePO);
     }
 
     /**
@@ -204,9 +200,9 @@ public class CaseService {
      * @param caseStepVO 步骤对象
      * @return 成功为true，失败为false
      */
-    public Boolean updateRelatedStep(CaseStepVO caseStepVO) {
-        int result = caseStepRelationMapper.update(TransformCaseStepRelation.transformVO2PO(caseStepVO));
-        return result == 1;
+    public Integer updateRelatedStep(CaseStepVO caseStepVO) {
+        CaseStepRelationPO caseStepRelationPO = TransformCaseStepRelation.transformVO2PO(caseStepVO);
+        return caseStepRelationMapper.update(caseStepRelationPO);
     }
 
     /**
@@ -217,7 +213,7 @@ public class CaseService {
      * @param sequence 顺序，从1开始
      * @return 成功为true，失败为false
      */
-    public Boolean updateRelatedStep(Integer caseId, Integer stepId, int sequence) {
+    public Integer updateRelatedStep(Integer caseId, Integer stepId, int sequence) {
         CaseStepVO caseStepVO = new CaseStepVO();
         caseStepVO.setCaseId(caseId);
         caseStepVO.setStepId(stepId);
@@ -396,18 +392,18 @@ public class CaseService {
         return true;
     }
 
-    /**
-     * 执行用例 (仅执行，不更新结果)
-     *
-     * @param autoCaseVO 用例对象
-     * @return 主要步骤全部执行结果都为true才返回true
-     */
-    public Boolean use(AutoCaseVO autoCaseVO, AutoExecutor executor) {
-        CaseDTO caseDTO = TransformAutoCase.transformVO2DTO(autoCaseVO);
-        executor.executeCase(caseDTO);
-        log.info("--->执行用例完成：caseId={}, caseName={}, result={}", autoCaseVO.getCaseId(), autoCaseVO.getName(), caseDTO.getStatus());
-        return true;
-    }
+//    /**
+//     * 执行用例 (仅执行，不更新结果)
+//     *
+//     * @param autoCaseVO 用例对象
+//     * @return 主要步骤全部执行结果都为true才返回true
+//     */
+//    public Boolean use(AutoCaseVO autoCaseVO, AutoExecutor executor) {
+//        CaseDTO caseDTO = TransformAutoCase.transformVO2DTO(autoCaseVO);
+//        executor.executeCase(caseDTO);
+//        log.info("--->执行用例完成：caseId={}, caseName={}, result={}", autoCaseVO.getCaseId(), autoCaseVO.getName(), caseDTO.getStatus());
+//        return true;
+//    }
 
 //    private Boolean execute(AutoCaseVO autoCaseVO, StepExecutor executor) {
 //        boolean result = true;

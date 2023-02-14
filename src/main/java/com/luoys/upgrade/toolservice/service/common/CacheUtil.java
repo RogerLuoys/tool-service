@@ -140,14 +140,14 @@ public class CacheUtil {
     }
 
     private static UserVO getUserByInfoFromDB(String key) {
-        if (key.equals("03f798da9d3e6a10cfd620229fe122d4")) {
+        if (key.equals(DefaultEnum.DEFAULT_DEMO_USER.getDescription())) {
             UserVO userVO = new UserVO();
-            userVO.setUserId(99999);
-            userVO.setLoginInfo("03f798da9d3e6a10cfd620229fe122d4");
+            userVO.setUserId(DefaultEnum.DEFAULT_DEMO_USER.getCode());
+            userVO.setLoginInfo(DefaultEnum.DEFAULT_DEMO_USER.getDescription());
             userVO.setType(UserTypeEnum.REGULAR.getCode());
-            userVO.setUsername("default");
-            userVO.setPassword("101");
-            userVO.setNickname("演示账号");
+//            userVO.setUsername("default");
+//            userVO.setPassword("101");
+            userVO.setNickname(DefaultEnum.DEFAULT_DEMO_USER.getValue());
             return userVO;
         }
         return TransformUser.transformPO2VO(userMapper.selectByLoginInfo(key));

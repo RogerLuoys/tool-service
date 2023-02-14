@@ -5,7 +5,6 @@ import com.luoys.upgrade.toolservice.dao.ResourceMapper;
 import com.luoys.upgrade.toolservice.dao.po.AutoStepPO;
 import com.luoys.upgrade.toolservice.service.common.StringUtil;
 import com.luoys.upgrade.toolservice.dao.AutoStepMapper;
-import com.luoys.upgrade.toolservice.service.enums.*;
 import com.luoys.upgrade.toolservice.service.enums.autoStep.methodType.*;
 import com.luoys.upgrade.toolservice.service.enums.autoStep.ModuleTypeEnum;
 import com.luoys.upgrade.toolservice.service.transform.TransformAutoStep;
@@ -23,8 +22,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class StepService {
 
-    private static final int MULTIPLE_LIMIT = 30;
-
     @Autowired
     private AutoStepMapper autoStepMapper;
 
@@ -38,21 +35,12 @@ public class StepService {
      * 创建单个步骤
      *
      * @param autoStepVO 步骤对象
-     * @return 成功为true，失败为false
+     * @return 返回id
      */
-    public Boolean create(AutoStepVO autoStepVO) {
-//        if (!autoStepVO.getIsPublic()) {
-//            autoStepVO.setIsPublic(false);
-//        }
-//        autoStepVO.setStepId(NumberSender.createStepId());
-//        if (autoStepVO.getOwnerId().equals(KeywordEnum.DEFAULT_USER.getCode().toString())) {
-//            autoStepVO.setOwnerName(KeywordEnum.DEFAULT_USER.getValue());
-//        } else {
-//            String userName = userMapper.selectByUUId(autoStepVO.getOwnerId()).getUserName();
-//            autoStepVO.setOwnerName(userName);
-//        }
-        int result = autoStepMapper.insert(TransformAutoStep.transformVO2PO(autoStepVO));
-        return result == 1;
+    public Integer create(AutoStepVO autoStepVO) {
+        AutoStepPO autoStepPO = TransformAutoStep.transformVO2PO(autoStepVO);
+        autoStepMapper.insert(autoStepPO);
+        return autoStepPO.getId();
     }
 
     /**
@@ -62,9 +50,6 @@ public class StepService {
      */
     public Integer quickCreate() {
         AutoStepVO autoStepVO = new AutoStepVO();
-//        autoStepVO.setStepId(NumberSender.createStepId());
-        // 设置默认值
-//        autoStepVO.setName(KeywordEnum.DEFAULT_STEP_NAME.getValue());
         autoStepVO.setModuleType(ModuleTypeEnum.UNDEFINED_MODULE.getCode());
         AutoStepPO autoStepPO = TransformAutoStep.transformVO2PO(autoStepVO);
         autoStepMapper.insert(autoStepPO);
@@ -75,18 +60,17 @@ public class StepService {
      * 逻辑删除单个步骤
      *
      * @param stepId 步骤业务id
-     * @return 成功为true，失败为false
+     * @return 成功为1
      */
-    public Boolean remove(Integer stepId) {
-        int result = autoStepMapper.remove(stepId);
-        return result == 1;
+    public Integer remove(Integer stepId) {
+        return autoStepMapper.remove(stepId);
     }
 
     /**
      * 更新单个步骤
      *
      * @param autoStepVO 步骤对象
-     * @return 成功为true，失败为false
+     * @return 成功为1
      */
     public Integer update(AutoStepVO autoStepVO) {
         AutoStepPO autoStepPO = TransformAutoStep.transformVO2PO(autoStepVO);
@@ -145,7 +129,8 @@ public class StepService {
      * @return 步骤对象
      */
     public AutoStepVO queryDetail(Integer stepId) {
-        return TransformAutoStep.transformPO2VO(autoStepMapper.select(stepId));
+        AutoStepPO autoStepPO = autoStepMapper.select(stepId);
+        return TransformAutoStep.transformPO2VO(autoStepPO);
     }
 
 
@@ -266,18 +251,22 @@ public class StepService {
         String[] params = StringUtil.isBlank(methodParam) ? null : methodParam.split("\\\\\",\\s{0,4}\"\\\\");
         String param1, param2, param3;
         if (params == null || params.length == 0) {
+            // 方法无入参
             param1 = null;
             param2 = null;
             param3 = null;
         } else if (params.length == 1) {
+            // 方法有一个入参
             param1 = params[0];
             param2 = null;
             param3 = null;
         } else if (params.length == 2) {
+            // 方法有二个入参
             param1 = params[0];
             param2 = params[1];
             param3 = null;
         } else {
+            // 方法有三个入参
             param1 = params[0];
             param2 = params[1];
             param3 = params[2];

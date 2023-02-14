@@ -21,24 +21,21 @@ public class ProjectController {
     @Autowired
     private ProjectService projectService;
 
-    @Autowired
-    private UserProjectRelationMapper userProjectRelationMapper;
-
     @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public Result<String> create(@RequestHeader(value = "userId") Integer userId,
+    public Result<Integer> create(@RequestHeader(value = "userId") Integer userId,
                                  @RequestBody ProjectVO projectVO) {
         log.info("--->开始创建项目：{}", projectVO);
         return Result.message(projectService.create(projectVO));
     }
 
     @RequestMapping(value = "/remove", method = RequestMethod.DELETE)
-    public Result<String> remove(@RequestHeader(value = "projectId") Integer projectId) {
+    public Result<Integer> remove(@RequestHeader(value = "projectId") Integer projectId) {
         log.info("--->开始移除项目：");
         return Result.message(projectService.remove(projectId));
     }
 
     @RequestMapping(value = "/update", method = RequestMethod.PUT)
-    public Result<String> update(@RequestBody ProjectVO projectVO) {
+    public Result<Integer> update(@RequestBody ProjectVO projectVO) {
         log.info("--->开始更新项目：{}", projectVO);
         return Result.message(projectService.update(projectVO));
     }

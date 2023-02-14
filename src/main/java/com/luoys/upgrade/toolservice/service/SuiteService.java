@@ -1,6 +1,5 @@
 package com.luoys.upgrade.toolservice.service;
 
-import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import com.luoys.upgrade.toolservice.dao.*;
 import com.luoys.upgrade.toolservice.dao.po.*;
@@ -45,21 +44,16 @@ public class SuiteService {
     private ResourceSuiteRelationMapper resourceSuiteRelationMapper;
 
     @Autowired
-    private UserMapper userMapper;
-
-    @Autowired
     private ResourceMapper resourceMapper;
 
     @Autowired
     private CaseService caseService;
 
-    private final static String RUN_SUITE_URL = "autoSuite/executeBySchedule";
-
     /**
      * 新增单个套件
      *
      * @param autoSuiteVO 套件对象
-     * @return 成功为true，失败为false
+     * @return 返回id
      */
     public Integer create(AutoSuiteVO autoSuiteVO) {
         if (StringUtil.isBlank(autoSuiteVO.getName())) {
@@ -100,36 +94,38 @@ public class SuiteService {
      * 为套件指定执行机器
      *
      * @param suiteId -
-     * @return -
+     * @return 返回id
      */
     public Integer createRelateSlave(Integer suiteId, Integer resourceId) {
         ResourceSuiteRelationPO resourceSuiteRelationPO = new ResourceSuiteRelationPO();
         resourceSuiteRelationPO.setSuiteId(suiteId);
         resourceSuiteRelationPO.setResourceId(resourceId);
-        resourceSuiteRelationPO.setType(1);
-        return resourceSuiteRelationMapper.insert(resourceSuiteRelationPO);
+        resourceSuiteRelationPO.setType(ResourceSuiteTypeEnum.SUITE_SLAVE.getCode());
+        resourceSuiteRelationMapper.insert(resourceSuiteRelationPO);
+        return resourceSuiteRelationPO.getId();
     }
 
     /**
      * 套件关联单个用例
      *
      * @param suiteCaseVO 用例对象
-     * @return 成功为true，失败为false
+     * @return 返回id
      */
-    public Boolean createRelatedCase(SuiteCaseVO suiteCaseVO) {
+    public Integer createRelatedCase(SuiteCaseVO suiteCaseVO) {
         if (suiteCaseVO.getSequence() == null) {
             suiteCaseVO.setSequence(DefaultEnum.DEFAULT_CASE_SEQUENCE.getCode());
         }
         if (suiteCaseVO.getStatus() == null) {
             suiteCaseVO.setStatus(AutoCaseStatusEnum.PLANNING.getCode());
         }
-        int result = suiteCaseRelationMapper.insert(TransformSuiteCaseRelation.transformVO2SimplePO(suiteCaseVO));
+        SuiteCaseRelationPO suiteCaseRelationPO = TransformSuiteCaseRelation.transformVO2SimplePO(suiteCaseVO);
+        suiteCaseRelationMapper.insert(suiteCaseRelationPO);
         // 更新关联的总用例数
-        if (result == 1) {
+        if (suiteCaseRelationPO.getId() != null) {
             int total = suiteCaseRelationMapper.countBySuiteId(suiteCaseVO.getSuiteId(), null);
             autoSuiteMapper.updateTotal(suiteCaseVO.getSuiteId(), total);
         }
-        return result == 1;
+        return suiteCaseRelationPO.getId();
     }
 
     /**
@@ -138,9 +134,9 @@ public class SuiteService {
      * @param suiteId 套件业务id
      * @param userId  用例所属人
      * @param name    用例名称
-     * @return 成功为true
+     * @return 返回关联数量
      */
-    public Boolean createRelatedCase(Integer suiteId, Integer userId, String name) {
+    public Integer createRelatedCase(Integer suiteId, Integer userId, String name) {
         List<SuiteCaseRelationPO> relateCase = new ArrayList<>();
         for (AutoCaseSimpleVO vo : queryAll(suiteId, userId, name)) {
             SuiteCaseRelationPO po = new SuiteCaseRelationPO();
@@ -152,7 +148,7 @@ public class SuiteService {
         }
         if (relateCase.size() == 0) {
             log.error("--->关联用例时，列表不能为空：suiteId={}", suiteId);
-            return false;
+            return 0;
         }
         int result = suiteCaseRelationMapper.batchInsert(relateCase);
         // 更新关联的总用例数
@@ -160,21 +156,20 @@ public class SuiteService {
             int total = suiteCaseRelationMapper.countBySuiteId(suiteId, null);
             autoSuiteMapper.updateTotal(suiteId, total);
         }
-        return result > 0;
+        return result;
     }
 
     /**
      * 删除单个套件
      *
      * @param suiteId 套件业务id
-     * @return 成功为true，失败为false
+     * @return 成功为1
      */
-    public Boolean remove(Integer suiteId) {
+    public Integer remove(Integer suiteId) {
         // 删除关联的用例
         suiteCaseRelationMapper.removeBySuiteId(suiteId);
         // 删除套件
-        int result = autoSuiteMapper.remove(suiteId);
-        return result == 1;
+        return autoSuiteMapper.remove(suiteId);
     }
 
     /**
@@ -182,7 +177,7 @@ public class SuiteService {
      *
      * @param suiteId 套件id
      * @param caseId  用例id
-     * @return 成功为true，失败为false
+     * @return 成功为删除数量
      */
     public Integer removeRelatedCase(Integer suiteId, Integer caseId) {
         int result = suiteCaseRelationMapper.remove(suiteId, caseId);
@@ -199,7 +194,7 @@ public class SuiteService {
      *
      * @param suiteId 套件id
      * @param resourceId  用例id
-     * @return 成功为true，失败为false
+     * @return 成功1
      */
     public Integer removeRelatedSlave(Integer suiteId, Integer resourceId) {
         return resourceSuiteRelationMapper.remove(resourceId, suiteId, 1);
@@ -209,35 +204,32 @@ public class SuiteService {
      * 更新单个套件的基本信息
      *
      * @param autoSuiteVO 套件对象
-     * @return 成功为true，失败为false
+     * @return 成功为1
      */
-    public Boolean update(AutoSuiteVO autoSuiteVO) {
-        int result = autoSuiteMapper.update(TransformAutoSuite.transformVO2PO(autoSuiteVO));
-        return result == 1;
+    public Integer update(AutoSuiteVO autoSuiteVO) {
+        AutoSuitePO autoSuitePO = TransformAutoSuite.transformVO2PO(autoSuiteVO);
+        return autoSuiteMapper.update(autoSuitePO);
     }
 
     /**
      * 更新套件关联的用例
      *
      * @param suiteCaseVO 用例对象
-     * @return 成功为true，失败为false
+     * @return 成功为1
      */
-    public Boolean updateRelatedCase(SuiteCaseVO suiteCaseVO) {
-        int result = suiteCaseRelationMapper.update(TransformSuiteCaseRelation.transformVO2SimplePO(suiteCaseVO));
-        return result == 1;
+    public Integer updateRelatedCase(SuiteCaseVO suiteCaseVO) {
+        SuiteCaseRelationPO suiteCaseRelationPO = TransformSuiteCaseRelation.transformVO2SimplePO(suiteCaseVO);
+        return suiteCaseRelationMapper.update(suiteCaseRelationPO);
     }
 
     /**
      * 重置测试套件的执行状态
      *
      * @param suiteId 套件id
-     * @return 重置成功为true
+     * @return 重置成功为1
      */
-    public Boolean reset(Integer suiteId) {
-//        autoSuiteMapper.updateResult(suiteId, 0, 0);
-        autoSuiteMapper.updateStatus(suiteId, AutoSuiteStatusEnum.SUITE_FREE.getCode());
-//        suiteCaseRelationMapper.resetStatusBySuiteId(suiteId);
-        return true;
+    public Integer reset(Integer suiteId) {
+        return autoSuiteMapper.updateStatus(suiteId, AutoSuiteStatusEnum.SUITE_FREE.getCode());
     }
 
     /**
@@ -488,7 +480,7 @@ public class SuiteService {
      * @param suiteCaseVO 套件关联用例对象，需要suiteId，caseId
      * @return true只代表唤起执行操作成功
      */
-    public Boolean useAsync(SuiteCaseVO suiteCaseVO) throws RejectedExecutionException {
+    public Boolean executeBySingle(SuiteCaseVO suiteCaseVO) throws RejectedExecutionException {
         if (suiteCaseVO.getSuiteId() == null || suiteCaseVO.getAutoCase().getCaseId() == null) {
             log.error("--->执行套件中单个用例时，缺少关键数据");
             return false;

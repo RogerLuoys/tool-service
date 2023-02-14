@@ -1,6 +1,5 @@
 package com.luoys.upgrade.toolservice.service;
 
-import com.luoys.upgrade.toolservice.service.common.StringUtil;
 import com.luoys.upgrade.toolservice.service.common.TimeUtil;
 import com.luoys.upgrade.toolservice.dao.TaskMapper;
 import com.luoys.upgrade.toolservice.dao.po.TaskPO;
@@ -38,21 +37,21 @@ public class TaskService {
      * 逻辑删除任务
      *
      * @param taskId 业务id
-     * @return 成功为true
+     * @return 成功为1
      */
-    public Boolean remove(Integer taskId) {
-        return taskMapper.remove(taskId) == 1;
+    public Integer remove(Integer taskId) {
+        return taskMapper.remove(taskId);
     }
 
     /**
      * 更新任务
      *
      * @param taskVO 任务对象
-     * @return 成功为true
+     * @return 成功为1
      */
-    public Boolean update(TaskVO taskVO) {
-        int result = taskMapper.update(TransformTask.transformVO2PO(taskVO));
-        return result == 1;
+    public Integer update(TaskVO taskVO) {
+        TaskPO taskPO = TransformTask.transformVO2PO(taskVO);
+        return taskMapper.update(taskPO);
     }
 
     /**
@@ -60,14 +59,14 @@ public class TaskService {
      *
      * @param taskId 业务id
      * @param status 要更新的状态
-     * @return 成功为true
+     * @return 成功为1
      */
-    public Boolean updateStatus(Integer taskId, Integer status) {
+    public Integer updateStatus(Integer taskId, Integer status) {
         if (taskId == null || status == null) {
             log.error("--->入参不能为空，修改状态失败");
             return null;
         }
-        return taskMapper.updateStatusById(taskId, status) == 1;
+        return taskMapper.updateStatusById(taskId, status);
     }
 
     /**
@@ -75,14 +74,14 @@ public class TaskService {
      *
      * @param taskId  任务id
      * @param comment 备注
-     * @return 成功为true
+     * @return 成功为1
      */
-    public Boolean updateComment(Integer taskId, String comment) {
+    public Integer updateComment(Integer taskId, String comment) {
         if (taskId == null || comment == null) {
             log.error("--->入参不能为空，修改备注失败");
             return null;
         }
-        return taskMapper.updateCommentById(taskId, comment) == 1;
+        return taskMapper.updateCommentById(taskId, comment);
     }
 
     /**

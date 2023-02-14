@@ -23,9 +23,6 @@ public class ResourceService {
     @Autowired
     private ResourceMapper resourceMapper;
 
-    @Autowired
-    private UserMapper userMapper;
-
     /**
      * 创建单个资源
      *
@@ -49,22 +46,21 @@ public class ResourceService {
      * 逻辑删除单个资源
      *
      * @param resourceId 资源业务id
-     * @return 成功为true，失败为false
+     * @return 成功为1
      */
-    public Boolean remove(Integer resourceId) {
-        int result = resourceMapper.remove(resourceId);
-        return result == 1;
+    public Integer remove(Integer resourceId) {
+        return resourceMapper.remove(resourceId);
     }
 
     /**
      * 更新单个资源
      *
      * @param resourceVO 资源对象
-     * @return 成功为true，失败为false
+     * @return 成功为1
      */
-    public Boolean update(ResourceVO resourceVO) {
-        int result = resourceMapper.update(TransformResource.transformVO2PO(resourceVO));
-        return result == 1;
+    public Integer update(ResourceVO resourceVO) {
+        ResourcePO resourcePO = TransformResource.transformVO2PO(resourceVO);
+        return resourceMapper.update(resourcePO);
     }
 
 //    /**
@@ -110,7 +106,8 @@ public class ResourceService {
      * @return 资源对象
      */
     public ResourceVO queryDetail(Integer resourceId) {
-        return TransformResource.transformPO2VO(resourceMapper.selectByID(resourceId));
+        ResourcePO resourcePO = resourceMapper.selectByID(resourceId);
+        return TransformResource.transformPO2VO(resourcePO);
     }
 
 //    /**

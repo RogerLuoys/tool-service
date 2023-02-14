@@ -7,6 +7,7 @@ import com.luoys.upgrade.toolservice.service.enums.UserTypeEnum;
 import com.luoys.upgrade.toolservice.service.transform.TransformUser;
 import com.luoys.upgrade.toolservice.web.vo.UserVO;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
@@ -21,15 +22,6 @@ import java.util.List;
 @Slf4j
 @Service
 public class UserService {
-
-//    private Cache<String, UserVO> userCache = Caffeine.newBuilder()
-//            //cache的初始容量
-//            .initialCapacity(10)
-//            //cache最大缓存数
-//            .maximumSize(1000)
-//            //设置写缓存后n秒钟过期
-//            .expireAfterWrite(12, TimeUnit.HOURS)
-//            .build();
 
     @Autowired
     private UserMapper userMapper;
@@ -60,7 +52,8 @@ public class UserService {
         if (loginName == null || passWord == null) {
             return null;
         }
-        return TransformUser.transformPO2VO(userMapper.selectByAccountInfo(loginName, null, passWord));
+        UserPO userPO = userMapper.selectByAccountInfo(loginName, null, passWord);
+        return TransformUser.transformPO2VO(userPO);
     }
 
     /**
@@ -72,14 +65,6 @@ public class UserService {
         if (loginInfo == null) {
             return null;
         }
-        //        if (userVO == null) {
-//            userVO = TransformUser.transformPO2VO(userMapper.selectByLoginInfo(loginInfo));
-//            if (userVO == null) {
-//                log.error("--->用户不存在");
-//                return null;
-//            }
-//            userCache.put(loginInfo, userVO);
-//        }
         return CacheUtil.getUserByLoginInfo(loginInfo);
     }
 

@@ -1,6 +1,6 @@
 package com.luoys.upgrade.toolservice.web;
 
-import com.luoys.upgrade.toolservice.service.UserService;
+import com.luoys.upgrade.toolservice.service.common.CacheUtil;
 import com.luoys.upgrade.toolservice.service.common.Result;
 import com.luoys.upgrade.toolservice.service.CaseService;
 import com.luoys.upgrade.toolservice.web.vo.*;
@@ -19,8 +19,8 @@ public class AutoCaseController {
     @Autowired
     private CaseService caseService;
 
-    @Autowired
-    private UserService userService;
+//    @Autowired
+//    private UserService userService;
 
     @RequestMapping(value = "/test", method = RequestMethod.GET)
     public Result<String> test(@RequestParam("caseId") String caseId) {
@@ -38,7 +38,7 @@ public class AutoCaseController {
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     public Result<Integer> create(@RequestHeader("loginInfo") String loginInfo, @RequestBody AutoCaseVO autoCaseVO) {
         log.info("--->开始新增用例：{}", autoCaseVO);
-        autoCaseVO.setOwnerId(userService.queryByLoginInfo(loginInfo).getUserId());
+        autoCaseVO.setOwnerId(CacheUtil.getUserByLoginInfo(loginInfo).getUserId());
         return Result.message(caseService.create(autoCaseVO));
     }
 
@@ -48,7 +48,7 @@ public class AutoCaseController {
                                       @RequestHeader("loginInfo") String loginInfo) {
         autoCaseVO.setProjectId(projectId);
         log.info("--->开始快速新增用例：{}", autoCaseVO);
-        autoCaseVO.setOwnerId(userService.queryByLoginInfo(loginInfo).getUserId());
+        autoCaseVO.setOwnerId(CacheUtil.getUserByLoginInfo(loginInfo).getUserId());
         return Result.message(caseService.quickCreate(autoCaseVO));
     }
 
@@ -65,49 +65,49 @@ public class AutoCaseController {
     }
 
     @RequestMapping(value = "/remove", method = RequestMethod.DELETE)
-    public Result<Boolean> remove(@RequestParam("caseId") Integer caseId) {
+    public Result<Integer> remove(@RequestParam("caseId") Integer caseId) {
         log.info("--->开始删除用例：{}", caseId);
         return Result.message(caseService.remove(caseId));
     }
 
     @RequestMapping(value = "/removeRelatedStep", method = RequestMethod.DELETE)
-    public Result<Boolean> removeRelatedStep(@RequestBody CaseStepVO caseStepVO) {
+    public Result<Integer> removeRelatedStep(@RequestBody CaseStepVO caseStepVO) {
         log.info("--->开始删除用例关联的步骤：{}", caseStepVO);
         return Result.message(caseService.removeRelatedStep(caseStepVO));
     }
 
     @RequestMapping(value = "/removeConfig", method = RequestMethod.DELETE)
-    public Result<Boolean> removeConfig(@RequestParam("configId") Integer configId) {
+    public Result<Integer> removeConfig(@RequestParam("configId") Integer configId) {
         log.info("--->开始删除配置：{}", configId);
         return Result.message(caseService.removeConfig(configId));
     }
 
     @RequestMapping(value = "/update", method = RequestMethod.PUT)
-    public Result<Boolean> update(@RequestBody AutoCaseVO autoCaseVO) {
+    public Result<Integer> update(@RequestBody AutoCaseVO autoCaseVO) {
         log.info("--->开始更新用例：{}", autoCaseVO);
         return Result.message(caseService.update(autoCaseVO));
     }
 
     @RequestMapping(value = "/updateRelatedStep", method = RequestMethod.PUT)
-    public Result<Boolean> updateRelatedCase(@RequestBody CaseStepVO caseStepVO) {
+    public Result<Integer> updateRelatedCase(@RequestBody CaseStepVO caseStepVO) {
         log.info("--->开始更新测试集关联的用例：{}", caseStepVO);
         return Result.message(caseService.updateRelatedStep(caseStepVO));
     }
 
     @RequestMapping(value = "/updateConfig", method = RequestMethod.PUT)
-    public Result<Boolean> updateConfig(@RequestBody ConfigVO configVO) {
+    public Result<Integer> updateConfig(@RequestBody ConfigVO configVO) {
         log.info("--->开始更新配置：{}", configVO);
         return Result.message(caseService.updateConfig(configVO));
     }
 
     @RequestMapping(value = "/changeUiMode", method = RequestMethod.PUT)
-    public Result<Boolean> changeUiMode(@RequestBody AutoCaseVO autoCaseVO) {
+    public Result<AutoCaseVO> changeUiMode(@RequestBody AutoCaseVO autoCaseVO) {
         log.info("--->开始将脚本步骤转换为可视化步骤：{}", autoCaseVO);
         return Result.success(caseService.change2UiMode(autoCaseVO));
     }
 
     @RequestMapping(value = "/changeScriptMode", method = RequestMethod.PUT)
-    public Result<Boolean> changeScriptMode(@RequestBody AutoCaseVO autoCaseVO) {
+    public Result<AutoCaseVO> changeScriptMode(@RequestBody AutoCaseVO autoCaseVO) {
         log.info("--->开始将可视化步骤转换为脚本步骤：{}", autoCaseVO);
         return Result.message(caseService.change2ScriptMode(autoCaseVO));
     }
@@ -131,7 +131,7 @@ public class AutoCaseController {
                                                     @RequestBody QueryVO queryVO) {
         queryVO.setProjectId(projectId);
         log.info("--->开始查询用例列表：{}", queryVO);
-        queryVO.setUserId(userService.queryByLoginInfo(loginInfo).getUserId());
+        queryVO.setUserId(CacheUtil.getUserByLoginInfo(loginInfo).getUserId());
         PageInfo<AutoCaseSimpleVO> pageInfo = new PageInfo();
         pageInfo.setList(caseService.query(queryVO));
         pageInfo.setTotal(caseService.count(queryVO));

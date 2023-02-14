@@ -20,14 +20,13 @@ public class AutoStepController {
 
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public Result<Boolean> create(@RequestHeader("userId") String userId, @RequestBody AutoStepVO autoStepVO) {
-//        autoStepVO.setOwnerId(userId);
+    public Result<Integer> create(@RequestHeader("userId") String userId, @RequestBody AutoStepVO autoStepVO) {
         log.info("--->开始新增步骤：{}", autoStepVO);
         return Result.message(stepService.create(autoStepVO));
     }
 
     @RequestMapping(value = "/remove", method = RequestMethod.DELETE)
-    public Result<Boolean> remove(@RequestParam("stepId") Integer stepId) {
+    public Result<Integer> remove(@RequestParam("stepId") Integer stepId) {
         log.info("--->开始删除步骤：{}", stepId);
         return Result.message(stepService.remove(stepId));
     }
