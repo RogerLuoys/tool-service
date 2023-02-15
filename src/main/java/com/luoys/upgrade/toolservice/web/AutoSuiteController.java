@@ -37,7 +37,7 @@ public class AutoSuiteController {
         return Result.message(suiteService.quickCreate(autoSuiteVO));
     }
 
-    @RequestMapping(value = "/createRelatedSlave", method = RequestMethod.POST)
+    @RequestMapping(value = "/createRelatedCase", method = RequestMethod.POST)
     public Result<Integer> createRelatedCase(@RequestBody SuiteCaseVO suiteCaseVO) {
         log.info("--->开始新增套件关联的用例：{}", suiteCaseVO);
         return Result.message(suiteService.createRelatedCase(suiteCaseVO));
@@ -143,17 +143,6 @@ public class AutoSuiteController {
         }
     }
 
-    // 此接口给后端调用
-    @RequestMapping(value = "/scheduleRun", method = RequestMethod.POST)
-    public Result<String> executeBySchedule(@RequestBody SuiteDTO suiteDTO) {
-        log.info("--->开始执行套件(通过服务器调度)：{}", suiteDTO);
-        try {
-            return Result.success(suiteService.scheduleRun(suiteDTO));
-        } catch (RejectedExecutionException e) {
-            return Result.error("执行队列已满，请稍后再试");
-        }
-    }
-
     @RequestMapping(value = "/executeBySingle", method = RequestMethod.POST)
     public Result<String> executeBySingle(@RequestBody SuiteCaseVO suiteCaseVO) {
         log.info("--->开始执行套件的单个用例：{}", suiteCaseVO);
@@ -161,6 +150,17 @@ public class AutoSuiteController {
             return Result.message(suiteService.executeBySingle(suiteCaseVO), "套件未执行，请检查状态");
         } catch (RejectedExecutionException e) {
             return Result.errorMessage("执行队列已满，请稍后再试");
+        }
+    }
+
+    // 此接口给后端调用
+    @RequestMapping(value = "/scheduleRun", method = RequestMethod.POST)
+    public Boolean executeBySchedule(@RequestBody SuiteDTO suiteDTO) {
+        log.info("--->开始执行套件(通过服务器调度)：{}", suiteDTO);
+        try {
+            return suiteService.scheduleRun(suiteDTO);
+        } catch (RejectedExecutionException e) {
+            return false;
         }
     }
 

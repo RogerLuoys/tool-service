@@ -25,6 +25,7 @@
     <include refid="Base_Column_List" />
     from resource_suite_relation
     where resource_id = #{resourceId,jdbcType=INTEGER}
+    and `type` = #{type,jdbcType=TINYINT}
   </select>
   <select id="selectBySuiteId" resultMap="BaseResultMap">
     select
@@ -34,6 +35,7 @@
     inner join resource_suite_relation b on a.id = b.resource_id
     where b.is_delete = 0 and a.is_delete = 0
     and b.suite_id = #{suiteId,jdbcType=INTEGER}
+    and b.`type` = #{type,jdbcType=TINYINT}
   </select>
   <delete id="remove">
     update resource_suite_relation set is_delete=1

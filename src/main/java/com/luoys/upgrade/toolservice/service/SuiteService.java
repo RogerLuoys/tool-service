@@ -417,6 +417,7 @@ public class SuiteService {
             // 将要执行的用例分批放入不同的机器中执行
             for (int i = 0; i < runList.size(); i++) {
                 suiteDTO.setRelatedCase(runList.get(i));
+                suiteDTO.setResourceId(slaveList.get(i).getResourceId());
                 log.info("--->调用http接口执行套件：url={}", slaveList.get(i).getUrl());
                 HttpUtil.scheduleRun(slaveList.get(i).getUrl(), suiteDTO);
             }
@@ -425,9 +426,10 @@ public class SuiteService {
             List<ResourceVO> resourceVOList = TransformResource.transformPO2VO(resourceMapper.listPublic(autoSuiteVO.getProjectId()));
             for (ResourceVO resourceVO : resourceVOList) {
                 suiteDTO.setRelatedCase(caseList);
+                suiteDTO.setResourceId(resourceVO.getResourceId());
                 log.info("--->调用http接口执行套件：url={}", resourceVO.getSlave().getUrl());
-                Result<String> result = HttpUtil.scheduleRun(resourceVO.getSlave().getUrl(), suiteDTO);
-                if (result.getCode() == ResultEnum.SUCCESS_FOR_CUSTOM.getCode()) {
+                Boolean result = HttpUtil.scheduleRun(resourceVO.getSlave().getUrl(), suiteDTO);
+                if (result) {
                     return true;
                 }
             }
@@ -448,19 +450,20 @@ public class SuiteService {
         // 使用线程池执行用例，并更新结果
         ThreadPoolUtil.executeAuto(() -> {
             try {
+                log.info("--->套件开始执行: suiteId={}", suiteDTO.getSuiteId());
                 // 把套件状态更新为执行中
                 autoSuiteMapper.updateStatus(suiteDTO.getSuiteId(), AutoSuiteStatusEnum.SUITE_RUNNING.getCode());
                 ResourceSuiteRelationPO resourceSuiteRelationPO = new ResourceSuiteRelationPO();
                 resourceSuiteRelationPO.setResourceId(suiteDTO.getResourceId());
                 resourceSuiteRelationPO.setSuiteId(suiteDTO.getSuiteId());
-                resourceSuiteRelationPO.setType(2);
+                resourceSuiteRelationPO.setType(ResourceSuiteTypeEnum.SLAVE_USAGE.getCode());
                 // 新增机器使用记录
                 resourceSuiteRelationMapper.insert(resourceSuiteRelationPO);
                 // 执行所有用例，后更新结果
                 execute(caseList);
             } finally {
                 // 先删除机器使用记录
-                resourceSuiteRelationMapper.remove(suiteDTO.getSuiteId(), suiteDTO.getSuiteId(), ResourceSuiteTypeEnum.SLAVE_USAGE.getCode());
+                resourceSuiteRelationMapper.remove(suiteDTO.getResourceId(), suiteDTO.getSuiteId(), ResourceSuiteTypeEnum.SLAVE_USAGE.getCode());
                 if (resourceSuiteRelationMapper.selectBySuiteId(suiteDTO.getSuiteId(), ResourceSuiteTypeEnum.SLAVE_USAGE.getCode()).size() == 0) {
                     // 套件没有在机器中执行的记录，说明全部执行完成
                     autoSuiteMapper.updateStatus(suiteDTO.getSuiteId(), AutoSuiteStatusEnum.SUITE_FREE.getCode());
@@ -469,6 +472,7 @@ public class SuiteService {
                 autoSuiteMapper.updateResult(suiteDTO.getSuiteId(),
                         suiteCaseRelationMapper.countBySuiteId(suiteDTO.getSuiteId(), AutoCaseStatusEnum.SUCCESS.getCode()),
                         suiteCaseRelationMapper.countBySuiteId(suiteDTO.getSuiteId(), AutoCaseStatusEnum.FAIL.getCode()));
+                log.info("--->套件执行结束: suiteId={}", suiteDTO.getSuiteId());
             }
         });
         return true;

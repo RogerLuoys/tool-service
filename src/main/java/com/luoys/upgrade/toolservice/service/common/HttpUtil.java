@@ -16,26 +16,26 @@ public class HttpUtil {
     private static final RestTemplateBuilder restTemplateBuilder = new RestTemplateBuilder();
     private static final RestTemplate restTemplate = restTemplateBuilder.build();
 
-    public static Result<String> doPost(String url, String body) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<String> entity = new HttpEntity<>(body, headers);
-        ResponseEntity responseEntity = restTemplate.exchange(url, HttpMethod.POST, entity, String.class, new HashMap<>());
-        return (Result<String>) responseEntity.getBody();
-    }
-
     /**
      * 通过restTemplate调用http接口 scheduleRun
      * @param url -
      * @param body -
      * @return -
      */
-    public static Result<String> scheduleRun(String url, SuiteDTO body) {
+    public static Boolean scheduleRun(String url, SuiteDTO body) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<SuiteDTO> entity = new HttpEntity<>(body, headers);
-        ResponseEntity<Result> responseEntity = restTemplate.exchange(url + "autoSuite/executeBySchedule", HttpMethod.POST, entity, Result.class, new HashMap<>());
-        return responseEntity.getBody();
+        if (!url.startsWith("http")) {
+            url = "http://" + url;
+        }
+        try {
+            ResponseEntity<Boolean> responseEntity = restTemplate.exchange(url + "/autoSuite/scheduleRun", HttpMethod.POST, entity, Boolean.class, new HashMap<>());
+            return responseEntity.getBody();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     /**
