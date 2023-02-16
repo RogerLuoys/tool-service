@@ -113,7 +113,7 @@ public class CacheUtil {
         return supperClassCache.get(key, CacheUtil::getSupperClassFromDB);
     }
 
-    public static String getUserById(Integer key) {
+    public static String getNickNameById(Integer key) {
         return nickNameCache.get(key, CacheUtil::getNickNameFromDB);
     }
 

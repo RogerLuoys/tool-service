@@ -30,7 +30,7 @@ public class TransformResource {
         vo.setPermission(po.getPermission());
         vo.setProjectId(po.getProjectId());
         vo.setOwnerId(po.getOwnerId());
-        vo.setOwnerName(po.getOwnerId() == null ? null : CacheUtil.getUserById(po.getOwnerId()));
+        vo.setOwnerName(po.getOwnerId() == null ? null : CacheUtil.getNickNameById(po.getOwnerId()));
 //        vo.setUserId(po.getUserId());
 //        vo.setUserName(po.getUserName());
         //根据类型转换不同的对象

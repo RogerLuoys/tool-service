@@ -70,8 +70,6 @@ public class CaseService {
             log.error("--->用例名称不能为空：{}", autoCaseVO);
             return null;
         }
-//        String userName = userMapper.selectById(autoCaseVO.getOwnerId()).getUsername();
-//        autoCaseVO.setOwnerName(userName);
         AutoCasePO autoCasePO = TransformAutoCase.transformVO2PO(autoCaseVO);
         autoCaseMapper.insert(autoCasePO);
         return autoCasePO.getId();

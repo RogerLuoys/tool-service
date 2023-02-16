@@ -43,7 +43,7 @@ public class TransformTask {
         vo.setEndTime(po.getEndTime());
         vo.setName(po.getName());
         vo.setStartTime(po.getStartTime());
-        vo.setOwnerName(po.getOwnerId() == null ? null : CacheUtil.getUserById(po.getOwnerId()));
+        vo.setOwnerName(po.getOwnerId() == null ? null : CacheUtil.getNickNameById(po.getOwnerId()));
         vo.setOwnerId(po.getOwnerId());
         return vo;
     }
