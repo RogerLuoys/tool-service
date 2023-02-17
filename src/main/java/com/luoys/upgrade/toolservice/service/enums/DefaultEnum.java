@@ -10,6 +10,8 @@ import lombok.Getter;
 @Getter
 public enum DefaultEnum {
 
+    DEFAULT_CLIENT_SUCCESS(1, "true", "客户端执行成功时的通用返回"),
+    DEFAULT_CLIENT_ERROR(-1, "false", "客户端执行异常时的通用返回"),
     DEFAULT_DEMO_PROJECT(-1, "演示项目", "演示项目"),
     DEFAULT_DEMO_USER(-1, "演示账号", "03f798da9d3e6a10cfd620229fe122d4"),
     DEFAULT_UNKNOWN_USER(-2, "未知用户", "数据库中未查到指定用户"),

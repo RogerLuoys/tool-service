@@ -13,32 +13,32 @@ import java.util.Map;
 @Getter
 public enum HttpEnum {
 
-    GET(1, "GET", "get", "get请求"),
-    POST(2, "POST", "post", "post请求"),
-    PUT(3, "PUT", "put", "put请求"),
-    DELETE(4, "DELETE", "delete", "delete请求");
+    GET(1, "get", "get请求"),
+    POST(2, "post", "post请求"),
+    PUT(3, "put", "put请求"),
+    DELETE(4, "delete", "delete请求"),
+    GET_FOR_HEADER(5, "getForHeader", "通过get请求获取header"),
+    POST_FOR_HEADER(6, "postForHeader", "通过post请求获取header"),
+    SET_DEFAULT_HEADER(7, "setDefaultHeader", "设置默认请求头");
 
     private final Integer code;
-    private final String value;
+//    private final String value;
     private final String name; //Http步骤的方法名
     private final String description;
 
-    HttpEnum(Integer code, String value, String name, String description) {
+    HttpEnum(Integer code, String name, String description) {
         this.code = code;
-        this.value = value;
         this.name = name;
         this.description = description;
     }
 
 
     private static final Map<Integer, HttpEnum> CODE_MAP = new HashMap<>();
-    private static final Map<String, HttpEnum> VALUE_MAP = new HashMap<>();
     private static final Map<String, HttpEnum> NAME_MAP = new HashMap<>();
 
     static {
         for (HttpEnum e : HttpEnum.values()) {
             CODE_MAP.put(e.getCode(), e);
-            VALUE_MAP.put(e.getValue(), e);
             NAME_MAP.put(e.getName().toLowerCase(), e);
         }
     }
@@ -47,9 +47,6 @@ public enum HttpEnum {
         return code == null ? null : CODE_MAP.get(code);
     }
 
-    public static HttpEnum fromValue(String value) {
-        return value == null ? null : VALUE_MAP.get(value);
-    }
 
     public static HttpEnum fromName(String name) {
         return name == null ? null : NAME_MAP.get(name);
