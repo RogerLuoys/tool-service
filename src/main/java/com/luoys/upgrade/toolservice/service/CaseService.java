@@ -250,12 +250,12 @@ public class CaseService {
         // 查关联的步骤
         List<CaseStepVO> caseStepList = TransformCaseStepRelation.transformPO2VO(caseStepRelationMapper.listStepByCaseId(caseId));
         // 区分步骤类型
-        List<CaseStepVO> beforeTest = caseStepList.stream().filter(caseStepVO -> caseStepVO.getType().equals(RelatedStepTypeEnum.BEFORE_TEST.getCode())).collect(Collectors.toList());
-        List<CaseStepVO> mainTest = caseStepList.stream().filter(caseStepVO -> caseStepVO.getType().equals(RelatedStepTypeEnum.MAIN_TEST.getCode())).collect(Collectors.toList());
+        List<CaseStepVO> beforeClass = caseStepList.stream().filter(caseStepVO -> caseStepVO.getType().equals(RelatedStepTypeEnum.BEFORE_TEST.getCode())).collect(Collectors.toList());
+        List<CaseStepVO> test = caseStepList.stream().filter(caseStepVO -> caseStepVO.getType().equals(RelatedStepTypeEnum.MAIN_TEST.getCode())).collect(Collectors.toList());
         List<CaseStepVO> afterTest = caseStepList.stream().filter(caseStepVO -> caseStepVO.getType().equals(RelatedStepTypeEnum.AFTER_TEST.getCode())).collect(Collectors.toList());
-        autoCaseVO.setPreStepList(beforeTest);
-        autoCaseVO.setMainStepList(mainTest);
-        autoCaseVO.setAfterStepList(afterTest);
+        autoCaseVO.setBeforeClassList(beforeClass);
+        autoCaseVO.setTestList(test);
+        autoCaseVO.setAfterClassList(afterTest);
         // 如果是超类需继续查参数和BeforeSuite AfterSuite
         if (AutoCaseTypeEnum.SUPPER_CLASS.getCode().equals(autoCaseVO.getType())
                 || autoCaseVO.getType().equals(AutoCaseTypeEnum.DATA_FACTORY.getCode())) {
@@ -266,8 +266,8 @@ public class CaseService {
             autoCaseVO.setArgumentList(TransformConfig.transformPO2VO(uiList));
             List<CaseStepVO> beforeSuite = caseStepList.stream().filter(caseStepVO -> caseStepVO.getType().equals(RelatedStepTypeEnum.BEFORE_SUITE.getCode())).collect(Collectors.toList());
             List<CaseStepVO> afterSuite = caseStepList.stream().filter(caseStepVO -> caseStepVO.getType().equals(RelatedStepTypeEnum.AFTER_SUITE.getCode())).collect(Collectors.toList());
-            autoCaseVO.setPreStepList(beforeSuite);
-            autoCaseVO.setMainStepList(afterSuite);
+            autoCaseVO.setBeforeSuiteList(beforeSuite);
+            autoCaseVO.setAfterSuiteList(afterSuite);
         }
         return autoCaseVO;
     }
@@ -285,10 +285,10 @@ public class CaseService {
         StringBuilder steps = new StringBuilder();
 
         // 转换主要步骤
-        for (CaseStepVO stepVO : autoCaseVO.getMainStepList()) {
+        for (CaseStepVO stepVO : autoCaseVO.getTestList()) {
             steps.append(stepService.change2ScriptMode(stepVO.getAutoStep()).getScript());
         }
-        autoCaseVO.setMainSteps(steps.toString());
+        autoCaseVO.setTest(steps.toString());
         steps.delete(0, steps.length());
 
         return autoCaseVO;
@@ -310,18 +310,18 @@ public class CaseService {
     public AutoCaseVO change2UiMode(AutoCaseVO autoCaseVO) {
 
         // 通过正则解析脚本，把整段脚本解析成行('\w':任意字符，'.':0到无限次)
-//        List<String> mainSteps = StringUtil.getMatch("auto\\.(ui|http|sql|rpc|util|po|assertion)\\.\\w+\\(.*\\);", autoCaseVO.getMainSteps());
-        List<String> mainSteps = StringUtil.getMatch(ONE_STEP, autoCaseVO.getMainSteps());
+//        List<String> mainSteps = StringUtil.getMatch("auto\\.(ui|http|sql|rpc|util|po|assertion)\\.\\w+\\(.*\\);", autoCaseVO.getTest());
+        List<String> mainSteps = StringUtil.getMatch(ONE_STEP, autoCaseVO.getTest());
 
         // 完全新增脚本，或脚本内步骤有新增，需要创建对应数量的关联步骤
-        while (mainSteps.size() - autoCaseVO.getMainStepList().size() > 0) {
+        while (mainSteps.size() - autoCaseVO.getTestList().size() > 0) {
             CaseStepVO caseStepVO = new CaseStepVO();
             caseStepVO.setCaseId(autoCaseVO.getCaseId());
             // 先创建步骤，再将stepId关联上
             caseStepVO.setStepId(stepService.quickCreate());
             caseStepVO.setType(RelatedStepTypeEnum.MAIN_TEST.getCode());
             // 步骤顺序需要设置好
-            caseStepVO.setSequence(autoCaseVO.getMainStepList().size() + 1);
+            caseStepVO.setSequence(autoCaseVO.getTestList().size() + 1);
             // 将关系存入数据库
             createRelatedStep(caseStepVO);
             // 创建步骤实例
@@ -329,23 +329,23 @@ public class CaseService {
             // 填充步骤的stepId
             caseStepVO.getAutoStep().setStepId(caseStepVO.getStepId());
             // 将关联步骤的实例添加至用例对象中
-            autoCaseVO.getMainStepList().add(caseStepVO);
+            autoCaseVO.getTestList().add(caseStepVO);
         }
 
         // 脚本中删除了一些步骤，需要删除对应的关联关系
-        while (mainSteps.size() - autoCaseVO.getMainStepList().size() < 0) {
+        while (mainSteps.size() - autoCaseVO.getTestList().size() < 0) {
             // 数据库中删最后一个步骤的关联关系
-            removeRelatedStep(autoCaseVO.getMainStepList().get(autoCaseVO.getMainStepList().size() - 1));
+            removeRelatedStep(autoCaseVO.getTestList().get(autoCaseVO.getTestList().size() - 1));
             // 然后将最后一个步骤从对象中删除
-            autoCaseVO.getMainStepList().remove(autoCaseVO.getMainStepList().size() - 1);
+            autoCaseVO.getTestList().remove(autoCaseVO.getTestList().size() - 1);
         }
 
         // 基于脚本，对脚本内的步骤做全量更新
         for (int i = 0; i< mainSteps.size(); i++) {
             // 将脚本塞入对应的步骤中
-            autoCaseVO.getMainStepList().get(i).getAutoStep().setScript(mainSteps.get(i));
+            autoCaseVO.getTestList().get(i).getAutoStep().setScript(mainSteps.get(i));
             // 基于脚本，将步骤转换为ui模式(会覆盖原数据)
-            AutoStepVO autoStepVO = stepService.change2UiMode(autoCaseVO.getMainStepList().get(i).getAutoStep(), autoCaseVO.getSupperCaseId(), autoCaseVO.getProjectId());
+            AutoStepVO autoStepVO = stepService.change2UiMode(autoCaseVO.getTestList().get(i).getAutoStep(), autoCaseVO.getSupperCaseId(), autoCaseVO.getProjectId());
             // 重新设置步骤执行顺序
             updateRelatedStep(autoCaseVO.getCaseId(), autoStepVO.getStepId(), i + 1);
             stepService.update(autoStepVO);
@@ -389,7 +389,7 @@ public class CaseService {
 
 //    private Boolean execute(AutoCaseVO autoCaseVO, StepExecutor executor) {
 //        boolean result = true;
-//        if (autoCaseVO.getMainStepList() == null || autoCaseVO.getMainStepList().size() == 0) {
+//        if (autoCaseVO.getTestList() == null || autoCaseVO.getTestList().size() == 0) {
 //            log.error("--->用例没有主步骤：caseId={}", autoCaseVO.getCaseId());
 //            return false;
 //        }
@@ -403,8 +403,8 @@ public class CaseService {
 //            }
 //        }
 //        // 执行主要步骤@Test，只要有一个步骤为false，则整个case结果为false
-//        if (autoCaseVO.getMainStepList() != null && autoCaseVO.getMainStepList().size() != 0) {
-//            for (CaseStepVO vo : autoCaseVO.getMainStepList()) {
+//        if (autoCaseVO.getTestList() != null && autoCaseVO.getTestList().size() != 0) {
+//            for (CaseStepVO vo : autoCaseVO.getTestList()) {
 //                String var = executor.execute(vo.getAutoStep());
 //                if (var == null || var.equalsIgnoreCase("false")) {
 //                    result = false;

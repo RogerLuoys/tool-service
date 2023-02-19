@@ -145,11 +145,11 @@ public class TransformAutoCase {
         }
         // 编排步骤
         dto.setBeforeSuite(null); // 暂不支持
-        dto.setSupperBeforeTest(TransformCaseStepRelation.transformVO2DTO(supperCaseVO.getPreStepList()));
-        dto.setBeforeTest(TransformCaseStepRelation.transformVO2DTO(vo.getPreStepList()));
-        dto.setTest(TransformCaseStepRelation.transformVO2DTO(vo.getMainStepList()));
-        dto.setAfterTest(TransformCaseStepRelation.transformVO2DTO(vo.getAfterStepList()));
-        dto.setSupperAfterTest(TransformCaseStepRelation.transformVO2DTO(supperCaseVO.getAfterStepList()));
+        dto.setSupperBeforeTest(TransformCaseStepRelation.transformVO2DTO(supperCaseVO.getBeforeClassList()));
+        dto.setBeforeTest(TransformCaseStepRelation.transformVO2DTO(vo.getBeforeClassList()));
+        dto.setTest(TransformCaseStepRelation.transformVO2DTO(vo.getTestList()));
+        dto.setAfterTest(TransformCaseStepRelation.transformVO2DTO(vo.getAfterClassList()));
+        dto.setSupperAfterTest(TransformCaseStepRelation.transformVO2DTO(supperCaseVO.getAfterClassList()));
         dto.setAfterSuite(null); // 暂不支持
 
         return dto;

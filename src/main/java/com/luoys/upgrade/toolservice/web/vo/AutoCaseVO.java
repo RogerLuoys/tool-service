@@ -66,9 +66,14 @@ public class AutoCaseVO {
     private Date finishTime;
 
     /**
-     * 前置步骤(UI模式)，即@BeforeTest
+     * 前置步骤(UI模式)，即@BeforeSuite
      */
-    private List<CaseStepVO> preStepList;
+    private List<CaseStepVO> beforeSuiteList;
+
+    /**
+     * 前置步骤(UI模式)，即@BeforeClass
+     */
+    private List<CaseStepVO> beforeClassList;
 
 //    /**
 //     * 前置步骤(脚本模式)，即@BeforeTest
@@ -78,17 +83,22 @@ public class AutoCaseVO {
     /**
      * 主要步骤(UI模式)
      */
-    private List<CaseStepVO> mainStepList;
+    private List<CaseStepVO> testList;
 
     /**
      * 主要步骤(脚本模式)，即@Test
      */
-    private String mainSteps;
+    private String test;
 
     /**
-     * 收尾步骤(UI模式)，即@AfterTest
+     * 收尾步骤(UI模式)，即@AfterClass
      */
-    private List<CaseStepVO> afterStepList;
+    private List<CaseStepVO> afterClassList;
+
+    /**
+     * 前置步骤(UI模式)，即@BeforeSuite
+     */
+    private List<CaseStepVO> afterSuiteList;
 
 //    /**
 //     * 收尾步骤(脚本模式)，即@AfterTest
