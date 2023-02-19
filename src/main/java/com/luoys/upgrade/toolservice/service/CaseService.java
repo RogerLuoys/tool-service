@@ -116,16 +116,13 @@ public class CaseService {
      * 新增用例中关联的步骤
      *
      * @param caseStepVO 步骤对象
-     * @return 成功为true，失败为false
+     * @return 步骤对象
      */
-    public Integer createRelatedStep(CaseStepVO caseStepVO) {
-        // 如果关联步骤为空，则先快速创建一个步骤
-        if (null == caseStepVO.getStepId() || caseStepVO.getStepId() <= 0) {
-            caseStepVO.setStepId(stepService.quickCreate());
-        }
+    public CaseStepVO createRelatedStep(CaseStepVO caseStepVO) {
+        caseStepVO.setStepId(stepService.quickCreate());
         CaseStepRelationPO caseStepRelationPO = TransformCaseStepRelation.transformVO2PO(caseStepVO);
         caseStepRelationMapper.insert(caseStepRelationPO);
-        return caseStepRelationPO.getId();
+        return TransformCaseStepRelation.transformPO2VO(caseStepRelationPO);
     }
 
 //    /**
@@ -167,8 +164,8 @@ public class CaseService {
      * @return 成功为true，失败为false
      */
     public Integer removeRelatedStep(CaseStepVO caseStepVO) {
-        CaseStepRelationPO caseStepRelationPO = TransformCaseStepRelation.transformVO2PO(caseStepVO);
-        return caseStepRelationMapper.remove(caseStepRelationPO);
+        stepService.remove(caseStepVO.getStepId());
+        return caseStepRelationMapper.removeByStepId(caseStepVO.getStepId());
     }
 
     /**
@@ -256,19 +253,6 @@ public class CaseService {
         List<CaseStepVO> beforeTest = caseStepList.stream().filter(caseStepVO -> caseStepVO.getType().equals(RelatedStepTypeEnum.BEFORE_TEST.getCode())).collect(Collectors.toList());
         List<CaseStepVO> mainTest = caseStepList.stream().filter(caseStepVO -> caseStepVO.getType().equals(RelatedStepTypeEnum.MAIN_TEST.getCode())).collect(Collectors.toList());
         List<CaseStepVO> afterTest = caseStepList.stream().filter(caseStepVO -> caseStepVO.getType().equals(RelatedStepTypeEnum.AFTER_TEST.getCode())).collect(Collectors.toList());
-//        for (CaseStepVO vo : caseStepList) {
-//            switch (RelatedStepTypeEnum.fromCode(vo.getType())) {
-//                case BEFORE_TEST:
-//                    preList.add(vo);
-//                    break;
-//                case MAIN_TEST:
-//                    mainList.add(vo);
-//                    break;
-//                case AFTER_TEST:
-//                    afterList.add(vo);
-//                    break;
-//            }
-//        }
         autoCaseVO.setPreStepList(beforeTest);
         autoCaseVO.setMainStepList(mainTest);
         autoCaseVO.setAfterStepList(afterTest);

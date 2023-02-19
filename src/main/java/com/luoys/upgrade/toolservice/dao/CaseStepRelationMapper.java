@@ -26,10 +26,10 @@ public interface CaseStepRelationMapper {
     /**
      * 根据caseId和stepId逻辑删除关联的步骤
      *
-     * @param record
-     * @return
+     * @param stepId
+     * @return -
      */
-    int remove(CaseStepRelationPO record);
+    int removeByStepId(@Param("stepId") Integer stepId);
 
     /**
      * 插入数据
