@@ -18,11 +18,6 @@ public class AutoStepPO {
     private String name;
 
     /**
-     * 描述
-     */
-    private String description;
-
-    /**
      * 模块类型：1 PO，2 SQL，3 HTTP，4 RPC，5 UI，6 ASSERT，7 UTIL
      */
     private Integer moduleType;
@@ -61,5 +56,10 @@ public class AutoStepPO {
      * 变量名
      */
     private String varName;
+
+    /**
+     * 执行结果
+     */
+    private String result;
 
 }

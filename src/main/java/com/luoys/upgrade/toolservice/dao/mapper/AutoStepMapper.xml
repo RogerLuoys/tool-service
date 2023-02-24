@@ -4,7 +4,7 @@
   <resultMap id="BaseResultMap" type="com.luoys.upgrade.toolservice.dao.po.AutoStepPO">
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="name" jdbcType="VARCHAR" property="name" />
-    <result column="description" jdbcType="VARCHAR" property="description" />
+    <result column="result" jdbcType="VARCHAR" property="result" />
     <result column="module_type" jdbcType="TINYINT" property="moduleType" />
     <result column="method_type" jdbcType="TINYINT" property="methodType" />
     <result column="method_name" jdbcType="VARCHAR" property="methodName" />
@@ -15,7 +15,7 @@
     <result column="var_name" jdbcType="VARCHAR" property="varName" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, `name`, description, module_type, method_type, method_name, method_id, parameter1, parameter2,
+    id, `name`, `result`, module_type, method_type, method_name, method_id, parameter1, parameter2,
     parameter3, var_name
   </sql>
   <select id="select" resultMap="BaseResultMap">
@@ -62,11 +62,11 @@
     where id = #{stepId,jdbcType=INTEGER}
   </update>
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.luoys.upgrade.toolservice.dao.po.AutoStepPO" useGeneratedKeys="true">
-    insert into auto_step (`name`, description, module_type,
+    insert into auto_step (`name`, result, module_type,
       method_type, method_name, method_id, parameter1, parameter2,
       parameter3, var_name, is_delete, gmt_create,
       gmt_modified)
-    values (#{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{moduleType,jdbcType=TINYINT},
+    values (#{name,jdbcType=VARCHAR}, #{result,jdbcType=VARCHAR}, #{moduleType,jdbcType=TINYINT},
       #{methodType,jdbcType=TINYINT}, #{methodName,jdbcType=VARCHAR}, #{methodId,jdbcType=INTEGER},
       #{parameter1,jdbcType=VARCHAR}, #{parameter2,jdbcType=VARCHAR},
       #{parameter3,jdbcType=VARCHAR}, #{varName,jdbcType=VARCHAR}, 0, now(), now())
@@ -77,8 +77,8 @@
       <if test="name != null">
         `name` = #{name,jdbcType=VARCHAR},
       </if>
-      <if test="description != null">
-        description = #{description,jdbcType=VARCHAR},
+      <if test="result != null">
+        `result` = #{result,jdbcType=VARCHAR},
       </if>
       <if test="moduleType != null">
         module_type = #{moduleType,jdbcType=TINYINT},

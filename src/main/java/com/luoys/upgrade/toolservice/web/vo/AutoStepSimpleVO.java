@@ -21,11 +21,6 @@ public class AutoStepSimpleVO {
     private String name;
 
     /**
-     * 描述
-     */
-    private String description;
-
-    /**
      * 步骤类型：1 SQL，2 HTTP，3 RPC，4 UI
      */
     private Integer moduleType;
@@ -56,18 +51,23 @@ public class AutoStepSimpleVO {
     private Boolean assertResult;
 
     /**
-     * 所属人id
+     * 执行结果
      */
-    private String ownerId;
+    private String result;
 
-    /**
-     * 所属人
-     */
-    private String ownerName;
-
-    /**
-     * 是否公用
-     */
-    private Boolean isPublic;
+//    /**
+//     * 所属人id
+//     */
+//    private String ownerId;
+//
+//    /**
+//     * 所属人
+//     */
+//    private String ownerName;
+//
+//    /**
+//     * 是否公用
+//     */
+//    private Boolean isPublic;
 
 }

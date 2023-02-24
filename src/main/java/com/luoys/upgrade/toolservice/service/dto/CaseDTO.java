@@ -59,14 +59,14 @@ public class CaseDTO {
     private List<StepDTO> test;
 
     /**
-     * 相当于测试类的@BeforeTest，又因为只有一个@Test所以也相当于BeforeClass
+     * 相当于测试类的@BeforeClass
      */
-    private List<StepDTO> beforeTest;
+    private List<StepDTO> beforeClass;
 
     /**
-     * 相当于测试类的@AfterTest，又因为只有一个@Test所以也相当于AfterClass
+     * 相当于测试类的@AfterClass
      */
-    private List<StepDTO> afterTest;
+    private List<StepDTO> afterClass;
 
     /**
      * 相当于测试超类的@BeforeSuite
@@ -79,13 +79,13 @@ public class CaseDTO {
     private List<StepDTO> afterSuite;
 
     /**
-     * 相当于测试超类的@BeforeTest
+     * 相当于测试超类的@BeforeClass
      */
-    private List<StepDTO> supperBeforeTest;
+    private List<StepDTO> supperBeforeClass;
 
     /**
-     * 相当于测试超类的@AfterTest
+     * 相当于测试超类的@AfterClass
      */
-    private List<StepDTO> supperAfterTest;
+    private List<StepDTO> supperAfterClass;
 
 }

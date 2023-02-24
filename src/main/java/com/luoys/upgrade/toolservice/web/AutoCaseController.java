@@ -100,6 +100,12 @@ public class AutoCaseController {
         return Result.message(caseService.updateConfig(configVO));
     }
 
+    @RequestMapping(value = "/updateScript", method = RequestMethod.PUT)
+    public Result<ScriptVO> updateScript(@RequestBody ScriptVO scriptVO) {
+        log.info("--->开始更新脚本：{}", scriptVO);
+        return Result.message(caseService.updateScript(scriptVO));
+    }
+
     @RequestMapping(value = "/changeUiMode", method = RequestMethod.PUT)
     public Result<AutoCaseVO> changeUiMode(@RequestBody AutoCaseVO autoCaseVO) {
         log.info("--->开始将脚本步骤转换为可视化步骤：{}", autoCaseVO);

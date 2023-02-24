@@ -62,9 +62,4 @@ public class AutoCasePO {
      */
     private Integer ownerId;
 
-//    /**
-//     * 所属人
-//     */
-//    private String ownerName;
-
 }

@@ -222,6 +222,59 @@ public class CaseService {
     }
 
     /**
+     * 更新用例脚本，转换成UI
+     *
+     * @param scriptVO 查询条件
+     * @return 用例列表
+     */
+    public ScriptVO updateScript(ScriptVO scriptVO) {
+
+        // 通过正则解析脚本，把整段脚本解析成行('\w':任意字符，'.':0到无限次)
+//        List<String> mainSteps = StringUtil.getMatch("auto\\.(ui|http|sql|rpc|util|po|assertion)\\.\\w+\\(.*\\);", autoCaseVO.getTest());
+        List<String> mainSteps = StringUtil.getMatch("(String[ ]{1,4}\\w{1,20}[ ]{1,4}=[ ]{0,4})?auto\\.(ui|http|sql|rpc|util|po|assertion)\\.\\w+\\(.*\\);", scriptVO.getScript());
+
+        // 完全新增脚本，或脚本内步骤有新增，需要创建对应数量的关联步骤
+        while (mainSteps.size() - scriptVO.getStepList().size() > 0) {
+            CaseStepVO caseStepVO = new CaseStepVO();
+            caseStepVO.setCaseId(scriptVO.getCaseId());
+            // 先创建步骤，再将stepId关联上
+            caseStepVO.setStepId(stepService.quickCreate());
+            caseStepVO.setType(scriptVO.getType());
+            // 步骤顺序需要设置好
+            caseStepVO.setSequence(scriptVO.getStepList().size() + 1);
+            // 将关系存入数据库
+            createRelatedStep(caseStepVO);
+            // 创建步骤实例
+            caseStepVO.setAutoStep(new AutoStepVO());
+            // 填充步骤的stepId
+            caseStepVO.getAutoStep().setStepId(caseStepVO.getStepId());
+            // 将关联步骤的实例添加至用例对象中
+            scriptVO.getStepList().add(caseStepVO);
+        }
+
+        // 脚本中删除了一些步骤，需要删除对应的关联关系
+        while (mainSteps.size() - scriptVO.getStepList().size() < 0) {
+            // 数据库中删最后一个步骤的关联关系
+            removeRelatedStep(scriptVO.getStepList().get(scriptVO.getStepList().size() - 1));
+            // 然后将最后一个步骤从对象中删除
+            scriptVO.getStepList().remove(scriptVO.getStepList().size() - 1);
+        }
+
+        // 基于脚本，对脚本内的步骤做全量更新
+        for (int i = 0; i< mainSteps.size(); i++) {
+            // 将脚本塞入对应的步骤中
+            scriptVO.getStepList().get(i).getAutoStep().setScript(mainSteps.get(i));
+            // 基于脚本，将步骤转换为ui模式(会覆盖原数据)
+            stepService.change2UiMode(scriptVO.getStepList().get(i).getAutoStep(), scriptVO.getSupperCaseId(), scriptVO.getProjectId());
+            // 重新设置步骤执行顺序
+            updateRelatedStep(scriptVO.getCaseId(), scriptVO.getStepList().get(i).getAutoStep().getStepId(), i + 1);
+            stepService.update(scriptVO.getStepList().get(i).getAutoStep());
+        }
+
+        return scriptVO;
+    }
+
+    /**
      * 查询用例列表
      *
      * @param queryVO 查询条件
@@ -311,7 +364,7 @@ public class CaseService {
 
         // 通过正则解析脚本，把整段脚本解析成行('\w':任意字符，'.':0到无限次)
 //        List<String> mainSteps = StringUtil.getMatch("auto\\.(ui|http|sql|rpc|util|po|assertion)\\.\\w+\\(.*\\);", autoCaseVO.getTest());
-        List<String> mainSteps = StringUtil.getMatch(ONE_STEP, autoCaseVO.getTest());
+        List<String> mainSteps = StringUtil.getMatch("(String[ ]{1,4}\\w{1,20}[ ]{1,4}=[ ]{0,4})?auto\\.(ui|http|sql|rpc|util|po|assertion)\\.\\w+\\(.*\\);[ ]{0,4}(\\n|\\r)", autoCaseVO.getTest());
 
         // 完全新增脚本，或脚本内步骤有新增，需要创建对应数量的关联步骤
         while (mainSteps.size() - autoCaseVO.getTestList().size() > 0) {

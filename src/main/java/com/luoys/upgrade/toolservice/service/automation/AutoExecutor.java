@@ -135,13 +135,13 @@ public class AutoExecutor {
             }
             auto.isBeforeSuiteDone = true;
         }
-        // 执行超类中的@BeforeTest
-        if (!executeSteps(caseDTO.getSupperBeforeTest(), auto)) {
+        // 执行超类中的@BeforeClass
+        if (!executeSteps(caseDTO.getSupperBeforeClass(), auto)) {
             caseDTO.setStatus(AutoCaseStatusEnum.FAIL.getCode());
             return false;
         }
-        // 执行测试类中的@BeforeTest
-        if (!executeSteps(caseDTO.getBeforeTest(), auto)) {
+        // 执行测试类中的@BeforeClass
+        if (!executeSteps(caseDTO.getBeforeClass(), auto)) {
             caseDTO.setStatus(AutoCaseStatusEnum.FAIL.getCode());
             return false;
         }
@@ -152,10 +152,10 @@ public class AutoExecutor {
         }
         // @Test中的步骤全部执行完成且都为true，则用例执行成功
         caseDTO.setStatus(AutoCaseStatusEnum.SUCCESS.getCode());
-        // 执行测试类中的@AfterTest
-        executeSteps(caseDTO.getAfterTest(), auto);
-        // 执行超类中的@AfterTest
-        executeSteps(caseDTO.getAfterTest(), auto);
+        // 执行测试类中的@AfterClass
+        executeSteps(caseDTO.getAfterClass(), auto);
+        // 执行超类中的@AfterClass
+        executeSteps(caseDTO.getSupperAfterClass(), auto);
         return true;
     }
 

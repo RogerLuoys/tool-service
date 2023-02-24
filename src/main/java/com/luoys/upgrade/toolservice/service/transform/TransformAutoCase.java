@@ -87,19 +87,12 @@ public class TransformAutoCase {
         po.setName(vo.getName());
         po.setDescription(vo.getDescription());
         po.setOwnerId(vo.getOwnerId());
-//        po.setOwnerName(vo.getOwnerName());
         po.setId(vo.getCaseId());
         po.setType(vo.getType());
         po.setStatus(vo.getStatus());
         po.setProjectId(vo.getProjectId());
         po.setSupperCaseId(vo.getSupperCaseId());
-//        po.setMaxTime(vo.getMaxTime());
-//        po.setEnvironment(vo.getEnvironment());
         po.setFinishTime(vo.getFinishTime());
-//        // 参数列表转换
-//        po.setParameter(TransformCommon.toParameter(vo.getParameterList()));
-//        // 转换步骤脚本
-//        po.setMainSteps(vo.getMainSteps());
         return po;
     }
 
@@ -145,11 +138,11 @@ public class TransformAutoCase {
         }
         // 编排步骤
         dto.setBeforeSuite(null); // 暂不支持
-        dto.setSupperBeforeTest(TransformCaseStepRelation.transformVO2DTO(supperCaseVO.getBeforeClassList()));
-        dto.setBeforeTest(TransformCaseStepRelation.transformVO2DTO(vo.getBeforeClassList()));
+        dto.setSupperBeforeClass(TransformCaseStepRelation.transformVO2DTO(supperCaseVO.getBeforeClassList()));
+        dto.setBeforeClass(TransformCaseStepRelation.transformVO2DTO(vo.getBeforeClassList()));
         dto.setTest(TransformCaseStepRelation.transformVO2DTO(vo.getTestList()));
-        dto.setAfterTest(TransformCaseStepRelation.transformVO2DTO(vo.getAfterClassList()));
-        dto.setSupperAfterTest(TransformCaseStepRelation.transformVO2DTO(supperCaseVO.getAfterClassList()));
+        dto.setAfterClass(TransformCaseStepRelation.transformVO2DTO(vo.getAfterClassList()));
+        dto.setSupperAfterClass(TransformCaseStepRelation.transformVO2DTO(supperCaseVO.getAfterClassList()));
         dto.setAfterSuite(null); // 暂不支持
 
         return dto;
