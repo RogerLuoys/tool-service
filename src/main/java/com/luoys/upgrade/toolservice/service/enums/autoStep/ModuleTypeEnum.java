@@ -8,7 +8,7 @@ import java.util.Map;
 @Getter
 public enum ModuleTypeEnum {
 
-    UNDEFINED_MODULE(-1, "--", "未知方法"),
+    UNDEFINED_MODULE(-1, "undefined", "未知方法"),
     PO(1, "po", "封装好的方法，包含多个步骤"),
     SQL(2, "sql", "执行sql相关的方法"),
     RPC(3, "rpc", "调用rpc接口相关的方法"),

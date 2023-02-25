@@ -73,7 +73,7 @@ public class AutoCaseVO {
     /**
      * 前置步骤(脚本模式)，即@BeforeSuite
      */
-    private String beforeSuite;
+    private String beforeSuiteScript;
 
     /**
      * 前置步骤(UI模式)，即@BeforeClass
@@ -83,7 +83,7 @@ public class AutoCaseVO {
     /**
      * 前置步骤(脚本模式)，即@BeforeClass
      */
-    private String beforeClass;
+    private String beforeClassScript;
 
     /**
      * 主要步骤(UI模式)
@@ -93,7 +93,7 @@ public class AutoCaseVO {
     /**
      * 主要步骤(脚本模式)，即@Test
      */
-    private String test;
+    private String testScript;
 
     /**
      * 收尾步骤(UI模式)，即@AfterClass
@@ -103,7 +103,7 @@ public class AutoCaseVO {
     /**
      * 收尾步骤(脚本模式)，即@AfterClass
      */
-    private String AfterClass;
+    private String afterClassScript;
 
     /**
      * 前置步骤(UI模式)，即@AfterSuite
@@ -113,7 +113,7 @@ public class AutoCaseVO {
     /**
      * 前置步骤(脚本模式)，即@BeforeSuite
      */
-    private String afterSuite;
+    private String afterSuiteScript;
 
     /**
      * 所属项目id

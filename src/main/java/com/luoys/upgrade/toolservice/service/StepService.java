@@ -169,6 +169,9 @@ public class StepService {
             case PO:
                 autoStepVO.setScript(this.buildScript(autoStepVO.getVarName(), ModuleTypeEnum.PO.getName(), methodName, param1, param2, param3));
                 break;
+            case UNDEFINED_MODULE:
+                autoStepVO.setScript("auto.undefined.unKnown();\n");
+                break;
         }
         return autoStepVO;
     }
@@ -188,32 +191,26 @@ public class StepService {
         if (!StringUtil.isBlank(varName)) {
             stringBuilder.append("String ").append(varName).append(" = ");
         }
-        stringBuilder.append("auto").append(module).append(method).append("(\"");
-//        for (int i = 0; i < parameters.length; i++) {
-//            stringBuilder.append("\"").append(parameters[i]).append("\"");
-//            if (i != parameters.length -1) {
-//                stringBuilder.append(", ");
-//            }
-//        }
+        stringBuilder.append("auto.").append(module).append(".").append(method).append("(\"");
         // 多形参方法，不接受前面参数为空，如(null, "1", "1")则认为未设置入参
         if (StringUtil.isBlank(param1)) {
             // 第一个参数为空，为未设置入参
-            stringBuilder.append("\")");
+            stringBuilder.append("\");\n");
             return stringBuilder.toString();
         } else if (StringUtil.isBlank(param2)) {
             // 第一个参数不为空，第二个参数为空，为设置了一个入参
-            stringBuilder.append("\"").append(param1).append("\"").append("\")");
+            stringBuilder.append("\"").append(param1).append("\"").append("\");\n");
             return stringBuilder.toString();
         } else if (StringUtil.isBlank(param3)) {
             // 第一、二个参数不为空，第三个参数为空，为设置了两个入参
             stringBuilder.append("\"").append(param1).append("\"")
-                    .append(", ").append("\"").append(param2).append("\"").append("\")");
+                    .append(", ").append("\"").append(param2).append("\"").append("\");\n");
             return stringBuilder.toString();
         } else {
             // 第一、二、三个参数都不为空，为设置了三个入参
             stringBuilder.append("\"").append(param1).append("\"")
                     .append(", ").append("\"").append(param2).append("\"")
-                    .append(", ").append("\"").append(param3).append("\"").append("\")");
+                    .append(", ").append("\"").append(param3).append("\"").append("\");\n");
             return stringBuilder.toString();
         }
     }

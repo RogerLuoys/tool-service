@@ -203,8 +203,8 @@ public class CaseService {
     /**
      * 更新用例关联步骤的顺序
      *
-     * @param caseId 用例ID
-     * @param stepId 步骤ID
+     * @param caseId   用例ID
+     * @param stepId   步骤ID
      * @param sequence 顺序，从1开始
      * @return 成功为true，失败为false
      */
@@ -231,7 +231,7 @@ public class CaseService {
 
         // 通过正则解析脚本，把整段脚本解析成行('\w':任意字符，'.':0到无限次)
 //        List<String> mainSteps = StringUtil.getMatch("auto\\.(ui|http|sql|rpc|util|po|assertion)\\.\\w+\\(.*\\);", autoCaseVO.getTest());
-        List<String> mainSteps = StringUtil.getMatch("(String[ ]{1,4}\\w{1,20}[ ]{1,4}=[ ]{0,4})?auto\\.(ui|http|sql|rpc|util|po|assertion)\\.\\w+\\(.*\\);", scriptVO.getScript());
+        List<String> mainSteps = StringUtil.getMatch("(String[ ]{1,4}\\w{1,20}[ ]{1,4}=[ ]{0,4})?auto\\.(ui|http|sql|rpc|util|po|assertion|undefined)\\.\\w+\\(.*\\);", scriptVO.getScript());
 
         // 完全新增脚本，或脚本内步骤有新增，需要创建对应数量的关联步骤
         while (mainSteps.size() - scriptVO.getStepList().size() > 0) {
@@ -261,7 +261,7 @@ public class CaseService {
         }
 
         // 基于脚本，对脚本内的步骤做全量更新
-        for (int i = 0; i< mainSteps.size(); i++) {
+        for (int i = 0; i < mainSteps.size(); i++) {
             // 将脚本塞入对应的步骤中
             scriptVO.getStepList().get(i).getAutoStep().setScript(mainSteps.get(i));
             // 基于脚本，将步骤转换为ui模式(会覆盖原数据)
@@ -283,9 +283,10 @@ public class CaseService {
     public List<AutoCaseSimpleVO> query(QueryVO queryVO) {
 //        Integer startIndex = queryVO.getPageIndex() == null ? null : (queryVO.getPageIndex() - 1) * KeywordEnum.DEFAULT_PAGE_SIZE.getCode();
         AutoCaseQueryPO autoCaseQueryPO = TransformAutoCase.transformVO2PO(queryVO);
-        List<AutoCasePO> autoCasePOList =  autoCaseMapper.list(autoCaseQueryPO);
+        List<AutoCasePO> autoCasePOList = autoCaseMapper.list(autoCaseQueryPO);
         return TransformAutoCase.transformPO2SimpleVO(autoCasePOList);
     }
+
     public Integer count(QueryVO queryVO) {
         AutoCaseQueryPO autoCaseQueryPO = TransformAutoCase.transformVO2PO(queryVO);
         return autoCaseMapper.count(autoCaseQueryPO);
@@ -307,8 +308,11 @@ public class CaseService {
         List<CaseStepVO> test = caseStepList.stream().filter(caseStepVO -> caseStepVO.getType().equals(RelatedStepTypeEnum.MAIN_TEST.getCode())).collect(Collectors.toList());
         List<CaseStepVO> afterTest = caseStepList.stream().filter(caseStepVO -> caseStepVO.getType().equals(RelatedStepTypeEnum.AFTER_TEST.getCode())).collect(Collectors.toList());
         autoCaseVO.setBeforeClassList(beforeClass);
+        autoCaseVO.setBeforeSuiteScript(this.change2ScriptMode(beforeClass));
         autoCaseVO.setTestList(test);
+        autoCaseVO.setTestScript(this.change2ScriptMode(test));
         autoCaseVO.setAfterClassList(afterTest);
+        autoCaseVO.setAfterSuiteScript(this.change2ScriptMode(afterTest));
         // 如果是超类需继续查参数和BeforeSuite AfterSuite
         if (AutoCaseTypeEnum.SUPPER_CLASS.getCode().equals(autoCaseVO.getType())
                 || autoCaseVO.getType().equals(AutoCaseTypeEnum.DATA_FACTORY.getCode())) {
@@ -320,11 +324,29 @@ public class CaseService {
             List<CaseStepVO> beforeSuite = caseStepList.stream().filter(caseStepVO -> caseStepVO.getType().equals(RelatedStepTypeEnum.BEFORE_SUITE.getCode())).collect(Collectors.toList());
             List<CaseStepVO> afterSuite = caseStepList.stream().filter(caseStepVO -> caseStepVO.getType().equals(RelatedStepTypeEnum.AFTER_SUITE.getCode())).collect(Collectors.toList());
             autoCaseVO.setBeforeSuiteList(beforeSuite);
+            autoCaseVO.setBeforeSuiteScript(this.change2ScriptMode(afterTest));
             autoCaseVO.setAfterSuiteList(afterSuite);
+            autoCaseVO.setAfterSuiteScript(this.change2ScriptMode(afterTest));
         }
         return autoCaseVO;
     }
 
+    /**
+     * 转换用例模式，将结构化数据转换成脚本
+     *
+     * @param caseStepVOList -
+     */
+    private String change2ScriptMode(List<CaseStepVO> caseStepVOList) {
+        if (caseStepVOList == null || caseStepVOList.size() == 0) {
+            return null;
+        }
+        StringBuilder script = new StringBuilder();
+        // 转换主要步骤
+        for (CaseStepVO stepVO : caseStepVOList) {
+            script.append(stepService.change2ScriptMode(stepVO.getAutoStep()).getScript());
+        }
+        return script.toString();
+    }
 
     /**
      * 转换用例模式，将结构化数据转换成脚本
@@ -341,7 +363,7 @@ public class CaseService {
         for (CaseStepVO stepVO : autoCaseVO.getTestList()) {
             steps.append(stepService.change2ScriptMode(stepVO.getAutoStep()).getScript());
         }
-        autoCaseVO.setTest(steps.toString());
+        autoCaseVO.setTestScript(steps.toString());
         steps.delete(0, steps.length());
 
         return autoCaseVO;
@@ -364,7 +386,7 @@ public class CaseService {
 
         // 通过正则解析脚本，把整段脚本解析成行('\w':任意字符，'.':0到无限次)
 //        List<String> mainSteps = StringUtil.getMatch("auto\\.(ui|http|sql|rpc|util|po|assertion)\\.\\w+\\(.*\\);", autoCaseVO.getTest());
-        List<String> mainSteps = StringUtil.getMatch("(String[ ]{1,4}\\w{1,20}[ ]{1,4}=[ ]{0,4})?auto\\.(ui|http|sql|rpc|util|po|assertion)\\.\\w+\\(.*\\);[ ]{0,4}(\\n|\\r)", autoCaseVO.getTest());
+        List<String> mainSteps = StringUtil.getMatch("(String[ ]{1,4}\\w{1,20}[ ]{1,4}=[ ]{0,4})?auto\\.(ui|http|sql|rpc|util|po|assertion)\\.\\w+\\(.*\\);[ ]{0,4}(\\n|\\r)", autoCaseVO.getTestScript());
 
         // 完全新增脚本，或脚本内步骤有新增，需要创建对应数量的关联步骤
         while (mainSteps.size() - autoCaseVO.getTestList().size() > 0) {
@@ -394,7 +416,7 @@ public class CaseService {
         }
 
         // 基于脚本，对脚本内的步骤做全量更新
-        for (int i = 0; i< mainSteps.size(); i++) {
+        for (int i = 0; i < mainSteps.size(); i++) {
             // 将脚本塞入对应的步骤中
             autoCaseVO.getTestList().get(i).getAutoStep().setScript(mainSteps.get(i));
             // 基于脚本，将步骤转换为ui模式(会覆盖原数据)

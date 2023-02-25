@@ -102,33 +102,20 @@ public class AutoCaseController {
 
     @RequestMapping(value = "/updateScript", method = RequestMethod.PUT)
     public Result<ScriptVO> updateScript(@RequestBody ScriptVO scriptVO) {
-        log.info("--->开始更新脚本：{}", scriptVO);
+        log.info("--->开始更新脚本：{}", scriptVO.getCaseId());
         return Result.message(caseService.updateScript(scriptVO));
     }
 
-    @RequestMapping(value = "/changeUiMode", method = RequestMethod.PUT)
-    public Result<AutoCaseVO> changeUiMode(@RequestBody AutoCaseVO autoCaseVO) {
-        log.info("--->开始将脚本步骤转换为可视化步骤：{}", autoCaseVO);
-        return Result.success(caseService.change2UiMode(autoCaseVO));
-    }
-
-    @RequestMapping(value = "/changeScriptMode", method = RequestMethod.PUT)
-    public Result<AutoCaseVO> changeScriptMode(@RequestBody AutoCaseVO autoCaseVO) {
-        log.info("--->开始将可视化步骤转换为脚本步骤：{}", autoCaseVO);
-        return Result.message(caseService.change2ScriptMode(autoCaseVO));
-    }
-
-//    @RequestMapping(value = "/query", method = RequestMethod.GET)
-//    public Result<PageInfo<AutoCaseSimpleVO>> query(@RequestHeader("loginInfo") String loginInfo,
-//                                                    @RequestParam(value = "isOnlyOwner", required = false) Boolean isOnlyOwner,
-//                                                    @RequestParam(value = "status", required = false) Integer status,
-//                                                    @RequestParam(value = "name", required = false) String name,
-//                                                    @RequestParam("pageIndex") Integer pageIndex) {
-//        log.info("--->开始查询用例列表：");
-//        PageInfo<AutoCaseSimpleVO> pageInfo = new PageInfo();
-//        pageInfo.setList(caseService.query(userId, isOnlyOwner, status, name, pageIndex));
-//        pageInfo.setTotal(caseService.count(userId, isOnlyOwner, status, name));
-//        return Result.success(pageInfo);
+//    @RequestMapping(value = "/changeUiMode", method = RequestMethod.PUT)
+//    public Result<AutoCaseVO> changeUiMode(@RequestBody AutoCaseVO autoCaseVO) {
+//        log.info("--->开始将脚本步骤转换为可视化步骤：{}", autoCaseVO);
+//        return Result.success(caseService.change2UiMode(autoCaseVO));
+//    }
+//
+//    @RequestMapping(value = "/changeScriptMode", method = RequestMethod.PUT)
+//    public Result<AutoCaseVO> changeScriptMode(@RequestBody AutoCaseVO autoCaseVO) {
+//        log.info("--->开始将可视化步骤转换为脚本步骤：{}", autoCaseVO);
+//        return Result.message(caseService.change2ScriptMode(autoCaseVO));
 //    }
 
     @RequestMapping(value = "/query", method = RequestMethod.POST)
@@ -149,17 +136,6 @@ public class AutoCaseController {
         log.info("--->开始查询用例详情：caseId={}", caseId);
         return Result.success(caseService.queryDetail(caseId));
     }
-
-//    @RequestMapping(value = "/use", method = RequestMethod.POST)
-//    public Result<Boolean> use(@RequestBody String autoCase) {
-//        log.info("--->开始执行用例：{}", autoCase);
-//        try {
-//            AutoCaseVO autoCaseVO = JSON.parseObject(autoCase, AutoCaseVO.class);
-//            return Result.message(caseService.useAsync(autoCaseVO), "执行异常，请检查步骤");
-//        } catch (RejectedExecutionException e) {
-//            return Result.errorMessage("执行队列已满，请稍后再试");
-//        }
-//    }
 
     @RequestMapping(value = "/use", method = RequestMethod.POST)
     public Result<Boolean> use(@RequestBody AutoCaseVO autoCaseVO) {
