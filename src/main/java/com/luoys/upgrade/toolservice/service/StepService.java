@@ -77,6 +77,15 @@ public class StepService {
         return autoStepMapper.update(autoStepPO);
     }
 
+    /**
+     * 更新步骤执行结果
+     *
+     * @return 成功为1
+     */
+    public Integer updateResult(Integer stepId, String result) {
+        return autoStepMapper.updateResult(stepId, result);
+    }
+
 //    /**
 //     * 查询步骤列表
 //     *
@@ -227,7 +236,7 @@ public class StepService {
         // 脚本范例：auto.methodType.methodName(methodParam);
         String script = autoStepVO.getScript();
         // 步骤有赋值，先取变量名，再去除多余字符
-        if (script.startsWith("String|string")) {
+        if (script.startsWith("String")) {
             // 取String和=之间的内容，再去空格
             String varName = script.substring(6, script.indexOf("=")).trim();
             autoStepVO.setVarName(varName);
@@ -245,7 +254,7 @@ public class StepService {
             methodParam = null;
         }
         // 截取多个参数，如：("xpath","key") (根据实际情况使用)
-        String[] params = StringUtil.isBlank(methodParam) ? null : methodParam.split("\\\\\",\\s{0,4}\"\\\\");
+        String[] params = StringUtil.isBlank(methodParam) ? null : methodParam.split("\",\\s{0,4}\"");
         String param1, param2, param3;
         if (params == null || params.length == 0) {
             // 方法无入参
@@ -400,8 +409,8 @@ public class StepService {
         autoStepVO.setMethodName(methodName);
         // 设置方法入参
         autoStepVO.setParameter1(param1);
-        autoStepVO.setParameter1(param2);
-        autoStepVO.setParameter1(param3);
+        autoStepVO.setParameter2(param2);
+        autoStepVO.setParameter3(param3);
         return autoStepVO;
     }
 

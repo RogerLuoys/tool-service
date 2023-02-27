@@ -38,17 +38,14 @@ public interface AutoStepMapper {
      */
     int update(AutoStepPO autoStepPO);
 
-//    /**
-//     * 更新步骤执行结果
-//     *
-//     * @param stepId       步骤业务id
-//     * @param assertActual 步骤实际结果
-//     * @param assertResult 步骤断言结果，根据实际值、预期值和断言类型得出
-//     * @return 成功为1
-//     */
-//    int updateResult(@Param("stepId") Integer stepId,
-//                     @Param("assertActual") String assertActual,
-//                     @Param("assertResult") Boolean assertResult);
+    /**
+     * 更新结果
+     *
+     * @param stepId 业务id
+     * @param result 执行结果
+     * @return 成功为1
+     */
+    int updateResult(@Param("stepId") Integer stepId, @Param("result") String result);
 
     /**
      * 根据id查询详情

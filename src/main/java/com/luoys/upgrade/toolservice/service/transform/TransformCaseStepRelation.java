@@ -36,10 +36,7 @@ public class TransformCaseStepRelation {
         AutoStepVO autoStepVO = new AutoStepVO();
         vo.setAutoStep(autoStepVO);
         // 设置步骤基本信息
-//        vo.getAutoStep().setIsPublic(po.getIsPublic());
         vo.getAutoStep().setStepId(po.getStepId());
-//        vo.getAutoStep().setOwnerId(po.getOwnerId());
-//        vo.getAutoStep().setOwnerName(po.getOwnerName());
         vo.getAutoStep().setName(po.getStepName());
         vo.getAutoStep().setModuleType(po.getModuleType());
         vo.getAutoStep().setMethodType(po.getMethodType());
@@ -49,6 +46,7 @@ public class TransformCaseStepRelation {
         vo.getAutoStep().setParameter2(po.getParameter2());
         vo.getAutoStep().setParameter1(po.getParameter1());
         vo.getAutoStep().setVarName(po.getVarName());
+        vo.getAutoStep().setResult(po.getResult());
         return vo;
     }
 

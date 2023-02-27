@@ -108,12 +108,11 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-<!--  <update id="updateResult">-->
-<!--    update auto_step-->
-<!--    set-->
-<!--        assert_actual = #{assertActual,jdbcType=VARCHAR},-->
-<!--        assert_result = #{assertResult,jdbcType=TINYINT},-->
-<!--        gmt_modified = now()-->
-<!--    where step_id = #{stepId,jdbcType=INTEGER}-->
-<!--  </update>-->
+  <update id="updateResult">
+    update auto_step
+    set
+        `result` = #{result,jdbcType=VARCHAR},
+        gmt_modified = now()
+    where id = #{stepId,jdbcType=INTEGER}
+  </update>
 </mapper>

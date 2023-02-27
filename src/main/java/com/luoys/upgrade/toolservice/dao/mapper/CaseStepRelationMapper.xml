@@ -24,7 +24,7 @@
   <select id="listStepByCaseId" resultMap="BaseResultMap">
     select
       a.case_id, a.`sequence`, a.`type`, b.id as step_id, b.name as step_name, b.module_type, b.method_type, b.method_id, b.method_name,
-      b.parameter1, b.parameter2, b.parameter3, b.var_name
+      b.parameter1, b.parameter2, b.parameter3, b.var_name, b.result
     from case_step_relation a
     inner join auto_step b on a.step_id = b.id
     where a.case_id = #{caseId,jdbcType=INTEGER} and b.is_delete = 0 and a.is_delete = 0

@@ -5,6 +5,7 @@ import com.luoys.upgrade.toolservice.service.common.StringUtil;
 import com.luoys.upgrade.toolservice.service.dto.CaseDTO;
 import com.luoys.upgrade.toolservice.service.dto.StepDTO;
 import com.luoys.upgrade.toolservice.service.enums.AutoCaseStatusEnum;
+import com.luoys.upgrade.toolservice.service.enums.DefaultEnum;
 import com.luoys.upgrade.toolservice.service.enums.autoStep.ModuleTypeEnum;
 
 import java.util.ArrayList;
@@ -50,15 +51,17 @@ public class AutoExecutor {
     }
 
     public void close() {
+        // 一个套件可能会有多个测试模块(超类)，每个模块申请的客户端都要一一关闭
         for (Integer key: clientMap.keySet()) {
-            // 先执行超类中的@AfterSuite
+            // 执行超类中的@AfterSuite
             if (afterSuiteMap.get(key) != null) {
                 for (StepDTO oneStep: afterSuiteMap.get(key)) {
                     executeStep(oneStep, clientMap.get(key));
                 }
             }
-            // 再关闭webdriver相关资源
-            clientMap.get(key).ui.quit();
+            // 关闭申请过的资源
+            clientMap.get(key).http.close();
+            clientMap.get(key).ui.close();
         }
     }
 
@@ -95,7 +98,7 @@ public class AutoExecutor {
             // 变量替换
             mergeParam(oneStep, params);
             executeStep(oneStep, auto);
-            if (oneStep.getResult().equalsIgnoreCase("false")) {
+            if (oneStep.getResult().equals(DefaultEnum.DEFAULT_CLIENT_ERROR.getValue())) {
                 return false;
             }
             // 赋值

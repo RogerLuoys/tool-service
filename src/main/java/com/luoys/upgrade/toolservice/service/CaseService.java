@@ -12,6 +12,7 @@ import com.luoys.upgrade.toolservice.dao.AutoCaseMapper;
 import com.luoys.upgrade.toolservice.dao.CaseStepRelationMapper;
 import com.luoys.upgrade.toolservice.dao.UserMapper;
 import com.luoys.upgrade.toolservice.service.dto.CaseDTO;
+import com.luoys.upgrade.toolservice.service.dto.StepDTO;
 import com.luoys.upgrade.toolservice.service.enums.*;
 import com.luoys.upgrade.toolservice.service.transform.TransformCaseStepRelation;
 import com.luoys.upgrade.toolservice.service.transform.TransformConfig;
@@ -348,86 +349,85 @@ public class CaseService {
         return script.toString();
     }
 
-    /**
-     * 转换用例模式，将结构化数据转换成脚本
-     *
-     * @param
-     */
-    public AutoCaseVO change2ScriptMode(AutoCaseVO autoCaseVO) {
-        if (autoCaseVO == null) {
-            return null;
-        }
-        StringBuilder steps = new StringBuilder();
-
-        // 转换主要步骤
-        for (CaseStepVO stepVO : autoCaseVO.getTestList()) {
-            steps.append(stepService.change2ScriptMode(stepVO.getAutoStep()).getScript());
-        }
-        autoCaseVO.setTestScript(steps.toString());
-        steps.delete(0, steps.length());
-
-        return autoCaseVO;
-    }
-
-    /**
-     * 转换用例模式，将结构化用例转换成脚本，例
-     * auto.ui.sendKey("xpath","key");
-     * auto.sql.dbName("sql");
-     * auto.assert.isContains("actual","expect");
-     * auto.http.post("url", "body");
-     * auto.rpc.invoke("url","paramClassName","paramValueForJson");
-     * auto.po.login("username","password");
-     * auto.util.sleep("param1");
-     * String param = auto.methodType.method(param);
-     *
-     * @param autoCaseVO -
-     */
-    public AutoCaseVO change2UiMode(AutoCaseVO autoCaseVO) {
-
-        // 通过正则解析脚本，把整段脚本解析成行('\w':任意字符，'.':0到无限次)
-//        List<String> mainSteps = StringUtil.getMatch("auto\\.(ui|http|sql|rpc|util|po|assertion)\\.\\w+\\(.*\\);", autoCaseVO.getTest());
-        List<String> mainSteps = StringUtil.getMatch("(String[ ]{1,4}\\w{1,20}[ ]{1,4}=[ ]{0,4})?auto\\.(ui|http|sql|rpc|util|po|assertion)\\.\\w+\\(.*\\);[ ]{0,4}(\\n|\\r)", autoCaseVO.getTestScript());
-
-        // 完全新增脚本，或脚本内步骤有新增，需要创建对应数量的关联步骤
-        while (mainSteps.size() - autoCaseVO.getTestList().size() > 0) {
-            CaseStepVO caseStepVO = new CaseStepVO();
-            caseStepVO.setCaseId(autoCaseVO.getCaseId());
-            // 先创建步骤，再将stepId关联上
-            caseStepVO.setStepId(stepService.quickCreate());
-            caseStepVO.setType(RelatedStepTypeEnum.MAIN_TEST.getCode());
-            // 步骤顺序需要设置好
-            caseStepVO.setSequence(autoCaseVO.getTestList().size() + 1);
-            // 将关系存入数据库
-            createRelatedStep(caseStepVO);
-            // 创建步骤实例
-            caseStepVO.setAutoStep(new AutoStepVO());
-            // 填充步骤的stepId
-            caseStepVO.getAutoStep().setStepId(caseStepVO.getStepId());
-            // 将关联步骤的实例添加至用例对象中
-            autoCaseVO.getTestList().add(caseStepVO);
-        }
-
-        // 脚本中删除了一些步骤，需要删除对应的关联关系
-        while (mainSteps.size() - autoCaseVO.getTestList().size() < 0) {
-            // 数据库中删最后一个步骤的关联关系
-            removeRelatedStep(autoCaseVO.getTestList().get(autoCaseVO.getTestList().size() - 1));
-            // 然后将最后一个步骤从对象中删除
-            autoCaseVO.getTestList().remove(autoCaseVO.getTestList().size() - 1);
-        }
-
-        // 基于脚本，对脚本内的步骤做全量更新
-        for (int i = 0; i < mainSteps.size(); i++) {
-            // 将脚本塞入对应的步骤中
-            autoCaseVO.getTestList().get(i).getAutoStep().setScript(mainSteps.get(i));
-            // 基于脚本，将步骤转换为ui模式(会覆盖原数据)
-            AutoStepVO autoStepVO = stepService.change2UiMode(autoCaseVO.getTestList().get(i).getAutoStep(), autoCaseVO.getSupperCaseId(), autoCaseVO.getProjectId());
-            // 重新设置步骤执行顺序
-            updateRelatedStep(autoCaseVO.getCaseId(), autoStepVO.getStepId(), i + 1);
-            stepService.update(autoStepVO);
-        }
-
-        return autoCaseVO;
-    }
+//    /**
+//     * 转换用例模式，将结构化数据转换成脚本
+//     *
+//     * @param
+//     */
+//    public AutoCaseVO change2ScriptMode(AutoCaseVO autoCaseVO) {
+//        if (autoCaseVO == null) {
+//            return null;
+//        }
+//        StringBuilder steps = new StringBuilder();
+//
+//        // 转换主要步骤
+//        for (CaseStepVO stepVO : autoCaseVO.getTestList()) {
+//            steps.append(stepService.change2ScriptMode(stepVO.getAutoStep()).getScript());
+//        }
+//        autoCaseVO.setTestScript(steps.toString());
+//        steps.delete(0, steps.length());
+//
+//        return autoCaseVO;
+//    }
+//
+//    /**
+//     * 转换用例模式，将结构化用例转换成脚本，例
+//     * auto.ui.sendKey("xpath","key");
+//     * auto.sql.dbName("sql");
+//     * auto.assert.isContains("actual","expect");
+//     * auto.http.post("url", "body");
+//     * auto.rpc.invoke("url","paramClassName","paramValueForJson");
+//     * auto.po.login("username","password");
+//     * auto.util.sleep("param1");
+//     * String param = auto.methodType.method(param);
+//     *
+//     * @param autoCaseVO -
+//     */
+//    public AutoCaseVO change2UiMode(AutoCaseVO autoCaseVO) {
+//
+//        // 通过正则解析脚本，把整段脚本解析成行('\w':任意字符，'.':0到无限次)
+//        List<String> mainSteps = StringUtil.getMatch("(String[ ]{1,4}\\w{1,20}[ ]{1,4}=[ ]{0,4})?auto\\.(ui|http|sql|rpc|util|po|assertion)\\.\\w+\\(.*\\);[ ]{0,4}(\\n|\\r)", autoCaseVO.getTestScript());
+//
+//        // 完全新增脚本，或脚本内步骤有新增，需要创建对应数量的关联步骤
+//        while (mainSteps.size() - autoCaseVO.getTestList().size() > 0) {
+//            CaseStepVO caseStepVO = new CaseStepVO();
+//            caseStepVO.setCaseId(autoCaseVO.getCaseId());
+//            // 先创建步骤，再将stepId关联上
+//            caseStepVO.setStepId(stepService.quickCreate());
+//            caseStepVO.setType(RelatedStepTypeEnum.MAIN_TEST.getCode());
+//            // 步骤顺序需要设置好
+//            caseStepVO.setSequence(autoCaseVO.getTestList().size() + 1);
+//            // 将关系存入数据库
+//            createRelatedStep(caseStepVO);
+//            // 创建步骤实例
+//            caseStepVO.setAutoStep(new AutoStepVO());
+//            // 填充步骤的stepId
+//            caseStepVO.getAutoStep().setStepId(caseStepVO.getStepId());
+//            // 将关联步骤的实例添加至用例对象中
+//            autoCaseVO.getTestList().add(caseStepVO);
+//        }
+//
+//        // 脚本中删除了一些步骤，需要删除对应的关联关系
+//        while (mainSteps.size() - autoCaseVO.getTestList().size() < 0) {
+//            // 数据库中删最后一个步骤的关联关系
+//            removeRelatedStep(autoCaseVO.getTestList().get(autoCaseVO.getTestList().size() - 1));
+//            // 然后将最后一个步骤从对象中删除
+//            autoCaseVO.getTestList().remove(autoCaseVO.getTestList().size() - 1);
+//        }
+//
+//        // 基于脚本，对脚本内的步骤做全量更新
+//        for (int i = 0; i < mainSteps.size(); i++) {
+//            // 将脚本塞入对应的步骤中
+//            autoCaseVO.getTestList().get(i).getAutoStep().setScript(mainSteps.get(i));
+//            // 基于脚本，将步骤转换为ui模式(会覆盖原数据)
+//            AutoStepVO autoStepVO = stepService.change2UiMode(autoCaseVO.getTestList().get(i).getAutoStep(), autoCaseVO.getSupperCaseId(), autoCaseVO.getProjectId());
+//            // 重新设置步骤执行顺序
+//            updateRelatedStep(autoCaseVO.getCaseId(), autoStepVO.getStepId(), i + 1);
+//            stepService.update(autoStepVO);
+//        }
+//
+//        return autoCaseVO;
+//    }
 
 
     /**
@@ -443,6 +443,9 @@ public class CaseService {
             AutoExecutor executor = new AutoExecutor();
             executor.executeCase(caseDTO);
             log.info("---->执行完毕，更新用例结果：caseId={}, result={}", autoCaseVO.getCaseId(), caseDTO.getStatus());
+            for (StepDTO stepDTO : caseDTO.getTest()) {
+                stepService.updateResult(stepDTO.getStepId(), stepDTO.getResult().length() <= 200 ? stepDTO.getResult() : stepDTO.getResult().substring(0, 200));
+            }
             autoCaseMapper.updateStatus(autoCaseVO.getCaseId(),
                     caseDTO.getStatus());
         });

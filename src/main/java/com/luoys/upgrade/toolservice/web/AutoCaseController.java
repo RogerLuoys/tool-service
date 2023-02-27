@@ -103,7 +103,7 @@ public class AutoCaseController {
     @RequestMapping(value = "/updateScript", method = RequestMethod.PUT)
     public Result<ScriptVO> updateScript(@RequestBody ScriptVO scriptVO) {
         log.info("--->开始更新脚本：{}", scriptVO.getCaseId());
-        return Result.message(caseService.updateScript(scriptVO));
+        return Result.success(caseService.updateScript(scriptVO));
     }
 
 //    @RequestMapping(value = "/changeUiMode", method = RequestMethod.PUT)

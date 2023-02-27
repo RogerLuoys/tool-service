@@ -1,7 +1,5 @@
 package com.luoys.upgrade.toolservice.dao.po;
 
-import java.io.Serializable;
-import java.util.Date;
 import lombok.Data;
 
 /**
@@ -76,5 +74,10 @@ public class CaseStepRelationPO {
      * 变量名
      */
     private String varName;
+
+    /**
+     * 执行结果
+     */
+    private String result;
 
 }

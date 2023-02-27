@@ -276,7 +276,7 @@ public class UiClient {
     /**
      * 关闭浏览器且关闭资源
      */
-    public void quit() {
+    public void close() {
         if (this.driver == null) {
             return;
         }

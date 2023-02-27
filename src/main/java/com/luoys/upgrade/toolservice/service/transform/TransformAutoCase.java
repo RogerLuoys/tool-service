@@ -131,19 +131,20 @@ public class TransformAutoCase {
         AutoCaseVO supperCaseVO = CacheUtil.getSupperClassById(vo.getSupperCaseId());
         // 处理基本参数
         dto.setSupperCaseId(vo.getSupperCaseId());
+        dto.setCaseId(vo.getCaseId());
         dto.setParams(TransformConfig.transformVO2Map(supperCaseVO.getParameterList()));
         dto.setUiArgument(TransformConfig.transformVO2Array(supperCaseVO.getArgumentList()));
         if (supperCaseVO.getArgumentList() != null && supperCaseVO.getArgumentList().size() > 0) {
             dto.setUiType(supperCaseVO.getArgumentList().get(0).getType());
         }
         // 编排步骤
-        dto.setBeforeSuite(null); // 暂不支持
+        dto.setBeforeSuite(TransformCaseStepRelation.transformVO2DTO(supperCaseVO.getBeforeSuiteList()));
         dto.setSupperBeforeClass(TransformCaseStepRelation.transformVO2DTO(supperCaseVO.getBeforeClassList()));
         dto.setBeforeClass(TransformCaseStepRelation.transformVO2DTO(vo.getBeforeClassList()));
         dto.setTest(TransformCaseStepRelation.transformVO2DTO(vo.getTestList()));
         dto.setAfterClass(TransformCaseStepRelation.transformVO2DTO(vo.getAfterClassList()));
         dto.setSupperAfterClass(TransformCaseStepRelation.transformVO2DTO(supperCaseVO.getAfterClassList()));
-        dto.setAfterSuite(null); // 暂不支持
+        dto.setAfterSuite(TransformCaseStepRelation.transformVO2DTO(supperCaseVO.getAfterSuiteList()));
 
         return dto;
     }

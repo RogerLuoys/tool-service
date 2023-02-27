@@ -19,7 +19,8 @@ public enum HttpEnum {
     DELETE(4, "delete", "delete请求"),
     GET_FOR_HEADER(5, "getForHeader", "通过get请求获取header"),
     POST_FOR_HEADER(6, "postForHeader", "通过post请求获取header"),
-    SET_DEFAULT_HEADER(7, "setDefaultHeader", "设置默认请求头");
+    SET_DEFAULT_HEADER(7, "setDefaultHeader", "设置默认请求头"),
+    SET_DEFAULT_URL(8, "setDefaultUrl", "设置请求环境");
 
     private final Integer code;
 //    private final String value;
