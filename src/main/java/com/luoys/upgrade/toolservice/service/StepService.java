@@ -86,51 +86,6 @@ public class StepService {
         return autoStepMapper.updateResult(stepId, result);
     }
 
-//    /**
-//     * 查询步骤列表
-//     *
-//     * @param userId      用户id
-//     * @param isOnlyOwner 是否只查自己
-//     * @param type        类型
-//     * @param name        名字
-//     * @param pageIndex   页码
-//     * @return 步骤列表
-//     */
-//    @Deprecated
-//    public List<AutoStepSimpleVO> query(String userId,
-//                                        Boolean isOnlyOwner,
-//                                        Integer type,
-//                                        String name,
-//                                        Boolean isPublic,
-//                                        Integer pageIndex) {
-//        if (isOnlyOwner != null && isOnlyOwner) {
-//            userId = null;
-//        }
-//        //数据库startIndex从0开始
-//        int startIndex = (pageIndex - 1) * KeywordEnum.DEFAULT_PAGE_SIZE.getCode();
-//        return TransformAutoStep.transformPO2VO(autoStepMapper.list(type, name, userId, isPublic, startIndex));
-//    }
-//
-//    /**
-//     * 查询步骤总数
-//     *
-//     * @param userId      用户id
-//     * @param isOnlyOwner 是否只查自己
-//     * @param type        类型
-//     * @param name        名字
-//     * @return 步骤列表
-//     */
-//    public Integer count(String userId,
-//                         Boolean isOnlyOwner,
-//                         Integer type,
-//                         String name,
-//                         Boolean isPublic) {
-//        if (isOnlyOwner != null && isOnlyOwner) {
-//            userId = null;
-//        }
-//        return autoStepMapper.count(type, name, userId, isPublic);
-//    }
-
     /**
      * 查询步骤详情
      *
@@ -200,26 +155,28 @@ public class StepService {
         if (!StringUtil.isBlank(varName)) {
             stringBuilder.append("String ").append(varName).append(" = ");
         }
-        stringBuilder.append("auto.").append(module).append(".").append(method).append("(\"");
+        stringBuilder.append("auto.").append(module).append(".").append(method);
         // 多形参方法，不接受前面参数为空，如(null, "1", "1")则认为未设置入参
         if (StringUtil.isBlank(param1)) {
             // 第一个参数为空，为未设置入参
-            stringBuilder.append("\");\n");
+            stringBuilder.append("();\n");
             return stringBuilder.toString();
         } else if (StringUtil.isBlank(param2)) {
             // 第一个参数不为空，第二个参数为空，为设置了一个入参
-            stringBuilder.append("\"").append(param1).append("\"").append("\");\n");
+            stringBuilder.append("(\"").append(param1).append("\");\n");
             return stringBuilder.toString();
         } else if (StringUtil.isBlank(param3)) {
             // 第一、二个参数不为空，第三个参数为空，为设置了两个入参
-            stringBuilder.append("\"").append(param1).append("\"")
-                    .append(", ").append("\"").append(param2).append("\"").append("\");\n");
+            stringBuilder.append("(\"")
+                    .append(param1).append("\", \"")
+                    .append(param2).append("\");\n");
             return stringBuilder.toString();
         } else {
             // 第一、二、三个参数都不为空，为设置了三个入参
-            stringBuilder.append("\"").append(param1).append("\"")
-                    .append(", ").append("\"").append(param2).append("\"")
-                    .append(", ").append("\"").append(param3).append("\"").append("\");\n");
+            stringBuilder.append("(\"")
+                    .append(param1).append("\", \"")
+                    .append(param2).append("\", \"")
+                    .append(param3).append("\");\n");
             return stringBuilder.toString();
         }
     }

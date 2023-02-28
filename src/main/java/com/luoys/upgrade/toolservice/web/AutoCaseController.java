@@ -53,7 +53,7 @@ public class AutoCaseController {
     }
 
     @RequestMapping(value = "/quickCreateConfig", method = RequestMethod.POST)
-    public Result<String> quickCreateConfig(@RequestBody ConfigVO configVO) {
+    public Result<Integer> quickCreateConfig(@RequestBody ConfigVO configVO) {
         log.info("--->开始快速新增配置：{}", configVO);
         return Result.message(caseService.quickCreate(configVO));
     }

@@ -9,7 +9,8 @@ import java.util.Map;
 public enum RpcEnum {
 
     INVOKE(1, "invoke", "调用rpc接口"),
-    RPC_EXECUTE_BY_JSON(2, "executeByJson", "json格式调用rpc接口");
+    RPC_EXECUTE_BY_JSON(2, "executeByJson", "json格式调用rpc接口"),
+    SET_DEFAULT_URL(3, "setDefaultUrl", "设置调用环境");
 
     private final Integer code;
     private final String name; //rpc 步骤的方法名

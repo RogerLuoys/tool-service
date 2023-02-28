@@ -2,6 +2,8 @@ package com.luoys.upgrade.toolservice.service.automation.client;
 
 import com.alibaba.fastjson.JSON;
 import com.luoys.upgrade.toolservice.service.dto.StepDTO;
+import com.luoys.upgrade.toolservice.service.enums.DefaultEnum;
+import com.luoys.upgrade.toolservice.service.enums.autoStep.methodType.RpcEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.ApplicationConfig;
 import org.apache.dubbo.config.ReferenceConfig;
@@ -15,18 +17,7 @@ import org.apache.dubbo.rpc.service.GenericService;
 @Slf4j
 public class RpcClient {
 
-//    private ReferenceConfig<GenericService> reference;
-
-//    /**
-//     * 执行rpc调用，仅支持rpc接口有且只有单个入参的情况
-//     * 有同步锁
-//     *
-//     * @param autoStepPO rpc对象
-//     * @return 调用的response
-//     */
-//    public String execute(AutoStepPO autoStepPO) {
-//        return invoke(autoStepPO.getParameter1(), autoStepPO.getParameter2(), autoStepPO.getParameter3());
-//    }
+    private String defaultUrl = null;
 
     /**
      * 执行rpc调用，仅支持rpc接口有且只有单个入参的情况 todo 要支持多入参
@@ -36,7 +27,19 @@ public class RpcClient {
      * @return 调用的response
      */
     public String execute(StepDTO stepDTO) {
-        return invoke(stepDTO.getParameter1(), stepDTO.getParameter2(), stepDTO.getParameter3());
+        switch (RpcEnum.fromCode(stepDTO.getMethodType())) {
+            case INVOKE:
+                return invoke(stepDTO.getParameter1(), stepDTO.getParameter2(), stepDTO.getParameter3());
+            case SET_DEFAULT_URL:
+                this.setDefaultUrl(stepDTO.getParameter1());
+                return DefaultEnum.DEFAULT_CLIENT_SUCCESS.getValue();
+            default:
+                return DefaultEnum.DEFAULT_CLIENT_ERROR.getValue();
+        }
+    }
+
+    private void setDefaultUrl(String defaultUrl) {
+        this.defaultUrl = defaultUrl;
     }
 
     /**
@@ -47,8 +50,10 @@ public class RpcClient {
      * @param paramValue 被测rpc接口的入参
      * @return jason格式调用结果
      */
-    public String invoke(String fullLocation, String paramType, String paramValue) {
-
+    private String invoke(String fullLocation, String paramType, String paramValue) {
+        if (!fullLocation.equals(":////")) {
+            fullLocation = defaultUrl + fullLocation;
+        }
         // 截取服务器地址
         String url = fullLocation.substring(0, fullLocation.lastIndexOf("/"));
         // 截取接口className
