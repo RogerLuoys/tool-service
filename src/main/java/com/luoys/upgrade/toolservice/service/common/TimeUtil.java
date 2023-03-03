@@ -127,6 +127,22 @@ public class TimeUtil {
     }
 
     /**
+     * 获取一年的开始
+     *
+     * @return 传入一年开始的0点
+     */
+    public static Date getYearStart() {
+        Calendar calendar = Calendar.getInstance();
+        int currentYear = calendar.get(Calendar.YEAR);
+        calendar.set(Calendar.YEAR, currentYear);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        return calendar.getTime();
+    }
+
+    /**
      * Date 转 yyyy-MM-dd HH:mm:ss类型的字符串
      *
      * @param date 需转换的日期

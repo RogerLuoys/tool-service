@@ -2,6 +2,8 @@ package com.luoys.upgrade.toolservice.dao.po;
 
 import lombok.Data;
 
+import java.util.Date;
+
 
 /**
  * auto_case 搜索专用
@@ -50,5 +52,7 @@ public class AutoCaseQueryPO {
      * 页码
      */
     private Integer startIndex;
+
+    private Date finishTime;
 
 }

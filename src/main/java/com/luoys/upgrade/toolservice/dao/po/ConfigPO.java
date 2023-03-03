@@ -11,15 +11,15 @@ public class ConfigPO {
 
     private Integer id;
 
-    /**
-     * 名称
-     */
-    private String name;
-
-    /**
-     * 描述
-     */
-    private String description;
+//    /**
+//     * 名称
+//     */
+//    private String name;
+//
+//    /**
+//     * 描述
+//     */
+//    private String description;
 
     /**
      * 1 变量，2 driver启动项
@@ -46,24 +46,24 @@ public class ConfigPO {
      */
     private String paramComment;
 
-    /**
-     * 1 chrome web，2chrome h5，3android
-     */
-    private Integer uiType;
-
-    /**
-     * driver 启动项
-     */
-    private String uiArgument;
+//    /**
+//     * 1 chrome web，2chrome h5，3android
+//     */
+//    private Integer uiType;
+//
+//    /**
+//     * driver 启动项
+//     */
+//    private String uiArgument;
 
     /**
      * 所属类id(实现带参数封装PO、带参数数据工厂和父类专属配置项)
      */
     private Integer caseId;
 
-    /**
-     * 项目id
-     */
-    private Integer projectId;
+//    /**
+//     * 项目id
+//     */
+//    private Integer projectId;
 
 }

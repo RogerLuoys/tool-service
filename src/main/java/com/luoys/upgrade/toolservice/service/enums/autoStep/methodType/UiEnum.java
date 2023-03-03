@@ -24,7 +24,7 @@ public enum UiEnum {
     // auto.ui.sendKey(xpath, keyword);
     SEND_KEY(5, "sendKey", "键盘输入"),
     // auto.ui.sendKeyByEnter(xpath, keyword);
-    SEND_KEY_BY_ENTER(6, "isExist", "输入后按Enter"),
+    SEND_KEY_BY_ENTER(6, "sendKeyByEnter", "输入后按Enter"),
     // auto.ui.move(xpath);
     MOVE(7, "move", "鼠标移动到指定元素上"),
     // auto.ui.hover(xpath);

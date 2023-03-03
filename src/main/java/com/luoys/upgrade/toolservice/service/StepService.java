@@ -268,14 +268,32 @@ public class StepService {
                     case CLICK: // 脚本范例：auto.ui.click("xpath") 或 auto.ui.click("xpath", "1");
                         autoStepVO.setMethodType(UiEnum.CLICK.getCode());
                         break;
+                    case CLICK_BY_JS:
+                        autoStepVO.setMethodType(UiEnum.CLICK_BY_JS.getCode());
+                        break;
+                    case CLICK_BY_MOVE:
+                        autoStepVO.setMethodType(UiEnum.CLICK_BY_MOVE.getCode());
+                        break;
                     case SEND_KEY:  // 脚本范例：auto.ui.sendKey("key") 或 auto.ui.sendKey("xpath","key") 或 auto.ui.sendKey("xpath","key", "index")
                         autoStepVO.setMethodType(UiEnum.SEND_KEY.getCode());
+                        break;
+                    case SEND_KEY_BY_ENTER:
+                        autoStepVO.setMethodType(UiEnum.SEND_KEY_BY_ENTER.getCode());
                         break;
                     case SWITCH_TAB:  // 脚本范例：auto.ui.switchTab()
                         autoStepVO.setMethodType(UiEnum.SWITCH_TAB.getCode());
                         break;
                     case MOVE: // 脚本范例：auto.ui.move("xpath")
                         autoStepVO.setMethodType(UiEnum.MOVE.getCode());
+                        break;
+                    case CLEAR_COOKIES:
+                        autoStepVO.setMethodType(UiEnum.CLEAR_COOKIES.getCode());
+                        break;
+                    case DRAG:
+                        autoStepVO.setMethodType(UiEnum.DRAG.getCode());
+                        break;
+                    case EXECUTE_JS:
+                        autoStepVO.setMethodType(UiEnum.EXECUTE_JS.getCode());
                         break;
                 }
                 break;
@@ -370,139 +388,5 @@ public class StepService {
         autoStepVO.setParameter3(param3);
         return autoStepVO;
     }
-
-//    /**
-//     * 使用单个步骤（异步模式）
-//     *
-//     * @param autoStepVO 步骤对象
-//     * @return 使用结果，执行成功且验证通过为true，失败或异常为false
-//     */
-//    public Boolean useAsync(AutoStepVO autoStepVO) throws RejectedExecutionException {
-//        if (autoStepVO.getType().equals(AutoStepTypeEnum.STEP_UI.getCode())) {
-//            log.error("--->UI步骤不支持单步调试：stepId={}", autoStepVO.getStepId());
-//            return false;
-//        }
-//        ThreadPoolUtil.executeAPI(() -> execute(autoStepVO));
-//        return true;
-//    }
-//
-//    public Boolean use(AutoStepVO autoStepVO) {
-//
-//        // 如果是聚合步骤类型，则把子步骤全取出，并分别放入对于的列表中,否则直接方法elseSteps中
-//        if (autoStepVO.getType().equals(AutoStepTypeEnum.STEP_MULTIPLE.getCode())) {
-//            if (autoStepVO.getIfStepList().size() + autoStepVO.getThenStepList().size() + autoStepVO.getElseStepList().size() > MULTIPLE_LIMIT) {
-//                log.warn("--->聚合步骤个数超过上限");
-//                return null;
-//            }
-//            List<AutoStepVO> ifSteps = new ArrayList<>();
-//            List<AutoStepVO> thenSteps = new ArrayList<>();
-//            List<AutoStepVO> elseSteps = new ArrayList<>();
-//            for (int i = 0; i < autoStepVO.getIfStepList().size(); i++) {
-//                ifSteps.add(queryDetail(autoStepVO.getIfStepList().get(i).getStepId()));
-//            }
-//            for (int i = 0; i < autoStepVO.getThenStepList().size(); i++) {
-//                thenSteps.add(queryDetail(autoStepVO.getThenStepList().get(i).getStepId()));
-//            }
-//            for (int i = 0; i < autoStepVO.getElseStepList().size(); i++) {
-//                elseSteps.add(queryDetail(autoStepVO.getElseStepList().get(i).getStepId()));
-//            }
-//            // 当ifSteps列表有数据，且执行结果为true时，执行thenSteps列表，否则执行elseSteps列表
-//            if (ifSteps.size() > 0 && executeList(ifSteps)) {
-//                return executeList(thenSteps);
-//            } else {
-//                return executeList(elseSteps);
-//            }
-//        }
-//
-//        // 非聚合类型步骤，直接执行
-//        return executeOne(autoStepVO);
-//    }
-//
-//    /**
-//     * 使用步骤列表
-//     *
-//     * @param stepList 步骤对象
-//     * @return 全部执行成功且验证通过为true，只要有一个失败或异常为false
-//     */
-//    private Boolean executeList(List<AutoStepVO> stepList) {
-//        boolean result = true;
-//        for (AutoStepVO autoStepVO : stepList) {
-//            // 只要有其中一个步骤验证结果为false，则整个步骤列表执行结果为false
-//            if (!executeOne(autoStepVO)) {
-//                result = false;
-//            }
-//        }
-//        return result;
-//    }
-//
-//    /**
-//     * 执行一个步骤，并验证结果
-//     * @param autoStepVO 步骤对象
-//     * @return 验证成功为true，验证失败为false
-//     */
-//    private Boolean executeOne(AutoStepVO autoStepVO) {
-//        try {
-//            // 执行步骤并设置实际结果
-//            autoStepVO.setAssertActual(execute(autoStepVO));
-//            if (autoStepVO.getType().equals(AutoStepTypeEnum.STEP_UI.getCode()) && autoStepVO.getAfterSleep() > 0) {
-//                Thread.sleep(autoStepVO.getAfterSleep() * 1000);
-//            }
-//        } catch (Exception e) {
-//            log.error("--->步骤执行异常：stepId={}", autoStepVO.getStepId(), e);
-//            return false;
-//        }
-//        return verify(autoStepVO);
-//    }
-//
-//    private String execute(AutoStepVO autoStepVO) {
-//        switch (AutoStepTypeEnum.fromCode(autoStepVO.getType())) {
-//            case STEP_SQL:
-//                //通过JdbcTemplate实现
-//                return dbClient.execute(autoStepVO.getJdbc());
-//            case STEP_HTTP:
-//                TransformAutoStep.mergeParam(autoStepVO);
-//                //通过restTemplate实现
-//                return httpClient.execute(autoStepVO.getHttpRequest());
-//            case STEP_RPC:
-//                TransformAutoStep.mergeParam(autoStepVO);
-//                //通过dubbo的泛化调用实现
-//                return rpcClient.execute(autoStepVO.getRpc());
-//            case STEP_UI:
-//                TransformAutoStep.mergeParam(autoStepVO);
-//                //通过selenium实现
-//                return uiClient.execute(autoStepVO.getUi());
-//            case STEP_MULTIPLE:
-//                log.error("--->执行步骤异常，聚合类型步骤不能直接执行：stepId={}", autoStepVO.getStepId());
-//                return null;
-//            default:
-//                return null;
-//        }
-//    }
-//
-//    /**
-//     * 校验步骤执行结果，
-//     * 如果步骤需要校验，则会写入实际结果和校验结果
-//     *
-//     * @param autoStepVO 步骤对象
-//     * @return 如果无需校验或校验通过，则返回true；否则返回false
-//     */
-//    private Boolean verify(AutoStepVO autoStepVO) {
-//        boolean result;
-//        switch (AssertionEnum.fromCode(autoStepVO.getAssertType())) {
-//            case NO_ASSERT:
-//                return true;
-//            case EQUALS:
-//                result = autoStepVO.getAssertActual().equals(autoStepVO.getAssertExpect());
-//                autoStepMapper.updateResult(autoStepVO.getStepId(), autoStepVO.getAssertActual(), result);
-//                return result;
-//            case CONTAINS:
-//                result = autoStepVO.getAssertActual().contains(autoStepVO.getAssertExpect());
-//                autoStepMapper.updateResult(autoStepVO.getStepId(), autoStepVO.getAssertActual(), result);
-//                return result;
-//            default:
-//                log.error("--->未知步骤校验类型");
-//                return false;
-//        }
-//    }
 
 }

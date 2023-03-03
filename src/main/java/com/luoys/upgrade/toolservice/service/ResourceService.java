@@ -2,7 +2,6 @@ package com.luoys.upgrade.toolservice.service;
 
 import com.luoys.upgrade.toolservice.dao.po.ResourcePO;
 import com.luoys.upgrade.toolservice.dao.ResourceMapper;
-import com.luoys.upgrade.toolservice.dao.UserMapper;
 import com.luoys.upgrade.toolservice.service.enums.DefaultEnum;
 import com.luoys.upgrade.toolservice.service.transform.TransformResource;
 import com.luoys.upgrade.toolservice.web.vo.QueryVO;
@@ -30,13 +29,6 @@ public class ResourceService {
      * @return 成功为true，失败为false
      */
     public Integer create(ResourceVO resourceVO) {
-//        resourceVO.setResourceId(NumberSender.createResourceId());
-//        if (resourceVO.getOwnerId().equals(KeywordEnum.DEFAULT_USER.getCode())) {
-//            resourceVO.setOwnerName(KeywordEnum.DEFAULT_USER.getValue());
-//        } else {
-//            String username = userMapper.selectById(resourceVO.getOwnerId()).getUsername();
-//            resourceVO.setOwnerName(username);
-//        }
         ResourcePO resourcePO = TransformResource.transformVO2PO(resourceVO);
         resourceMapper.insert(resourcePO);
         return resourcePO.getId();
@@ -63,17 +55,6 @@ public class ResourceService {
         return resourceMapper.update(resourcePO);
     }
 
-//    /**
-//     * 更换使用者
-//     *
-//     * @param resourceVO 资源对象
-//     * @return 成功为true，失败为false
-//     */
-//    public Boolean updateUser(ResourceVO resourceVO) {
-//        int result = resourceMapper.updateUser(resourceVO.getResourceId(), resourceVO.getUserId(), resourceVO.getUserName());
-//        return result == 1;
-//    }
-
     /**
      * 查询资源列表
      *
@@ -81,7 +62,7 @@ public class ResourceService {
      * @return 资源列表
      */
     public List<ResourceVO> query(QueryVO queryVO) {
-        Integer startIndex = queryVO.getPageIndex() == null ? null : (queryVO.getPageIndex() - 1) * DefaultEnum.DEFAULT_PAGE_SIZE.getCode();;
+        Integer startIndex = queryVO.getPageIndex() == null ? null : (queryVO.getPageIndex() - 1) * DefaultEnum.DEFAULT_PAGE_SIZE.getCode();
         if (queryVO.getPageIndex() != null) {
             startIndex = (queryVO.getPageIndex() - 1) * DefaultEnum.DEFAULT_PAGE_SIZE.getCode();
         }
@@ -109,15 +90,5 @@ public class ResourceService {
         ResourcePO resourcePO = resourceMapper.selectByID(resourceId);
         return TransformResource.transformPO2VO(resourcePO);
     }
-
-//    /**
-//     * 查询资源详情，查询数据库连接信息时，需要通过名称查
-//     *
-//     * @param name 资源的名称
-//     * @return 资源对象
-//     */
-//    public ResourceVO queryDetailByName(String name) {
-//        return TransformResource.transformPO2VO(resourceMapper.selectByName(name));
-//    }
 
 }

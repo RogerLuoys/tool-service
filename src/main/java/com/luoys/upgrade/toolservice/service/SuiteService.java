@@ -5,7 +5,6 @@ import com.luoys.upgrade.toolservice.dao.*;
 import com.luoys.upgrade.toolservice.dao.po.*;
 import com.luoys.upgrade.toolservice.service.automation.AutoExecutor;
 import com.luoys.upgrade.toolservice.service.common.HttpUtil;
-import com.luoys.upgrade.toolservice.service.common.Result;
 import com.luoys.upgrade.toolservice.service.common.StringUtil;
 import com.luoys.upgrade.toolservice.service.common.ThreadPoolUtil;
 import com.luoys.upgrade.toolservice.service.dto.CaseDTO;
@@ -60,13 +59,6 @@ public class SuiteService {
             log.error("--->套件名字必填：{}", autoSuiteVO);
             return -1;
         }
-//        if (autoSuiteVO.getOwnerId().equals(KeywordEnum.DEFAULT_USER.getCode().toString())) {
-//            autoSuiteVO.setOwnerName(KeywordEnum.DEFAULT_USER.getValue());
-//        } else {
-//            String userName = userMapper.selectById(autoSuiteVO.getOwnerId()).getUsername();
-//            autoSuiteVO.setOwnerName(userName);
-//        }
-//        autoSuiteVO.setSuiteId(NumberSender.createSuiteId());
         AutoSuitePO autoSuitePO = TransformAutoSuite.transformVO2PO(autoSuiteVO);
         autoSuiteMapper.insert(autoSuitePO);
         return autoSuitePO.getId();
@@ -293,18 +285,6 @@ public class SuiteService {
         return TransformAutoCase.transformPO2SimpleVO(selectableCase);
     }
 
-//    /**
-//     * 查询套件详情，
-//     * 分页查询套件关联的用例
-//     *
-//     * @param suiteId    套件业务id
-//     * @param startIndex 套件业务id
-//     * @return 套件对象
-//     */
-//    public AutoSuiteVO queryDetail(Integer suiteId, Integer startIndex) {
-//        return queryDetail(suiteId, startIndex, null);
-//    }
-
     /**
      * 查询套件详情
      * 只查询到了用例基本信息，用例关联的步骤详情未查询
@@ -507,7 +487,6 @@ public class SuiteService {
      * 批量执行用例，并更新套件中的用例状态
      *
      * @param caseList 用例列表，列表对象中需要有caseId和suiteId
-     * @return 用例执行结果已写入形参
      */
     private void execute(List<SuiteCaseVO> caseList) {
         boolean result = false;

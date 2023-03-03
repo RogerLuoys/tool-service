@@ -16,7 +16,7 @@
 <!--    <result column="project_id" jdbcType="INTEGER" property="projectId" />-->
   </resultMap>
   <sql id="Base_Column_List">
-    id, `name`, description, `type`, param_type, param_name, param_value, case_id
+    id, `type`, param_type, param_name, param_value, case_id
   </sql>
   <select id="select" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 

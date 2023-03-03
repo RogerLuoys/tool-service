@@ -36,9 +36,6 @@ public class TransformAutoSuite {
         vo.setSuiteId(po.getId());
         vo.setOwnerId(po.getOwnerId());
         vo.setOwnerName(po.getOwnerId() == null ? null : CacheUtil.getNickNameById(po.getOwnerId()));
-//        vo.setEnvironment(po.getEnvironment());
-//        vo.setCaseMaxTime(po.getCaseMaxTime());
-//        vo.setStepSleep(po.getStepSleep());
         vo.setTotal(po.getTotal());
         vo.setStatus(po.getStatus());
         return vo;
@@ -70,14 +67,7 @@ public class TransformAutoSuite {
         vo.setSuiteId(po.getId());
         vo.setOwnerName(po.getOwnerId() == null ? null : CacheUtil.getNickNameById(po.getOwnerId()));
         vo.setProjectId(po.getProjectId());
-//        vo.setEnvironment(po.getEnvironment());
-//        vo.setCaseMaxTime(po.getCaseMaxTime());
         vo.setStatus(po.getStatus());
-//        vo.setStepSleep(po.getStepSleep());
-//        vo.setIsUiCompleted(po.getIsUiCompleted());
-//        vo.setIsApiCompleted(po.getIsApiCompleted());
-//        // 参数列表转换
-//        vo.setParameterList(TransformCommon.toParameter(po.getParameter()));
         return vo;
     }
 

@@ -53,6 +53,9 @@
     <if test="type != null">
       and `type` = #{type,jdbcType=TINYINT}
     </if>
+    <if test="finishTime != null">
+      and finish_time &lt;= #{finishTime,jdbcType=TIMESTAMP}
+    </if>
     <if test="name != null">
       and `name` like concat('%', #{name,jdbcType=VARCHAR}, '%')
     </if>

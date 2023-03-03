@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.concurrent.RejectedExecutionException;
 
 @CrossOrigin
@@ -19,14 +20,11 @@ public class AutoCaseController {
     @Autowired
     private CaseService caseService;
 
-//    @Autowired
-//    private UserService userService;
-
     @RequestMapping(value = "/test", method = RequestMethod.GET)
     public Result<String> test(@RequestParam("caseId") String caseId) {
         log.info("--->开始测试连接：caseId={}", caseId);
         // http:36336920834783  rpc:36334448520507
-        AutoCaseVO autoCaseVO = caseService.queryDetail(1);
+//        AutoCaseVO autoCaseVO = caseService.queryDetail(1);
 //        autoCaseVO.setDescription("copy来的用例");
 //        for (int i = 1000; i < 10000; i++) {
 //            autoCaseVO.setName("http自动化批量1万copy"+(i+1));
@@ -106,20 +104,8 @@ public class AutoCaseController {
         return Result.success(caseService.updateScript(scriptVO));
     }
 
-//    @RequestMapping(value = "/changeUiMode", method = RequestMethod.PUT)
-//    public Result<AutoCaseVO> changeUiMode(@RequestBody AutoCaseVO autoCaseVO) {
-//        log.info("--->开始将脚本步骤转换为可视化步骤：{}", autoCaseVO);
-//        return Result.success(caseService.change2UiMode(autoCaseVO));
-//    }
-//
-//    @RequestMapping(value = "/changeScriptMode", method = RequestMethod.PUT)
-//    public Result<AutoCaseVO> changeScriptMode(@RequestBody AutoCaseVO autoCaseVO) {
-//        log.info("--->开始将可视化步骤转换为脚本步骤：{}", autoCaseVO);
-//        return Result.message(caseService.change2ScriptMode(autoCaseVO));
-//    }
-
     @RequestMapping(value = "/query", method = RequestMethod.POST)
-    public Result<PageInfo<AutoCaseSimpleVO>> query2(@RequestHeader("loginInfo") String loginInfo,
+    public Result<PageInfo<AutoCaseSimpleVO>> query(@RequestHeader("loginInfo") String loginInfo,
                                                      @RequestHeader("projectId") Integer projectId,
                                                     @RequestBody QueryVO queryVO) {
         queryVO.setProjectId(projectId);
@@ -146,4 +132,5 @@ public class AutoCaseController {
             return Result.errorMessage("执行队列已满，请稍后再试");
         }
     }
+
 }

@@ -13,10 +13,10 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 public class ConfigService {
-
-    @Autowired
-    private ConfigMapper configMapper;
-
+//
+//    @Autowired
+//    private ConfigMapper configMapper;
+//
 //    /**
 //     * 邀请成员
 //     * @param projectVO 成员信息

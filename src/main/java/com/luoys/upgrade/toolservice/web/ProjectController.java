@@ -1,6 +1,5 @@
 package com.luoys.upgrade.toolservice.web;
 
-import com.luoys.upgrade.toolservice.dao.UserProjectRelationMapper;
 import com.luoys.upgrade.toolservice.service.ProjectService;
 import com.luoys.upgrade.toolservice.service.common.CacheUtil;
 import com.luoys.upgrade.toolservice.service.common.Result;
@@ -22,8 +21,9 @@ public class ProjectController {
     private ProjectService projectService;
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public Result<Integer> create(@RequestHeader(value = "userId") Integer userId,
+    public Result<Integer> create(@RequestHeader(value = "loginInfo") String loginInfo,
                                  @RequestBody ProjectVO projectVO) {
+        projectVO.setOwnerId(CacheUtil.getUserByLoginInfo(loginInfo).getUserId());
         log.info("--->开始创建项目：{}", projectVO);
         return Result.message(projectService.create(projectVO));
     }

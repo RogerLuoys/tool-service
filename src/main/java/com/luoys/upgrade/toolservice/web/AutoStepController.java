@@ -7,7 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.concurrent.RejectedExecutionException;
 
 @CrossOrigin
 @Slf4j
@@ -20,7 +19,7 @@ public class AutoStepController {
 
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public Result<Integer> create(@RequestHeader("userId") String userId, @RequestBody AutoStepVO autoStepVO) {
+    public Result<Integer> create(@RequestBody AutoStepVO autoStepVO) {
         log.info("--->开始新增步骤：{}", autoStepVO);
         return Result.message(stepService.create(autoStepVO));
     }
@@ -57,16 +56,4 @@ public class AutoStepController {
         return Result.success(stepService.queryDetail(stepId));
     }
 
-//    @RequestMapping(value = "/use", method = RequestMethod.POST)
-//    public Result<String> use(@RequestBody AutoStepVO autoStepVO) {
-//        log.info("--->开始调试步骤：{}", autoStepVO);
-//        if (autoStepVO.getType().equals(AutoStepTypeEnum.STEP_UI.getCode())) {
-//            return Result.error("UI自动化步骤不可单步调试");
-//        }
-//        try {
-//            return Result.message(stepService.useAsync(autoStepVO), "执行异常，请检查步骤");
-//        } catch (RejectedExecutionException e) {
-//            return Result.errorMessage("执行队列已满，请稍后再试");
-//        }
-//    }
 }
