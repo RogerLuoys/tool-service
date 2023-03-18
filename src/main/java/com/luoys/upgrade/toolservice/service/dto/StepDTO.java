@@ -22,16 +22,6 @@ public class StepDTO {
      */
     private Integer methodType;
 
-//    /**
-//     * 方法名，当module_type=1或2时，分别对应auto_case.name和resource.name
-//     */
-//    private String methodName;
-//
-//    /**
-//     * 方法关联的id，当module_type=1或2时，分别对应auto_case.id和resource.id
-//     */
-//    private Integer methodId;
-
     /**
      * 执行sql的数据源
      */

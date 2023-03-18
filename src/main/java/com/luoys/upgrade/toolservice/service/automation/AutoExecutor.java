@@ -19,11 +19,14 @@ import java.util.Map;
  */
 public class AutoExecutor {
 
-    // 每个测试模块对应一个RootClient，主要是WebDriver会不同
+    // 一个套件都可能包含多个测试模块，每个测试模块(超类)需对应一个RootClient，主要是WebDriver会不同
     private final Map<Integer, RootClient> clientMap = new HashMap<>();
     private final Map<Integer, List<StepDTO>> afterSuiteMap = new HashMap<>();
 
-    public void executeStep(StepDTO stepDTO, RootClient auto) {
+    /**
+     *  使用指定客户端执行单个步骤
+     */
+    private void executeStep(StepDTO stepDTO, RootClient auto) {
         String varName;
         switch (ModuleTypeEnum.fromCode(stepDTO.getModuleType())) {
             case SQL:
@@ -45,26 +48,15 @@ public class AutoExecutor {
                 varName = auto.assertion.execute(stepDTO);
                 break;
             default:
-                varName = "false";
+                varName = DefaultEnum.DEFAULT_CLIENT_ERROR.getValue();
         }
         stepDTO.setResult(varName);
     }
 
-    public void close() {
-        // 一个套件可能会有多个测试模块(超类)，每个模块申请的客户端都要一一关闭
-        for (Integer key: clientMap.keySet()) {
-            // 执行超类中的@AfterSuite
-            if (afterSuiteMap.get(key) != null) {
-                for (StepDTO oneStep: afterSuiteMap.get(key)) {
-                    executeStep(oneStep, clientMap.get(key));
-                }
-            }
-            // 关闭申请过的资源
-            clientMap.get(key).http.close();
-            clientMap.get(key).ui.close();
-        }
-    }
-
+    /**
+     * 处理入参中的变量(相当于传参)
+     * @param params 包含变量名和变量值的映射关系
+     */
     private void mergeParam(StepDTO stepDTO, Map<String, String> params) {
         if (params == null || params.size() == 0) {
             return;
@@ -89,14 +81,18 @@ public class AutoExecutor {
         }
     }
 
+    /**
+     * 执行步骤列表(相当于执行一个方法)
+     */
     private boolean executeSteps(List<StepDTO> steps, RootClient auto) {
         if (steps == null || steps.size() == 0) {
             return true;
         }
         Map<String, String> params = new HashMap<>();
         for (StepDTO oneStep: steps) {
-            // 变量替换
+            // 局部变量赋值
             mergeParam(oneStep, params);
+            // 执行步骤
             executeStep(oneStep, auto);
             if (oneStep.getResult().equals(DefaultEnum.DEFAULT_CLIENT_ERROR.getValue())) {
                 return false;
@@ -109,18 +105,22 @@ public class AutoExecutor {
         return true;
     }
 
+    /**
+     * 执行一个测试用例
+     */
     public Boolean executeCase(CaseDTO caseDTO) {
         RootClient auto;
-        // 通过超类ID，找到对应的执行客户端
         if (clientMap.containsKey(caseDTO.getSupperCaseId())) {
+            // 通过超类ID，找到对应的执行客户端
             auto = clientMap.get(caseDTO.getSupperCaseId());
         } else {
+            // 如果未找到，说明改超类下的用例从未执行过，需要实例化一个客户端
             auto = new RootClient(caseDTO);
             clientMap.put(caseDTO.getSupperCaseId(), auto);
             afterSuiteMap.put(caseDTO.getSupperCaseId(), caseDTO.getAfterSuite());
         }
-        // 套件执行异常，直接跳过所有步骤
-        if (auto.suiteError) {
+        // 套件执行异常，直接失败
+        if (auto.isBeforeSuiteError) {
             caseDTO.setStatus(AutoCaseStatusEnum.FAIL.getCode());
             return false;
         }
@@ -129,11 +129,11 @@ public class AutoExecutor {
             caseDTO.setStatus(AutoCaseStatusEnum.FAIL.getCode());
             return false;
         }
-
         // 执行@BeforeSuite，只执行一次
         if (!auto.isBeforeSuiteDone) {
             if (!executeSteps(caseDTO.getBeforeSuite(), auto)) {
                 caseDTO.setStatus(AutoCaseStatusEnum.FAIL.getCode());
+                auto.isBeforeSuiteError = true;
                 return false;
             }
             auto.isBeforeSuiteDone = true;
@@ -160,6 +160,24 @@ public class AutoExecutor {
         // 执行超类中的@AfterClass
         executeSteps(caseDTO.getSupperAfterClass(), auto);
         return true;
+    }
+
+    /**
+     * 执行@AfterSuite，然后关闭执行器申请的所有资源
+     */
+    public void close() {
+        // 一个套件可能会有多个测试模块(超类)，每个模块申请的客户端都要一一关闭
+        for (Integer key: clientMap.keySet()) {
+            // 执行超类中的@AfterSuite
+            if (afterSuiteMap.get(key) != null) {
+                for (StepDTO oneStep: afterSuiteMap.get(key)) {
+                    executeStep(oneStep, clientMap.get(key));
+                }
+            }
+            // 关闭申请过的资源
+            clientMap.get(key).http.close();
+            clientMap.get(key).ui.close();
+        }
     }
 
 }

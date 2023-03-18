@@ -12,7 +12,7 @@ public class RootClient {
     public UtilClient util = new UtilClient();
     public AssertionClient assertion = new AssertionClient(ui);
     public Boolean isBeforeSuiteDone = false;
-    public Boolean suiteError = false;
+    public Boolean isBeforeSuiteError = false;
 
     public RootClient(CaseDTO caseDTO) {
         // 非UI自动化，不用额外初始化
