@@ -225,6 +225,9 @@ public class CaseService {
      * @return 用例列表
      */
     public ScriptVO updateScript(ScriptVO scriptVO) {
+        if (scriptVO.getScript() == null) {
+            return new ScriptVO();
+        }
 
         // 通过正则解析脚本，把整段脚本解析成行('\w':任意字符，'.':0到无限次)
         List<String> steps = StringUtil.getMatch("(String[ ]{1,4}\\w{1,20}[ ]{1,4}=[ ]{0,4})?auto\\.(ui|http|sql|rpc|util|po|assertion|undefined)\\.\\w+\\(.*\\);", scriptVO.getScript());
