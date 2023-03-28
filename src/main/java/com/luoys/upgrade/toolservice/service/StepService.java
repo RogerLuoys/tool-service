@@ -182,7 +182,7 @@ public class StepService {
     }
 
     /**
-     * 转换步骤模式，将结构化步骤转换成脚本
+     * 转换步骤模式，将步骤脚本转换成结构化步骤
      *
      * @param autoStepVO - 带脚本的完整步骤对象
      */
