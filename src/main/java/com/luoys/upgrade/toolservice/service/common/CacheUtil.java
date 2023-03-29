@@ -145,8 +145,6 @@ public class CacheUtil {
             userVO.setUserId(DefaultEnum.DEFAULT_DEMO_USER.getCode());
             userVO.setLoginInfo(DefaultEnum.DEFAULT_DEMO_USER.getDescription());
             userVO.setType(UserTypeEnum.REGULAR.getCode());
-//            userVO.setUsername("default");
-//            userVO.setPassword("101");
             userVO.setNickname(DefaultEnum.DEFAULT_DEMO_USER.getValue());
             return userVO;
         }
