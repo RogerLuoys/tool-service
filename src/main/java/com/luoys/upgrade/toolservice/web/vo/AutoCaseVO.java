@@ -25,6 +25,11 @@ public class AutoCaseVO {
     private Integer supperCaseId;
 
     /**
+     * 目录id
+     */
+    private Integer folderId;
+
+    /**
      * 名称
      */
     private String name;

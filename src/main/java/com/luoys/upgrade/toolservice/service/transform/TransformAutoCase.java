@@ -63,7 +63,7 @@ public class TransformAutoCase {
         vo.setProjectId(po.getProjectId());
         vo.setCaseId(po.getId());
         vo.setStatus(po.getStatus());
-//        vo.setMainSteps(po.getMainSteps());
+        vo.setFolderId(po.getFolderId());
 //        vo.setEnvironment(po.getEnvironment());
         vo.setFinishTime(po.getFinishTime());
         vo.setSupperCaseId(po.getSupperCaseId());
@@ -93,6 +93,7 @@ public class TransformAutoCase {
         po.setProjectId(vo.getProjectId());
         po.setSupperCaseId(vo.getSupperCaseId());
         po.setFinishTime(vo.getFinishTime());
+        po.setFolderId(vo.getFolderId());
         return po;
     }
 

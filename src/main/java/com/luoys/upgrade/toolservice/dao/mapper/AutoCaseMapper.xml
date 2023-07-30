@@ -5,6 +5,7 @@
     <id column="id" jdbcType="INTEGER" property="id" />
 <!--    <result column="case_id" jdbcType="VARCHAR" property="caseId" />-->
     <result column="supper_case_id" jdbcType="INTEGER" property="supperCaseId" />
+    <result column="folder_id" jdbcType="INTEGER" property="folderId" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="description" jdbcType="VARCHAR" property="description" />
     <result column="type" jdbcType="TINYINT" property="type" />
@@ -19,7 +20,7 @@
 <!--    <result column="owner_name" jdbcType="VARCHAR" property="ownerName" />-->
   </resultMap>
   <sql id="Base_Column_List">
-    id, supper_case_id, `name`, description, time_out, `type`, `status`, finish_time, project_id, owner_id
+    id, supper_case_id, folder_id, `name`, description, time_out, `type`, `status`, finish_time, project_id, owner_id
   </sql>
   <select id="selectById" resultMap="BaseResultMap">
     select
@@ -43,6 +44,9 @@
     and project_id = #{projectId,jdbcType=INTEGER}
     <if test="supperCaseId != null">
       and `supper_case_id` = #{supperCaseId,jdbcType=INTEGER}
+    </if>
+    <if test="folderId != null">
+      folder_id = #{folderId,jdbcType=INTEGER},
     </if>
     <if test="ownerId != null">
       and `owner_id` = #{ownerId,jdbcType=INTEGER}
@@ -72,6 +76,9 @@
     <if test="supperCaseId != null">
       and `supper_case_id` = #{supperCaseId,jdbcType=INTEGER}
     </if>
+    <if test="folderId != null">
+      folder_id = #{folderId,jdbcType=INTEGER},
+    </if>
     <if test="ownerId != null">
       and `owner_id` = #{ownerId,jdbcType=INTEGER}
     </if>
@@ -91,11 +98,11 @@
     where id = #{caseId,jdbcType=INTEGER}
   </update>
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.luoys.upgrade.toolservice.dao.po.AutoCasePO" useGeneratedKeys="true">
-    insert into auto_case (supper_case_id, `name`, description, time_out,
+    insert into auto_case (supper_case_id, folder_id, `name`, description, time_out,
       `type`, `status`, finish_time, project_id, owner_id,
       is_delete, gmt_create, gmt_modified
       )
-    values (#{supperCaseId,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{timeOut,jdbcType=INTEGER},
+    values (#{supperCaseId,jdbcType=INTEGER}, #{folderId,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{timeOut,jdbcType=INTEGER},
       #{type,jdbcType=TINYINT}, #{status,jdbcType=TINYINT}, #{finishTime,jdbcType=TIMESTAMP},
       #{projectId,jdbcType=INTEGER}, #{ownerId,jdbcType=INTEGER}, 0, now(), now()
       )
@@ -105,6 +112,9 @@
     <set>
       <if test="supperCaseId != null">
         supper_case_id = #{supperCaseId,jdbcType=INTEGER},
+      </if>
+      <if test="folderId != null">
+        folder_id = #{folderId,jdbcType=INTEGER},
       </if>
       <if test="name != null">
         `name` = #{name,jdbcType=VARCHAR},
