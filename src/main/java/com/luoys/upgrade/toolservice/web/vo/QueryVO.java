@@ -36,6 +36,11 @@ public class QueryVO {
     private Integer suiteId;
 
     /**
+     * 目录id
+     */
+    private Integer folderId;
+
+    /**
      * 业务类型(通用)
      */
     private Integer type;

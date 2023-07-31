@@ -111,6 +111,7 @@ public class TransformAutoCase {
         po.setType(vo.getType());
         po.setStatus(vo.getStatus());
         po.setProjectId(vo.getProjectId());
+        po.setFolderId(vo.getFolderId());
         po.setSupperCaseId(vo.getSupperCaseId());
         if (vo.getPageIndex() != null) {
             po.setStartIndex((vo.getPageIndex() - 1) * DefaultEnum.DEFAULT_PAGE_SIZE.getCode());
