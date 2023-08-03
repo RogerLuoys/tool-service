@@ -37,10 +37,13 @@ public class StepService {
      * @param autoStepVO 步骤对象
      * @return 返回id
      */
-    public Integer create(AutoStepVO autoStepVO) {
+    public AutoStepVO create(AutoStepVO autoStepVO) {
+        if (autoStepVO.getModuleType() == null) {
+            autoStepVO.setModuleType(ModuleTypeEnum.UNDEFINED_MODULE.getCode());
+        }
         AutoStepPO autoStepPO = TransformAutoStep.transformVO2PO(autoStepVO);
         autoStepMapper.insert(autoStepPO);
-        return autoStepPO.getId();
+        return TransformAutoStep.transformPO2VO(autoStepPO);
     }
 
     /**

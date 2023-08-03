@@ -2,7 +2,7 @@ package com.luoys.upgrade.toolservice.service.common;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
-import com.luoys.upgrade.toolservice.dao.CaseStepRelationMapper;
+import com.luoys.upgrade.toolservice.dao.AutoStepMapper;
 import com.luoys.upgrade.toolservice.dao.ResourceMapper;
 import com.luoys.upgrade.toolservice.dao.UserMapper;
 import com.luoys.upgrade.toolservice.dao.po.ResourcePO;
@@ -12,11 +12,11 @@ import com.luoys.upgrade.toolservice.service.dto.DataSourceDTO;
 import com.luoys.upgrade.toolservice.service.dto.StepDTO;
 import com.luoys.upgrade.toolservice.service.enums.DefaultEnum;
 import com.luoys.upgrade.toolservice.service.enums.UserTypeEnum;
-import com.luoys.upgrade.toolservice.service.transform.TransformCaseStepRelation;
+import com.luoys.upgrade.toolservice.service.transform.TransformAutoStep;
 import com.luoys.upgrade.toolservice.service.transform.TransformResource;
 import com.luoys.upgrade.toolservice.service.transform.TransformUser;
 import com.luoys.upgrade.toolservice.web.vo.AutoCaseVO;
-import com.luoys.upgrade.toolservice.web.vo.CaseStepVO;
+import com.luoys.upgrade.toolservice.web.vo.AutoStepVO;
 import com.luoys.upgrade.toolservice.web.vo.UserVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -30,7 +30,7 @@ public class CacheUtil {
     // 静态变量需要延时注入
     private static ResourceMapper resourceMapper;
 
-    private static CaseStepRelationMapper caseStepRelationMapper;
+    private static AutoStepMapper autoStepMapper;
 
     private static CaseService caseService;
 
@@ -87,8 +87,8 @@ public class CacheUtil {
     }
 
     @Autowired
-    private void setCaseStepRelationMapper(CaseStepRelationMapper caseStepRelationMapper) {
-        CacheUtil.caseStepRelationMapper = caseStepRelationMapper;
+    private void setAutoStepMapper(AutoStepMapper autoStepMapper) {
+        CacheUtil.autoStepMapper = autoStepMapper;
     }
 
     @Autowired
@@ -131,8 +131,8 @@ public class CacheUtil {
     }
 
     private static List<StepDTO> getPoFromDB(Integer key) {
-        List<CaseStepVO> caseStepVOList = TransformCaseStepRelation.transformPO2VO(caseStepRelationMapper.listStepByCaseId(key));
-        return TransformCaseStepRelation.transformVO2DTO(caseStepVOList);
+        List<AutoStepVO> autoStepVOList = TransformAutoStep.transformPO2VO(autoStepMapper.listByCaseId(key));
+        return TransformAutoStep.transformVO2DTO(autoStepVOList);
     }
 
     private static AutoCaseVO getSupperClassFromDB(Integer key) {

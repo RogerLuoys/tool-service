@@ -3,6 +3,9 @@
 <mapper namespace="com.luoys.upgrade.toolservice.dao.AutoStepMapper">
   <resultMap id="BaseResultMap" type="com.luoys.upgrade.toolservice.dao.po.AutoStepPO">
     <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="case_id" jdbcType="INTEGER" property="caseId" />
+    <result column="sequence" jdbcType="INTEGER" property="sequence" />
+    <result column="type" jdbcType="TINYINT" property="type" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="result" jdbcType="VARCHAR" property="result" />
     <result column="module_type" jdbcType="TINYINT" property="moduleType" />
@@ -15,7 +18,7 @@
     <result column="var_name" jdbcType="VARCHAR" property="varName" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, `name`, `result`, module_type, method_type, method_name, method_id, parameter1, parameter2,
+    id, case_id, `sequence`, `type`, `name`, `result`, module_type, method_type, method_name, method_id, parameter1, parameter2,
     parameter3, var_name
   </sql>
   <select id="select" resultMap="BaseResultMap">
@@ -24,23 +27,14 @@
     from auto_step
     where id = #{stepId,jdbcType=INTEGER}
   </select>
-<!--  <select id="list" resultMap="BaseResultMap">-->
-<!--    select-->
-<!--    <include refid="Base_Column_List" />-->
-<!--    from auto_step-->
-<!--    where is_delete = 0-->
-<!--    and owner_id = #{ownerId,jdbcType=VARCHAR}-->
-<!--    <if test="isPublic != null">-->
-<!--      and is_public = #{isPublic,jdbcType=TINYINT}-->
-<!--    </if>-->
-<!--    <if test="type != null">-->
-<!--      and `type` = #{type,jdbcType=TINYINT}-->
-<!--    </if>-->
-<!--    <if test="name != null">-->
-<!--      and `name` like concat('%', #{name,jdbcType=VARCHAR}, '%')-->
-<!--    </if>-->
-<!--    order by gmt_create desc limit ${startIndex}, 10-->
-<!--  </select>-->
+  <select id="listByCaseId" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from auto_step
+    where is_delete = 0
+    and case_id = #{caseId,jdbcType=INTEGER}
+    order by `sequence`
+  </select>
 <!--  <select id="count" resultType="java.lang.Integer">-->
 <!--    select count(1)-->
 <!--    from auto_step-->
@@ -61,15 +55,35 @@
     set is_delete = 1, gmt_modified = now()
     where id = #{stepId,jdbcType=INTEGER}
   </update>
+  <update id="removeByCaseId">
+    update auto_step
+    set is_delete = 1, gmt_modified = now()
+    where case_id = #{caseId,jdbcType=INTEGER}
+  </update>
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.luoys.upgrade.toolservice.dao.po.AutoStepPO" useGeneratedKeys="true">
-    insert into auto_step (`name`, result, module_type,
+    insert into auto_step (case_id, `sequence`, `type`, `name`, `result`, module_type,
       method_type, method_name, method_id, parameter1, parameter2,
       parameter3, var_name, is_delete, gmt_create,
       gmt_modified)
-    values (#{name,jdbcType=VARCHAR}, #{result,jdbcType=VARCHAR}, #{moduleType,jdbcType=TINYINT},
+    values (#{caseId,jdbcType=INTEGER}, #{sequence,jdbcType=INTEGER}, #{type,jdbcType=TINYINT},
+      #{name,jdbcType=VARCHAR}, #{result,jdbcType=VARCHAR}, #{moduleType,jdbcType=TINYINT},
       #{methodType,jdbcType=TINYINT}, #{methodName,jdbcType=VARCHAR}, #{methodId,jdbcType=INTEGER},
       #{parameter1,jdbcType=VARCHAR}, #{parameter2,jdbcType=VARCHAR},
       #{parameter3,jdbcType=VARCHAR}, #{varName,jdbcType=VARCHAR}, 0, now(), now())
+  </insert>
+  <insert id="batchInsert" keyColumn="id" keyProperty="id" parameterType="java.util.List" useGeneratedKeys="true">
+    insert into auto_step (`name`, result, module_type,
+    method_type, method_name, method_id, parameter1, parameter2,
+    parameter3, var_name, is_delete, gmt_create,
+    gmt_modified)
+    values
+    <foreach collection="list" item="item" index="index" separator=",">
+      (#{caseId,jdbcType=INTEGER}, #{sequence,jdbcType=INTEGER}, #{type,jdbcType=TINYINT},
+      #{name,jdbcType=VARCHAR}, #{result,jdbcType=VARCHAR}, #{moduleType,jdbcType=TINYINT},
+      #{methodType,jdbcType=TINYINT}, #{methodName,jdbcType=VARCHAR}, #{methodId,jdbcType=INTEGER},
+      #{parameter1,jdbcType=VARCHAR}, #{parameter2,jdbcType=VARCHAR},
+      #{parameter3,jdbcType=VARCHAR}, #{varName,jdbcType=VARCHAR}, 0, now(), now())
+    </foreach>
   </insert>
   <update id="update" parameterType="com.luoys.upgrade.toolservice.dao.po.AutoStepPO">
     update auto_step

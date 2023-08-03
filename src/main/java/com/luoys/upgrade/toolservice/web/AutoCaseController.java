@@ -57,9 +57,9 @@ public class AutoCaseController {
     }
 
     @RequestMapping(value = "/createRelatedStep", method = RequestMethod.POST)
-    public Result<CaseStepVO> createRelatedStep(@RequestBody CaseStepVO caseStepVO) {
-        log.info("--->开始快速新增用例关联的步骤：{}", caseStepVO);
-        return Result.success(caseService.createRelatedStep(caseStepVO));
+    public Result<AutoStepVO> createRelatedStep(@RequestBody AutoStepVO autoStepVO) {
+        log.info("--->开始快速新增用例关联的步骤：{}", autoStepVO);
+        return Result.success(caseService.createRelatedStep(autoStepVO));
     }
 
     @RequestMapping(value = "/remove", method = RequestMethod.DELETE)
@@ -69,9 +69,9 @@ public class AutoCaseController {
     }
 
     @RequestMapping(value = "/removeRelatedStep", method = RequestMethod.DELETE)
-    public Result<Integer> removeRelatedStep(@RequestBody CaseStepVO caseStepVO) {
-        log.info("--->开始删除用例关联的步骤：{}", caseStepVO);
-        return Result.message(caseService.removeRelatedStep(caseStepVO));
+    public Result<Integer> removeRelatedStep(@RequestBody AutoStepVO autoStepVO) {
+        log.info("--->开始删除用例关联的步骤：{}", autoStepVO);
+        return Result.message(caseService.removeRelatedStep(autoStepVO));
     }
 
     @RequestMapping(value = "/removeConfig", method = RequestMethod.DELETE)
@@ -87,9 +87,9 @@ public class AutoCaseController {
     }
 
     @RequestMapping(value = "/updateRelatedStep", method = RequestMethod.PUT)
-    public Result<Integer> updateRelatedCase(@RequestBody CaseStepVO caseStepVO) {
-        log.info("--->开始更新测试集关联的用例：{}", caseStepVO);
-        return Result.message(caseService.updateRelatedStep(caseStepVO));
+    public Result<Integer> updateRelatedCase(@RequestBody AutoStepVO autoStepVO) {
+        log.info("--->开始更新测试集关联的用例：{}", autoStepVO);
+        return Result.message(caseService.updateRelatedStep(autoStepVO));
     }
 
     @RequestMapping(value = "/updateConfig", method = RequestMethod.PUT)

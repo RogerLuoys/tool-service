@@ -73,7 +73,7 @@ public class AutoCaseVO {
     /**
      * 前置步骤(UI模式)，即@BeforeSuite
      */
-    private List<CaseStepVO> beforeSuiteList;
+    private List<AutoStepVO> beforeSuiteList;
 
     /**
      * 前置步骤(脚本模式)，即@BeforeSuite
@@ -83,7 +83,7 @@ public class AutoCaseVO {
     /**
      * 前置步骤(UI模式)，即@BeforeClass
      */
-    private List<CaseStepVO> beforeClassList;
+    private List<AutoStepVO> beforeClassList;
 
     /**
      * 前置步骤(脚本模式)，即@BeforeClass
@@ -93,7 +93,7 @@ public class AutoCaseVO {
     /**
      * 主要步骤(UI模式)
      */
-    private List<CaseStepVO> testList;
+    private List<AutoStepVO> testList;
 
     /**
      * 主要步骤(脚本模式)，即@Test
@@ -103,7 +103,7 @@ public class AutoCaseVO {
     /**
      * 收尾步骤(UI模式)，即@AfterClass
      */
-    private List<CaseStepVO> afterClassList;
+    private List<AutoStepVO> afterClassList;
 
     /**
      * 收尾步骤(脚本模式)，即@AfterClass
@@ -113,7 +113,7 @@ public class AutoCaseVO {
     /**
      * 前置步骤(UI模式)，即@AfterSuite
      */
-    private List<CaseStepVO> afterSuiteList;
+    private List<AutoStepVO> afterSuiteList;
 
     /**
      * 前置步骤(脚本模式)，即@BeforeSuite

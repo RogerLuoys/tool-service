@@ -140,13 +140,13 @@ public class TransformAutoCase {
             dto.setUiType(supperCaseVO.getArgumentList().get(0).getType());
         }
         // 编排步骤
-        dto.setBeforeSuite(TransformCaseStepRelation.transformVO2DTO(supperCaseVO.getBeforeSuiteList()));
-        dto.setSupperBeforeClass(TransformCaseStepRelation.transformVO2DTO(supperCaseVO.getBeforeClassList()));
-        dto.setBeforeClass(TransformCaseStepRelation.transformVO2DTO(vo.getBeforeClassList()));
-        dto.setTest(TransformCaseStepRelation.transformVO2DTO(vo.getTestList()));
-        dto.setAfterClass(TransformCaseStepRelation.transformVO2DTO(vo.getAfterClassList()));
-        dto.setSupperAfterClass(TransformCaseStepRelation.transformVO2DTO(supperCaseVO.getAfterClassList()));
-        dto.setAfterSuite(TransformCaseStepRelation.transformVO2DTO(supperCaseVO.getAfterSuiteList()));
+        dto.setBeforeSuite(TransformAutoStep.transformVO2DTO(supperCaseVO.getBeforeSuiteList()));
+        dto.setSupperBeforeClass(TransformAutoStep.transformVO2DTO(supperCaseVO.getBeforeClassList()));
+        dto.setBeforeClass(TransformAutoStep.transformVO2DTO(vo.getBeforeClassList()));
+        dto.setTest(TransformAutoStep.transformVO2DTO(vo.getTestList()));
+        dto.setAfterClass(TransformAutoStep.transformVO2DTO(vo.getAfterClassList()));
+        dto.setSupperAfterClass(TransformAutoStep.transformVO2DTO(supperCaseVO.getAfterClassList()));
+        dto.setAfterSuite(TransformAutoStep.transformVO2DTO(supperCaseVO.getAfterSuiteList()));
 
         return dto;
     }

@@ -36,7 +36,7 @@ public class ScriptVO {
     /**
      * 步骤列表(UI模式)
      */
-    private List<CaseStepVO> stepList;
+    private List<AutoStepVO> stepList;
 
     /**
      * 所属项目id

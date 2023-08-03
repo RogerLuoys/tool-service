@@ -1,18 +1,13 @@
 package com.luoys.upgrade.toolservice.service.transform;
 
 import com.luoys.upgrade.toolservice.service.common.CacheUtil;
-import com.luoys.upgrade.toolservice.service.common.StringUtil;
 import com.luoys.upgrade.toolservice.dao.po.AutoStepPO;
 import com.luoys.upgrade.toolservice.service.dto.*;
-import com.luoys.upgrade.toolservice.service.enums.*;
 import com.luoys.upgrade.toolservice.service.enums.autoStep.ModuleTypeEnum;
-import com.luoys.upgrade.toolservice.web.vo.AutoStepSimpleVO;
 import com.luoys.upgrade.toolservice.web.vo.AutoStepVO;
-import com.luoys.upgrade.toolservice.web.vo.CaseStepVO;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 自动化步骤数据转换
@@ -21,38 +16,22 @@ import java.util.Map;
  */
 public class TransformAutoStep {
 
-    /**
-     * 基本信息转换
-     *
-     * @param po -
-     * @return -
-     */
-    public static AutoStepSimpleVO transformPO2SimpleVO(AutoStepPO po) {
-        if (po == null)
-            return null;
-        AutoStepSimpleVO vo = new AutoStepSimpleVO();
-        vo.setResult(po.getResult());
-        vo.setStepId(po.getId());
-//        vo.setOwnerId(po.getOwnerId());
-//        vo.setOwnerName(po.getOwnerName());
-        vo.setName(po.getName());
-        vo.setModuleType(po.getModuleType());
-//        vo.setIsPublic(po.getIsPublic());
-//        vo.setAssertActual(po.getAssertActual());
-//        vo.setAssertExpect(po.getAssertExpect());
-//        vo.setAssertResult(po.getAssertResult());
-//        vo.setAfterSleep(po.getAfterSleep());
-//        vo.setAssertType(po.getAssertType());
-        return vo;
-    }
-
-    public static List<AutoStepSimpleVO> transformPO2VO(List<AutoStepPO> poList) {
-        List<AutoStepSimpleVO> voList = new ArrayList<>();
-        for (AutoStepPO po : poList) {
-            voList.add(transformPO2SimpleVO(po));
-        }
-        return voList;
-    }
+//    /**
+//     * 基本信息转换
+//     *
+//     * @param po -
+//     * @return -
+//     */
+//    public static AutoStepSimpleVO transformPO2SimpleVO(AutoStepPO po) {
+//        if (po == null)
+//            return null;
+//        AutoStepSimpleVO vo = new AutoStepSimpleVO();
+//        vo.setResult(po.getResult());
+//        vo.setStepId(po.getId());
+//        vo.setName(po.getName());
+//        vo.setModuleType(po.getModuleType());
+//        return vo;
+//    }
 
     /**
      * 详细信息转换
@@ -77,7 +56,18 @@ public class TransformAutoStep {
         vo.setParameter1(po.getParameter1());
         vo.setParameter2(po.getParameter2());
         vo.setParameter3(po.getParameter3());
+        vo.setType(po.getType());
+        vo.setSequence(po.getSequence());
+        vo.setCaseId(po.getCaseId());
         return vo;
+    }
+
+    public static List<AutoStepVO> transformPO2VO(List<AutoStepPO> poList) {
+        List<AutoStepVO> voList = new ArrayList<>();
+        for (AutoStepPO po : poList) {
+            voList.add(transformPO2VO(po));
+        }
+        return voList;
     }
 
     public static AutoStepPO transformVO2PO(AutoStepVO vo) {
@@ -90,7 +80,9 @@ public class TransformAutoStep {
         po.setId(vo.getStepId());
         po.setVarName(vo.getVarName());
         po.setName(vo.getName());
-
+        po.setCaseId(vo.getCaseId());
+        po.setType(vo.getType());
+        po.setSequence(vo.getSequence());
         po.setModuleType(vo.getModuleType());
         po.setMethodType(vo.getMethodType());
         po.setMethodName(vo.getMethodName());

@@ -15,52 +15,52 @@ import java.util.List;
 @Repository
 public interface CaseStepRelationMapper {
 
-    /**
-     * 根据caseId批量逻辑删除关联的步骤
-     *
-     * @param caseId 用例业务id
-     * @return 影响行数
-     */
-    int removeByCaseId(@Param("caseId") Integer caseId);
-
-    /**
-     * 根据caseId和stepId逻辑删除关联的步骤
-     *
-     * @param stepId
-     * @return -
-     */
-    int removeByStepId(@Param("stepId") Integer stepId);
-
-    /**
-     * 插入数据
-     *
-     * @param record 对象
-     * @return 成功为1
-     */
-    int insert(CaseStepRelationPO record);
-
-    /**
-     * 批量插入
-     *
-     * @param recordList 对象列表
-     * @return 插入行数
-     */
-    int batchInsert(@Param("list") List<CaseStepRelationPO> recordList);
-
-    /**
-     * 根据caseId查询关联的步骤列表
-     *
-     * @param caseId 用例业务id
-     * @return 对象列表
-     */
-    List<CaseStepRelationPO> listStepByCaseId(@Param("caseId") Integer caseId);
-
-    /**
-     * 根据caseId和stepId更新数据，更新顺序
-     *
-     * @param record 对象
-     * @return 成功为1
-     */
-    int update(CaseStepRelationPO record);
+//    /**
+//     * 根据caseId批量逻辑删除关联的步骤
+//     *
+//     * @param caseId 用例业务id
+//     * @return 影响行数
+//     */
+//    int removeByCaseId(@Param("caseId") Integer caseId);
+//
+//    /**
+//     * 根据caseId和stepId逻辑删除关联的步骤
+//     *
+//     * @param stepId
+//     * @return -
+//     */
+//    int removeByStepId(@Param("stepId") Integer stepId);
+//
+//    /**
+//     * 插入数据
+//     *
+//     * @param record 对象
+//     * @return 成功为1
+//     */
+//    int insert(CaseStepRelationPO record);
+//
+//    /**
+//     * 批量插入
+//     *
+//     * @param recordList 对象列表
+//     * @return 插入行数
+//     */
+//    int batchInsert(@Param("list") List<CaseStepRelationPO> recordList);
+//
+//    /**
+//     * 根据caseId查询关联的步骤列表
+//     *
+//     * @param caseId 用例业务id
+//     * @return 对象列表
+//     */
+//    List<CaseStepRelationPO> listStepByCaseId(@Param("caseId") Integer caseId);
+//
+//    /**
+//     * 根据caseId和stepId更新数据，更新顺序
+//     *
+//     * @param record 对象
+//     * @return 成功为1
+//     */
+//    int update(CaseStepRelationPO record);
 
 }

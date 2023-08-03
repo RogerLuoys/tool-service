@@ -23,12 +23,28 @@ public interface AutoStepMapper {
     int insert(AutoStepPO autoStepPO);
 
     /**
+     * 批量插入
+     *
+     * @param recordList 对象列表
+     * @return 插入行数
+     */
+    int batchInsert(@Param("list") List<AutoStepPO> recordList);
+
+    /**
      * 逻辑删除数据
      *
      * @param stepId 业务id
      * @return 删除成功为1
      */
     int remove(@Param("stepId") Integer stepId);
+
+    /**
+     * 逻辑删除数据
+     *
+     * @param caseId 用例业务id
+     * @return 删除成功为1
+     */
+    int removeByCaseId(@Param("caseId") Integer caseId);
 
     /**
      * 更新数据
@@ -55,22 +71,14 @@ public interface AutoStepMapper {
      */
     AutoStepPO select(@Param("stepId") Integer stepId);
 
-//    /**
-//     * 按条件分页查询，默认10条数据一页
-//     *
-//     * @param type       类型
-//     * @param name       名字
-//     * @param ownerId    所属人id
-//     * @param isPublic   是否公用
-//     * @param startIndex 页码，从0开始
-//     * @return 对象列表
-//     */
-//    List<AutoStepPO> list(@Param("type") Integer type,
-//                          @Param("name") String name,
-//                          @Param("ownerId") String ownerId,
-//                          @Param("isPublic") Boolean isPublic,
-//                          @Param("startIndex") Integer startIndex);
-//
+    /**
+     * 根据caseId查询关联的步骤列表
+     *
+     * @param caseId 用例业务id
+     * @return 对象列表
+     */
+    List<AutoStepPO> listByCaseId(@Param("caseId") Integer caseId);
+
 //    /**
 //     * 按条件查询总数
 //     *

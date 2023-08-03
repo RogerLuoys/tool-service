@@ -15,6 +15,8 @@ import java.util.List;
 public interface ConfigMapper {
     int remove(@Param("configId") Integer configId);
 
+    int removeByCaseId(@Param("caseId") Integer caseId);
+
     int insert(ConfigPO record);
 
 
