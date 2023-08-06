@@ -65,6 +65,11 @@ public class AutoCaseVO {
     private List<ConfigVO> argumentList;
 
     /**
+     * 目录列表
+     */
+    private List<ConfigVO> folderList;
+
+    /**
      * 用例计划完成时间
      */
     @JsonFormat(pattern = "yyyy-MM-dd")

@@ -314,9 +314,11 @@ public class CaseService {
                 || autoCaseVO.getType().equals(AutoCaseTypeEnum.DATA_FACTORY.getCode())) {
             List<ConfigPO> configPOList = configMapper.list(autoCaseVO.getCaseId());
             List<ConfigPO> paramList = configPOList.stream().filter(configPO -> configPO.getType().equals(ConfigTypeEnum.NORMAL.getCode())).collect(Collectors.toList());
-            List<ConfigPO> uiList = configPOList.stream().filter(configPO -> !configPO.getType().equals(ConfigTypeEnum.NORMAL.getCode())).collect(Collectors.toList());
+            List<ConfigPO> uiList = configPOList.stream().filter(configPO -> (!configPO.getType().equals(ConfigTypeEnum.NORMAL.getCode()) && !configPO.getType().equals(ConfigTypeEnum.FOLDER.getCode()))).collect(Collectors.toList());
+            List<ConfigPO> folderList = configPOList.stream().filter(configPO -> configPO.getType().equals(ConfigTypeEnum.FOLDER.getCode())).collect(Collectors.toList());
             autoCaseVO.setParameterList(TransformConfig.transformPO2VO(paramList));
             autoCaseVO.setArgumentList(TransformConfig.transformPO2VO(uiList));
+            autoCaseVO.setFolderList(TransformConfig.transformPO2VO(folderList));
             List<AutoStepVO> beforeSuite = caseStepList.stream().filter(autoStepVO -> autoStepVO.getType().equals(RelatedStepTypeEnum.BEFORE_SUITE.getCode())).collect(Collectors.toList());
             List<AutoStepVO> afterSuite = caseStepList.stream().filter(autoStepVO -> autoStepVO.getType().equals(RelatedStepTypeEnum.AFTER_SUITE.getCode())).collect(Collectors.toList());
             autoCaseVO.setBeforeSuiteList(beforeSuite);

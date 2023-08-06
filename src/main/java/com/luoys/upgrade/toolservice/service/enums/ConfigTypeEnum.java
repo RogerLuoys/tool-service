@@ -16,7 +16,8 @@ public enum ConfigTypeEnum {
     NORMAL(1, "普通参数"),
     CHROME(2, "chrome参数"),
     FIREFOX(3, "firefox参数"),
-    ANDROID(4, "android参数");
+    ANDROID(4, "android参数"),
+    FOLDER(5, "目录、文件夹");
 
     private final Integer code;
     private final String description;
