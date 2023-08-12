@@ -88,6 +88,7 @@ public class CaseService {
             return null;
         }
         autoCaseVO.setStatus(AutoCaseStatusEnum.PLANNING.getCode());
+        autoCaseVO.setFolderId(DefaultEnum.DEFAULT_FOLDER_ID.getCode());
         AutoCasePO autoCasePO = TransformAutoCase.transformVO2PO(autoCaseVO);
         autoCaseMapper.insert(autoCasePO);
         return autoCasePO.getId();
@@ -286,6 +287,12 @@ public class CaseService {
     public Integer count(QueryVO queryVO) {
         AutoCaseQueryPO autoCaseQueryPO = TransformAutoCase.transformVO2PO(queryVO);
         return autoCaseMapper.count(autoCaseQueryPO);
+    }
+
+    public List<ConfigVO> queryConfig(Integer caseId, Integer type) {
+        List<ConfigPO> configPOList = configMapper.list(caseId);
+        configPOList = configPOList.stream().filter(configPO -> configPO.getType().equals(type)).collect(Collectors.toList());
+        return TransformConfig.transformPO2VO(configPOList);
     }
 
     /**

@@ -117,6 +117,13 @@ public class AutoCaseController {
         return Result.success(pageInfo);
     }
 
+    @RequestMapping(value = "/queryConfig", method = RequestMethod.GET)
+    public Result<ConfigVO> queryConfig(@RequestParam("caseId") Integer caseId,
+                                        @RequestParam("type") Integer type) {
+        log.info("--->开始查询配置详情：caseId={}, type={}", caseId, type);
+        return Result.success(caseService.queryConfig(caseId, type));
+    }
+
     @RequestMapping(value = "/queryDetail", method = RequestMethod.GET)
     public Result<AutoCaseVO> queryDetail(@RequestParam("caseId") Integer caseId) {
         log.info("--->开始查询用例详情：caseId={}", caseId);
