@@ -36,9 +36,6 @@ public class CaseService {
     @Autowired
     private AutoCaseMapper autoCaseMapper;
 
-//    @Autowired
-//    private CaseStepRelationMapper caseStepRelationMapper;
-
     @Autowired
     private AutoStepMapper autoStepMapper;
 
