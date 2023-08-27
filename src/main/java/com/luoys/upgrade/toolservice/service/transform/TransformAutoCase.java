@@ -29,6 +29,7 @@ public class TransformAutoCase {
         vo.setOwnerId(po.getOwnerId());
         vo.setName(po.getName());
         vo.setCaseId(po.getId());
+        vo.setFolderId(po.getFolderId());
         vo.setType(po.getType());
         vo.setStatus(po.getStatus());
         vo.setOwnerName(po.getOwnerId() == null ? null : CacheUtil.getNickNameById(po.getOwnerId()));

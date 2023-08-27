@@ -38,10 +38,10 @@ public class AutoCaseSimpleVO {
      */
     private Integer status;
 
-//    /**
-//     * 用例执行的最长时间
-//     */
-//    private Integer maxTime;
+    /**
+     * 目录id
+     */
+    private Integer folderId;
 
 //    /**
 //     * 用例执行环境（参数）

@@ -275,7 +275,6 @@ public class CaseService {
      * @return 用例列表
      */
     public List<AutoCaseSimpleVO> query(QueryVO queryVO) {
-//        Integer startIndex = queryVO.getPageIndex() == null ? null : (queryVO.getPageIndex() - 1) * KeywordEnum.DEFAULT_PAGE_SIZE.getCode();
         AutoCaseQueryPO autoCaseQueryPO = TransformAutoCase.transformVO2PO(queryVO);
         List<AutoCasePO> autoCasePOList = autoCaseMapper.list(autoCaseQueryPO);
         return TransformAutoCase.transformPO2SimpleVO(autoCasePOList);
