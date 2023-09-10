@@ -217,13 +217,13 @@ public class CaseService {
             // 步骤顺序需要设置好
             autoStepVO.setSequence(scriptVO.getStepList().size() + 1);
             // 将关系存入数据库
-            createRelatedStep(autoStepVO);
+//            createRelatedStep(autoStepVO);
 //            // 创建步骤实例
 //            autoStepVO.setAutoStep(new AutoStepVO());
 //            // 填充步骤的stepId
 //            autoStepVO.getAutoStep().setStepId(autoStepVO.getStepId());
             // 将关联步骤的实例添加至用例对象中
-            scriptVO.getStepList().add(autoStepVO);
+            scriptVO.getStepList().add(stepService.create(autoStepVO));
         }
 
         // 脚本中删除了一些步骤，需要删除对应的关联关系
